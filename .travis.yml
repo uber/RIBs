@@ -1,0 +1,44 @@
+matrix:
+  include:
+    - language: android
+      android:
+        components:
+          - tools                             # Tools
+          - platform-tools                    # Platform tools
+          - build-tools-25.0.2                # Build tools version
+          - android-25                        # Target SDK version
+          - extra-android-m2repository        # Support repo
+          - sys-img-armeabi-v7a-android-18    # Emulator
+
+      jdk:
+        - oraclejdk8
+
+      script:
+        - ./gradlew build
+
+      env:
+        global:
+          - secure: "SONATYPE_NEXUS_USERNAME TODO"
+          - secure: "SONATYPE_NEXUS_PASSWORD TODO"
+
+      branches:
+        except:
+          - gh-pages
+
+      sudo: false
+
+      cache:
+        directories:
+          - $HOME/.gradle
+
+
+    - language: objective-c
+      osx_image: xcode9.0
+      xcode_project: ios/RIBs.xcodeproj
+      xcode_scheme: RIBs
+      xcode_sdk: iphonesimulator11.0
+      script: xcodebuild test -project ios/RIBs.xcodeproj -scheme RIBs -sdk iphonesimulator ONLY_ACTIVE_ARCH=NO
+
+
+notifications:
+  email: false
