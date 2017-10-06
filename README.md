@@ -20,8 +20,8 @@ TBD
 
 ```
 dependencies {
-  annotationProcessor 'com.uber:ribs:0.1.0'
-  compile 'com.uber:ribs:0.1.0'
+  annotationProcessor 'com.uber.ribs:ribs:0.1.0'
+  compile 'com.uber.ribs:ribs:0.1.0'
 }
 ```
 
