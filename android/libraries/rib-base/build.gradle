@@ -1,0 +1,19 @@
+apply plugin: "java-library"
+
+dependencies {
+    compile deps.external.reactiveStreams
+    compile deps.external.rxrelay2
+    compile deps.external.rxjava2
+    compile deps.uber.autodispose
+    compile deps.apt.javaxInject
+
+    compileOnly deps.apt.daggerCompiler
+    compileOnly deps.support.annotations
+    compileOnly deps.apt.androidApi
+
+    testCompile deps.support.annotations
+    testCompile deps.apt.androidApi
+    testCompile deps.test.junit
+    testCompile deps.test.mockito
+    testCompile deps.test.assertj
+}
