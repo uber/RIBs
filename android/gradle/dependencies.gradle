@@ -15,6 +15,7 @@
  */
 
 def versions = [
+    dagger: "2.11",
     support: '25.0.1',
     autodispose: '0.2.0',
     robolectric: "3.4.2",
@@ -24,7 +25,7 @@ def apt = [
     androidApi: "com.ubercab.android:android:4.1.1.5",
     autoCommon: "com.google.auto:auto-common:0.8",
     autoService: "com.google.auto.service:auto-service:1.0-rc3",
-    daggerCompiler: "com.google.dagger:dagger-compiler:2.11",
+    daggerCompiler: "com.google.dagger:dagger-compiler:${versions.dagger}",
     javapoet: "com.squareup:javapoet:1.9.0",
     javaxInject: "javax.inject:javax.inject:1",
 ]
@@ -60,6 +61,7 @@ def external = [
     rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.0.0",
     reactiveStreams: "org.reactivestreams:reactive-streams:1.0.0",
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
+    dagger: "com.google.dagger:dagger:${versions.dagger}",
 ]
 
 def uber = [

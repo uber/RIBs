@@ -15,6 +15,8 @@
  */
 package com.uber.rib.compiler;
 
+import android.support.annotation.NonNull;
+
 import com.google.common.collect.ImmutableSet;
 import com.google.testing.compile.JavaFileObjects;
 
@@ -25,9 +27,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
 
-public abstract class InteractorProcessorTestBase {
+public abstract class InteractorTestGeneratorProcessorTestBase {
 
   private RibProcessor ribProcessor;
   private ArrayList<JavaFileObject> sources;
@@ -36,10 +39,20 @@ public abstract class InteractorProcessorTestBase {
   public void setup() {
     ribProcessor =
         new RibProcessor() {
+          InteractorTestGenerator interactorTestGenerator;
+
           @Override
-          protected List<ProcessorPipeline> getProcessorPipelines(ProcessContext processContext) {
+          public synchronized void init(ProcessingEnvironment processingEnv) {
+            interactorTestGenerator = new InteractorTestGenerator(processingEnv, errorReporter);
+            super.init(processingEnv);
+          }
+
+          @NonNull
+          @Override
+          protected List<ProcessorPipeline> getProcessorPipelines(
+              @NonNull ProcessContext processContext) {
             return Collections.<ProcessorPipeline>singletonList(
-                new RibInteractorProcessorPipeline(processContext, null));
+                new RibInteractorProcessorPipeline(processContext, interactorTestGenerator));
           }
 
           @Override
@@ -51,7 +64,7 @@ public abstract class InteractorProcessorTestBase {
     sources = new ArrayList<>();
   }
 
-  protected RibProcessor getRibProcessor() {
+  protected RibProcessor getRibInteractorProcessor() {
     return ribProcessor;
   }
 
@@ -59,7 +72,12 @@ public abstract class InteractorProcessorTestBase {
     return sources;
   }
 
-  protected void addResourceToSources(String file) {
-    getSources().add(JavaFileObjects.forResource(file));
+  protected void addResourceToSources(@NonNull String file) {
+    getSources().add(getResourceFile(file));
+  }
+
+  @NonNull
+  protected JavaFileObject getResourceFile(@NonNull String file) {
+    return JavaFileObjects.forResource(file);
   }
 }

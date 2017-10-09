@@ -1,16 +1,13 @@
 apply plugin: "java-library"
 
 dependencies {
-    compile project(":libraries:rib-base")
-
-    compile deps.apt.autoCommon
-    compile deps.external.dagger
-    compile deps.apt.javapoet
+    compile project(":libraries:rib-compiler-app")
 
     compileOnly deps.support.annotations
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
 
+    testCompile deps.support.annotations
     testCompile deps.test.compileTesting
     testCompile deps.test.tools
 }
