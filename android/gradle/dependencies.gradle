@@ -22,7 +22,10 @@ def versions = [
 
 def apt = [
     androidApi: "com.ubercab.android:android:4.1.1.5",
+    autoCommon: "com.google.auto:auto-common:0.8",
+    autoService: "com.google.auto.service:auto-service:1.0-rc3",
     daggerCompiler: "com.google.dagger:dagger-compiler:2.11",
+    javapoet: "com.squareup:javapoet:1.9.0",
     javaxInject: "javax.inject:javax.inject:1",
 ]
 
@@ -48,6 +51,8 @@ def test = [
     junit: "junit:junit:4.12",
     mockito: "org.mockito:mockito-core:2.0.42-beta",
     assertj: "org.assertj:assertj-core:2.6.0",
+    compileTesting       : "com.google.testing.compile:compile-testing:0.11",
+    tools                : "com.sun:tools:1.8.0-112",
 ]
 
 def external = [

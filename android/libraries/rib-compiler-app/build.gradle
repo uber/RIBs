@@ -1,0 +1,23 @@
+apply plugin: "java-library"
+
+dependencies {
+    compile project(":libraries:presidio:rib:rib-base")
+
+    compile deps.apt.autoCommon
+    compile deps.external.dagger
+    compile deps.apt.javapoet
+
+    compileOnly deps.support.annotations
+    compileOnly deps.apt.autoService
+    compileOnly deps.apt.androidApi
+
+    testCompile deps.test.compileTesting
+    testCompile deps.test.tools
+}
+
+// https://code.google.com/p/android/issues/detail?id=64887
+task copyTestResources(type: Copy) {
+    from "${projectDir}/src/test/resources"
+    into "${buildDir}/classes/test"
+}
+processTestResources.dependsOn copyTestResources
