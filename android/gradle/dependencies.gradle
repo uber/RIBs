@@ -20,7 +20,10 @@ def versions = [
 ]
 
 def apt = [
+    androidApi: "com.ubercab.android:android:4.1.1.5",
+    daggerCompiler: "com.google.dagger:dagger-compiler:2.11",
     javaxInject: "javax.inject:javax.inject:1",
+
 ]
 
 def build = [

@@ -1,0 +1,10 @@
+apply plugin: "java-library"
+
+dependencies {
+    compile project(":libraries:rib-base")
+    compileOnly deps.support.annotations
+    compile deps.external.rxjava2
+    compile deps.test.junit
+    compile deps.test.assertj
+    compile deps.test.mockito
+}
