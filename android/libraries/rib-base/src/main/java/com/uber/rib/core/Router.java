@@ -77,6 +77,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
   }
 
   /** Called after the router has been loaded and initialized. */
+  @Initializer
   protected void didLoad() {}
 
   /**

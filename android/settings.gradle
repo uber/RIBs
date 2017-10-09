@@ -1,4 +1,5 @@
 include ':sample-app'
 include ':sample-lib'
 include ':libraries:rib-assert'
+include ':libraries:rib-android'
 include ':libraries:rib-base'

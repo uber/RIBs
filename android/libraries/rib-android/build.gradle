@@ -1,0 +1,25 @@
+buildscript {
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion deps.build.compileSdkVersion
+    buildToolsVersion deps.build.buildToolsVersion
+}
+
+dependencies {
+    compile project(":libraries:rib-base")
+    compile deps.external.rxrelay2
+    compile deps.external.rxjava2
+    compile deps.apt.javaxInject
+    compile deps.support.annotations
+    compile deps.support.appCompat
+
+    testCompile deps.external.roboelectricBase
+    testCompile deps.support.appCompat
+    testCompile project(":libraries:rib-assert")
+}

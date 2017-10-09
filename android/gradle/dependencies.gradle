@@ -17,13 +17,13 @@
 def versions = [
     support: '25.0.1',
     autodispose: '0.2.0',
+    robolectric: "3.4.2",
 ]
 
 def apt = [
     androidApi: "com.ubercab.android:android:4.1.1.5",
     daggerCompiler: "com.google.dagger:dagger-compiler:2.11",
     javaxInject: "javax.inject:javax.inject:1",
-
 ]
 
 def build = [
@@ -39,8 +39,9 @@ def build = [
 ]
 
 def support = [
-    appcompat   : "com.android.support:appcompat-v7:${versions.support}",
-    annotations        : "com.android.support:support-annotations:${versions.support}",
+    appcompat: "com.android.support:appcompat-v7:${versions.support}",
+    annotations: "com.android.support:support-annotations:${versions.support}",
+    appCompat: "com.android.support:appcompat-v7:${versions.support}",
 ]
 
 def test = [
@@ -53,6 +54,7 @@ def external = [
     rxjava2: "io.reactivex.rxjava2:rxjava:2.1.4",
     rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.0.0",
     reactiveStreams: "org.reactivestreams:reactive-streams:1.0.0",
+    roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
 ]
 
 def uber = [
