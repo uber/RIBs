@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.uber.rib.intellij-plugin</id>
     <name>RIB Presidio Plugin</name>
-    <version>0.1.1</version>
+    <version>0.1.2</version>
     <vendor>
         Uber Mobile Platform Team
     </vendor>
