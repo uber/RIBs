@@ -23,13 +23,13 @@
     <idea-version since-build="163"/>
 
     <actions>
-        <group description="RIB architecture templates" id="RibletActionGroup" text="RIB" type="">
+        <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
             <separator/>
             <action
-                class="com.uber.presidio.intellij_plugin.action.rib.riblet.GenerateRibletAction"
+                class="com.uber.presidio.intellij_plugin.action.rib.GenerateRibAction"
                 description="Generates a new RIB."
-                    icon="/icons/generate_riblet.png"
-                id="GenerateRiblet"
+                    icon="/icons/generate_rib.png"
+                id="GenerateRib"
                 text="New RIB...">
                 <add-to-group anchor="last" group-id="NewGroup" relative-to-group="NewGroup"/>
             </action>

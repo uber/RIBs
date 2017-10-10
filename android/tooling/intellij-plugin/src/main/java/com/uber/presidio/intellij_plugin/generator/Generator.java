@@ -22,36 +22,36 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 /**
- * Base class for generating riblet classes.
+ * Base class for generating rib classes.
  *
  * <p>Templates are tokenized using a ${token_name} syntax. {@code package_name} and {@code
- * riblet_name} token values are provided by the base generate - however subclasses can add custom
+ * rib_name} token values are provided by the base generate - however subclasses can add custom
  * paramaters when needed using {@link Generator#getTemplateValuesMap()}.
  */
 public abstract class Generator {
 
   private static final String TEMPLATE_TOKEN_PACKAGE_NAME = "package_name";
-  private static final String TEMPLATE_TOKEN_RIBLET_NAME = "riblet_name";
-  private static final String TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER = "riblet_name_to_lower";
+  private static final String TEMPLATE_TOKEN_RIBLET_NAME = "rib_name";
+  private static final String TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER = "rib_name_to_lower";
 
   private final String packageName;
-  private final String ribletName;
+  private final String ribName;
   private final String templateString;
   private final Map<String, String> templateValuesMap;
 
   /**
-   * @param packageName riblet package name.
-   * @param ribletName riblet name.
+   * @param packageName rib package name.
+   * @param ribName rib name.
    * @param templateName template to be used by this generate.
    */
-  public Generator(String packageName, String ribletName, String templateName) {
+  public Generator(String packageName, String ribName, String templateName) {
     this.packageName = packageName;
-    this.ribletName = ribletName;
+    this.ribName = ribName;
 
     templateValuesMap = new HashMap<String, String>();
     templateValuesMap.put(TEMPLATE_TOKEN_PACKAGE_NAME, packageName);
-    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME, ribletName);
-    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER, ribletName.toLowerCase());
+    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME, ribName);
+    templateValuesMap.put(TEMPLATE_TOKEN_RIBLET_NAME_TO_LOWER, ribName.toLowerCase());
     try {
       String[] resources = getResourceListing(this.getClass(), "partials/");
       for (String resourceName : resources) {
@@ -91,9 +91,9 @@ public abstract class Generator {
     return packageName;
   }
 
-  /** @return the riblet name for the generator. */
-  public final String getRibletName() {
-    return ribletName;
+  /** @return the rib name for the generator. */
+  public final String getRibName() {
+    return ribName;
   }
 
   /** @return the template values map, to add more template paramters. */

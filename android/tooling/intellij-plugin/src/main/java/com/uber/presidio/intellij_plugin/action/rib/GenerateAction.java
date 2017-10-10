@@ -65,7 +65,7 @@ public abstract class GenerateAction extends AnAction {
   protected void generate(
       final List<Generator> mainSourceGenerators, final List<Generator> testSourceGenerators) {
     /**
-     * Preconditions have been validated by {@link GenerateRibletAction#isAvailable(DataContext)}.
+     * Preconditions have been validated by {@link GenerateRibAction#isAvailable(DataContext)}.
      */
     final Project project = Preconditions.checkNotNull(CommonDataKeys.PROJECT.getData(dataContext));
     final IdeView view = Preconditions.checkNotNull(LangDataKeys.IDE_VIEW.getData(dataContext));
