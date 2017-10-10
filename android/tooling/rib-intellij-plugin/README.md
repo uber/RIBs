@@ -1,4 +1,4 @@
-# Presidio IntelliJ Plugin
+# RIB IntelliJ Plugin
 
 ## Build Instructions
 
@@ -11,9 +11,12 @@ To test the plugin locally:
 * Run `./gradlew :apps:presidio:tooling:presidio-intellij-plugin:runIde -Dintellij.gradle=true -Dokbuck.wrapper=true`
 
 To install the plugin locally:
+* Run `./gradlew :tooling:rib-intellij-plugin:buildPlugin -Dorg.gradle.configureondemand=true -Dbuild.intellijplugin=true`
 * Run `./gradlew :apps:presidio:tooling:presidio-intellij-plugin:buildPlugin -Dintellij.gradle=true -Dokbuck.wrapper=true`
 * Install the jar file generated in `build/project-build/apps/presidio/tooling/presidio-intellij-plugin/build/libs`.
 * Make sure you've installed the correct jar. If you install the wrong jar you will see runtime crashes.
+
+-Dorg.gradle.configureondemand=true
 
 To push an update to this plugin:
 * Bump the version inside plugin.xml
@@ -21,6 +24,3 @@ To push an update to this plugin:
 * Push the commit
 * Push the tags. Ex, run `git push origin presidio-intellij-plugin-v1.4.0`
 * Open "release-production-android-presidio-intellij-plugin" in ci-mobile and build your tag. Ie, build with "v1.4.0".
-
-To force engineers to bump the version of your plugin:
-* Update .idea/.requiredPresidioPluginVersion

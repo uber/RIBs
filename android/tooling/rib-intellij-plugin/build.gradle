@@ -1,7 +1,15 @@
+buildscript {
+    dependencies {
+        classpath deps.build.intellijPlugin
+    }
+}
+
+plugins {
 apply plugin: "java"
 apply plugin: "maven"
+}
 
-group "com.ubercab.rider"
+group "com.uber.rib"
 
 repositories {
     mavenLocal()
@@ -19,7 +27,7 @@ dependencies {
     compileOnly deps.intellij.util
     compile deps.support.annotations
 
-    if (!intellijGradleMode()) {
+    if (!buildIntellijPlugin()) {
         testCompile(project(":libraries:rib-base")) {
             transitive = false
         }
@@ -62,11 +70,13 @@ def isReleaseBuild() {
     return System.env.ENABLE_RELEASE_BUILD.equals("true")
 }
 
-def intellijGradleMode() {
-    return System.getProperty("intellij.gradle", "false") == "true"
+def buildIntellijPlugin() {
+    // Important to check this property in order to minimize the number of dependencies during various build types.
+    // Fetching dependencies for this project is quite slow.
+    return System.getProperty("build.intellijplugin", "false") == "true"
 }
 
-if (intellijGradleMode()) {
+if (buildIntellijPlugin()) {
     apply plugin: "org.jetbrains.intellij"
 
     ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
@@ -97,7 +107,7 @@ if (intellijGradleMode()) {
         repositories {
             mavenDeployer {
                 repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
-                if (hasMavenCredentials() && isReleaseBuild()) {
+                if (isReleaseBuild() && hasMavenCredentials()) {
                     repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
                         authentication(userName: mavenUser, password: mavenPassword)
                     }

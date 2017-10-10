@@ -40,6 +40,7 @@ def build = [
     targetSdkVersion: 25,
     guava: "com.google.guava:guava:20.0",
     commonsLang: "commons-lang:commons-lang:2.6",
+    intellijPlugin: "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.13",
     gradlePlugins: [
         android: 'com.android.tools.build:gradle:2.3.1',
     ]
@@ -68,12 +69,12 @@ def external = [
 ]
 
 def intellij = [
-        android    : "com.uber.intellij:android:${versions.intellij}",
-        annotations: "com.uber.intellij:annotations:${versions.intellij}",
-        extensions : "com.uber.intellij:extensions:${versions.intellij}",
-        idea       : "com.uber.intellij:idea:${versions.intellij}",
-        openapi    : "com.uber.intellij:openapi:${versions.intellij}",
-        util       : "com.uber.intellij:util:${versions.intellij}",
+    android    : "com.uber.intellij:android:${versions.intellij}",
+    annotations: "com.uber.intellij:annotations:${versions.intellij}",
+    extensions : "com.uber.intellij:extensions:${versions.intellij}",
+    idea       : "com.uber.intellij:idea:${versions.intellij}",
+    openapi    : "com.uber.intellij:openapi:${versions.intellij}",
+    util       : "com.uber.intellij:util:${versions.intellij}",
 ]
 
 def uber = [

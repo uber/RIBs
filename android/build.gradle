@@ -18,11 +18,13 @@ subprojects {
     buildscript {
         repositories {
             jcenter()
+            maven { url "https://plugins.gradle.org/m2/" }
         }
     }
 
     repositories {
         jcenter()
+        maven { url "https://plugins.gradle.org/m2/" }
     }
 
     apply plugin: 'checkstyle'
