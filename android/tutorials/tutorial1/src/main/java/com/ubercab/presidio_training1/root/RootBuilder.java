@@ -5,7 +5,7 @@ import android.view.ViewGroup;
 
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.core.ViewBuilder;
-import com.ubercab.presidio_training.R;
+import com.uber.rib.tutorial1.R;
 
 import java.lang.annotation.Retention;
 
