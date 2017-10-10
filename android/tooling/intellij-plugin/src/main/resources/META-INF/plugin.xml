@@ -1,0 +1,39 @@
+<idea-plugin version="2">
+    <id>com.uber.presidio-plugin</id>
+    <name>Uber Presidio Plugin</name>
+    <version>1.18.4</version>
+    <vendor>
+        Uber Mobile Platform Team
+    </vendor>
+
+    <description><![CDATA[
+      Uber RIB Plugin <br /> <br />
+      <ul>
+        <li>Easily create new RIBs.</li>
+      </ul>
+    ]]></description>
+
+    <change-notes><![CDATA[
+      <strong>1.0.0</strong><br/>
+      <ul>
+        <li>Initial release</li>
+      </ul>
+    ]]></change-notes>
+
+    <idea-version since-build="163"/>
+
+    <actions>
+        <group description="RIB architecture templates" id="RibletActionGroup" text="RIB" type="">
+            <separator/>
+            <action
+                class="com.uber.presidio.intellij_plugin.action.rib.riblet.GenerateRibletAction"
+                description="Generates a new RIB."
+                    icon="/icons/generate_riblet.png"
+                id="GenerateRiblet"
+                text="New RIB...">
+                <add-to-group anchor="last" group-id="NewGroup" relative-to-group="NewGroup"/>
+            </action>
+        </group>
+    </actions>
+
+</idea-plugin>

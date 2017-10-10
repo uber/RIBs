@@ -1,0 +1,110 @@
+apply plugin: "java"
+apply plugin: "maven"
+
+group "com.ubercab.rider"
+
+repositories {
+    mavenLocal()
+}
+
+dependencies {
+    compile deps.apt.androidApi
+    compile deps.build.commonsLang
+    compile deps.build.guava
+    compileOnly deps.intellij.android
+    compileOnly deps.intellij.annotations
+    compileOnly deps.intellij.extensions
+    compileOnly deps.intellij.idea
+    compileOnly deps.intellij.openapi
+    compileOnly deps.intellij.util
+    compile deps.support.annotations
+
+    if (!intellijGradleMode()) {
+        testCompile(project(":libraries:rib-base")) {
+            transitive = false
+        }
+        compileOnly(project(":libraries:rib-android")) {
+            transitive = false
+        }
+        compile(project(":libraries:rib-assert")) {
+            transitive = false
+        }
+        testCompile(project(":libraries:rib-compiler-app")) {
+            transitive = false
+        }
+        testCompile(project(":libraries:rib-compiler-test")) {
+            transitive = false
+        }
+        testCompile deps.apt.daggerCompiler
+        testCompile deps.apt.javaxInject
+        testCompile deps.external.dagger
+        testCompile deps.uber.autodispose
+        testCompile deps.test.assertj
+        testCompile deps.test.compileTesting
+        testCompile deps.test.mockito
+        testCompile deps.test.picoContainer // might not be needed=!!
+        testCompile deps.intellij.annotations
+        testCompile deps.intellij.extensions
+        testCompile deps.intellij.idea
+        testCompile deps.intellij.openapi
+        testCompile deps.intellij.util
+    } else {
+        sourceSets.test.java.srcDirs = []
+    }
+}
+
+// Determines if the machine has Maven credentials.
+def hasMavenCredentials() {
+    return ext.mavenUser && ext.mavenPassword
+}
+
+// Determines if it is a release build.
+def isReleaseBuild() {
+    return System.env.ENABLE_RELEASE_BUILD.equals("true")
+}
+
+def intellijGradleMode() {
+    return System.getProperty("intellij.gradle", "false") == "true"
+}
+
+if (intellijGradleMode()) {
+    apply plugin: "org.jetbrains.intellij"
+
+    ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
+    version = pluginXml.version
+
+    intellij {
+        plugins = ['checkstyle-idea:5.5.0']
+        version deps.versions.intellij
+        pluginName "UberRIBPresidioPlugin"
+        updateSinceUntilBuild false
+        sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
+        downloadSources false
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        classifier = "sources"
+        from sourceSets.main.allSource
+    }
+
+    afterEvaluate {
+        artifacts {
+            archives sourcesJar
+            archives project.tasks.getByName("buildPlugin")
+        }
+    }
+
+    uploadArchives {
+        repositories {
+            mavenDeployer {
+                repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
+                if (hasMavenCredentials() && isReleaseBuild()) {
+                    repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
+                        authentication(userName: mavenUser, password: mavenPassword)
+                    }
+                }
+            }
+        }
+    }
+    build.dependsOn uploadArchives
+}

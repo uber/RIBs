@@ -1,0 +1,90 @@
+package ${package_name};
+
+import android.support.annotation.NonNull;
+
+import com.uber.rib.core.Builder;
+import com.uber.rib.core.EmptyPresenter;
+import com.uber.rib.core.InteractorBaseComponent;
+import java.lang.annotation.Retention;
+
+import javax.inject.Qualifier;
+import javax.inject.Scope;
+
+import dagger.Provides;
+import dagger.BindsInstance;
+
+import ${package_name}.${riblet_name}OptionalExtension.OptionalModule;
+
+import static java.lang.annotation.RetentionPolicy.CLASS;
+
+public class ${riblet_name}Builder extends Builder<${riblet_name}Router, ${riblet_name}Builder.ParentComponent> {
+
+    public ${riblet_name}Builder(ParentComponent dependency) {
+        super(dependency);
+    }
+
+    /**
+     * Builds a new {@link ${riblet_name}Router}.
+     *
+     * @return a new {@link ${riblet_name}Router}.
+     */
+    public ${riblet_name}Router build() {
+        ${riblet_name}Interactor interactor = new ${riblet_name}Interactor();
+        Component component = Dagger${riblet_name}Builder_Component.builder()
+                .parentComponent(getDependency())
+                .interactor(interactor)
+                .build();
+
+        return component.${riblet_name_to_lower}Router();
+    }
+
+    public interface ParentComponent extends ${riblet_name}OptionalExtension.ParentComponent {
+        // TODO: Define dependencies required from your parent interactor here.
+    }
+
+    @dagger.Module
+    public abstract static class Module {
+
+        @${riblet_name}Scope
+        @Provides
+        static EmptyPresenter presenter() {
+            return new EmptyPresenter();
+        }
+
+        @${riblet_name}Scope
+        @Provides
+        static ${riblet_name}Router router(Component component, ${riblet_name}Interactor interactor) {
+            return new ${riblet_name}Router(interactor, component);
+        }
+
+        // TODO: Create provider methods for dependencies created by this Riblet. These methods should be static.
+    }
+
+    @${riblet_name}Scope
+    @dagger.Component(modules = {Module.class, OptionalModule.class},
+        dependencies = ParentComponent.class)
+    public interface Component extends InteractorBaseComponent<${riblet_name}Interactor>, BuilderComponent {
+
+        @dagger.Component.Builder
+        interface Builder {
+            @BindsInstance
+            Builder interactor(${riblet_name}Interactor interactor);
+            Builder parentComponent(ParentComponent component);
+            Component build();
+        }
+
+    }
+
+    interface BuilderComponent {
+        ${riblet_name}Router ${riblet_name_to_lower}Router();
+    }
+
+    @Scope
+    @Retention(CLASS)
+    @interface ${riblet_name}Scope { }
+
+
+    @Qualifier
+    @Retention(CLASS)
+    @interface ${riblet_name}Internal { }
+}

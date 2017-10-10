@@ -1,0 +1,21 @@
+package ${package_name};
+
+import android.support.annotation.NonNull;
+import android.view.View;
+
+import com.uber.rib.core.Router;
+
+/**
+ * Adds and removes children of {@link ${riblet_name}Builder.${riblet_name}Scope}.
+ *
+ * TODO describe the possible child configurations of this scope.
+ */
+public class ${riblet_name}Router
+        extends Router<${riblet_name}Interactor, ${riblet_name}Builder.Component> {
+
+    public ${riblet_name}Router(
+            ${riblet_name}Interactor interactor,
+            ${riblet_name}Builder.Component component) {
+        super(interactor, component);
+    }
+}

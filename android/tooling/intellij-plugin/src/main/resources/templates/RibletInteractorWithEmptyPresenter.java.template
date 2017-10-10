@@ -1,0 +1,23 @@
+package ${package_name};
+
+import android.support.annotation.Nullable;
+
+import com.uber.rib.core.Bundle;
+import com.uber.rib.core.EmptyPresenter;
+import com.uber.rib.core.Interactor;
+import com.uber.rib.core.RibInteractor;
+import com.uber.rib.core.Router;
+
+import javax.inject.Inject;
+
+/**
+ * Coordinates Business Logic for {@link ${riblet_name}Scope}.
+ *
+ * TODO describe the logic of this scope.
+ */
+@RibInteractor
+public class ${riblet_name}Interactor extends Interactor<EmptyPresenter, ${riblet_name}Router> {
+
+${partial: RibletInteractorDidBecomeActive.java.partial}
+${partial: RibletInteractorWillResignActive.java.partial}
+}
