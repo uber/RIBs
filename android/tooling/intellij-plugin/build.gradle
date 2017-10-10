@@ -42,7 +42,6 @@ dependencies {
         testCompile deps.test.assertj
         testCompile deps.test.compileTesting
         testCompile deps.test.mockito
-        testCompile deps.test.picoContainer // might not be needed=!!
         testCompile deps.intellij.annotations
         testCompile deps.intellij.extensions
         testCompile deps.intellij.idea
