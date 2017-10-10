@@ -1,0 +1,30 @@
+buildscript {
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+    }
+}
+
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion deps.build.compileSdkVersion
+    buildToolsVersion deps.build.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion deps.build.minSdkVersion
+        targetSdkVersion deps.build.targetSdkVersion
+        applicationId "com.uber.tutorial1"
+        versionCode 1
+        versionName "1.0"
+    }
+}
+
+dependencies {
+    annotationProcessor deps.apt.daggerCompiler
+    annotationProcessor project(":libraries:rib-compiler-app")
+    annotationProcessor project(":libraries:rib-compiler-test")
+    compile project(":libraries:rib-android")
+    compile deps.external.dagger
+    provided deps.apt.javax
+    testCompile project(":libraries:rib-assert")
+}

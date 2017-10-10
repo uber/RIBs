@@ -27,6 +27,7 @@ def apt = [
     autoService: "com.google.auto.service:auto-service:1.0-rc3",
     daggerCompiler: "com.google.dagger:dagger-compiler:${versions.dagger}",
     javapoet: "com.squareup:javapoet:1.9.0",
+    javax: "javax.annotation:jsr250-api:1.0",
     javaxInject: "javax.inject:javax.inject:1",
 ]
 

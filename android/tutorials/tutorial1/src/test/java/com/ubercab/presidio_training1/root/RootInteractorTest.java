@@ -1,0 +1,20 @@
+package com.ubercab.presidio_training1.root;
+
+import org.junit.Before;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
+
+public class RootInteractorTest {
+
+  @Mock RootInteractor.RootPresenter presenter;
+  @Mock RootRouter router;
+
+  private RootInteractor interactor;
+
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+
+    interactor = TestRootInteractor.create(presenter);
+  }
+}
