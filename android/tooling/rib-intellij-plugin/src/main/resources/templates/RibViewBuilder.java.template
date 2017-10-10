@@ -55,7 +55,7 @@ public class ${rib_name}Builder
         return null;
     }
 
-    public interface ParentComponent extends ${rib_name}OptionalExtension.ParentComponent {
+    public interface ParentComponent {
         // TODO: Define dependencies required from your parent interactor here.
     }
 

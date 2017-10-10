@@ -13,8 +13,6 @@ import javax.inject.Scope;
 import dagger.Provides;
 import dagger.BindsInstance;
 
-import ${package_name}.${rib_name}OptionalExtension.OptionalModule;
-
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
 public class ${rib_name}Builder extends Builder<${rib_name}Router, ${rib_name}Builder.ParentComponent> {
@@ -38,7 +36,7 @@ public class ${rib_name}Builder extends Builder<${rib_name}Router, ${rib_name}Bu
         return component.${rib_name_to_lower}Router();
     }
 
-    public interface ParentComponent extends ${rib_name}OptionalExtension.ParentComponent {
+    public interface ParentComponent {
         // TODO: Define dependencies required from your parent interactor here.
     }
 
@@ -61,8 +59,7 @@ public class ${rib_name}Builder extends Builder<${rib_name}Router, ${rib_name}Bu
     }
 
     @${rib_name}Scope
-    @dagger.Component(modules = {Module.class, OptionalModule.class},
-        dependencies = ParentComponent.class)
+    @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
     public interface Component extends InteractorBaseComponent<${rib_name}Interactor>, BuilderComponent {
 
         @dagger.Component.Builder

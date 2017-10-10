@@ -7,8 +7,6 @@ import com.uber.presidio.intellij_plugin.generator.rib.InteractorWithEmptyPresen
 import com.uber.presidio.intellij_plugin.generator.rib.InteractorWithEmptyPresenterTestGenerator;
 import com.uber.presidio.intellij_plugin.generator.rib.InteractorWithPresenterGenerator;
 import com.uber.presidio.intellij_plugin.generator.rib.InteractorWithPresenterTestGenerator;
-import com.uber.presidio.intellij_plugin.generator.rib.OptionalExtensionGenerator;
-import com.uber.presidio.intellij_plugin.generator.rib.OptionalViewExtensionGenerator;
 import com.uber.presidio.intellij_plugin.generator.rib.RouterGenerator;
 import com.uber.presidio.intellij_plugin.generator.rib.RouterTestGenerator;
 import com.uber.presidio.intellij_plugin.generator.rib.ViewBuilderGenerator;
@@ -33,8 +31,6 @@ public final class Generators {
     ViewBuilderGenerator viewBuilderGenerator = new ViewBuilderGenerator(packageName, ribName);
     ViewGenerator viewGenerator = new ViewGenerator(packageName, ribName);
     ViewRouterGenerator viewRouterGenerator = new ViewRouterGenerator(packageName, ribName);
-    OptionalViewExtensionGenerator extensionGenerator =
-        new OptionalViewExtensionGenerator(packageName, ribName);
 
     InteractorWithPresenterTestGenerator interactorWithPresenterTestGenerator =
         new InteractorWithPresenterTestGenerator(packageName, ribName);
@@ -46,8 +42,7 @@ public final class Generators {
             interactorGenerator,
             viewBuilderGenerator,
             viewGenerator,
-            viewRouterGenerator,
-            extensionGenerator),
+            viewRouterGenerator),
         ImmutableList.of(interactorWithPresenterTestGenerator, viewRouterTestGenerator));
   }
 
@@ -61,8 +56,6 @@ public final class Generators {
     InteractorWithEmptyPresenterGenerator interactorGenerator =
         new InteractorWithEmptyPresenterGenerator(packageName, ribName);
     BuilderGenerator builderGenerator = new BuilderGenerator(packageName, ribName);
-    OptionalExtensionGenerator extensionGenerator =
-        new OptionalExtensionGenerator(packageName, ribName);
     RouterGenerator routerGenerator = new RouterGenerator(packageName, ribName);
 
     InteractorWithEmptyPresenterTestGenerator interactorWithEmptyPresenterTestGenerator =
@@ -70,8 +63,7 @@ public final class Generators {
     RouterTestGenerator routerTestGenerator = new RouterTestGenerator(packageName, ribName);
 
     return new GeneratorPair(
-        ImmutableList.of(
-            interactorGenerator, builderGenerator, routerGenerator, extensionGenerator),
+        ImmutableList.of(interactorGenerator, builderGenerator, routerGenerator),
         ImmutableList.of(interactorWithEmptyPresenterTestGenerator, routerTestGenerator));
   }
 }
