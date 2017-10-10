@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
+apply from: 'gradle/dependencies.gradle'
+
 subprojects {
     buildscript {
         repositories {
             jcenter()
-            maven { url "https://plugins.gradle.org/m2/" }
+            maven { url deps.build.gradlePluginsUrl }
         }
     }
 
     repositories {
         jcenter()
-        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url deps.build.gradlePluginsUrl }
     }
 
     apply plugin: 'checkstyle'
@@ -42,5 +44,3 @@ task wrapper(type: Wrapper) {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-apply from: 'gradle/dependencies.gradle'

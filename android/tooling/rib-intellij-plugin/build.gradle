@@ -4,10 +4,8 @@ buildscript {
     }
 }
 
-plugins {
 apply plugin: "java"
 apply plugin: "maven"
-}
 
 group "com.uber.rib"
 
