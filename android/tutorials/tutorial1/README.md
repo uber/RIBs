@@ -14,7 +14,7 @@ we'll need to do the following:
 
 ## Steps
 #### Step 1
-Let’s try installing the lesson101 starter app to ensure your environment is up and running.
+Let’s try installing the tutorial1 starter app to ensure your environment is up and running.
 Use Android Studio or execute the following command:
 
 --image--
@@ -23,14 +23,15 @@ Yay! The application you are seeing contains nothing but the basic
 scaffolding needed to run a RIB app. It contains a single RootActivity and a 
 RootRib. All future code will be written nested under RootRib. RIB apps should avoid 
 containing more than one activity since using multiple activities forces 
-more state to exist inside global scope. 
+more state to exist inside a global scope. 
 
 #### Step 2
 It is possible to write RIBs by hand. But you don’t want to. 
 Let’s download the RIB Intellij Template Plugin so that the boilerplate
 can be generated for you.
 
---TODO: add link to install the RIB template--
+In Intellij, open Plugins > Install Plugins From Disk. Then install the
+[plugin jar.](https://github.com/uber/RIBs/raw/master/android/tooling/rib-intellij-plugin/deploy/rib-intellij-plugin.jar)
 
 #### Step 3
 Let’s generate the LoggedOut RIB. First, let's create a new package for each 

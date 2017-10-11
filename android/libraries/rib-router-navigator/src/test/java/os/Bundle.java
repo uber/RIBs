@@ -14,23 +14,29 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+package os;
 
-dependencies {
-    compile project(":libraries:rib-compiler-app")
+import java.util.HashMap;
+import java.util.Map;
 
-    compileOnly deps.support.annotations
-    compileOnly deps.apt.autoService
-    compileOnly deps.apt.androidApi
+/** Stub class to have pure Java unit tests. */
+public class Bundle implements Parcelable {
 
-    testCompile deps.support.annotations
-    testCompile deps.test.compileTesting
-    testCompile deps.test.tools
+  private final Map<String, Object> testData = new HashMap<>();
+
+  public String getString(String key) {
+    return (String) testData.get(key);
+  }
+
+  public <T extends Parcelable> T getParcelable(String key) {
+    return (T) testData.get(key);
+  }
+
+  public void putParcelable(String key, Parcelable value) {
+    testData.put(key, value);
+  }
+
+  public void putString(String key, String value) {
+    testData.put(key, value);
+  }
 }
-
-// https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
-}
-processTestResources.dependsOn copyTestResources

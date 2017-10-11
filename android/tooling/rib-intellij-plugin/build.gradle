@@ -32,7 +32,8 @@ dependencies {
         compileOnly(project(":libraries:rib-android")) {
             transitive = false
         }
-        compile(project(":libraries:rib-assert")) {
+
+        testCompile(project(":libraries:rib-test-utils")) {
             transitive = false
         }
         testCompile(project(":libraries:rib-compiler-app")) {

@@ -28,7 +28,11 @@ import io.reactivex.Observable;
 import static com.uber.rib.core.lifecycle.PresenterEvent.LOADED;
 import static com.uber.rib.core.lifecycle.PresenterEvent.UNLOADED;
 
-/** Contains presentation logic. */
+/** Contains presentation logic. This class exists mainly for legacy reasons. In the past
+ * we believed it was useful to have a class between interactors and views to facilitate model
+ * transformations and believed these transformations would be complex enough to require its own
+ * lifecycle. In practice this caused confusion: if both a presenter and interactor can perform
+ * complex rx logic it becomes unclear where you should write your bussiness logic. */
 public abstract class Presenter implements ScopeProvider {
 
   private final BehaviorRelay<PresenterEvent> behaviorRelay = BehaviorRelay.create();

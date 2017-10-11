@@ -14,23 +14,7 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+package os;
 
-dependencies {
-    compile project(":libraries:rib-compiler-app")
-
-    compileOnly deps.support.annotations
-    compileOnly deps.apt.autoService
-    compileOnly deps.apt.androidApi
-
-    testCompile deps.support.annotations
-    testCompile deps.test.compileTesting
-    testCompile deps.test.tools
-}
-
-// https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
-}
-processTestResources.dependsOn copyTestResources
+/** Stub class to have pure Java unit tests. */
+public interface Parcelable {}

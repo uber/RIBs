@@ -13,21 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+apply plugin: "java-library"
 
-/**
- * A dagger component that can be used inside a RIB. Using this annotation instead of using {@link
- * dagger.Component} allows us to automatically generate the RIB's ParentComponent. This reduces a
- * significant amount of boilerplate.
- */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.SOURCE)
-public @interface RibComponent {
-  /** See {@link dagger.Component}. */
-  Class<?>[] modules() default {};
+sourceCompatibility = "1.7"
+targetCompatibility = "1.7"
+
+dependencies {
+    compile project(":libraries:rib-base")
+    compileOnly deps.support.annotations
+    compile deps.external.rxjava2
+    compile deps.test.junit
+    compile deps.test.assertj
+    compile deps.test.mockito
 }

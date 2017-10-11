@@ -115,6 +115,7 @@ public abstract class Interactor<P, R extends Router>
     lifecycleRelay.accept(ACTIVE);
 
     if (getPresenter() instanceof Presenter) {
+      // Legacy support for lifecycled presenters.
       Presenter presenter = (Presenter) getPresenter();
       presenter.dispatchLoad();
     }
@@ -123,6 +124,7 @@ public abstract class Interactor<P, R extends Router>
 
   protected P dispatchDetach() {
     if (getPresenter() instanceof Presenter) {
+      // Legacy support for lifecycled presenters.
       Presenter presenter = (Presenter) getPresenter();
       presenter.dispatchUnload();
     }

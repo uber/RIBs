@@ -23,6 +23,8 @@ android {
 
 dependencies {
     provided deps.support.annotations
-    compile deps.external.rxjava2
     compile project(":libraries:rib-workflow")
+    compile project(":libraries:rib-uava")
+    compile deps.external.rxjava2
+    compile deps.test.assertj
 }
