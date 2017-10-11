@@ -25,9 +25,7 @@ dependencies {
     provided deps.support.annotations
 
     compile deps.external.rxjava2
-    compile project(":libraries:foundation:uava:uava")
-    compile project(":libraries:presidio:rib:rib-android")
-    compile project(":libraries:presidio:rib:rib-screen-stack")
-
-    testCompile project(":libraries:presidio:presidio-test-base-android")
+    compile deps.external.rxandroid2
+    compile project(':libraries:rib-uava')
+    compile project(":libraries:rib-android")
 }

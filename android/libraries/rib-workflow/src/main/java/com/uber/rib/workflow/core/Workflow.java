@@ -1,8 +1,9 @@
 package com.uber.rib.workflow.core;
 
-import com.ubercab.common.base.Optional;
 
-import rx.Single;
+import com.uber.rib.core.Optional;
+
+import io.reactivex.Single;
 
 /**
  * Encapsulates a series of {@link Step} instances to be performed in a sequential sequence.

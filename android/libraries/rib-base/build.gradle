@@ -4,6 +4,7 @@ sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
 dependencies {
+    compile project(':libraries:rib-uava')
     compile deps.external.reactiveStreams
     compile deps.external.rxrelay2
     compile deps.external.rxjava2

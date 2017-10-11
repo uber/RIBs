@@ -1,14 +1,12 @@
 package com.uber.rib.workflow.core;
 
+import com.uber.rib.core.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
-import com.ubercab.common.base.Optional;
 
 import io.reactivex.Observable;
-import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
-import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
 
 /**

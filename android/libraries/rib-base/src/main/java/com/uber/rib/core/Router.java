@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import static com.uber.rib.core.Preconditions.*;
+
 /**
  * Responsible for handling the addition and removal of children routers.
  *
@@ -131,7 +133,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
     Bundle childBundle = null;
     if (this.savedInstanceState != null) {
       Bundle previousChildren =
-          Preconditions.checkNotNull(this.savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
+          checkNotNull(this.savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
       childBundle = previousChildren.getBundleExtra(tag);
     }
 
@@ -157,7 +159,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
         "DETACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     if (savedInstanceState != null) {
       Bundle childrenBundles =
-          Preconditions.checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
+          checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
       childrenBundles.putBundleExtra(childRouter.tag, null);
     }
 
