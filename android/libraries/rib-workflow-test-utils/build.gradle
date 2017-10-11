@@ -1,0 +1,28 @@
+buildscript {
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+    }
+}
+
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion deps.build.compileSdkVersion
+    buildToolsVersion deps.build.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion deps.build.minSdkVersion
+        targetSdkVersion deps.build.targetSdkVersion
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+}
+
+dependencies {
+    provided deps.support.annotations
+    compile deps.external.rxjava2
+    compile project(":libraries:rib-workflow")
+}
