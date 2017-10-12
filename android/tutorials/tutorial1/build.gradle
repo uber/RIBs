@@ -41,6 +41,7 @@ dependencies {
     annotationProcessor project(":libraries:rib-compiler-test")
     compile project(":libraries:rib-android")
     compile deps.external.dagger
+    compile deps.external.rxbinding
     provided deps.apt.javax
     testCompile project(":libraries:rib-test-utils")
 }
