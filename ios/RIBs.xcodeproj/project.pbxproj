@@ -7,6 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177291F8EEFF0005F08F0 /* Builder.swift */; };
+		4131772D1F8EF5FF005F08F0 /* Interactor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177221F8EEFEF005F08F0 /* Interactor.swift */; };
+		4131772E1F8EF5FF005F08F0 /* LaunchRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177261F8EEFEF005F08F0 /* LaunchRouter.swift */; };
+		4131772F1F8EF5FF005F08F0 /* PresentableInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177231F8EEFEF005F08F0 /* PresentableInteractor.swift */; };
+		413177301F8EF5FF005F08F0 /* Presenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177251F8EEFEF005F08F0 /* Presenter.swift */; };
+		413177311F8EF5FF005F08F0 /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177271F8EEFEF005F08F0 /* Router.swift */; };
+		413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177241F8EEFEF005F08F0 /* ViewableRouter.swift */; };
+		413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177281F8EEFEF005F08F0 /* ViewControllable.swift */; };
+		413177341F8EF602005F08F0 /* Worker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4131772B1F8EEFF0005F08F0 /* Worker.swift */; };
+		413177351F8EF605005F08F0 /* Workflow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177211F8EEFEF005F08F0 /* Workflow.swift */; };
+		413177391F8EF70F005F08F0 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177371F8EF70A005F08F0 /* Executor.swift */; };
+		4131773A1F8EF711005F08F0 /* LeakDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177381F8EF70A005F08F0 /* LeakDetector.swift */; };
+		4131773D1F8EF98A005F08F0 /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4131773C1F8EF98A005F08F0 /* FoundationExtensions.swift */; };
 		8B9882EC1F86E1CF00ABE009 /* RIBs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9882E21F86E1CF00ABE009 /* RIBs.framework */; };
 		8B9882F11F86E1CF00ABE009 /* RIBsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9882F01F86E1CF00ABE009 /* RIBsTests.swift */; };
 		8B9882F31F86E1CF00ABE009 /* RIBs.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B9882E51F86E1CF00ABE009 /* RIBs.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -26,7 +39,19 @@
 
 /* Begin PBXFileReference section */
 		05DDCCAB81ED4F12260994D1 /* Pods-RIBsTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-RIBsTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-RIBsTests/Pods-RIBsTests.release.xcconfig"; sourceTree = "<group>"; };
-		4121671C1F8C5BDC00371904 /* sample.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = sample.swift; sourceTree = "<group>"; };
+		413177211F8EEFEF005F08F0 /* Workflow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Workflow.swift; sourceTree = "<group>"; };
+		413177221F8EEFEF005F08F0 /* Interactor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Interactor.swift; sourceTree = "<group>"; };
+		413177231F8EEFEF005F08F0 /* PresentableInteractor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PresentableInteractor.swift; sourceTree = "<group>"; };
+		413177241F8EEFEF005F08F0 /* ViewableRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewableRouter.swift; sourceTree = "<group>"; };
+		413177251F8EEFEF005F08F0 /* Presenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Presenter.swift; sourceTree = "<group>"; };
+		413177261F8EEFEF005F08F0 /* LaunchRouter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchRouter.swift; sourceTree = "<group>"; };
+		413177271F8EEFEF005F08F0 /* Router.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Router.swift; sourceTree = "<group>"; };
+		413177281F8EEFEF005F08F0 /* ViewControllable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewControllable.swift; sourceTree = "<group>"; };
+		413177291F8EEFF0005F08F0 /* Builder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Builder.swift; sourceTree = "<group>"; };
+		4131772B1F8EEFF0005F08F0 /* Worker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Worker.swift; sourceTree = "<group>"; };
+		413177371F8EF70A005F08F0 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
+		413177381F8EF70A005F08F0 /* LeakDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeakDetector.swift; sourceTree = "<group>"; };
+		4131773C1F8EF98A005F08F0 /* FoundationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationExtensions.swift; sourceTree = "<group>"; };
 		712376C6E2A68530CA8A8F51 /* Pods_RIBsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RIBsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E150B1EDF7629D177C10B10 /* Pods_RIBs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RIBs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9882E21F86E1CF00ABE009 /* RIBs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RIBs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,9 +89,53 @@
 		4121671B1F8C5BDC00371904 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				4121671C1F8C5BDC00371904 /* sample.swift */,
+				413177291F8EEFF0005F08F0 /* Builder.swift */,
+				413177221F8EEFEF005F08F0 /* Interactor.swift */,
+				413177261F8EEFEF005F08F0 /* LaunchRouter.swift */,
+				413177231F8EEFEF005F08F0 /* PresentableInteractor.swift */,
+				413177251F8EEFEF005F08F0 /* Presenter.swift */,
+				413177271F8EEFEF005F08F0 /* Router.swift */,
+				413177241F8EEFEF005F08F0 /* ViewableRouter.swift */,
+				413177281F8EEFEF005F08F0 /* ViewControllable.swift */,
+				4131773B1F8EF981005F08F0 /* Extensions */,
+				413177361F8EF70A005F08F0 /* LeakDetector */,
+				4131772A1F8EEFF0005F08F0 /* Worker */,
+				413177201F8EEFEF005F08F0 /* Workflow */,
 			);
 			path = Classes;
+			sourceTree = "<group>";
+		};
+		413177201F8EEFEF005F08F0 /* Workflow */ = {
+			isa = PBXGroup;
+			children = (
+				413177211F8EEFEF005F08F0 /* Workflow.swift */,
+			);
+			path = Workflow;
+			sourceTree = "<group>";
+		};
+		4131772A1F8EEFF0005F08F0 /* Worker */ = {
+			isa = PBXGroup;
+			children = (
+				4131772B1F8EEFF0005F08F0 /* Worker.swift */,
+			);
+			path = Worker;
+			sourceTree = "<group>";
+		};
+		413177361F8EF70A005F08F0 /* LeakDetector */ = {
+			isa = PBXGroup;
+			children = (
+				413177371F8EF70A005F08F0 /* Executor.swift */,
+				413177381F8EF70A005F08F0 /* LeakDetector.swift */,
+			);
+			path = LeakDetector;
+			sourceTree = "<group>";
+		};
+		4131773B1F8EF981005F08F0 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				4131773C1F8EF98A005F08F0 /* FoundationExtensions.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		8B9882D81F86E1CF00ABE009 = {
@@ -195,6 +264,7 @@
 				TargetAttributes = {
 					8B9882E11F86E1CF00ABE009 = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 0900;
 						ProvisioningStyle = Automatic;
 					};
 					8B9882EA1F86E1CF00ABE009 = {
@@ -330,6 +400,19 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4131773A1F8EF711005F08F0 /* LeakDetector.swift in Sources */,
+				4131773D1F8EF98A005F08F0 /* FoundationExtensions.swift in Sources */,
+				4131772E1F8EF5FF005F08F0 /* LaunchRouter.swift in Sources */,
+				413177391F8EF70F005F08F0 /* Executor.swift in Sources */,
+				413177341F8EF602005F08F0 /* Worker.swift in Sources */,
+				4131772D1F8EF5FF005F08F0 /* Interactor.swift in Sources */,
+				413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */,
+				413177351F8EF605005F08F0 /* Workflow.swift in Sources */,
+				4131772F1F8EF5FF005F08F0 /* PresentableInteractor.swift in Sources */,
+				4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */,
+				413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */,
+				413177311F8EF5FF005F08F0 /* Router.swift in Sources */,
+				413177301F8EF5FF005F08F0 /* Presenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -469,6 +552,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = FC710E7F2604304F48FF3E38 /* Pods-RIBs.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -482,6 +566,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBs;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -491,6 +576,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 9DBEBC722F73F4F63B5098B3 /* Pods-RIBs.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -513,6 +599,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = B5DFC8983045125539C78035 /* Pods-RIBsTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = RIBsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -527,6 +614,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = 05DDCCAB81ED4F12260994D1 /* Pods-RIBsTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				INFOPLIST_FILE = RIBsTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
