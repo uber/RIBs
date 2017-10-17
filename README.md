@@ -1,3 +1,5 @@
+*Note*: Edits are currently being made [here](https://docs.google.com/document/d/1GS86aMZjbhA4Awx7jSonhEAEQtzWfSxcTtxhlLvwT04/edit#)
+
 # RIBs
 
 [![Build Status](https://travis-ci.org/uber/ios-template.svg?branch=master)](https://travis-ci.org/uber/ios-template)
