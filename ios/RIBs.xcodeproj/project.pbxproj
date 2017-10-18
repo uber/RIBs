@@ -52,6 +52,8 @@
 		413177371F8EF70A005F08F0 /* Executor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Executor.swift; sourceTree = "<group>"; };
 		413177381F8EF70A005F08F0 /* LeakDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LeakDetector.swift; sourceTree = "<group>"; };
 		4131773C1F8EF98A005F08F0 /* FoundationExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoundationExtensions.swift; sourceTree = "<group>"; };
+		418C17561F97DB2E003C03F7 /* Dependency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
+		418C17571F97DB2E003C03F7 /* Component.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Component.swift; sourceTree = "<group>"; };
 		712376C6E2A68530CA8A8F51 /* Pods_RIBsTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RIBsTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7E150B1EDF7629D177C10B10 /* Pods_RIBs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_RIBs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9882E21F86E1CF00ABE009 /* RIBs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RIBs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,6 +91,7 @@
 		4121671B1F8C5BDC00371904 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				418C17551F97DB0E003C03F7 /* DI */,
 				413177291F8EEFF0005F08F0 /* Builder.swift */,
 				413177221F8EEFEF005F08F0 /* Interactor.swift */,
 				413177261F8EEFEF005F08F0 /* LaunchRouter.swift */,
@@ -136,6 +139,15 @@
 				4131773C1F8EF98A005F08F0 /* FoundationExtensions.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		418C17551F97DB0E003C03F7 /* DI */ = {
+			isa = PBXGroup;
+			children = (
+				418C17571F97DB2E003C03F7 /* Component.swift */,
+				418C17561F97DB2E003C03F7 /* Dependency.swift */,
+			);
+			path = DI;
 			sourceTree = "<group>";
 		};
 		8B9882D81F86E1CF00ABE009 = {
