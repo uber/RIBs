@@ -20,6 +20,8 @@
 		413177391F8EF70F005F08F0 /* Executor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177371F8EF70A005F08F0 /* Executor.swift */; };
 		4131773A1F8EF711005F08F0 /* LeakDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 413177381F8EF70A005F08F0 /* LeakDetector.swift */; };
 		4131773D1F8EF98A005F08F0 /* FoundationExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4131773C1F8EF98A005F08F0 /* FoundationExtensions.swift */; };
+		418C175C1F97F19F003C03F7 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418C17571F97DB2E003C03F7 /* Component.swift */; };
+		418C175D1F97F1A1003C03F7 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418C17561F97DB2E003C03F7 /* Dependency.swift */; };
 		8B9882EC1F86E1CF00ABE009 /* RIBs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9882E21F86E1CF00ABE009 /* RIBs.framework */; };
 		8B9882F11F86E1CF00ABE009 /* RIBsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9882F01F86E1CF00ABE009 /* RIBsTests.swift */; };
 		8B9882F31F86E1CF00ABE009 /* RIBs.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B9882E51F86E1CF00ABE009 /* RIBs.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -91,7 +93,6 @@
 		4121671B1F8C5BDC00371904 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				418C17551F97DB0E003C03F7 /* DI */,
 				413177291F8EEFF0005F08F0 /* Builder.swift */,
 				413177221F8EEFEF005F08F0 /* Interactor.swift */,
 				413177261F8EEFEF005F08F0 /* LaunchRouter.swift */,
@@ -100,6 +101,7 @@
 				413177271F8EEFEF005F08F0 /* Router.swift */,
 				413177241F8EEFEF005F08F0 /* ViewableRouter.swift */,
 				413177281F8EEFEF005F08F0 /* ViewControllable.swift */,
+				418C17551F97DB0E003C03F7 /* DI */,
 				4131773B1F8EF981005F08F0 /* Extensions */,
 				413177361F8EF70A005F08F0 /* LeakDetector */,
 				4131772A1F8EEFF0005F08F0 /* Worker */,
@@ -413,10 +415,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				4131773A1F8EF711005F08F0 /* LeakDetector.swift in Sources */,
+				418C175C1F97F19F003C03F7 /* Component.swift in Sources */,
 				4131773D1F8EF98A005F08F0 /* FoundationExtensions.swift in Sources */,
 				4131772E1F8EF5FF005F08F0 /* LaunchRouter.swift in Sources */,
 				413177391F8EF70F005F08F0 /* Executor.swift in Sources */,
 				413177341F8EF602005F08F0 /* Worker.swift in Sources */,
+				418C175D1F97F1A1003C03F7 /* Dependency.swift in Sources */,
 				4131772D1F8EF5FF005F08F0 /* Interactor.swift in Sources */,
 				413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */,
 				413177351F8EF605005F08F0 /* Workflow.swift in Sources */,

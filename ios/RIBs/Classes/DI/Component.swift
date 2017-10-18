@@ -42,20 +42,23 @@ open class Component<DependencyType>: Dependency {
     public final func shared<T>(__function: String = #function, _ factory: () -> T) -> T {
         // Use function name as the key, since this is unique per component class. At the same time,
         // this is also 150 times faster than interpolating the type to convert to string, `"\(T.self)"`.
-        return lock.synchronize {
-            if let instance = sharedInstances[__function] as? T {
-                return instance
-            }
+        lock.lock()
+        defer {
+            lock.unlock()
+        }
 
-            let instance = factory()
-            sharedInstances[__function] = instance
-
+        if let instance = sharedInstances[__function] as? T {
             return instance
         }
+
+        let instance = factory()
+        sharedInstances[__function] = instance
+
+        return instance
     }
 
     // Shared lock between component and eager Initialize component.
-    let lock = RecursiveSyncLock()
+    let lock = NSRecursiveLock()
 
     // MARK: - Private
 
