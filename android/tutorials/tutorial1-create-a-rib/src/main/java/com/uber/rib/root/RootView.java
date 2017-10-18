@@ -22,7 +22,7 @@ import android.util.AttributeSet;
 import android.widget.FrameLayout;
 
 /** Top level view for {@link RootBuilder.RootScope}. */
-class RootView extends FrameLayout implements RootInteractor.RootPresenter {
+public class RootView extends FrameLayout implements RootInteractor.RootPresenter {
 
   public RootView(Context context) {
     this(context, null);
