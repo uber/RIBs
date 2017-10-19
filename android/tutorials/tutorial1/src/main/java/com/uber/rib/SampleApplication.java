@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ubercab.presidio_training1;
+package com.uber.rib;
 
 import android.app.Application;
 

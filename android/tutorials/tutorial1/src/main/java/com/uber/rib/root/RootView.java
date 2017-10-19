@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.ubercab.presidio_training1.root;
+package com.uber.rib.root;
 
 import android.content.Context;
 import android.support.annotation.Nullable;

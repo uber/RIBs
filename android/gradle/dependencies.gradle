@@ -20,6 +20,7 @@ def versions = [
     autodispose: '0.2.0',
     robolectric: "3.4.2",
     intellij: "2017.2",
+    rave: "2.0.0",
 ]
 
 def apt = [
@@ -30,6 +31,9 @@ def apt = [
     javapoet: "com.squareup:javapoet:1.9.0",
     javax: "javax.annotation:jsr250-api:1.0",
     javaxInject: "javax.inject:javax.inject:1",
+    autoValue: "com.google.auto.value:auto-value:1.5",
+    autoValueAnnotations: "com.jakewharton.auto.value:auto-value-annotations:1.5",
+    raveCompiler: "com.uber:rave-compiler:${versions.rave}",
 ]
 
 def build = [
@@ -83,6 +87,7 @@ def intellij = [
 def uber = [
     autodispose: "com.uber.autodispose:autodispose:${versions.autodispose}",
     autodisposeAndroid : "com.uber.autodispose:autodispose-android:${versions.autodispose}@aar",
+    rave: "com.uber:rave:${versions.rave}",
 ]
 
 ext.deps = [

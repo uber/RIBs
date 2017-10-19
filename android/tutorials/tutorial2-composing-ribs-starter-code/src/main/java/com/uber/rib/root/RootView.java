@@ -14,21 +14,25 @@
  * limitations under the License.
  */
 
-package com.ubercab.presidio_training1;
+package com.uber.rib.root;
 
-import android.view.ViewGroup;
+import android.content.Context;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.widget.FrameLayout;
 
-import com.uber.rib.core.RibActivity;
-import com.uber.rib.core.ViewRouter;
-import com.ubercab.presidio_training1.root.RootBuilder;
+/** Top level view for {@link RootBuilder.RootScope}. */
+class RootView extends FrameLayout implements RootInteractor.RootPresenter {
 
-/** The sample app's single activity. */
-public class RootActivity extends RibActivity {
+  public RootView(Context context) {
+    this(context, null);
+  }
 
-  @SuppressWarnings("unchecked")
-  @Override
-  protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {
-    RootBuilder rootBuilder = new RootBuilder(new RootBuilder.ParentComponent() {});
-    return rootBuilder.build(parentViewGroup);
+  public RootView(Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public RootView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    super(context, attrs, defStyle);
   }
 }

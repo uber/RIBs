@@ -1,4 +1,4 @@
-package com.ubercab.presidio_training1.root;
+package com.uber.rib.root;
 
 import org.junit.Before;
 import org.mockito.Mock;
