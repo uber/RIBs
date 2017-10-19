@@ -1,0 +1,10 @@
+platform :ios, '9.0'
+
+use_frameworks!
+inhibit_all_warnings!
+
+target 'TicTacToe' do
+  pod 'RIBs', :path => '../../' 
+  pod 'SnapKit', '~> 3.2.0'
+  pod 'RxCocoa', '~> 3.5.0'
+end
