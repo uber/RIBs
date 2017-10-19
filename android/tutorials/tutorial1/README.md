@@ -163,6 +163,8 @@ interface LoggedOutPresenter {
 }
 ```
 
+Strictly speaking presenter interfaces like this don't need to be used. You could just directly call your view from your interactor. In practice we've found this causes a cleaner seperation between views and interactors, for psychological reasons.
+
 > **Note** RIBs aren't opinionated about whether you pass data from your view to your interactor via Rx or listener interfaces. Both have a variety of tradeoffs. For example one makes swapping views for a given interactor safer while one makes swapping interactors for a given view easier. One incurs less overhead. Which you find easier to test is subjective.
 
 Inside LoggedOutInteractor, observe the LoggedOutPresenter and log its output.
