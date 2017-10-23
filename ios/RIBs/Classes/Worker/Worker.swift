@@ -15,38 +15,39 @@
 //
 import RxSwift
 
-/// Base protocol of all workers that perform a self-contained piece of logic. Workers are always
-/// bound to an interactor. A worker can only start if its bound interactor is active. And it is
-/// stopped and its bound interactor is deactivated.
+/// The base protocol of all workers that perform a self-contained piece of logic.
 ///
-/// @CreateMock
+/// `Worker`s are always bound to an `Interactor`. A `Worker` can only start if its bound `Interactor` is active.
+/// It is stopped when its bound interactor is deactivated.
 public protocol Working: class {
 
-    /// Start the worker.
+    /// Starts the `Worker`.
     ///
-    /// - note: If the bound interactor scope is active, this method starts the worker immediately.
-    /// Otherwise the worker will start when its bound interactor scope becomes active.
+    /// If the bound `InteractorScope` is active, this method starts the `Worker` immediately. Otherwise the `Worker`
+    /// will start when its bound `Interactor` scope becomes active.
+    ///
     /// - parameter interactorScope: The interactor scope this worker is bound to.
     func start(_ interactorScope: InteractorScope)
 
-    /// Stop the worker.
+    /// Stops the worker.
     ///
-    /// - note: Unlike `start`, this method always stops the worker immediately.
+    /// Unlike `start`, this method always stops the worker immediately.
     func stop()
 
     /// Indicates if the worker is currently started.
     var isStarted: Bool { get }
 
     /// The lifecycle of this worker.
-    /// - note: Subscription to this stream always immediately returns the last event. This
-    /// stream terminates after the worker is deallocated.
+    ///
+    /// Subscription to this stream always immediately returns the last event. This stream terminates after the
+    /// `Worker` is deallocated.
     var isStartedStream: Observable<Bool> { get }
 }
 
-/// The base worker implementation.
+/// The base `Worker` implementation.
 open class Worker: Working {
 
-    /// Indicates if the worker is started.
+    /// Indicates if the `Worker` is started.
     public final var isStarted: Bool {
         do {
             return try isStartedSubject.value()
@@ -55,7 +56,7 @@ open class Worker: Working {
         }
     }
 
-    /// The lifecycle of this worker.
+    /// The lifecycle stream of this `Worker`.
     public final var isStartedStream: Observable<Bool> {
         return isStartedSubject
             .asObservable()
@@ -63,12 +64,15 @@ open class Worker: Working {
     }
 
     /// Initializer.
-    public init() {}
+    public init() {
+        // No-op
+    }
 
-    /// Start the worker.
+    /// Starts the `Worker`.
     ///
-    /// - note: If the bound interactor scope is active, this method starts the worker immediately.
-    /// Otherwise the worker will start when its bound interactor scope becomes active.
+    /// If the bound `InteractorScope` is active, this method starts the `Worker` immediately. Otherwise the `Worker`
+    /// will start when its bound `Interactor` scope becomes active.
+    ///
     /// - parameter interactorScope: The interactor scope this worker is bound to.
     public final func start(_ interactorScope: InteractorScope) {
         guard !isStarted else {
@@ -86,14 +90,19 @@ open class Worker: Working {
         bind(to: weakInteractorScope)
     }
 
-    /// The worker did start.
+    /// Called when the the worker has started.
     ///
-    /// - parameter interactorScope: The interactor scope this worker is bound to.
-    open func didStart(_ interactorScope: InteractorScope) {}
+    /// Subclasses should override this method and implment any logic that they would want to execute when the `Worker`
+    /// starts. The default implementation does nothing.
+    ///
+    /// - parameter interactorScope: The interactor scope this `Worker` is bound to.
+    open func didStart(_ interactorScope: InteractorScope) {
+        
+    }
 
-    /// Stop the worker.
+    /// Stops the worker.
     ///
-    /// - note: Unlike `start`, this method always stops the worker immediately.
+    /// Unlike `start`, this method always stops the worker immediately.
     public final func stop() {
         guard isStarted else {
             return
@@ -104,11 +113,16 @@ open class Worker: Working {
         executeStop()
     }
 
-    /// The worker did stop.
+    /// Called when the worker has stopped.
     ///
-    /// - note: All subscriptions added to the disposable provided in the `didStart` method are
-    /// automatically disposed when the worker stops.
-    open func didStop() {}
+    /// Subclasses should override this method abnd implement any cleanup logic that they might want to execute when
+    /// the `Worker` stops. The default implementation does noting.
+    ///
+    /// - note: All subscriptions added to the disposable provided in the `didStart` method are automatically disposed
+    /// when the worker stops.
+    open func didStop() {
+        // No-op
+    }
 
     // MARK: - Private
 
@@ -162,16 +176,16 @@ open class Worker: Working {
 /// Worker related `Disposable` extensions.
 public extension Disposable {
 
-    /// Dispose the subscription based on the lifecycle of the given worker. The subscription is disposed
-    /// when the worker is stopped.
+    /// Disposes the subscription based on the lifecycle of the given `Worker`. The subscription is disposed when the
+    /// `Worker` is stopped.
     ///
-    /// - note: When using this composition, the subscription closure may freely retain the worker itself,
-    /// since the subscription closure is disposed once the worker is stopped, thus releasing the retain
-    /// cycle before the worker needs to be deallocated.
+    /// If the given worker is stopped at the time this method is invoked, the subscription is immediately terminated.
     ///
-    /// If the given worker is stopped at the time this method is invoked, the subscription is immediately
-    /// terminated.
-    /// - parameter worker: The worker to dispose the subscription based on.
+    /// - note: When using this composition, the subscription closure may freely retain the `Worker` itself, since the
+    ///   subscription closure is disposed once the `Worker` is stopped, thus releasing the retain cycle before the
+    ///   `worker` needs to be deallocated.
+    ///
+    /// - parameter worker: The `Worker` to dispose the subscription based on.
     @discardableResult
     public func disposeOnStop(_ worker: Worker) -> Disposable {
         if let compositeDisposable = worker.disposable {

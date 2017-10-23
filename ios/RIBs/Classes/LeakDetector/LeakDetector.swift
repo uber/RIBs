@@ -42,19 +42,21 @@ public protocol LeakDetectionHandle {
     func cancel()
 }
 
-/// Expectation based leak detector, that allows an object's owner to set an expectation that
-/// an owned object to be deallocated within a time frame. For instance, a router that owns an
-/// interactor can expect its interactor be deallocated when the router itself is deallocated.
-/// If the interactor does not deallocate in time, a runtime assert is triggered, along with
+/// An expectation based leak detector, that allows an object's owner to set an expectation that an owned object to be
+/// deallocated within a time frame.
+///
+/// A `Router` that owns an `Interactor` might for example expect its `Interactor` be deallocated when the `Router`
+/// itself is deallocated. If the interactor does not deallocate in time, a runtime assert is triggered, along with
 /// critical logging.
 public class LeakDetector {
 
     /// The singleton instance.
     public static let instance = LeakDetector()
 
-    /// The status of leak detection. The status changes between InProgress and DidComplete
-    /// as units register for new detections, cancel existing detections, and existing detections
-    /// complete.
+    /// The status of leak detection.
+    ///
+    /// The status changes between InProgress and DidComplete as units register for new detections, cancel existing
+    /// detections, and existing detections complete.
     public var status: Observable<LeakDetectionStatus> {
         return expectationCount
             .asObservable()
@@ -64,7 +66,7 @@ public class LeakDetector {
             .distinctUntilChanged()
     }
 
-    /// Expect the given object to be deallocated within the given time.
+    /// Sets up an expectation for the given object to be deallocated within the given time.
     ///
     /// - parameter object: The object to track for deallocation.
     /// - parameter inTime: The time the given object is expected to be deallocated within.
@@ -104,9 +106,9 @@ public class LeakDetector {
         return handle
     }
 
-    /// Expect the given view controller to disappear within the given time.
+    /// Sets up an expectation for the given view controller to disappear within the given time.
     ///
-    /// - parameter viewController: The view controller expected to disappear.
+    /// - parameter viewController: The `UIViewController` expected to disappear.
     /// - parameter inTime: The time the given view controller is expected to disappear.
     /// - returns: The handle that can be used to cancel the expectation.
     @discardableResult

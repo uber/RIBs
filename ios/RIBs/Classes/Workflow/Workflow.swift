@@ -15,27 +15,38 @@
 //
 import RxSwift
 
-/// Defines the base class for a sequence of steps that execute a flow through the application
-/// RIB tree. At each step of a workflow is a pair of value and actionable item. The value
-/// can be used to make logic decisions. The actionable item is invoked to perform logic for the
-/// step. Typically the actionable item is the interactor of a RIB. A workflow should always
-/// start at the root of the tree.
+/// Defines the base class for a sequence of steps that execute a flow through the application RIB tree.
+///
+/// At each step of a `Workflow` is a pair of value and actionable item. The value can be used to make logic decisions.
+/// The actionable item is invoked to perform logic for the step. Typically the actionable item is the `Interactor` of a
+/// RIB.
+///
+/// A workflow should always start at the root of the tree.
 open class Workflow<ActionableItemType> {
 
-    private let subject = PublishSubject<(ActionableItemType, ())>()
+    /// Called when the last step observable is completed.
+    ///
+    /// Subclasses should override this method if they want to execute logic at this point in the `Workflow` lifecycle.
+    /// The default implementation does nothing.
+    open func didComplete() {
+        // No-op
+    }
 
-    /// The composite disposable that contains all subscriptions including the original workflow
-    /// as well as all the forked ones.
-    fileprivate let compositeDisposable = CompositeDisposable()
+    /// Called when the `Workflow` is forked.
+    ///
+    /// Subclasses should override this method if they want to execute logic at this point in the `Workflow` lifecycle.
+    /// The default implementation does nothing.
+    open func didFork() {
+        // No-op
+    }
 
-    /// The did complete function will be called when the last step observable is completed.
-    open func didComplete() {}
-
-    /// The did fork function will be called when we fork the workflow.
-    open func didFork() {}
-
-    /// The did receive error function will be called when the last step observable is has error.
-    open func didReceiveError(_ error: Error) {}
+    /// Called when the last step observable is has error.
+    ///
+    /// Subclasses should override this method if they want to execute logic at this point in the `Workflow` lifecycle.
+    /// The default implementation does nothing.
+    open func didReceiveError(_ error: Error) {
+        // No-op
+    }
 
     /// Initializer.
     public init() {}
@@ -51,7 +62,7 @@ open class Workflow<ActionableItemType> {
             }
     }
 
-    /// Subscribe and start the workflow sequence.
+    /// Subscribe and start the `Workflow` sequence.
     ///
     /// - parameter actionableItem: The initial actionable item for the first step.
     /// - returns: The disposable of this workflow.
@@ -64,11 +75,19 @@ open class Workflow<ActionableItemType> {
         subject.onNext((actionableItem, ()))
         return compositeDisposable
     }
+    
+    // MARK: - Private Interface
+    
+    private let subject = PublishSubject<(ActionableItemType, ())>()
+    fileprivate let compositeDisposable = CompositeDisposable()
 }
 
-/// Defines a single step in a workflow. A step may produce a next step with a new value and
-/// actionable item, eventually forming a sequence of workflow steps. Steps are asynchronous
-/// in nature.
+/// Defines a single step in a `Workflow`.
+///
+/// A step may produce a next step with a new value and actionable item, eventually forming a sequence of `Workflow`
+/// steps.
+///
+/// Steps are asynchronous by nature.
 open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
 
     private let workflow: Workflow<WorkflowActionableItemType>
@@ -79,9 +98,9 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
         self.observable = observable
     }
 
-    /// Execute the given closure for this step.
+    /// Executes the given closure for this step.
     ///
-    /// - parameter onStep: The closure to execute for this step.
+    /// - parameter onStep: The closure to execute for the `Step`.
     /// - returns: The next step.
     public final func onStep<NextActionableItemType, NextValueType>(_ onStep: @escaping (ActionableItemType, ValueType) -> Observable<(NextActionableItemType, NextValueType)>) -> Step<WorkflowActionableItemType, NextActionableItemType, NextValueType> {
         let confinedNextStep = observable
@@ -111,7 +130,7 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
         return Step<WorkflowActionableItemType, NextActionableItemType, NextValueType>(workflow: workflow, observable: confinedNextStep)
     }
 
-    /// Execute the given closure when this step produces an error.
+    /// Executes the given closure when the `Step` produces an error.
     ///
     /// - parameter onError: The closure to execute when an error occurs.
     /// - returns: This step.
@@ -120,9 +139,9 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
         return self
     }
 
-    /// Commit the steps of the workflow sequence.
+    /// Commit the steps of the `Workflow` sequence.
     ///
-    /// - returns: The committed workflow.
+    /// - returns: The committed `Workflow`.
     @discardableResult
     public final func commit() -> Workflow<WorkflowActionableItemType> {
         let disposable = observable
@@ -132,26 +151,22 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
         return workflow
     }
 
-    // swiftlint:disable valid_docs
-
-    /// Convert the workflow into an obseravble.
+    /// Convert the `Workflow` into an obseravble.
     ///
-    /// - returns: The observable representation of this workflow.
+    /// - returns: The observable representation of this `Workflow`.
     public final func asObservable() -> Observable<(ActionableItemType, ValueType)> {
         return observable
     }
-
-    // swiftlint:enable valid_docs
 }
 
-/// Workflow related obervable extensions.
+/// `Workflow` related obervable extensions.
 public extension ObservableType {
 
     /// Fork the step from this obervable.
     ///
     /// - parameter workflow: The workflow this step belongs to.
-    /// - returns: The newly forked step in the workflow. `nil` if this observable does not conform
-    /// to the required generic type of (ActionableItemType, ValueType).
+    /// - returns: The newly forked step in the workflow. `nil` if this observable does not conform to the required
+    ///   generic type of (ActionableItemType, ValueType).
     public func fork<WorkflowActionableItemType, ActionableItemType, ValueType>(_ workflow: Workflow<WorkflowActionableItemType>) -> Step<WorkflowActionableItemType, ActionableItemType, ValueType>? {
         if let stepObservable = self as? Observable<(ActionableItemType, ValueType)> {
             workflow.didFork()
@@ -161,17 +176,17 @@ public extension ObservableType {
     }
 }
 
-/// Workflow related `Disposable` extensions.
+/// `Workflow` related `Disposable` extensions.
 public extension Disposable {
 
-    /// Dispose the subscription when the given workflow is disposed.
+    /// Dispose the subscription when the given `Workflow` is disposed.
     ///
-    /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a
-    /// workflow.
+    /// When using this composition, the subscription closure may freely retain the workflow itself, since the
+    /// subscription closure is disposed once the workflow is disposed, thus releasing the retain cycle before the
+    /// `Workflow` needs to be deallocated.
     ///
-    /// When using this composition, the subscription closure may freely retain the workflow itself,
-    /// since the subscription closure is disposed once the workflow is disposed, thus releasing the retain
-    /// cycle before the workflow needs to be deallocated.
+    /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a `Workflow`.
+    ///
     /// - parameter workflow: The workflow to dispose the subscription with.
     public func disposeWith<ActionableItemType>(worflow: Workflow<ActionableItemType>) {
         _ = worflow.compositeDisposable.insert(self)

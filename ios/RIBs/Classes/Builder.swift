@@ -24,11 +24,6 @@ open class Builder<DependencyType>: Buildable {
     /// The dependency used for this builder to build the RIB.
     public let dependency: DependencyType
 
-    /// The logging category of the builder. Defaults to 'Builder'.
-    ///
-    /// - SeeAlso: Logging
-    public let loggingCategory = "Builder"
-
     /// Initializer.
     ///
     /// - parameter dependency: The dependency used for this builder to build the RIB.

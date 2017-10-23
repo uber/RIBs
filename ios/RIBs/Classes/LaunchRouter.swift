@@ -15,27 +15,27 @@
 //
 import UIKit
 
-/// Application root router.
+/// The root `Router` of an application.
 public protocol LaunchRouting: ViewableRouting {
 
-    /// Launch the router tree.
+    /// Launches the router tree.
     ///
     /// - parameter window: The application window to launch from.
     func launchFromWindow(_ window: UIWindow)
 }
 
-/// Application root router base class, that acts as the root of the router tree.
+/// The application root router base class, that acts as the root of the router tree.
 open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<InteractorType, ViewControllerType>, LaunchRouting {
 
     /// Initializer.
     ///
-    /// - parameter interactor: The corresponding interactor of this router.
-    /// - parameter viewController: The corresponding view controller of this router.
+    /// - parameter interactor: The corresponding `Interactor` of this `Router`.
+    /// - parameter viewController: The corresponding `ViewController` of this `Router`.
     public override init(interactor: InteractorType, viewController: ViewControllerType) {
         super.init(interactor: interactor, viewController: viewController)
     }
 
-    /// Launch the router tree.
+    /// Launches the router tree.
     ///
     /// - parameter window: The window to launch the router tree in.
     public final func launchFromWindow(_ window: UIWindow) {
@@ -45,4 +45,3 @@ open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<Inte
         interactable.activate()
         load()
     }
-}

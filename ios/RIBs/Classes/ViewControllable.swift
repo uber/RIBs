@@ -15,7 +15,7 @@
 //
 import UIKit
 
-/// Basic interface between a router and the UIKit UIViewController.
+/// Basic interface between a `Router` and the UIKit `UIViewController`.
 public protocol ViewControllable: class {
 
     var uiviewController: UIViewController { get }

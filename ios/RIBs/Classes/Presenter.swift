@@ -15,11 +15,11 @@
 //
 import Foundation
 
-/// The base protocol for all presenters.
+/// The base protocol for all `Presenter`s.
 public protocol Presentable: class {}
 
-/// The base class of all presenters. A presenter translates business models into values the corresponding
-/// view controller can consume and display. It also maps UI events to business logic method, invoked to
+/// The base class of all `Pesenters`. A `Pesenters` translates business models into values the corresponding
+/// `ViewController` can consume and display. It also maps UI events to business logic method, invoked to
 /// its listener.
 open class Presenter<ViewControllerType>: Presentable {
 
@@ -33,7 +33,7 @@ open class Presenter<ViewControllerType>: Presentable {
 
     /// Initializer.
     ///
-    /// - parameter viewController: The view controller of this presenter.
+    /// - parameter viewController: The `ViewController` of this `Pesenters`.
     public init(viewController: ViewControllerType) {
         self.viewController = viewController
     }

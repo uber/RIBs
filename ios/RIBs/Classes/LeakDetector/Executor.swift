@@ -18,16 +18,15 @@ import RxSwift
 public class Executor {
 
     /// Execute the given logic after the given delay assuming the given maximum frame duration.
+    ///
     /// This allows excluding the time elapsed due to breakpoint pauses.
     ///
-    /// - note: The logic closure is not guaranteed to be performed exactly after the given delay.
-    ///   It may be performed later if the actual frame duration exceeds the given maximum frame
-    ///   duration.
+    /// - note: The logic closure is not guaranteed to be performed exactly after the given delay. It may be performed
+    ///   later if the actual frame duration exceeds the given maximum frame duration.
     ///
-    /// - parameter delay: The delay to perform the logic, excluding any potential elapsed time
-    ///   due to breakpoint pauses.
-    /// - parameter maxFrameDuration: The maximum duration a single frame should take. Default to
-    ///   33ms.
+    /// - parameter delay: The delay to perform the logic, excluding any potential elapsed time due to breakpoint
+    ///   pauses.
+    /// - parameter maxFrameDuration: The maximum duration a single frame should take. Defaults to 33ms.
     /// - parameter logic: The closure logic to perform.
     public static func execute(withDelay delay: TimeInterval, maxFrameDuration: TimeInterval = 0.033, logic: @escaping () -> ()) {
         let period = maxFrameDuration / 3.0
