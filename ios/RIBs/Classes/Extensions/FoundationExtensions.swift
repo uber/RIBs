@@ -22,8 +22,6 @@ public extension Array {
     ///
     /// - parameter element: The element to remove.
     mutating func removeElementByReference(_ element: Element) {
-        // Cannot use where clause in extension declaration since that'll prevent anyone from invoking this
-        // method with a class type protocol.
         let objIndex = index {
             return $0 as AnyObject === element as AnyObject
         }
