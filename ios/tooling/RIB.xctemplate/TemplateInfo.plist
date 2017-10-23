@@ -41,17 +41,17 @@
 		</dict>
 		<dict>
 			<key>Identifier</key>
-			<string>createPresenterAndView</string>
+			<string>ownsView</string>
 			<key>Required</key>
 			<string>true</string>
 			<key>Name</key>
-			<string>Create Presenter and View</string>
+			<string>Owns corresponding view</string>
 			<key>Description</key>
-			<string>Whether to create a Presenter and View with this RIB</string>
+			<string>Whether this RIB owns a corresponding view</string>
 			<key>Type</key>
 			<string>checkbox</string>
 			<key>Default</key>
-			<string>true</string>
+			<string>false</string>
 			<key>NotPersisted</key>
 			<string>true</string>
 		</dict>

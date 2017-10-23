@@ -17,18 +17,15 @@
 import RIBs
 import RxSwift
 
-/// @CreateMock
 protocol ___VARIABLE_productName___Routing: ViewableRouting {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
 
-/// @CreateMock
 protocol ___VARIABLE_productName___Presentable: Presentable {
     weak var listener: ___VARIABLE_productName___PresentableListener? { get set }
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-/// @CreateMock
 protocol ___VARIABLE_productName___Listener: class {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }

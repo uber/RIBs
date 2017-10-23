@@ -16,13 +16,11 @@
 
 import RIBs
 
-/// @CreateMock
 protocol ___VARIABLE_productName___Interactable: Interactable {
     weak var router: ___VARIABLE_productName___Routing? { get set }
     weak var listener: ___VARIABLE_productName___Listener? { get set }
 }
 
-/// @CreateMock
 protocol ___VARIABLE_productName___ViewControllable: ViewControllable {
     // TODO: Declare methods the router invokes to manipulate the view hierarchy.
 }

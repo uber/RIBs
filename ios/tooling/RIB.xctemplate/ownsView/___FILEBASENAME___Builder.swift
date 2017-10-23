@@ -28,7 +28,6 @@ final class ___VARIABLE_productName___Component: Component<___VARIABLE_productNa
 
 // MARK: - Builder
 
-/// @CreateMock
 protocol ___VARIABLE_productName___Buildable: Buildable {
     func build(withListener listener: ___VARIABLE_productName___Listener) -> ___VARIABLE_productName___Routing
 }

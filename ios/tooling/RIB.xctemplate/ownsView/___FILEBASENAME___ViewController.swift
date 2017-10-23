@@ -16,10 +16,8 @@
 
 import RIBs
 import RxSwift
-import SnapKit
 import UIKit
 
-/// @CreateMock
 protocol ___VARIABLE_productName___PresentableListener: class {
     // TODO: Declare properties and methods that the view controller can invoke to perform
     // business logic, such as signIn(). This protocol is implemented by the corresponding
@@ -32,8 +30,4 @@ final class ___VARIABLE_productName___ViewController: UIViewController, ___VARIA
     public final var uiviewController: UIViewController { return self }
 
     weak var listener: ___VARIABLE_productName___PresentableListener?
-}
-
-private class ___VARIABLE_productName___View: UIView {
-
 }
