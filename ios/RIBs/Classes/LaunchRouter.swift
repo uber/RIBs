@@ -45,3 +45,4 @@ open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<Inte
         interactable.activate()
         load()
     }
+}
