@@ -5,18 +5,18 @@
 	<key>Kind</key>
 	<string>Xcode.IDEFoundation.TextSubstitutionFileTemplateKind</string>
 	<key>Summary</key>
-	<string>RIB1</string>
+	<string>Hello</string>
 	<key>Description</key>
-	<string>RIB classes.</string>
+	<string>RIB unit test files.</string>
 	<key>SortOrder</key>
-	<string>1</string>
+	<string>2</string>
 	<key>AllowedTypes</key>
 	<dict>
 		<key>Item 0</key>
 		<string>public.swift-source</string>
 	</dict>
 	<key>DefaultCompletionName</key>
-	<string>RIB</string>
+	<string>World</string>
 	<key>MainTemplateFiles</key>
 	<string>___FILEBASENAME___.swift</string>
 	<key>Platforms</key>
@@ -31,27 +31,11 @@
 			<key>Required</key>
 			<string>true</string>
 			<key>Name</key>
-			<string>RIB name:</string>
+			<string>Name of the RIB to test:</string>
 			<key>Description</key>
-			<string>The name of the RIB to create</string>
+			<string>The name of the RIB to unit test for. Creates an interactor and a router test.</string>
 			<key>Type</key>
 			<string>text</string>
-			<key>NotPersisted</key>
-			<string>true</string>
-		</dict>
-		<dict>
-			<key>Identifier</key>
-			<string>ownsView</string>
-			<key>Required</key>
-			<string>true</string>
-			<key>Name</key>
-			<string>Owns corresponding view</string>
-			<key>Description</key>
-			<string>Whether this RIB owns a corresponding view</string>
-			<key>Type</key>
-			<string>checkbox</string>
-			<key>Default</key>
-			<string>false</string>
 			<key>NotPersisted</key>
 			<string>true</string>
 		</dict>
