@@ -47,7 +47,7 @@ matrix:
           - DESTINATION="OS=11.0,name=iPhone X"    RUN_TESTS="YES"   POD_LINT="NO"
 
       before_install:
-          - gem install cocoapods --pre --no-rdoc --no-ri --no-document --quiet
+          - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
 
       script:
         - set -o pipefail
