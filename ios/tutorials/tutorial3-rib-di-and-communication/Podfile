@@ -6,5 +6,5 @@ inhibit_all_warnings!
 target 'TicTacToe' do
   pod 'RIBs', :path => '../../' 
   pod 'SnapKit', '~> 3.2.0'
-  pod 'RxCocoa', '~> 3.5.0'
+  pod 'RxCocoa', '~> 4.0.0'
 end
