@@ -5,7 +5,7 @@
 	<key>Kind</key>
 	<string>Xcode.IDEFoundation.TextSubstitutionFileTemplateKind</string>
 	<key>Summary</key>
-	<string>Hello</string>
+	<string>RIB Unit Tests</string>
 	<key>Description</key>
 	<string>RIB unit test files.</string>
 	<key>SortOrder</key>
@@ -16,7 +16,7 @@
 		<string>public.swift-source</string>
 	</dict>
 	<key>DefaultCompletionName</key>
-	<string>World</string>
+	<string>RIB Unit Tests</string>
 	<key>MainTemplateFiles</key>
 	<string>___FILEBASENAME___.swift</string>
 	<key>Platforms</key>
