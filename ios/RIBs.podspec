@@ -11,5 +11,5 @@ TODO: Add long description of the pod here.
   s.source           = { :git => 'https://github.com/uber/RIBs.git', :tag => s.version.to_s }
   s.ios.deployment_target = '8.0'
   s.source_files = 'RIBs/Classes/**/*'
-  s.dependency 'RxSwift', '~> 3.0'
+  s.dependency 'RxSwift', '~> 4.0'
 end
