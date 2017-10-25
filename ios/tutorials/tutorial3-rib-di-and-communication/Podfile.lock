@@ -1,26 +1,26 @@
 PODS:
   - RIBs (0.1.0):
-    - RxSwift (~> 3.0)
-  - RxCocoa (3.5.0):
-    - RxSwift (~> 3.4)
-  - RxSwift (3.6.1)
-  - SnapKit (3.2.0)
+    - RxSwift (~> 4.0)
+  - RxCocoa (4.0.0):
+    - RxSwift (~> 4.0)
+  - RxSwift (4.0.0)
+  - SnapKit (4.0.0)
 
 DEPENDENCIES:
   - RIBs (from `../../`)
-  - RxCocoa (~> 3.5.0)
-  - SnapKit (~> 3.2.0)
+  - RxCocoa (~> 4.0.0)
+  - SnapKit (~> 4.0.0)
 
 EXTERNAL SOURCES:
   RIBs:
     :path: ../../
 
 SPEC CHECKSUMS:
-  RIBs: 1d0f127491bb5b271c43871089a2fdc3c91e6f4c
-  RxCocoa: a0a09f45d0e5b48ecb6a4a7b4b4c89c88d3f633f
-  RxSwift: f9de85ea20cd2f7716ee5409fc13523dc638e4e4
-  SnapKit: 1ca44df72cfa543218d177cb8aab029d10d86ea7
+  RIBs: d8109490beeb0af16a57ac2188124a0a38077393
+  RxCocoa: d62846ca96495d862fa4c59ea7d87e5031d7340e
+  RxSwift: fd680d75283beb5e2559486f3c0ff852f0d35334
+  SnapKit: a42d492c16e80209130a3379f73596c3454b7694
 
-PODFILE CHECKSUM: 752f4fdf697d41ffaf07918db51b3ec68e620c4c
+PODFILE CHECKSUM: caddf130b235b313903f3946d0288265275d1365
 
 COCOAPODS: 1.3.1
