@@ -2,13 +2,13 @@
 
 ## Goal
 
-This tutorial aims to illustrate how to create a nearly empty RIB using the intellij template. 
+This tutorial aims to illustrate how to create a nearly empty RIB using the Android Studio template.
 Completing this tutorial should only take a few minutes.
 
 ## Exercise
 Let's create a logged out screen for a Tic Tac Toe game. In order to do this, 
 we'll need to do the following:
-* Create a LoggedOutRIB using the Intellij template
+* Create a LoggedOutRIB using the Android Studio template
 * Make the LoggedOutRIB to be a child of the existing RootRIB
 * Modify LoggedOutRIB to show Views and handle clicks
 
@@ -27,10 +27,10 @@ more state to exist inside a global scope. This reduces your ability to depend o
 
 ### Step 2
 It is possible to write RIBs by hand. **But you don’t want to.** 
-Let’s download the RIB Intellij Template Plugin so that the boilerplate
+Let’s download the RIB Android Studio Template Plugin so that the boilerplate
 can be generated for you.
 
-In Intellij, open Plugins > Install Plugins From Disk. Then install the
+In Android Studio, open Plugins > Install Plugins From Disk. Then install the
 [plugin jar.](https://github.com/uber/RIBs/raw/master/android/tooling/rib-intellij-plugin/deploy/rib-intellij-plugin.jar)
 
 ### Step 3
@@ -39,15 +39,15 @@ RIB. Since this tutorial is being built as a single module, let's nest the “lo
 package under “root”. This is a nice organizational structure since the LoggedOutRib will nest 
 under the RootRib.
 
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/logged_out_package.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1-create-a-rib/tutorial_assets/logged_out.png?raw=true" width="600">
 
 Right click the “logged_out” package and select New > New RIB
 
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/create_rib.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1-create-a-rib/tutorial_assets/create_rib.png?raw=true" width="600">
 
 Create the LoggedOut RIB. You’ll now see the following files.
 
-<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1/tutorial_assets/logged_out_files.png?raw=true" width="600">
+<img src="https://github.com/uber/RIBs/blob/master/android/tutorials/tutorial1-create-a-rib/tutorial_assets/logged_out_files.png?raw=true" width="600">
 
 ### Step 4
 We want to hook up the LoggedOutRib so that it is attached whenever the RootRib 
@@ -122,7 +122,7 @@ Let’s try building and installing the app. *You’ll notice it crashes* becaus
 to do (and because we don't have NullAway configured).
 
 ### Step 5
-Examine the error output in IntelliJ’s Android Monitor. You’ll see a NPE inside RootBuilder.
+Examine the error output in Android Studio’s Android Monitor. You’ll see a NPE inside RootBuilder.
 You haven’t yet hooked up your View! Let’s create a `logged_out_rib.xml` file under /res/layout/.
 Create the XML layout with the following views:
 
