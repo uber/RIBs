@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package com.uber.rib;
+package com.uber.rib.root;
 
-import android.view.ViewGroup;
-import com.uber.rib.core.RibActivity;
-import com.uber.rib.core.ViewRouter;
-import com.uber.rib.root.RootBuilder;
+import android.content.Context;
+import android.support.annotation.Nullable;
+import android.util.AttributeSet;
+import android.widget.FrameLayout;
 
-/**
- * The sample app's single activity.
- */
-public class RootActivity extends RibActivity {
+/** Top level view for {@link RootBuilder.RootScope}. */
+public class RootView extends FrameLayout implements RootInteractor.RootPresenter {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {
-    RootBuilder rootBuilder = new RootBuilder(new RootBuilder.ParentComponent() {
-    });
-    return rootBuilder.build(parentViewGroup);
+  public RootView(Context context) {
+    this(context, null);
+  }
+
+  public RootView(Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
+
+  public RootView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    super(context, attrs, defStyle);
   }
 }
