@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.uber.rib;
+package com.uber.rib.root.logged_in.off_game;
 
-import android.view.ViewGroup;
-import com.uber.rib.core.RibActivity;
 import com.uber.rib.core.ViewRouter;
-import com.uber.rib.root.RootBuilder;
 
 /**
- * The sample app's single activity.
+ * Adds and removes children of {@link OffGameBuilder.OffGameScope}.
  */
-public class RootActivity extends RibActivity {
+public class OffGameRouter extends
+    ViewRouter<OffGameView, OffGameInteractor, OffGameBuilder.Component> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {
-    RootBuilder rootBuilder = new RootBuilder(new RootBuilder.ParentComponent() {
-    });
-    return rootBuilder.build(parentViewGroup);
+  public OffGameRouter(
+      OffGameView view,
+      OffGameInteractor interactor,
+      OffGameBuilder.Component component) {
+    super(view, interactor, component);
   }
 }

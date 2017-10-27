@@ -14,23 +14,20 @@
  * limitations under the License.
  */
 
-package com.uber.rib;
+package com.uber.rib.root.logged_in.tic_tac_toe;
 
-import android.view.ViewGroup;
-import com.uber.rib.core.RibActivity;
 import com.uber.rib.core.ViewRouter;
-import com.uber.rib.root.RootBuilder;
 
 /**
- * The sample app's single activity.
+ * Adds and removes children of {@link TicTacToeBuilder.TicTacToeScope}.
  */
-public class RootActivity extends RibActivity {
+public class TicTacToeRouter extends
+    ViewRouter<TicTacToeView, TicTacToeInteractor, TicTacToeBuilder.Component> {
 
-  @SuppressWarnings("unchecked")
-  @Override
-  protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {
-    RootBuilder rootBuilder = new RootBuilder(new RootBuilder.ParentComponent() {
-    });
-    return rootBuilder.build(parentViewGroup);
+  public TicTacToeRouter(
+      TicTacToeView view,
+      TicTacToeInteractor interactor,
+      TicTacToeBuilder.Component component) {
+    super(view, interactor, component);
   }
 }
