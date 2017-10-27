@@ -88,7 +88,7 @@ final class LoggedOutViewController: UIViewController, LoggedOutPresentable, Log
                     self?.listener?.login(withPlayer1Name: player1Field.text, player2Name: player2Field.text)
                 }
             )
-            .addDisposableTo(disposeBag)
+            .disposed(by: disposeBag)
     }
 
     private let disposeBag = DisposeBag()

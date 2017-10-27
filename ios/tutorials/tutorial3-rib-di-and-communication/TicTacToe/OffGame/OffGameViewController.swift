@@ -65,7 +65,7 @@ final class OffGameViewController: UIViewController, OffGamePresentable, OffGame
                     self?.listener?.startGame()
                 }
             )
-            .addDisposableTo(disposeBag)
+            .disposed(by: disposeBag)
     }
 
     private let disposeBag = DisposeBag()
