@@ -7,13 +7,13 @@ The goal of this exercise is to understand the various pieces of a RIB, and more
 
 ## Create LoggedOut RIB
 
-1. Select New File menu item on the LoggedOut group.
+1. Select New File menu item on the LoggedOut group.  
 ![image2](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image2.jpg)  
 2. Select the Xcode RIB templates.  
 ![image3](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image3.jpg)  
-3. Name the new RIB "LoggedOut" and check the "Owns corresponding view" checkbox.
+3. Name the new RIB "LoggedOut" and check the "Owns corresponding view" checkbox.  
+    ![image4](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image4.jpg)  
     1. LoggedOut RIB has its own view to display a "Sign Up" button and player name text fields.  
-![image4](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image4.jpg)  
 4. Create the files and make sure it’s in the "TicTacToe" target and in the "LoggedOut" folder.  
 ![image5](https://github.com/uber/ribs/blob/assets/tutorial_assets/ios/tutorial1-create-a-rib/images/image5.jpg)  
 5. Now we can delete the DELETE_ME.swift file. It was only temporarily needed so the project can compile without the LoggedOut RIB we just created.  
