@@ -24,4 +24,12 @@ protocol OffGameDependency {}
 
 protocol LoggedInViewControllable {}
 
+protocol LoggedInBuildable {}
+
+protocol LoggedInListener {}
+
+protocol LoggedInRouting {}
+
+protocol LoggedInInteractable {}
+
 extension RootViewController: LoggedInViewControllable {}
