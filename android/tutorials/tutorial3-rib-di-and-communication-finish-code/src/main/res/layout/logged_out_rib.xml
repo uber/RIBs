@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.uber.rib.root.logged_out.LoggedOutView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"/>
+
+    <EditText
+      android:id="@+id/player_one_name"
+      android:hint="@string/player_one_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:maxLines="1"
+      android:layout_margin="16dp"/>
+
+    <EditText
+      android:id="@+id/player_two_name"
+      android:hint="@string/player_two_name"
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content"
+      android:maxLines="1"
+      android:layout_margin="16dp"/>
+
+    <Button
+        android:id="@+id/login_button"
+        android:text="Login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"/>
+</com.uber.rib.root.logged_out.LoggedOutView>
