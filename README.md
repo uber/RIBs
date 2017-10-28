@@ -12,15 +12,14 @@ RIBs is the cross-platform architecture behind many mobile apps at Uber.
 * **Tooling for developer productivity.** RIBs come with IDE tooling around code generation, static analysis and runtime integrations - all which improve developer productivity for large teams or small.
 * **An architecture that scales.* This architecture has proven to scale to hundreds of engineers working on the same codebase and apps with thousands of RIBs.
 
-The RIB architecture was designed for large mobile applications with lots of volatile, server driven state, as well as large number of engineers working on one codebase. Read more about [what RIBs are for](https://github.com/uber/RIBs/wiki). 
+The RIB architecture was designed for large mobile applications with lots of volatile, server driven state, as well as large number of engineers working on one codebase.
 
 
+## Documentation
+Refer to the [RIBs documentation](https://github.com/uber/RIBs/wiki) to get acquainted with key concepts and tutorials that run you through the all aspects of the architecture.
 
-## Introduction
 
-TBD.
-
-## Use
+## Usage
 
 1. Clone this repository 
 2. Integrate using your preferred installation mechanism
@@ -53,10 +52,6 @@ To integrate RIBs into your project using Carthage add the following to your `Ca
 ```ruby
 github "uber/RIBs" ~> 0.1
 ```
-
-## Usage
-
-TBD
 
 ## Contributions
 
