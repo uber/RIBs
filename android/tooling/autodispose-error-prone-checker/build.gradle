@@ -21,16 +21,14 @@ sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
 dependencies {
-    compileOnly deps.apt.autoService
     compile deps.build.errorProneCore
     compile deps.external.rxjava2
+    compileOnly deps.apt.autoService
+
+    errorprone deps.build.errorProne
 
     testCompile deps.test.junit
     testCompile(deps.build.errorProneTestHelpers) {
         exclude group: "junit", module: "junit"
     }
-
-    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-
-    errorprone "com.google.errorprone:error_prone_core:2.1.1"
 }
