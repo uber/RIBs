@@ -1,0 +1,36 @@
+buildscript {
+    repositories {
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.errorprone
+    }
+}
+
+plugins {
+    id "net.ltgt.apt" version "0.11"
+}
+apply plugin: 'java'
+apply plugin: 'net.ltgt.errorprone'
+
+sourceCompatibility = "1.8"
+targetCompatibility = "1.8"
+
+dependencies {
+    compileOnly deps.apt.autoService
+    compile deps.build.errorProneCore
+    compile deps.external.rxjava2
+
+    testCompile deps.test.junit
+    testCompile(deps.build.errorProneTestHelpers) {
+        exclude group: "junit", module: "junit"
+    }
+
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
+
+    errorprone "com.google.errorprone:error_prone_core:2.1.1"
+}
