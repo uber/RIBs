@@ -42,6 +42,7 @@ dependencies {
     compile project(":libraries:rib-android")
     compile deps.external.dagger
     compile deps.external.rxbinding
+    compile deps.external.leakcanaryDebug
     compile 'com.android.support:percent:25.0.1'
     provided deps.apt.javax
     testCompile project(":libraries:rib-test-utils")

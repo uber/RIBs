@@ -72,7 +72,8 @@ def external = [
     rxandroid2: "io.reactivex.rxjava2:rxandroid:2.0.1",
     reactiveStreams: "org.reactivestreams:reactive-streams:1.0.0",
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
-    rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.0.0'
+    rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.0.0',
+    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 ]
 
 def intellij = [

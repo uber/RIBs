@@ -21,7 +21,11 @@ import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
 import com.uber.rib.root.logged_out.LoggedOutBuilder.LoggedOutScope;
+
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import javax.inject.Inject;
 
@@ -46,6 +50,17 @@ public class LoggedOutInteractor
             if (!isEmpty(name)) {
               listener.login(name);
             }
+          }
+        });
+
+    // BUG: Subscribe to some long running operation and forget to unsubscribe.
+    Observable.timer(2000, TimeUnit.DAYS)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Consumer<Long>() {
+          @Override
+          public void accept(Long aLong) throws Exception {
+            // This class is an inner class. It references the outer class.
+            // This can cause a memory leak.
           }
         });
   }
