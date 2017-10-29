@@ -50,6 +50,8 @@ def build = [
     commonsLang: "commons-lang:commons-lang:2.6",
     intellijPlugin: "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.13",
     errorProne: "com.google.errorprone:error_prone_core:${versions.errorProne}",
+    errorProneCore: "com.google.errorprone:error_prone_core:${versions.errorProne}",
+    errorProneTestHelpers: "com.google.errorprone:error_prone_test_helpers:${versions.errorProne}",
     gradlePlugins: [
         android: 'com.android.tools.build:gradle:2.3.1',
         errorprone: 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
