@@ -35,3 +35,16 @@ If you run the memory-leak demo app and enter a username you'll see the followin
 <img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/leak_canary_small.png?raw=true" width="400">
 
 ## Static Leak Detection
+
+Why did we even need to rely on LeakCanary in this case? Wouldn't it have been better if we had prevented this at build time? If you look at the offending code and remove `SuppressWarnings("RxJavaMissingAutodisposeErrorChecker")` then you'll be unable to build with this memory leak. You'll see the following error:
+
+```
+error: [RxJavaMissingAutodisposeErrorChecker] Always apply an Autodispose scope before subscribing
+        .subscribe(new Consumer<String>() {
+                  ^
+    (see https://github.com/uber/RIBs/blob/memory_leaks_module/android/demos/memory-leaks/README.md)
+```
+
+This check is written as an ErrorProne check. It is extremely fast and integrated directly into the compiler. Unfortunately this does mean it doesn't support Kotlin. Although a similar PSI lint could be quickly written.
+
+Additional leak detection checkers have been written for RIBs. They'll be open sourced in the future if there is interest.
