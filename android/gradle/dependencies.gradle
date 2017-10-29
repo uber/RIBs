@@ -15,18 +15,20 @@
  */
 
 def versions = [
-    dagger: "2.11",
+    dagger: "2.12",
     support: '25.0.1',
     autodispose: '0.2.0',
     robolectric: "3.4.2",
     intellij: "2017.2",
     rave: "2.0.0",
+    errorProne: '2.1.1',
 ]
 
 def apt = [
     androidApi: "com.ubercab.android:android:4.1.1.5",
     autoCommon: "com.google.auto:auto-common:0.8",
     autoService: "com.google.auto.service:auto-service:1.0-rc3",
+    nullAway: 'com.uber.nullaway:nullaway:0.1.4',
     daggerCompiler: "com.google.dagger:dagger-compiler:${versions.dagger}",
     javapoet: "com.squareup:javapoet:1.9.0",
     javax: "javax.annotation:jsr250-api:1.0",
@@ -34,6 +36,7 @@ def apt = [
     autoValue: "com.google.auto.value:auto-value:1.5",
     autoValueAnnotations: "com.jakewharton.auto.value:auto-value-annotations:1.5",
     raveCompiler: "com.uber:rave-compiler:${versions.rave}",
+    errorProneAnnotations: "com.google.errorprone:error_prone_annotations:${versions.errorProne}",
 ]
 
 def build = [
@@ -46,8 +49,10 @@ def build = [
     guava: "com.google.guava:guava:20.0",
     commonsLang: "commons-lang:commons-lang:2.6",
     intellijPlugin: "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.13",
+    errorProne: "com.google.errorprone:error_prone_core:${versions.errorProne}",
     gradlePlugins: [
         android: 'com.android.tools.build:gradle:2.3.1',
+        errorprone: 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
     ]
 ]
 

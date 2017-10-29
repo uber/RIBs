@@ -25,6 +25,8 @@ import com.uber.rib.root.RootBuilder;
 /** The sample app's single activity. */
 public class RootActivity extends RibActivity {
 
+  //public Object object;
+
   @SuppressWarnings("unchecked")
   @Override
   protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {

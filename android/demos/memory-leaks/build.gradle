@@ -17,34 +17,19 @@
 
 buildscript {
     repositories {
+        jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
     }
-}
-
-
-
-
-///// before
-
-
-buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.errorprone
     }
 }
 
-plugins {
-    // we assume you are already using the Java plugin
-    id "net.ltgt.apt" version "0.11"
-    id "net.ltgt.errorprone" version "0.0.11"
-}
-
-
-
-
 apply plugin: 'com.android.application'
+apply plugin: 'net.ltgt.errorprone'
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -57,9 +42,14 @@ android {
         versionCode 1
         versionName "1.0"
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
+    annotationProcessor deps.apt.nullAway
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-app")
     annotationProcessor project(":libraries:rib-compiler-test")
@@ -70,4 +60,31 @@ dependencies {
     compile 'com.android.support:percent:25.0.1'
     provided deps.apt.javax
     testCompile project(":libraries:rib-test-utils")
+    errorprone deps.build.errorProne
+}
+
+tasks.withType(JavaCompile) {
+    // remove the if condition if you want to run NullAway on test code
+    if (!name.toLowerCase().contains("test")) {
+        options.compilerArgs += [
+            "-Xep:NullAway:WARN",
+            "-XepOpt:NullAway:AnnotatedPackages=com.uber",
+            "-XepOpt:NullAway:KnownInitializers=com.uber.rib.core.Initializer",
+            "-XepOpt:NullAway:ExcludedFieldAnnotations=javax.inject.Inject",
+        ]
+    }
+    // Disable error prone checks I don't want.
+    options.compilerArgs += [
+            "-Xep:ReferenceEquality:OFF",
+            "-Xep:ShortCircuitBoolean:OFF",
+            "-Xep:MissingCasesInEnumSwitch:OFF",
+            "-Xep:CheckReturnValue:OFF",
+            "-Xep:InvalidPatternSyntax:OFF",
+            "-Xep:OperatorPrecedence:OFF",
+            "-Xep:DefaultCharset:OFF"]
+    // Dagger doesn't pass the NullAway checks. So we need to set NullAway to null
+    // use the following flag to disable nullaway on generated code.
+    options.compilerArgs += [
+            "-XepDisableWarningsInGeneratedCode"
+    ]
 }
