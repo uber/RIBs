@@ -49,7 +49,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor project(path: ":tooling:autodispose-error-prone-checker")
+    annotationProcessor project(":tooling:autodispose-error-prone-checker")
     annotationProcessor deps.apt.nullAway
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-app")
