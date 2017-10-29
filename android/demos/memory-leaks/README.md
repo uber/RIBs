@@ -30,4 +30,8 @@ RibRefWatcher.getInstance().setReferenceWatcher(new RibRefWatcher.ReferenceWatch
 });
 ```
 
+If you run the memory-leak demo app and enter a username you'll see the following message caused by the `LoggedOutInteractor` leak:
+
+<img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/leak_canary_small.png?raw=true" width="400">
+
 ## Static Leak Detection
