@@ -7,9 +7,9 @@ This demo shows off some memory leak tooling for RIBs.
 
 ## Leak Canary
 
-The `LoggedInInteractor` contains a bug that causes it to be retained in memory indefinately. This will cause memory leaks for both the `LoggedInInteractor` as well as the `RootActivity`. Normal usage of `LeakCanary` is succicient to detect the `RootActivity` leak. However, we want to know when RIBs leak as well since RIB apps have a lot more RIBs than Activities.
+The `LoggedInInteractor` contains a bug that causes it to be retained in memory indefinately. This will cause memory leaks for both the `LoggedInInteractor` as well as the `RootActivity`. Normal usage of `LeakCanary` is sufficient to detect the `RootActivity` leak. However, we want to know when RIBs leak as well since RIB apps have a lot more RIBs than Activities.
 
-We do this by adding the following code in `SampleApplication`. The RIB base classes don't have any compile time dependencies on LeakCanary. In order to integrate LeakCanary into RIBs you need to inject a `RibRefWatcher` interface into the RIBs library.
+We do this by adding the following code in `SampleApplication`. The RIB base classes don't have any compile dependencies on LeakCanary. Therefore in order to integrate LeakCanary into RIBs you need to inject a `RibRefWatcher` interface into the RIBs library.
 
 ```java
 final RefWatcher refWatcher = LeakCanary
@@ -45,6 +45,10 @@ error: [RxJavaMissingAutodisposeErrorChecker] Always apply an Autodispose scope 
     (see https://github.com/uber/RIBs/blob/memory_leaks_module/android/demos/memory-leaks/README.md)
 ```
 
-This check is written as an ErrorProne check. It is extremely fast and integrated directly into the compiler. Unfortunately this does mean it doesn't support Kotlin. Although a similar PSI lint could be quickly written.
+This check is written as an ErrorProne check. It is extremely fast and integrated directly into the compiler. Unfortunately this mean it doesn't support Kotlin :(
+
+We'd be happy to take a pull request for a PSI lint  :)
+
+## Additional Tools
 
 Additional leak detection checkers have been written for RIBs. They'll be open sourced in the future if there is interest.
