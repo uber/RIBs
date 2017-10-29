@@ -59,8 +59,7 @@ public class LoggedOutInteractor
         .subscribe(new Consumer<Long>() {
           @Override
           public void accept(Long aLong) throws Exception {
-            // This class is an inner class. It references the outer class.
-            // This can cause a memory leak.
+            listener.login("Really slow person.");
           }
         });
   }
