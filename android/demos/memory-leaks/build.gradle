@@ -14,11 +14,35 @@
  * limitations under the License.
  */
 
+
+buildscript {
+    repositories {
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+}
+
+
+
+
+///// before
+
+
 buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
     }
 }
+
+plugins {
+    // we assume you are already using the Java plugin
+    id "net.ltgt.apt" version "0.11"
+    id "net.ltgt.errorprone" version "0.0.11"
+}
+
+
+
 
 apply plugin: 'com.android.application'
 
