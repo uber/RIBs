@@ -18,4 +18,43 @@ package com.uber.rib;
 
 import android.app.Application;
 
-public class SampleApplication extends Application {}
+import com.squareup.leakcanary.LeakCanary;
+import com.squareup.leakcanary.RefWatcher;
+import com.uber.rib.core.RibRefWatcher;
+
+import java.util.concurrent.TimeUnit;
+
+public class SampleApplication extends Application {
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    if (!LeakCanary.isInAnalyzerProcess(this)) {
+      // This process is dedicated to LeakCanary for heap analysis. You should not init your app in this process.
+      installLeakCanary();
+    }
+  }
+
+  /**
+   * Install leak canary for both activities and RIBs.
+   */
+  private void installLeakCanary() {
+    final RefWatcher refWatcher = LeakCanary
+            .refWatcher(this)
+            .watchDelay(2, TimeUnit.SECONDS)
+            .buildAndInstall();
+    LeakCanary.install(this);
+    RibRefWatcher.getInstance().setReferenceWatcher(new RibRefWatcher.ReferenceWatcher() {
+      @Override
+      public void watch(Object object) {
+        refWatcher.watch(object);
+      }
+
+      @Override
+      public void logBreadcrumb(String eventType, String data, String parent) {
+        // Ignore for now. Useful for collecting production analytics.
+      }
+    });
+    RibRefWatcher.getInstance().enableLeakCanary();
+  }
+}

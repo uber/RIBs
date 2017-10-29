@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<manifest package="com.uber.rib.tutorial1"
+<manifest package="com.uber.rib.memory_leak"
           xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools">
 

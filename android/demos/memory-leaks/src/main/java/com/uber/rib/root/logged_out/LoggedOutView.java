@@ -22,7 +22,7 @@ import android.widget.LinearLayout;
 
 import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
-import com.uber.rib.tutorial1.R;
+import com.uber.rib.memory_leak.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
