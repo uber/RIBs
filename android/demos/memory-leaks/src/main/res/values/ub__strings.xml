@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">RIB Tutorial 3</string>
+    <string name="player_one_name">Player One Name</string>
+    <string name="player_two_name">Player Two Name</string>
+    <string name="login">Login</string>
+    <string name="start_game">Start game</string>
+    <string name="welcome_to_off_game">Welcome FakeName!</string>
+    <string name="win_count">win count</string>
+</resources>
