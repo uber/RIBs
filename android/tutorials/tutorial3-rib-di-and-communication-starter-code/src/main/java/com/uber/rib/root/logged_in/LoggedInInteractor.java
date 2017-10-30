@@ -38,13 +38,6 @@ public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRoute
 
   }
 
-  @Override
-  protected void willResignActive() {
-    super.willResignActive();
-
-    // TODO: Perform any required clean up here, or delete this method entirely if not needed.
-  }
-
   class OffGameListener implements OffGameInteractor.Listener {
 
     @Override
@@ -53,6 +46,4 @@ public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRoute
       getRouter().attachTicTacToe();
     }
   }
-
-
 }
