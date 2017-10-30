@@ -120,6 +120,8 @@ xcuserdata/
 
 # CocoaPods
 Pods/
+Podfile.lock
+*.xcworkspace/
 
 
 ### Other ###
