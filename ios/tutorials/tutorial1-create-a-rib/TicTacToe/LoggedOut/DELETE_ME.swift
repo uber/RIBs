@@ -24,9 +24,15 @@ protocol LoggedOutBuildable {
     func build(withListener: LoggedOutListener) -> ViewableRouting
 }
 
+class LoggedOutInteractor: Interactor {}
+
+class LoggedOutViewController: UIViewController, ViewControllable {
+    var uiviewController: UIViewController { return self }
+}
+
 class LoggedOutBuilder: LoggedOutBuildable {
     init(dependency: Any) {}
     func build(withListener: LoggedOutListener) -> ViewableRouting {
-        return ViewableRouter<Int, Int>(interactor: 0, viewController: 0)
+        return ViewableRouter<Interactable, ViewControllable>(interactor: LoggedOutInteractor(), viewController: LoggedOutViewController())
     }
 }
