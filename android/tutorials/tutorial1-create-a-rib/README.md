@@ -3,9 +3,7 @@
 ## Goal
 
 This tutorial aims to illustrate how to create a nearly empty RIB using the Android Studio template.
-Completing this tutorial should only take a few minutes. The app will look the following at the end.
-
-<img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/tutorial_1_screenshot.png?raw=true" width="400">
+Completing this tutorial should only take a few minutes.
 
 ## Exercise
 Let's create a logged out screen for a Tic Tac Toe game. In order to do this, 
@@ -15,6 +13,14 @@ we'll need to do the following:
 * Modify LoggedOutRIB to show Views and handle clicks
 
 This tutorial is mostly a matter of munging through boilerplate. This boilerplate will become useful as your flesh out larger applications and work farther through the tutorials. Fortunately for you, most of this boilerplate is generated for you.
+
+The app will look the following at the end.
+
+<img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/tutorial_1_screenshot.png?raw=true" width="400">
+
+The RIB tree will look like the following:
+
+<img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/tutorial1_rib_tree.png?raw=true" width="400">
 
 ## Steps
 ### Step 1
