@@ -3,7 +3,9 @@
 ## Goal
 
 This tutorial aims to illustrate how to create a nearly empty RIB using the Android Studio template.
-Completing this tutorial should only take a few minutes.
+Completing this tutorial should only take a few minutes. The app will look the following at the end.
+
+<img src="https://github.com/uber/RIBs/blob/assets/tutorial_assets/android/tutorial_1_screenshot.png?raw=true" width="400">
 
 ## Exercise
 Let's create a logged out screen for a Tic Tac Toe game. In order to do this, 
