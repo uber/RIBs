@@ -23,9 +23,12 @@ targetCompatibility = "1.8"
 dependencies {
     compile deps.build.errorProneCore
     compile deps.external.rxjava2
-    compileOnly deps.apt.autoService
+    compile deps.uber.autodispose
+    compile project(':libraries:rib-base')
+    errorprone "com.google.errorprone:error_prone_core:2.1.1"
 
-    errorprone deps.build.errorProne
+    compileOnly deps.apt.autoService
+    compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
     testCompile deps.test.junit
     testCompile(deps.build.errorProneTestHelpers) {

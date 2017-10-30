@@ -21,7 +21,7 @@ def versions = [
     robolectric: "3.4.2",
     intellij: "2017.2",
     rave: "2.0.0",
-    errorProne: '2.1.1',
+    errorProne: '2.0.19',
 ]
 
 def apt = [

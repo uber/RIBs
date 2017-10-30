@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.uber.checker.rx;
+package com.uber.errorprone.checker.rx;
 
 import com.google.errorprone.CompilationTestHelper;
 
