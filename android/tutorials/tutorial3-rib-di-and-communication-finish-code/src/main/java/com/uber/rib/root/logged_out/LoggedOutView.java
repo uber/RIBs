@@ -2,11 +2,17 @@ package com.uber.rib.root.logged_out;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.v4.util.Pair;
 import android.util.AttributeSet;
-import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.uber.rib.core.Initializer;
+import com.uber.rib.tutorial1.R;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+
 /*
  * Copyright (C) 2017. Uber Technologies
  *
@@ -22,13 +28,6 @@ import android.widget.LinearLayout;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-import android.widget.TextView;
-import com.jakewharton.rxbinding2.view.RxView;
-import com.uber.rib.core.Initializer;
-import com.uber.rib.tutorial1.R;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
 
 /**
  * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.

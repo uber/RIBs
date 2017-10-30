@@ -1,5 +1,6 @@
 package com.uber.rib.root;
 
+import com.uber.rib.root.logged_in.LoggedInBuilder;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 
 import org.junit.Before;
@@ -18,6 +19,11 @@ public class RootRouterTest {
   public void setup() {
     MockitoAnnotations.initMocks(this);
 
-    router = new RootRouter(view, interactor, component, new LoggedOutBuilder(component));
+    router = new RootRouter(
+        view,
+        interactor,
+        component,
+        new LoggedOutBuilder(component),
+        new LoggedInBuilder(component));
   }
 }
