@@ -1,12 +1,15 @@
-# RIB Xcode Templates
+# RIBs Xcode Templates
 
-We have created Xcode templates to generate RIBs scaffolding and test scaffolding, making RIB usage and adoption easier. The scaffolded classes have RIBs wired up, ready to add business logic to them.
+We have created Xcode templates to generate RIBs scaffolding and test scaffolding, making RIBs usage and adoption easier. The scaffolded classes have RIBs wired up, ready to add business logic to them.
 
 ### Generating RIB Classes
 
-After installing templates, RIBs can be added with the `New File...` command in Xcode.
-- [RIBName]Builder, [RIBName]Interactor, [RIBName]Router classes in all classes
--  and [RIBName]ViewController class
+After installing templates, RIBs can be added with the `New File...` command in Xcode. This will generate:
+
+- [RIBName]Builder
+- [RIBName]Interactor
+- [RIBName]Router
+- [RIBName]ViewController class (optional)
 
 RIBs can be generated with or without owning corresponding views.
 
