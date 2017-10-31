@@ -83,10 +83,9 @@ final class RandomWinViewController: UIViewController, RandomWinPresentable, Ran
         }
 
         button.rx.tap
-            .subscribe(
-                onNext: { [weak self] in
-                    self?.listener?.determineWinner()
-                })
+            .subscribe(onNext: { [weak self] in
+                self?.listener?.determineWinner()
+            })
             .disposed(by: disposeBag)
     }
 

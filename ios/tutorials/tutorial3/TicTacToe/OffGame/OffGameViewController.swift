@@ -57,11 +57,9 @@ final class OffGameViewController: UIViewController, OffGamePresentable, OffGame
         startButton.setTitleColor(UIColor.white, for: .normal)
         startButton.backgroundColor = UIColor.black
         startButton.rx.tap
-            .subscribe(
-                onNext: { [weak self] in
-                    self?.listener?.startGame()
-                }
-            )
+            .subscribe(onNext: { [weak self] in
+                self?.listener?.startGame()
+            })
             .disposed(by: disposeBag)
     }
 

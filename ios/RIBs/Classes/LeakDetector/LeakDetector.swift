@@ -13,6 +13,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+
 import RxSwift
 
 /// Leak detection status.
@@ -148,11 +149,11 @@ public class LeakDetector {
     static var disableLeakDetectorOverride: Bool = false
 
     #if DEBUG
-    /// Reset the state of Leak Detector, internal for UI test only.
-    func reset() {
-        trackingObjects.removeAllObjects()
-        expectationCount.value = 0
-    }
+        /// Reset the state of Leak Detector, internal for UI test only.
+        func reset() {
+            trackingObjects.removeAllObjects()
+            expectationCount.value = 0
+        }
     #endif
 
     // MARK: - Private Interface

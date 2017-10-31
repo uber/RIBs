@@ -18,7 +18,7 @@ import XCTest
 @testable import RIBs
 
 class RIBsTests: XCTestCase {
-    
+
     func test_example() {
     }
 }

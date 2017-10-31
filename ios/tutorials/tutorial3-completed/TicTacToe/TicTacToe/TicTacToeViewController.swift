@@ -48,7 +48,7 @@ final class TicTacToeViewController: UIViewController, TicTacToePresentable, Tic
 
     func setCell(atRow row: Int, col: Int, withPlayerType playerType: PlayerType) {
         let indexPathRow = row * GameConstants.colCount + col
-        let cell = collectionView.cellForItem(at: IndexPath(row: indexPathRow, section: Constants.sectionCount-1))
+        let cell = collectionView.cellForItem(at: IndexPath(row: indexPathRow, section: Constants.sectionCount - 1))
         cell?.backgroundColor = playerType.color
     }
 

@@ -13,6 +13,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+
 import RxSwift
 
 /// The base protocol of all workers that perform a self-contained piece of logic.
@@ -97,7 +98,7 @@ open class Worker: Working {
     ///
     /// - parameter interactorScope: The interactor scope this `Worker` is bound to.
     open func didStart(_ interactorScope: InteractorScope) {
-        
+
     }
 
     /// Stops the worker.

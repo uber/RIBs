@@ -33,4 +33,3 @@ final class TicTacToeRouter: ViewableRouter<TicTacToeInteractable, TicTacToeView
         interactor.router = self
     }
 }
-

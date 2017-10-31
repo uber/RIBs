@@ -54,7 +54,7 @@ final class OffGameBuilder: Builder<OffGameDependency>, OffGameBuildable {
         let viewController = OffGameViewController(games: games)
         let interactor = OffGameInteractor(presenter: viewController)
         interactor.listener = listener
-        
+
         let scoreBoardBuilder = BasicScoreBoardBuilder(dependency: component)
         let router = OffGameRouter(interactor: interactor,
                                    viewController: viewController,

@@ -80,10 +80,9 @@ final class LoggedOutViewController: UIViewController, LoggedOutPresentable, Log
         loginButton.setTitleColor(UIColor.white, for: .normal)
         loginButton.backgroundColor = UIColor.black
         loginButton.rx.tap
-            .subscribe(
-                onNext: { [weak self] in
-                    self?.listener?.login(withPlayer1Name: player1Field.text, player2Name: player2Field.text)
-                })
+            .subscribe(onNext: { [weak self] in
+                self?.listener?.login(withPlayer1Name: player1Field.text, player2Name: player2Field.text)
+            })
             .disposed(by: disposeBag)
     }
 

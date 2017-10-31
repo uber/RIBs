@@ -70,7 +70,7 @@ final class LoggedInInteractor: Interactor, LoggedInInteractable {
         }
         router?.routeToOffGame()
     }
-    
+
     private let mutableScoreStream: MutableScoreStream
 
 }
