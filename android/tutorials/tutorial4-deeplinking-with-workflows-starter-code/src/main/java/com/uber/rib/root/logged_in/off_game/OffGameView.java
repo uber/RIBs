@@ -19,13 +19,20 @@ package com.uber.rib.root.logged_in.off_game;
 import android.content.Context;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
-import com.uber.rib.tutorial1.R;
+import com.uber.rib.root.logged_in.GameKey;
+import com.uber.rib.tutorial4.R;
+
 import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -33,7 +40,6 @@ import java.util.Locale;
  */
 class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
 
-  private Button button;
   private TextView playerOneName;
   private TextView playerTwoName;
   private TextView playerOneScore;
@@ -55,7 +61,6 @@ class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePrese
   @Override
   protected void onFinishInflate() {
     super.onFinishInflate();
-    button = (Button) findViewById(R.id.start_game_button);
     playerOneName = (TextView) findViewById(R.id.player_one_name);
     playerTwoName = (TextView) findViewById(R.id.player_two_name);
     playerOneScore = (TextView) findViewById(R.id.player_one_win_count);
@@ -77,7 +82,22 @@ class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePrese
   }
 
   @Override
-  public Observable<Object> startGameRequest() {
-    return RxView.clicks(button);
+  public Observable<GameKey> startGameRequest(List<? extends GameKey> gameKeys) {
+    List<Observable<GameKey>> observables = new ArrayList<>();
+    for (final GameKey gameKey : gameKeys) {
+      Button button = (Button) LayoutInflater.from(getContext()).inflate(R.layout.game_button, this, false);
+      button.setText(gameKey.gameName());
+      Observable<GameKey> observable = RxView
+          .clicks(button)
+          .map(new Function<Object, GameKey>() {
+            @Override
+            public GameKey apply(Object o) throws Exception {
+              return gameKey;
+            }
+          });
+      observables.add(observable);
+      addView(button);
+    }
+    return Observable.merge(observables);
   }
 }

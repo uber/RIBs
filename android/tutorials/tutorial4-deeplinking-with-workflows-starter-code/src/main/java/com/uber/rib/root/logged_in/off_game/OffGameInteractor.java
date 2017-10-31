@@ -22,7 +22,11 @@ import com.uber.autodispose.ObservableScoper;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.logged_in.GameKey;
 import com.uber.rib.root.logged_in.ScoreStream;
+
+import java.util.List;
+
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import javax.inject.Inject;
@@ -40,6 +44,7 @@ public class OffGameInteractor
   @Inject Listener listener;
   @Inject OffGamePresenter presenter;
   @Inject ScoreStream scoreStream;
+  @Inject List<? extends GameKey> gameNames;
 
 
   @Override
@@ -48,11 +53,11 @@ public class OffGameInteractor
 
     presenter.setPlayerNames(playerOne, playerTwo);
     presenter
-        .startGameRequest()
-        .subscribe(new Consumer<Object>() {
+        .startGameRequest(gameNames)
+        .subscribe(new Consumer<GameKey>() {
           @Override
-          public void accept(Object object) throws Exception {
-            listener.onStartGame();
+          public void accept(GameKey gameKey) throws Exception {
+            listener.onStartGame(gameKey);
           }
         });
 
@@ -71,7 +76,7 @@ public class OffGameInteractor
 
   public interface Listener {
 
-    void onStartGame();
+    void onStartGame(GameKey gameKey);
   }
 
   /**
@@ -83,6 +88,6 @@ public class OffGameInteractor
 
     void setScores(Integer playerOneScore, Integer playerTwoScore);
 
-    Observable<Object> startGameRequest();
+    Observable<GameKey> startGameRequest(List<? extends GameKey> gameKeys);
   }
 }

@@ -16,20 +16,28 @@
 
 package com.uber.rib.root.logged_in;
 
+import android.view.ViewGroup;
+
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
+import com.google.common.collect.Lists;
 import com.uber.rib.core.Builder;
 import com.uber.rib.core.EmptyPresenter;
 import com.uber.rib.core.InteractorBaseComponent;
+import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.RootView;
 import com.uber.rib.root.logged_in.off_game.OffGameBuilder;
 import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
+import com.uber.rib.root.logged_in.random_winner.RandomWinnerBuilder;
+import com.uber.rib.root.logged_in.random_winner.RandomWinnerInteractor;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeBuilder;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeInteractor;
 import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
 import java.lang.annotation.Retention;
+import java.util.List;
+
 import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
@@ -100,14 +108,55 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
     }
 
     @LoggedInScope
+    @Binds
+    abstract RandomWinnerInteractor.Listener randomWinnerListener(LoggedInInteractor.GameListener listener);
+
+    @LoggedInScope
+    @Binds
+    abstract TicTacToeInteractor.Listener ticTacToeGameListener(LoggedInInteractor.GameListener listener);
+
+    @LoggedInScope
     @Provides
-    static TicTacToeInteractor.Listener ticTacToeListener(LoggedInInteractor interactor) {
-      return interactor.new TicTacToeListener();
+    static LoggedInInteractor.GameListener ticTacToeListener(LoggedInInteractor interactor) {
+      return interactor.new GameListener();
     }
 
     @LoggedInScope
     @Binds
     abstract ScoreStream scoreStream(@LoggedInInternal MutableScoreStream mutableScoreStream);
+
+    @LoggedInInternal
+    @Provides
+    static List<GameProvider> gameProviders(final Component component) {
+      // Decorate the game builders with a "name" key so we can treat them generically elsewhere.
+      GameProvider ticTacToeGame = new GameProvider() {
+        @Override
+        public String gameName() {
+          return "TicTacToe";
+        }
+
+        @Override
+        public ViewRouter viewRouter(ViewGroup viewGroup) {
+          return new TicTacToeBuilder(component).build(viewGroup);
+        }
+      };
+      GameProvider randomWinnerGame = new GameProvider() {
+        @Override
+        public String gameName() {
+          return "RandomWinner";
+        }
+
+        @Override
+        public ViewRouter viewRouter(ViewGroup viewGroup) {
+          return new RandomWinnerBuilder(component).build(viewGroup);
+        }
+      };
+      return Lists.newArrayList(ticTacToeGame, randomWinnerGame);
+    }
+
+    @LoggedInScope
+    @Binds
+    abstract List<? extends GameKey> gameKeys(@LoggedInInternal List<GameProvider> gameProviders);
   }
 
   @LoggedInScope
@@ -116,7 +165,8 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
       extends InteractorBaseComponent<LoggedInInteractor>,
       BuilderComponent,
       OffGameBuilder.ParentComponent,
-      TicTacToeBuilder.ParentComponent {
+      TicTacToeBuilder.ParentComponent,
+      RandomWinnerBuilder.ParentComponent {
 
     @dagger.Component.Builder
     interface Builder {

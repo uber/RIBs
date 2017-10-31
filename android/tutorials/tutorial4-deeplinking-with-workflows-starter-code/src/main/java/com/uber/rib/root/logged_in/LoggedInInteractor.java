@@ -21,8 +21,14 @@ import com.uber.rib.core.Bundle;
 import com.uber.rib.core.EmptyPresenter;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.logged_in.LoggedInBuilder.LoggedInInternal;
 import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
+import com.uber.rib.root.logged_in.random_winner.RandomWinnerInteractor;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeInteractor;
+
+import java.util.List;
+import java.util.Objects;
+
 import javax.inject.Inject;
 
 /**
@@ -31,7 +37,8 @@ import javax.inject.Inject;
 @RibInteractor
 public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRouter> {
 
-  @Inject @LoggedInBuilder.LoggedInInternal MutableScoreStream scoreStream;
+  @Inject @LoggedInInternal MutableScoreStream scoreStream;
+  @Inject @LoggedInInternal List<GameProvider> gameProviders;
 
   @Override
   protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
@@ -42,23 +49,20 @@ public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRoute
 
   }
 
-  @Override
-  protected void willResignActive() {
-    super.willResignActive();
-
-    // TODO: Perform any required clean up here, or delete this method entirely if not needed.
-  }
-
   class OffGameListener implements OffGameInteractor.Listener {
 
     @Override
-    public void onStartGame() {
+    public void onStartGame(GameKey gameKey) {
       getRouter().detachOffGame();
-      getRouter().attachTicTacToe();
+      for (GameProvider gameProvider : gameProviders) {
+        if (gameProvider.gameName().equals(gameKey.gameName())) {
+          getRouter().attachGame(gameProvider);
+        }
+      }
     }
   }
 
-  class TicTacToeListener implements TicTacToeInteractor.Listener {
+  class GameListener implements TicTacToeInteractor.Listener, RandomWinnerInteractor.Listener {
 
     @Override
     public void gameWon(@Nullable String winner) {
@@ -66,7 +70,7 @@ public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRoute
         scoreStream.addVictory(winner);
       }
 
-      getRouter().detachTicTacToe();
+      getRouter().detachGame();
       getRouter().attachOffGame();
     }
   }

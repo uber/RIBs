@@ -26,7 +26,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
-import com.uber.rib.tutorial1.R;
+import com.uber.rib.tutorial4.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
