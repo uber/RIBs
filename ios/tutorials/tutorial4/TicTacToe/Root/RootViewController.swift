@@ -25,9 +25,6 @@ protocol RootPresentableListener: class {
 }
 
 final class RootViewController: UIViewController, RootPresentable, RootViewControllable {
-    var uiviewController: UIViewController {
-        return self
-    }
 
     weak var listener: RootPresentableListener?
 

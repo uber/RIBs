@@ -25,9 +25,6 @@ protocol RandomWinPresentableListener: class {
 }
 
 final class RandomWinViewController: UIViewController, RandomWinPresentable, RandomWinViewControllable {
-    var uiviewController: UIViewController {
-        return self
-    }
 
     weak var listener: RandomWinPresentableListener?
 

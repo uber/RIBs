@@ -25,9 +25,6 @@ protocol LoggedOutPresentableListener: class {
 }
 
 final class LoggedOutViewController: UIViewController, LoggedOutPresentable, LoggedOutViewControllable {
-    var uiviewController: UIViewController {
-        return self
-    }
 
     weak var listener: LoggedOutPresentableListener?
 
