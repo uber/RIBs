@@ -13,6 +13,7 @@ public class LoggedInInteractorTest extends RibTestBasePlaceholder {
 
     @Mock EmptyPresenter presenter;
     @Mock LoggedInRouter router;
+    @Mock MutableScoreStream scoreStream;
 
     private LoggedInInteractor interactor;
 
@@ -20,19 +21,6 @@ public class LoggedInInteractorTest extends RibTestBasePlaceholder {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        interactor = TestLoggedInInteractor.create();
+        interactor = TestLoggedInInteractor.create(scoreStream);
     }
-
-    /**
-     * TODO: Delete this example and add real tests.
-     */
-//    @Test
-//    public void anExampleTest_withSomeConditions_shouldPass() {
-//        // Use InteractorHelper to drive your interactor's lifecycle.
-//        InteractorHelper.attach(interactor, presenter, router, null);
-//        InteractorHelper.detach(interactor);
-//
-//        throw new RuntimeException("Remove this test and add real tests.");
-//    }
-
 }

@@ -3,6 +3,7 @@ package com.uber.rib.root.logged_in.off_game;
 import com.uber.rib.core.RibTestBasePlaceholder;
 import com.uber.rib.core.InteractorHelper;
 
+import com.uber.rib.root.logged_in.ScoreStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -10,8 +11,15 @@ import org.mockito.MockitoAnnotations;
 
 public class OffGameInteractorTest extends RibTestBasePlaceholder {
 
+    private final String playerOne = "playerOne";
+    private final String playerTwo = "playerTwo";
+
+    @Mock OffGameInteractor.Listener listener;
     @Mock OffGameInteractor.OffGamePresenter presenter;
     @Mock OffGameRouter router;
+    @Mock ScoreStream scoreStream;
+
+
 
     private OffGameInteractor interactor;
 
@@ -19,19 +27,11 @@ public class OffGameInteractorTest extends RibTestBasePlaceholder {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        interactor = TestOffGameInteractor.create(presenter);
+        interactor = TestOffGameInteractor.create(
+            playerOne,
+            playerTwo,
+            listener,
+            presenter,
+            scoreStream);
     }
-
-    /**
-     * TODO: Delete this example and add real tests.
-     */
-    @Test
-    public void anExampleTest_withSomeConditions_shouldPass() {
-        // Use InteractorHelper to drive your interactor's lifecycle.
-        InteractorHelper.attach(interactor, presenter, router, null);
-        InteractorHelper.detach(interactor);
-
-        throw new RuntimeException("Remove this test and add real tests.");
-    }
-
 }

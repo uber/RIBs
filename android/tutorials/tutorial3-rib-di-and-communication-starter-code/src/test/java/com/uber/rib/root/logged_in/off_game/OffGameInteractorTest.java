@@ -10,6 +10,7 @@ import org.mockito.MockitoAnnotations;
 
 public class OffGameInteractorTest extends RibTestBasePlaceholder {
 
+    @Mock OffGameInteractor.Listener listener;
     @Mock OffGameInteractor.OffGamePresenter presenter;
     @Mock OffGameRouter router;
 
@@ -19,19 +20,6 @@ public class OffGameInteractorTest extends RibTestBasePlaceholder {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        interactor = TestOffGameInteractor.create(presenter);
+        interactor = TestOffGameInteractor.create(listener, presenter);
     }
-
-    /**
-     * TODO: Delete this example and add real tests.
-     */
-    @Test
-    public void anExampleTest_withSomeConditions_shouldPass() {
-        // Use InteractorHelper to drive your interactor's lifecycle.
-        InteractorHelper.attach(interactor, presenter, router, null);
-        InteractorHelper.detach(interactor);
-
-        throw new RuntimeException("Remove this test and add real tests.");
-    }
-
 }

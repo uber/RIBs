@@ -10,6 +10,11 @@ import org.mockito.MockitoAnnotations;
 
 public class TicTacToeInteractorTest extends RibTestBasePlaceholder {
 
+    private final String playerOne = "playerOne";
+    private final String playerTwo = "playerTwo";
+
+    @Mock Board board;
+    @Mock TicTacToeInteractor.Listener listener;
     @Mock TicTacToeInteractor.TicTacToePresenter presenter;
     @Mock TicTacToeRouter router;
 
@@ -19,19 +24,11 @@ public class TicTacToeInteractorTest extends RibTestBasePlaceholder {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        interactor = TestTicTacToeInteractor.create(presenter);
+        interactor = TestTicTacToeInteractor.create(
+            board,
+            listener,
+            presenter,
+            playerOne,
+            playerTwo);
     }
-
-    /**
-     * TODO: Delete this example and add real tests.
-     */
-    @Test
-    public void anExampleTest_withSomeConditions_shouldPass() {
-        // Use InteractorHelper to drive your interactor's lifecycle.
-        InteractorHelper.attach(interactor, presenter, router, null);
-        InteractorHelper.detach(interactor);
-
-        throw new RuntimeException("Remove this test and add real tests.");
-    }
-
 }
