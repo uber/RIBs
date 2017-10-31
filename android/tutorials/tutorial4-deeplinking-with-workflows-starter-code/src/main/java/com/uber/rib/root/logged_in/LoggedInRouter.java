@@ -70,8 +70,8 @@ public class LoggedInRouter
 
   void attachGame(GameProvider gameProvider) {
     gameRouter = gameProvider.viewRouter(parentView);
-    attachChild(gameRouter);
     parentView.addView(gameRouter.getView());
+    attachChild(gameRouter);
   }
 
   void detachGame() {
