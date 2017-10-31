@@ -20,3 +20,11 @@ public protocol ViewControllable: class {
 
     var uiviewController: UIViewController { get }
 }
+
+/// Default implementation on `UIViewController` to conform to `ViewControllable` protocol
+public extension ViewControllable where Self: UIViewController {
+    
+    var uiviewController: UIViewController {
+        return self
+    }
+}
