@@ -25,7 +25,7 @@ import com.uber.rib.core.ViewBuilder;
 import com.uber.rib.root.logged_in.LoggedInBuilder;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutInteractor;
-import com.uber.rib.tutorial1.R;
+import com.uber.rib.tutorial4.R;
 import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;

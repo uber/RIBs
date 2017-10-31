@@ -22,12 +22,15 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.core.ViewBuilder;
+import com.uber.rib.root.logged_in.GameKey;
 import com.uber.rib.root.logged_in.ScoreStream;
-import com.uber.rib.tutorial1.R;
+import com.uber.rib.tutorial4.R;
 import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
 import java.lang.annotation.Retention;
+import java.util.List;
+
 import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
@@ -65,14 +68,11 @@ public class OffGameBuilder
   }
 
   public interface ParentComponent {
-
     @Named("player_one") String playerOne();
-
     @Named("player_two") String playerTwo();
-
     OffGameInteractor.Listener listener();
-
     ScoreStream scoreStream();
+    List<? extends GameKey> gameKeys();
   }
 
   @dagger.Module
@@ -113,19 +113,14 @@ public class OffGameBuilder
   }
 
   interface BuilderComponent {
-
     OffGameRouter offgameRouter();
   }
 
   @Scope
   @Retention(CLASS)
-  @interface OffGameScope {
-
-  }
+  @interface OffGameScope { }
 
   @Qualifier
   @Retention(CLASS)
-  @interface OffGameInternal {
-
-  }
+  @interface OffGameInternal { }
 }

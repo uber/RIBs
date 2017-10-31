@@ -22,7 +22,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.core.ViewBuilder;
-import com.uber.rib.tutorial1.R;
+import com.uber.rib.tutorial4.R;
 import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;

@@ -18,10 +18,10 @@ package com.uber.rib.root.logged_in;
 
 import android.view.ViewGroup;
 import com.uber.rib.core.Router;
+import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.logged_in.off_game.OffGameBuilder;
 import com.uber.rib.root.logged_in.off_game.OffGameRouter;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeBuilder;
-import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeRouter;
 
 /**
  * Adds and removes children of {@link LoggedInBuilder.LoggedInScope}.
@@ -33,7 +33,7 @@ public class LoggedInRouter
   private final OffGameBuilder offGameBuilder;
   private final TicTacToeBuilder ticTacToeBuilder;
   private OffGameRouter offGameRouter;
-  private TicTacToeRouter ticTacToeRouter;
+  private ViewRouter gameRouter;
 
   LoggedInRouter(
       LoggedInInteractor interactor,
@@ -51,7 +51,7 @@ public class LoggedInRouter
   protected void willDetach() {
     super.willDetach();
     detachOffGame();
-    detachTicTacToe();
+    detachGame();
   }
 
   void attachOffGame() {
@@ -68,17 +68,17 @@ public class LoggedInRouter
     }
   }
 
-  void attachTicTacToe() {
-    ticTacToeRouter = ticTacToeBuilder.build(parentView);
-    attachChild(ticTacToeRouter);
-    parentView.addView(ticTacToeRouter.getView());
+  void attachGame(GameProvider gameProvider) {
+    gameRouter = gameProvider.viewRouter(parentView);
+    attachChild(gameRouter);
+    parentView.addView(gameRouter.getView());
   }
 
-  void detachTicTacToe() {
-    if (ticTacToeRouter != null) {
-      detachChild(ticTacToeRouter);
-      parentView.removeView(ticTacToeRouter.getView());
-      ticTacToeRouter = null;
+  void detachGame() {
+    if (gameRouter != null) {
+      detachChild(gameRouter);
+      parentView.removeView(gameRouter.getView());
+      gameRouter = null;
     }
   }
 }
