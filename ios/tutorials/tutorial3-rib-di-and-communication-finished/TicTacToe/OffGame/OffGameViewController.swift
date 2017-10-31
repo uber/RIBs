@@ -25,9 +25,6 @@ protocol OffGamePresentableListener: class {
 }
 
 final class OffGameViewController: UIViewController, OffGamePresentable, OffGameViewControllable {
-    var uiviewController: UIViewController {
-        return self
-    }
 
     weak var listener: OffGamePresentableListener?
 

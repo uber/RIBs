@@ -27,7 +27,6 @@ protocol LoggedOutBuildable {
 class LoggedOutInteractor: Interactor {}
 
 class LoggedOutViewController: UIViewController, ViewControllable {
-    var uiviewController: UIViewController { return self }
 }
 
 class LoggedOutBuilder: LoggedOutBuildable {

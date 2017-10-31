@@ -23,9 +23,6 @@ protocol TicTacToePresentableListener: class {
 }
 
 final class TicTacToeViewController: UIViewController, TicTacToePresentable, TicTacToeViewControllable {
-    var uiviewController: UIViewController {
-        return self
-    }
 
     weak var listener: TicTacToePresentableListener?
 
