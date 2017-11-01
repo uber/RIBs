@@ -22,6 +22,7 @@ import com.uber.autodispose.ObservableScoper;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.UserName;
 import com.uber.rib.root.logged_in.GameKey;
 import com.uber.rib.root.logged_in.ScoreStream;
 
@@ -32,15 +33,12 @@ import io.reactivex.functions.Consumer;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- * Coordinates Business Logic for {@link OffGameScope}.
- */
 @RibInteractor
 public class OffGameInteractor
     extends Interactor<OffGameInteractor.OffGamePresenter, OffGameRouter> {
 
-  @Inject @Named("player_one") String playerOne;
-  @Inject @Named("player_two") String playerTwo;
+  @Inject @Named("player_one") UserName playerOne;
+  @Inject @Named("player_two") UserName playerTwo;
   @Inject Listener listener;
   @Inject OffGamePresenter presenter;
   @Inject ScoreStream scoreStream;
@@ -51,7 +49,7 @@ public class OffGameInteractor
   protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
     super.didBecomeActive(savedInstanceState);
 
-    presenter.setPlayerNames(playerOne, playerTwo);
+    presenter.setPlayerNames(playerOne.getUserName(), playerTwo.getUserName());
     presenter
         .startGameRequest(gameNames)
         .subscribe(new Consumer<GameKey>() {
@@ -62,10 +60,10 @@ public class OffGameInteractor
         });
 
     scoreStream.scores()
-        .to(new ObservableScoper<ImmutableMap<String, Integer>>(this))
-        .subscribe(new Consumer<ImmutableMap<String,Integer>>() {
+        .to(new ObservableScoper<ImmutableMap<UserName, Integer>>(this))
+        .subscribe(new Consumer<ImmutableMap<UserName,Integer>>() {
           @Override
-          public void accept(ImmutableMap<String, Integer> scores)
+          public void accept(ImmutableMap<UserName, Integer> scores)
               throws Exception {
             Integer playerOneScore = scores.get(playerOne);
             Integer playerTwoScore = scores.get(playerTwo);

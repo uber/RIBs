@@ -21,6 +21,7 @@ import android.util.Pair;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.UserName;
 import com.uber.rib.root.logged_out.LoggedOutBuilder.LoggedOutScope;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -45,7 +46,7 @@ public class LoggedOutInteractor
           @Override
           public void accept(Pair<String, String> names) throws Exception {
             if (!isEmpty(names.first) && !isEmpty(names.second)) {
-              listener.requestLogin(names.first, names.second);
+              listener.requestLogin(UserName.create(names.first), UserName.create(names.second));
             }
           }
         });
@@ -65,7 +66,7 @@ public class LoggedOutInteractor
 
   public interface Listener {
 
-    void requestLogin(String playerOne, String playerTwo);
+    void requestLogin(UserName playerOne, UserName playerTwo);
   }
 
 }

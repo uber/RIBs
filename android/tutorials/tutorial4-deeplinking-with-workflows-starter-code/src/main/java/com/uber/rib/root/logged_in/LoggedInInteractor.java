@@ -21,6 +21,7 @@ import com.uber.rib.core.Bundle;
 import com.uber.rib.core.EmptyPresenter;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.UserName;
 import com.uber.rib.root.logged_in.LoggedInBuilder.LoggedInInternal;
 import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
 import com.uber.rib.root.logged_in.random_winner.RandomWinnerInteractor;
@@ -35,7 +36,9 @@ import javax.inject.Inject;
  * Coordinates Business Logic for {@link LoggedInScope}.
  */
 @RibInteractor
-public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRouter> {
+public class LoggedInInteractor
+    extends Interactor<EmptyPresenter, LoggedInRouter>
+    implements LoggedInActionableItem {
 
   @Inject @LoggedInInternal MutableScoreStream scoreStream;
   @Inject @LoggedInInternal List<GameProvider> gameProviders;
@@ -65,7 +68,7 @@ public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRoute
   class GameListener implements TicTacToeInteractor.Listener, RandomWinnerInteractor.Listener {
 
     @Override
-    public void gameWon(@Nullable String winner) {
+    public void gameWon(UserName winner) {
       if (winner != null) {
         scoreStream.addVictory(winner);
       }

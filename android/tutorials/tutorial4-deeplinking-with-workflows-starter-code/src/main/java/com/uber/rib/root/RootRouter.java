@@ -18,8 +18,12 @@ package com.uber.rib.root;
 
 import android.support.annotation.Nullable;
 
+import com.jakewharton.rxrelay2.BehaviorRelay;
+import com.uber.rib.core.Optional;
 import com.uber.rib.core.ViewRouter;
+import com.uber.rib.root.logged_in.LoggedInActionableItem;
 import com.uber.rib.root.logged_in.LoggedInBuilder;
+import com.uber.rib.root.logged_in.LoggedInRouter;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutRouter;
 
@@ -31,6 +35,9 @@ public class RootRouter extends ViewRouter<RootView, RootInteractor, RootBuilder
   private final LoggedOutBuilder loggedOutBuilder;
   private final LoggedInBuilder loggedInBuilder;
   @Nullable private LoggedOutRouter loggedOutRouter;
+
+  private final BehaviorRelay<Optional<LoggedInActionableItem>> loggedInActionableItemRelay =
+      BehaviorRelay.create();
 
   RootRouter(
       RootView view,
@@ -57,7 +64,12 @@ public class RootRouter extends ViewRouter<RootView, RootInteractor, RootBuilder
     }
   }
 
-  void attachLoggedIn(String playerOne, String playerTwo) {
-    attachChild(loggedInBuilder.build(playerOne, playerTwo));
+  LoggedInActionableItem attachLoggedIn(UserName playerOne, UserName playerTwo) {
+    // No need to attach views in any way.
+    LoggedInRouter loggedInRouter = loggedInBuilder.build(playerOne, playerTwo);
+    attachChild(loggedInRouter);
+    loggedInActionableItemRelay.accept(
+        Optional.<LoggedInActionableItem>of(loggedInRouter.getInteractor()));
+    return loggedInRouter.getInteractor();
   }
 }

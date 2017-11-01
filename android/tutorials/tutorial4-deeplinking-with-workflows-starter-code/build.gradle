@@ -36,14 +36,19 @@ android {
 }
 
 dependencies {
+    annotationProcessor deps.apt.autoValue
+    annotationProcessor deps.apt.raveCompiler
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-app")
     annotationProcessor project(":libraries:rib-compiler-test")
     compile project(":libraries:rib-android")
+    compile project(":libraries:rib-workflow")
     compile deps.external.dagger
     compile deps.external.rxbinding
+    compile deps.uber.rave
     compile 'com.android.support:percent:25.0.1'
     compile 'com.google.guava:guava:11.0.2'
     provided deps.apt.javax
+    provided deps.apt.autoValueAnnotations
     testCompile project(":libraries:rib-test-utils")
 }

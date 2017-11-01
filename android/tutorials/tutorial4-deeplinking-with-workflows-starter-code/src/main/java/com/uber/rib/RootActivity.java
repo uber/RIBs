@@ -16,19 +16,66 @@
 
 package com.uber.rib;
 
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 
+import com.uber.autodispose.SingleScoper;
+import com.uber.rave.Rave;
+import com.uber.rave.RaveException;
+import com.uber.rib.core.Optional;
 import com.uber.rib.core.RibActivity;
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.RootBuilder;
+import com.uber.rib.root.RootInteractor;
+import com.uber.rib.root.RootRouter;
+import com.uber.rib.root.RootWorkflow;
+import com.uber.rib.root.WorkflowFactory;
+
+import javax.annotation.Nullable;
+
+import io.reactivex.functions.Consumer;
 
 /** The sample app's single activity. */
 public class RootActivity extends RibActivity {
+
+  private RootInteractor rootInteractor;
 
   @SuppressWarnings("unchecked")
   @Override
   protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {
     RootBuilder rootBuilder = new RootBuilder(new RootBuilder.ParentComponent() {});
-    return rootBuilder.build(parentViewGroup);
+    RootRouter router = rootBuilder.build(parentViewGroup);
+    rootInteractor = router.getInteractor();
+    return router;
+  }
+
+  @Override
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    if (getIntent() != null) {
+      handleDeepLink(getIntent());
+    }
+  }
+
+  private void handleDeepLink(Intent intent) {
+    RootWorkflow<?, ?> rootWorkflow = new WorkflowFactory().getWorkflow(intent);
+    if (rootWorkflow != null) {
+      try {
+        Rave.getInstance().validate(rootWorkflow.getDeepLinkModel());
+
+        rootWorkflow
+            .createSingle(rootInteractor)
+            .to(new SingleScoper<Optional<?>>(this))
+            .subscribe(
+                new Consumer<Optional<?>>() {
+                  @Override
+                  public void accept(Optional<?> optional) throws Exception {}
+                });
+      } catch (RaveException exception) {
+        Log.e("RootActivity", "Invalid deep link model received.", exception);
+      }
+    }
   }
 }

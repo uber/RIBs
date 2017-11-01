@@ -18,22 +18,24 @@ package com.uber.rib.root.logged_in;
 
 import com.google.common.collect.ImmutableMap;
 import com.jakewharton.rxrelay2.BehaviorRelay;
+import com.uber.rib.root.UserName;
+
 import io.reactivex.Observable;
 import java.util.Map;
 
 class MutableScoreStream implements ScoreStream {
 
-  private final BehaviorRelay<ImmutableMap<String, Integer>> scoresRelay = BehaviorRelay.create();
+  private final BehaviorRelay<ImmutableMap<UserName, Integer>> scoresRelay = BehaviorRelay.create();
 
-  MutableScoreStream(String playerOne, String playerTwo) {
+  MutableScoreStream(UserName playerOne, UserName playerTwo) {
     scoresRelay.accept(ImmutableMap.of(playerOne, 0, playerTwo, 0));
   }
 
-  void addVictory(String userName) {
-    ImmutableMap<String, Integer> currentScores = scoresRelay.getValue();
+  void addVictory(UserName userName) {
+    ImmutableMap<UserName, Integer> currentScores = scoresRelay.getValue();
 
-    ImmutableMap.Builder<String, Integer> newScoreMapBuilder = new ImmutableMap.Builder<>();
-    for (Map.Entry<String, Integer> entry : currentScores.entrySet()) {
+    ImmutableMap.Builder<UserName, Integer> newScoreMapBuilder = new ImmutableMap.Builder<>();
+    for (Map.Entry<UserName, Integer> entry : currentScores.entrySet()) {
       if (entry.getKey().equals(userName)) {
         newScoreMapBuilder.put(entry.getKey(), entry.getValue() + 1);
       } else {
@@ -45,7 +47,7 @@ class MutableScoreStream implements ScoreStream {
   }
 
   @Override
-  public Observable<ImmutableMap<String, Integer>> scores() {
+  public Observable<ImmutableMap<UserName, Integer>> scores() {
     return scoresRelay.hide();
   }
 }
