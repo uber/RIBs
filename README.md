@@ -14,14 +14,16 @@ The RIBs architecture provides:
 
 
 ## Documentation
-Refer to the [RIBs documentation](https://github.com/uber/RIBs/wiki) to get acquainted with key concepts and tutorials that run you through the all aspects of the architecture.
+To get started with RIBs, please refer to the [RIBs documentation](https://github.com/uber/RIBs/wiki). This describes key concepts on RIBs, from what they are for, their structure and common use cases.
 
+To get more hands on with RIBs, we have written a [series of tutorials](https://github.com/uber/RIBs/wiki) that run you through the main aspects of the architecture with hands-on examples.
 
 ## Usage
 
 1. Clone this repository 
 2. Integrate using your preferred installation mechanism
 
+For usage of the tooling built around RIBs, please see the [Tooling section](https://github.com/uber/RIBs/wiki#rib-tooling) in our documentation.
 
 ## Installation for Android
 
@@ -55,9 +57,9 @@ github "uber/RIBs" ~> 0.1
 
 We'd love for you to contribute to our open source projects. Before we can accept your contributions, we kindly ask you to sign our [Uber Contributor License Agreement](https://docs.google.com/a/uber.com/forms/d/1pAwS_-dA1KhPlfxzYLBqK6rsSWwRwH95OCCZrcsY5rk/viewform).
 
-- If you **find a bug**, open an issue or submit a fix via a pull request.
-- If you **have a feature request**, open an issue or submit an implementation via a pull request
-- If you **want to contribute**, submit a pull request.
+- If you **find a bug**, please open an issue or submit a fix via a pull request.
+- If you **have a feature request**, please open an issue or submit an implementation via a pull request
+- If you **want to contribute**, please submit a pull request.
 
 ## License
 
