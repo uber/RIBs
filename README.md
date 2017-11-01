@@ -4,7 +4,7 @@
 
 [![Build Status](https://travis-ci.org/uber/ios-template.svg?branch=master)](https://travis-ci.org/uber/ios-template)
 
-RIBs is the cross-platform architecture behind many mobile apps at Uber. It was designed for large mobile applications with lots of volatile, server driven state, as well as large number of engineers working on one codebase.
+RIBs is the cross-platform architecture behind many mobile apps at Uber. This framework is designed for mobile apps with a large number of engineers and nested states.
 
 The RIBs architecture provides:
 * **Shared architecture across iOS and Android.** Build cross-platform apps that have similar architecture, enabling iOS and Android teams to cross-review business logic code.
