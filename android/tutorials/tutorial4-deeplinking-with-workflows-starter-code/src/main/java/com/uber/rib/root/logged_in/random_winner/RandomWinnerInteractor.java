@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.UserName;
 
 import java.util.Random;
 
@@ -16,8 +17,8 @@ public class RandomWinnerInteractor
         extends Interactor<RandomWinnerInteractor.RandomWinnerPresenter, RandomWinnerRouter> {
 
     @Inject Listener listener;
-    @Inject @Named("player_one") String playerOne;
-    @Inject @Named("player_two") String playerTwo;
+    @Inject @Named("player_one") UserName playerOne;
+    @Inject @Named("player_two") UserName playerTwo;
 
     @Override
     protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
@@ -41,6 +42,6 @@ public class RandomWinnerInteractor
          *
          * @param winner player that won, or null if it's a tie.
          */
-        void gameWon(@Nullable String winner);
+        void gameWon(UserName winner);
     }
 }

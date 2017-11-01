@@ -22,6 +22,7 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.core.ViewBuilder;
+import com.uber.rib.root.UserName;
 import com.uber.rib.root.logged_in.GameKey;
 import com.uber.rib.root.logged_in.ScoreStream;
 import com.uber.rib.tutorial4.R;
@@ -68,8 +69,8 @@ public class OffGameBuilder
   }
 
   public interface ParentComponent {
-    @Named("player_one") String playerOne();
-    @Named("player_two") String playerTwo();
+    @Named("player_one") UserName playerOne();
+    @Named("player_two") UserName playerTwo();
     OffGameInteractor.Listener listener();
     ScoreStream scoreStream();
     List<? extends GameKey> gameKeys();

@@ -20,6 +20,7 @@ import android.support.annotation.Nullable;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.UserName;
 import com.uber.rib.root.logged_in.tic_tac_toe.Board.MarkerType;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
@@ -36,10 +37,8 @@ public class TicTacToeInteractor
   @Inject Board board;
   @Inject Listener listener;
   @Inject TicTacToePresenter presenter;
-
-  @Inject @Named("player_one") String playerOne;
-
-  @Inject @Named("player_two") String playerTwo;
+  @Inject @Named("player_one") UserName playerOne;
+  @Inject @Named("player_two") UserName playerTwo;
 
   private MarkerType currentPlayer = MarkerType.CROSS;
 
@@ -69,10 +68,10 @@ public class TicTacToeInteractor
                   }
                 }
                 if (board.hasWon(MarkerType.CROSS)) {
-                  presenter.setPlayerWon(playerOne);
+                  presenter.setPlayerWon(playerOne.getUserName());
                   listener.gameWon(playerOne);
                 } else if (board.hasWon(MarkerType.NOUGHT)) {
-                  presenter.setPlayerWon(playerTwo);
+                  presenter.setPlayerWon(playerTwo.getUserName());
                   listener.gameWon(playerTwo);
                 } else if (board.isDraw()) {
                   presenter.setPlayerTie();
@@ -87,9 +86,9 @@ public class TicTacToeInteractor
 
   private void updateCurrentPlayer() {
     if (currentPlayer == MarkerType.CROSS) {
-      presenter.setCurrentPlayerName(playerOne);
+      presenter.setCurrentPlayerName(playerOne.getUserName());
     } else {
-      presenter.setCurrentPlayerName(playerTwo);
+      presenter.setCurrentPlayerName(playerTwo.getUserName());
     }
   }
 
@@ -118,6 +117,6 @@ public class TicTacToeInteractor
      *
      * @param winner player that won, or null if it's a tie.
      */
-    void gameWon(@Nullable String winner);
+    void gameWon(UserName winner);
   }
 }

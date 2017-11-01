@@ -27,7 +27,9 @@ import javax.inject.Inject;
  * Coordinates Business Logic for {@link RootBuilder.RootScope}.
  */
 @RibInteractor
-public class RootInteractor extends Interactor<RootInteractor.RootPresenter, RootRouter> {
+public class RootInteractor
+    extends Interactor<RootInteractor.RootPresenter, RootRouter>
+    implements RootActionableItem {
 
   @Inject RootPresenter presenter;
 
@@ -40,7 +42,7 @@ public class RootInteractor extends Interactor<RootInteractor.RootPresenter, Roo
   class LoggedOutListener implements LoggedOutInteractor.Listener {
 
     @Override
-    public void requestLogin(String playerOne, String playerTwo) {
+    public void requestLogin(UserName playerOne, UserName playerTwo) {
       // Switch to logged in. Let’s just ignore userName for now.
       getRouter().detachLoggedOut();
       getRouter().attachLoggedIn(playerOne, playerTwo);
@@ -50,7 +52,5 @@ public class RootInteractor extends Interactor<RootInteractor.RootPresenter, Roo
   /**
    * Presenter interface implemented by this RIB's view.
    */
-  interface RootPresenter {
-
-  }
+  interface RootPresenter { }
 }

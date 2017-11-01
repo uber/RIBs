@@ -26,6 +26,7 @@ import com.uber.rib.core.EmptyPresenter;
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.RootView;
+import com.uber.rib.root.UserName;
 import com.uber.rib.root.logged_in.off_game.OffGameBuilder;
 import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
 import com.uber.rib.root.logged_in.random_winner.RandomWinnerBuilder;
@@ -53,7 +54,7 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
    *
    * @return a new {@link LoggedInRouter}.
    */
-  public LoggedInRouter build(String playerOne, String playerTwo) {
+  public LoggedInRouter build(UserName playerOne, UserName playerTwo) {
     LoggedInInteractor interactor = new LoggedInInteractor();
     Component component = DaggerLoggedInBuilder_Component.builder()
         .parentComponent(getDependency())
@@ -96,8 +97,8 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
     @LoggedInInternal
     @Provides
     static MutableScoreStream mutableScoreStream(
-        @Named("player_one") String playerOne,
-        @Named("player_two") String playerTwo) {
+        @Named("player_one") UserName playerOne,
+        @Named("player_two") UserName playerTwo) {
       return new MutableScoreStream(playerOne, playerTwo);
     }
 
@@ -179,16 +180,15 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
       Component build();
 
       @BindsInstance
-      Builder playerOne(@Named("player_one") String playerOne);
+      Builder playerOne(@Named("player_one") UserName playerOne);
 
       @BindsInstance
-      Builder playerTwo(@Named("player_two") String playerTwo);
+      Builder playerTwo(@Named("player_two") UserName playerTwo);
     }
 
   }
 
   interface BuilderComponent {
-
     LoggedInRouter loggedinRouter();
   }
 
