@@ -50,7 +50,6 @@ android {
 
 dependencies {
     annotationProcessor project(":tooling:autodispose-error-prone-checker")
-    annotationProcessor deps.apt.nullAway
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-app")
     annotationProcessor project(":libraries:rib-compiler-test")
@@ -65,15 +64,6 @@ dependencies {
 }
 
 tasks.withType(JavaCompile) {
-    // remove the if condition if you want to run NullAway on test code
-    if (!name.toLowerCase().contains("test")) {
-        options.compilerArgs += [
-            "-Xep:NullAway:WARN",
-            "-XepOpt:NullAway:AnnotatedPackages=com.uber",
-            "-XepOpt:NullAway:KnownInitializers=com.uber.rib.core.Initializer",
-            "-XepOpt:NullAway:ExcludedFieldAnnotations=javax.inject.Inject",
-        ]
-    }
     // Disable error prone checks I don't want.
     options.compilerArgs += [
             "-Xep:ReferenceEquality:OFF",
