@@ -2,15 +2,12 @@
 
 [![Build Status](https://travis-ci.org/uber/ios-template.svg?branch=master)](https://travis-ci.org/uber/ios-template)
 
-
-*Note*: Edits are currently being made [here](https://docs.google.com/document/d/1GS86aMZjbhA4Awx7jSonhEAEQtzWfSxcTtxhlLvwT04/edit#)
-
 RIBs is the cross-platform architecture behind many mobile apps at Uber.
 
 * **Shared architecture across iOS and Android.** Build cross-platform apps that have similar architecture, enabling iOS and Android teams to cross-review business logic code.
-* **Pragmatic, clean architecture and testability.** Similar to VIPER, RIBs takes a pragmatic approach to Clean Architecture. Classes are single-purpose, with a single clear responsibility and straightforward dependencies. This approach also makes testing easy to do. 
-* **Tooling for developer productivity.** RIBs come with IDE tooling around code generation, static analysis and runtime integrations - all which improve developer productivity for large teams or small.
-* **An architecture that scales.* This architecture has proven to scale to hundreds of engineers working on the same codebase and apps with thousands of RIBs.
+* **Testability and Isolation.** Classes must be easy to unit test and reason about in isolation. Individual RIB classes have distinct responsibilities like: routing, business, view logic, creation. Plus, most RIB logic is decoupled from child RIB logic. This makes RIB classes easy to test and reason about independently.
+* **Tooling for developer productivity.** RIBs come with IDE tooling around code generation, memory leak detection, static analysis and runtime integrations - all which improve developer productivity for large teams or small.
+* **An architecture that scales.** This architecture has proven to scale to hundreds of engineers working on the same codebase and apps with hundreds of RIBs.
 
 The RIB architecture was designed for large mobile applications with lots of volatile, server driven state, as well as large number of engineers working on one codebase.
 
