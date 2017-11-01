@@ -5,9 +5,23 @@ if ! which swiftformat &> /dev/null; then
   exit 1
 fi
 
-HEADER="//\n//  Copyright © {year} Uber Technologies, Inc. All rights reserved.\n//"
+HEADER="
+//
+//  Copyright (c) {year}. Uber Technologies
+//
+//  Licensed under the Apache License, Version 2.0 (the \"License\");
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//
+//  http://www.apache.org/licenses/LICENSE-2.0
+//
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an \"AS IS\" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.\n
+"
 
-TMPFILE=$(mktemp)
 OUTPUT=$(swiftformat \
   --cache ignore \
   --indent 4 \
@@ -31,15 +45,10 @@ OUTPUT=$(swiftformat \
   --semicolons inline \
   --header "$HEADER" \
   --disable redundantSelf,unusedArguments,hoistPatternLet,redundantBackticks,redundantReturn,linebreakAtEndOfFile \
-  --output "$TMPFILE" \
-  **/*.swift)
+  --exclude tooling,Pods,tutorials/tutorial1/Pods,tutorials/tutorial2/Pods,tutorials/tutorial3/Pods,tutorials/tutorial3-rib-di-and-communication-finished/Pods,tutorials/tutorial4/Pods \
+  .)
 
 if [ "$OUTPUT" ]; then
   echo "$OUTPUT" >&2
   exit 1
 fi
-
-# output to a temp file and cat it as swiftformat has no option to output to stdout
-FORMATTED=$(cat "$TMPFILE")
-rm "$TMPFILE"
-echo "$FORMATTED"

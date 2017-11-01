@@ -25,7 +25,7 @@ protocol BasicScoreBoardPresentableListener: class {
 }
 
 final class BasicScoreBoardViewController: UIViewController, BasicScoreBoardPresentable, BasicScoreBoardViewControllable {
-    
+
     weak var listener: BasicScoreBoardPresentableListener?
 
     init(player1Name: String,

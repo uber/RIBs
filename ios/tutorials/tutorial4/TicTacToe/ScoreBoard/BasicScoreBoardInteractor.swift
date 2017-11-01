@@ -55,9 +55,8 @@ final class BasicScoreBoardInteractor: PresentableInteractor<BasicScoreBoardPres
 
     private func updateScore() {
         scoreStream.score
-            .subscribe(
-                onNext: { (score: Score) in
-                    self.presenter.set(score: score)
+            .subscribe(onNext: { (score: Score) in
+                self.presenter.set(score: score)
             })
             .disposeOnDeactivate(interactor: self)
     }

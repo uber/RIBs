@@ -180,4 +180,3 @@ struct GameConstants {
     static let rowCount = 3
     static let colCount = 3
 }
-

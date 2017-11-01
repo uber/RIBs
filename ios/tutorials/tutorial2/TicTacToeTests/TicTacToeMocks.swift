@@ -25,7 +25,7 @@ import UIKit
 class LoggedInBuildableMock: LoggedInBuildable {
 
     // Function Handlers
-    var buildHandler: ((_ listener: LoggedInListener) -> (LoggedInRouting))?
+    var buildHandler: ((_ listener: LoggedInListener) -> LoggedInRouting)?
     var buildCallCount: Int = 0
 
     init() {
@@ -45,9 +45,9 @@ class LoggedInBuildableMock: LoggedInBuildable {
 /// A LoggedInInteractableMock class used for testing.
 class LoggedInInteractableMock: LoggedInInteractable {
     // Variables
-    var router: LoggedInRouting? = nil { didSet { routerSetCallCount += 1 } }
+    var router: LoggedInRouting? { didSet { routerSetCallCount += 1 } }
     var routerSetCallCount = 0
-    var listener: LoggedInListener? = nil { didSet { listenerSetCallCount += 1 } }
+    var listener: LoggedInListener? { didSet { listenerSetCallCount += 1 } }
     var listenerSetCallCount = 0
     var isActive: Bool = false { didSet { isActiveSetCallCount += 1 } }
     var isActiveSetCallCount = 0
@@ -177,7 +177,7 @@ class LoggedInRoutingMock: LoggedInRouting {
 class LoggedOutBuildableMock: LoggedOutBuildable {
 
     // Function Handlers
-    var buildHandler: ((_ listener: LoggedOutListener) -> (LoggedOutRouting))?
+    var buildHandler: ((_ listener: LoggedOutListener) -> LoggedOutRouting)?
     var buildCallCount: Int = 0
 
     init() {
@@ -197,9 +197,9 @@ class LoggedOutBuildableMock: LoggedOutBuildable {
 /// A RootInteractableMock class used for testing.
 class RootInteractableMock: RootInteractable {
     // Variables
-    var router: RootRouting? = nil { didSet { routerSetCallCount += 1 } }
+    var router: RootRouting? { didSet { routerSetCallCount += 1 } }
     var routerSetCallCount = 0
-    var listener: RootListener? = nil { didSet { listenerSetCallCount += 1 } }
+    var listener: RootListener? { didSet { listenerSetCallCount += 1 } }
     var listenerSetCallCount = 0
     var isActive: Bool = false { didSet { isActiveSetCallCount += 1 } }
     var isActiveSetCallCount = 0
@@ -271,5 +271,3 @@ class RootViewControllableMock: RootViewControllable {
         }
     }
 }
-
-

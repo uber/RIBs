@@ -40,7 +40,7 @@ class ScoreStreamImpl: MutableScoreStream {
             .asObservable()
             .distinctUntilChanged { (lhs: Score, rhs: Score) -> Bool in
                 Score.equals(lhs: lhs, rhs: rhs)
-        }
+            }
     }
 
     func updateScore(withWinner winner: PlayerType) {

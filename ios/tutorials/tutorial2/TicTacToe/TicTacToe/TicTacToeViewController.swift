@@ -54,7 +54,7 @@ final class TicTacToeViewController: UIViewController, TicTacToePresentable, Tic
                 return UIColor.blue
             }
         }()
-        let cell = collectionView.cellForItem(at: IndexPath(row: indexPathRow, section: Constants.sectionCount-1))
+        let cell = collectionView.cellForItem(at: IndexPath(row: indexPathRow, section: Constants.sectionCount - 1))
         cell?.backgroundColor = color
     }
 

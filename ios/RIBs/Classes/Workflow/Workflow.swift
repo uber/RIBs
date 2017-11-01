@@ -13,6 +13,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+
 import RxSwift
 
 /// Defines the base class for a sequence of steps that execute a flow through the application RIB tree.
@@ -75,9 +76,9 @@ open class Workflow<ActionableItemType> {
         subject.onNext((actionableItem, ()))
         return compositeDisposable
     }
-    
+
     // MARK: - Private Interface
-    
+
     private let subject = PublishSubject<(ActionableItemType, ())>()
     fileprivate let compositeDisposable = CompositeDisposable()
 }

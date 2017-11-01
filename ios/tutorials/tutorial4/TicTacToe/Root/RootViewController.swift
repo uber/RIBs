@@ -67,7 +67,7 @@ final class RootViewController: UIViewController, RootPresentable, RootViewContr
 
     // MARK: - Private
 
-    private var targetViewController: ViewControllable? = nil
+    private var targetViewController: ViewControllable?
     private var animationInProgress = false
 
     private func presentTargetViewController() {

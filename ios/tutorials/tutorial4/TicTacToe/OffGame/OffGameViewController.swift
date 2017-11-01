@@ -59,7 +59,7 @@ final class OffGameViewController: UIViewController, OffGamePresentable, OffGame
     private let games: [Game]
 
     private func buildStartButtons() {
-        var previousButton: UIView? = nil
+        var previousButton: UIView?
         for game in games {
             previousButton = buildStartButton(with: game, previousButton: previousButton)
         }
@@ -82,10 +82,9 @@ final class OffGameViewController: UIViewController, OffGamePresentable, OffGame
         startButton.setTitleColor(UIColor.white, for: .normal)
         startButton.backgroundColor = UIColor.black
         startButton.rx.tap
-            .subscribe(
-                onNext: { [weak self] in
-                    self?.listener?.start(game)
-                })
+            .subscribe(onNext: { [weak self] in
+                self?.listener?.start(game)
+            })
             .disposed(by: disposeBag)
 
         return startButton
