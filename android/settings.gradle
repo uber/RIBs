@@ -1,5 +1,3 @@
-include ':sample-app'
-include ':sample-lib'
 include ':libraries:rib-test-utils'
 include ':libraries:rib-android'
 include ':libraries:rib-base'
