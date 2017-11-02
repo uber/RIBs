@@ -14,25 +14,28 @@
  * limitations under the License.
  */
 
-package com.uber.rib.root;
+package com.uber.rib.root.logged_in.tic_tac_toe;
 
 import android.content.Context;
 import android.support.annotation.Nullable;
+import android.support.percent.PercentRelativeLayout;
 import android.util.AttributeSet;
-import android.widget.FrameLayout;
 
-/** Top level view for {@link RootBuilder.RootScope}. */
-public class RootView extends FrameLayout implements RootInteractor.RootPresenter {
+/**
+ * Top level view for {@link TicTacToeBuilder.TicTacToeScope}.
+ */
+class TicTacToeView extends PercentRelativeLayout implements
+    TicTacToeInteractor.TicTacToePresenter {
 
-  public RootView(Context context) {
+  public TicTacToeView(Context context) {
     this(context, null);
   }
 
-  public RootView(Context context, @Nullable AttributeSet attrs) {
+  public TicTacToeView(Context context, @Nullable AttributeSet attrs) {
     this(context, attrs, 0);
   }
 
-  public RootView(Context context, @Nullable AttributeSet attrs, int defStyle) {
+  public TicTacToeView(Context context, @Nullable AttributeSet attrs, int defStyle) {
     super(context, attrs, defStyle);
   }
 }

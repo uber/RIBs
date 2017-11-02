@@ -14,25 +14,20 @@
  * limitations under the License.
  */
 
-package com.uber.rib.root;
+package com.uber.rib.root.logged_in.off_game;
 
-import android.content.Context;
-import android.support.annotation.Nullable;
-import android.util.AttributeSet;
-import android.widget.FrameLayout;
+import com.uber.rib.core.ViewRouter;
 
-/** Top level view for {@link RootBuilder.RootScope}. */
-public class RootView extends FrameLayout implements RootInteractor.RootPresenter {
+/**
+ * Adds and removes children of {@link OffGameBuilder.OffGameScope}.
+ */
+public class OffGameRouter extends
+    ViewRouter<OffGameView, OffGameInteractor, OffGameBuilder.Component> {
 
-  public RootView(Context context) {
-    this(context, null);
-  }
-
-  public RootView(Context context, @Nullable AttributeSet attrs) {
-    this(context, attrs, 0);
-  }
-
-  public RootView(Context context, @Nullable AttributeSet attrs, int defStyle) {
-    super(context, attrs, defStyle);
+  public OffGameRouter(
+      OffGameView view,
+      OffGameInteractor interactor,
+      OffGameBuilder.Component component) {
+    super(view, interactor, component);
   }
 }
