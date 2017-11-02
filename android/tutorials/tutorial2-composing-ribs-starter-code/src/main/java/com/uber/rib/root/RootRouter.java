@@ -16,6 +16,8 @@
 
 package com.uber.rib.root;
 
+import android.support.annotation.Nullable;
+
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutRouter;
@@ -24,6 +26,8 @@ import com.uber.rib.root.logged_out.LoggedOutRouter;
 public class RootRouter extends ViewRouter<RootView, RootInteractor, RootBuilder.Component> {
 
   private final LoggedOutBuilder loggedOutBuilder;
+
+  @Nullable private LoggedOutRouter loggedOutRouter;
 
   RootRouter(
       RootView view,
@@ -35,8 +39,16 @@ public class RootRouter extends ViewRouter<RootView, RootInteractor, RootBuilder
   }
 
   void attachLoggedOut() {
-    LoggedOutRouter router = loggedOutBuilder.build(getView());
-    attachChild(router);
-    getView().addView(router.getView());
+    loggedOutRouter = loggedOutBuilder.build(getView());
+    attachChild(loggedOutRouter);
+    getView().addView(loggedOutRouter.getView());
+  }
+
+  public void attachLoggedIn() {
+
+  }
+
+  public void detachLoggedOut() {
+
   }
 }

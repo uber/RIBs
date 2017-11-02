@@ -42,6 +42,7 @@ dependencies {
     compile project(":libraries:rib-android")
     compile deps.external.dagger
     compile deps.external.rxbinding
+    provided deps.apt.androidApi
     provided deps.apt.javax
     testCompile project(":libraries:rib-test-utils")
 }
