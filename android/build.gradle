@@ -44,10 +44,3 @@ task wrapper(type: Wrapper) {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-afterEvaluate {
-    Set<Task> result = tasks.findAll { task -> task.name.startsWith('lintVital') }
-    result.each { Task task ->
-        task.enabled = false
-    }
-}
