@@ -21,30 +21,73 @@ import android.support.annotation.Nullable;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
+import com.uber.rib.root.logged_in.tic_tac_toe.Board.MarkerType;
 
 import javax.inject.Inject;
+
+import io.reactivex.Observable;
+import io.reactivex.functions.Consumer;
 
 /**
  * Coordinates Business Logic for {@link TicTacToeScope}.
  */
 @RibInteractor
 public class TicTacToeInteractor
-    extends Interactor<TicTacToeInteractor.TicTacToePresenter, TicTacToeRouter> {
+        extends Interactor<TicTacToeInteractor.TicTacToePresenter, TicTacToeRouter> {
 
+  @Inject Board board;
   @Inject TicTacToePresenter presenter;
+
+  private final String playerOne = "Fake name 1";
+  private final String playerTwo = "Fake name 2";
+
+  private MarkerType currentPlayer = MarkerType.CROSS;
 
   @Override
   protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
     super.didBecomeActive(savedInstanceState);
 
-    // TODO: Add attachment logic here (RxSubscriptions, etc.).
+    presenter
+            .squareClicks()
+            .subscribe(
+                    new Consumer<BoardCoordinate>() {
+                      @Override
+                      public void accept(BoardCoordinate xy) throws Exception {
+                        if (board.cells[xy.getX()][xy.getY()] == null) {
+                          if (currentPlayer == MarkerType.CROSS) {
+                            board.cells[xy.getX()][xy.getY()] = MarkerType.CROSS;
+                            board.currentRow = xy.getX();
+                            board.currentCol = xy.getY();
+                            presenter.addCross(xy);
+                            currentPlayer = MarkerType.NOUGHT;
+                          } else {
+                            board.cells[xy.getX()][xy.getY()] = MarkerType.NOUGHT;
+                            board.currentRow = xy.getX();
+                            board.currentCol = xy.getY();
+                            presenter.addNought(xy);
+                            currentPlayer = MarkerType.CROSS;
+                          }
+                        }
+                        if (board.hasWon(MarkerType.CROSS)) {
+                          presenter.setPlayerWon(playerOne);
+                        } else if (board.hasWon(MarkerType.NOUGHT)) {
+                          presenter.setPlayerWon(playerTwo);
+                        } else if (board.isDraw()) {
+                          presenter.setPlayerTie();
+                        } else {
+                          updateCurrentPlayer();
+                        }
+                      }
+                    });
+    updateCurrentPlayer();
   }
 
-  @Override
-  protected void willResignActive() {
-    super.willResignActive();
-
-    // TODO: Perform any required clean up here, or delete this method entirely if not needed.
+  private void updateCurrentPlayer() {
+    if (currentPlayer == MarkerType.CROSS) {
+      presenter.setCurrentPlayerName(playerOne);
+    } else {
+      presenter.setCurrentPlayerName(playerTwo);
+    }
   }
 
 
@@ -52,6 +95,20 @@ public class TicTacToeInteractor
    * Presenter interface implemented by this RIB's view.
    */
   interface TicTacToePresenter {
+    Observable<BoardCoordinate> squareClicks();
+
+    void setCurrentPlayerName(String currentPlayer);
+
+    void setPlayerWon(String playerName);
+
+    void setPlayerTie();
+
+    void addCross(BoardCoordinate xy);
+
+    void addNought(BoardCoordinate xy);
+  }
+
+  public interface Listener {
 
   }
 }
