@@ -15,7 +15,7 @@ matrix:
 
       script:
         - cd android
-        - ./gradlew test
+        - ./gradlew build
 
       env:
         global:
