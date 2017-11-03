@@ -39,7 +39,6 @@ dependencies {
     annotationProcessor deps.apt.autoValue
     annotationProcessor deps.apt.raveCompiler
     annotationProcessor deps.apt.daggerCompiler
-    annotationProcessor project(":libraries:rib-compiler-app")
     annotationProcessor project(":libraries:rib-compiler-test")
     compile project(":libraries:rib-android")
     compile project(":libraries:rib-workflow")

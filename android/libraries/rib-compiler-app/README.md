@@ -1,3 +1,3 @@
 # rib-compiler
 
-This module defines things related to rib compilation.
+Base library for writing RIB annotation processors.
