@@ -12,6 +12,7 @@ public class TicTacToeInteractorTest extends RibTestBasePlaceholder {
 
     @Mock TicTacToeInteractor.TicTacToePresenter presenter;
     @Mock TicTacToeRouter router;
+    @Mock Board board;
 
     private TicTacToeInteractor interactor;
 
@@ -19,6 +20,6 @@ public class TicTacToeInteractorTest extends RibTestBasePlaceholder {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        interactor = TestTicTacToeInteractor.create(presenter);
+        interactor = TestTicTacToeInteractor.create(board, presenter);
     }
 }
