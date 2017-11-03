@@ -31,7 +31,7 @@ import io.reactivex.Observable;
 /**
  * Top level view for {@link OffGameBuilder.OffGameScope}.
  */
-class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
+public class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
 
   private Button button;
 

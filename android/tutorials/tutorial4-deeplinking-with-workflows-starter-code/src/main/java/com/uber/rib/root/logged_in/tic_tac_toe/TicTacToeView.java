@@ -31,7 +31,7 @@ import java.util.ArrayList;
 /**
  * Top level view for {@link TicTacToeBuilder.TicTacToeScope}.
  */
-class TicTacToeView extends PercentRelativeLayout implements
+public class TicTacToeView extends PercentRelativeLayout implements
     TicTacToeInteractor.TicTacToePresenter {
 
   private TextView[][] imageButtons;

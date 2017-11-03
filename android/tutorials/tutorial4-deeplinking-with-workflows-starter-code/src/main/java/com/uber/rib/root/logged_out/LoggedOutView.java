@@ -33,7 +33,7 @@ import io.reactivex.functions.Function;
 /**
  * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.
  */
-class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
+public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
 
   private Button loginButton;
   private EditText playerOneEditText;

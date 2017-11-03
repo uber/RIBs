@@ -38,7 +38,7 @@ import java.util.Locale;
 /**
  * Top level view for {@link OffGameBuilder.OffGameScope}.
  */
-class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
+public class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
 
   private TextView playerOneName;
   private TextView playerTwoName;
