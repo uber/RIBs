@@ -27,12 +27,13 @@ For usage of the tooling built around RIBs, please see the [Tooling section](htt
 
 ## Installation for Android
 
-TBD
+The integrate the recommended minimum setup for RIBs add the following to your `build.gradle`:
 
-```
+```gradle
 dependencies {
-  annotationProcessor 'com.uber.ribs:ribs:0.9.0'
-  compile 'com.uber.ribs:ribs:0.9.0'
+  annotationProcessor 'com.uber.rib:rib-compiler-app:0.9.0'
+  annotationProcessor 'com.uber.rib:rib-compiler-test:0.9.0'
+  compile 'com.uber.rib:rib-android:0.9.0'
 }
 ```
 
