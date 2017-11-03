@@ -33,6 +33,12 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    // No need for lint. This is just a tutorial.
+    lintOptions {
+        abortOnError false
+        quiet true
+    }
 }
 
 dependencies {

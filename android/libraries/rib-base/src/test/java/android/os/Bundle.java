@@ -20,6 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /** Stub class to have pure Java unit tests. */
+@SuppressWarnings("ParcelCreator")
 public class Bundle implements Parcelable {
 
   private final Map<String, Object> testData = new HashMap<>();
