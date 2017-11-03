@@ -19,6 +19,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    // This module is only testing utilities. Given this code isn't intended to be run inside a production
+    // android app this module confuses android lint. Let's just disable lint errors here.
+    lintOptions {
+        abortOnError false
+        disable 'InvalidPackage'
+    }
 }
 
 dependencies {

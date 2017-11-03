@@ -46,6 +46,12 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_7
         targetCompatibility JavaVersion.VERSION_1_7
     }
+
+    // No need for lint. This is just a tutorial.
+    lintOptions {
+        abortOnError false
+        quiet true
+    }
 }
 
 dependencies {
