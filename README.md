@@ -31,8 +31,8 @@ TBD
 
 ```
 dependencies {
-  annotationProcessor 'com.uber.ribs:ribs:0.1.0'
-  compile 'com.uber.ribs:ribs:0.1.0'
+  annotationProcessor 'com.uber.ribs:ribs:0.9.0'
+  compile 'com.uber.ribs:ribs:0.9.0'
 }
 ```
 
@@ -42,7 +42,7 @@ dependencies {
 To integrate RIBs into your project add the following to your `Podfile`:
 
 ```ruby
-pod 'RIBs', '~> 0.1'
+pod 'RIBs', '~> 0.9'
 ```
 
 #### Carthage
@@ -50,7 +50,7 @@ pod 'RIBs', '~> 0.1'
 To integrate RIBs into your project using Carthage add the following to your `Cartfile`:
 
 ```ruby
-github "uber/RIBs" ~> 0.1
+github "uber/RIBs" ~> 0.9
 ```
 
 ## Contributions
