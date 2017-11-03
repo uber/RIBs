@@ -1,5 +1,7 @@
 package com.uber.rib.root.logged_out;
 
+import android.support.v4.util.Pair;
+
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -31,19 +33,19 @@ public class LoggedOutInteractorTest extends RibTestBasePlaceholder {
 
   @Test
   public void attach_whenViewEmitsName_shouldCallListener() {
-    when(presenter.loginName()).thenReturn(Observable.just("fakename"));
+    when(presenter.loginName()).thenReturn(Observable.just(Pair.create("fakename", "fakename")));
 
     InteractorHelper.attach(interactor, presenter, router, null);
 
-    verify(listener).login(any(String.class));
+    verify(listener).login(any(String.class), any(String.class));
   }
 
   @Test
   public void attach_whenViewEmitsEmptyName_shouldNotCallListener() {
-    when(presenter.loginName()).thenReturn(Observable.just(""));
+    when(presenter.loginName()).thenReturn(Observable.just(Pair.create("", "")));
 
     InteractorHelper.attach(interactor, presenter, router, null);
 
-    verify(listener, never()).login(any(String.class));
+    verify(listener, never()).login(any(String.class), any(String.class));
   }
 }
