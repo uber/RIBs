@@ -22,8 +22,6 @@ matrix:
           - secure: "SONATYPE_NEXUS_USERNAME TODO"
           - secure: "SONATYPE_NEXUS_PASSWORD TODO"
 
-      sudo: false
-
       cache:
         directories:
           - $HOME/.gradle
@@ -35,17 +33,8 @@ matrix:
         global:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
-        - WORKSPACE=ios/RIBs.xcworkspace
+        - WORKSPACE=RIBs.xcworkspace
         - IOS_SDK=iphonesimulator11.0
-
-        matrix:
-          - DESTINATION="OS=9.0,name=iPhone 4S"    RUN_TESTS="YES"   POD_LINT="YES"
-          - DESTINATION="OS=9.2,name=iPhone 5S"    RUN_TESTS="YES"   POD_LINT="NO"
-          - DESTINATION="OS=9.3,name=iPhone 6"     RUN_TESTS="YES"   POD_LINT="NO"
-          - DESTINATION="OS=10.0,name=iPhone 6S"   RUN_TESTS="YES"   POD_LINT="NO"
-          - DESTINATION="OS=10.0,name=iPhone 7"    RUN_TESTS="YES"   POD_LINT="NO"
-          - DESTINATION="OS=11.0,name=iPhone 8"    RUN_TESTS="YES"   POD_LINT="NO"
-          - DESTINATION="OS=11.0,name=iPhone X"    RUN_TESTS="YES"   POD_LINT="NO"
 
       before_install:
           - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
@@ -56,18 +45,10 @@ matrix:
         - xcodebuild -version
         - xcodebuild -showsdks
         - instruments -s devices
-        - pod install
-        - if [ $BUILD == "YES" ]; then
-            xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "$DESTINATION" -sdk "$IOS_SDK" -configuration Debug ONLY_ACTIVE_ARCH=NO clean build | xcpretty -c;
-            xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "$DESTINATION" -sdk "$IOS_SDK" -configuration Release ONLY_ACTIVE_ARCH=NO clean build | xcpretty -c;
-          fi
-        - if [ $RUN_TESTS == "YES" ]; then
-            xcodebuild -workspace "$WORKSPACE" -scheme "$SCHEME" -destination "$DESTINATION"
-             -configuration Debug ONLY_ACTIVE_ARCH=NO GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES clean build test | xcpretty -c;
-          fi
-        - if [ $POD_LINT == "YES" ]; then
-            pod lib lint;
-          fi
+        - pod install --repo-update
+        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
+        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
+        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
           
 branches:
   except:
