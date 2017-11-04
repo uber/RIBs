@@ -10,8 +10,7 @@ matrix:
           - extra-android-m2repository        # Support repo
           - sys-img-armeabi-v7a-android-18    # Emulator
 
-      jdk:
-        - oraclejdk8
+      jdk: oraclejdk8
 
       script:
         - cd android
