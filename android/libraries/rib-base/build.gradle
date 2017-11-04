@@ -14,12 +14,19 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+plugins {
+    id "net.ltgt.apt" version "0.10"
+    id "java-library"
+}
 
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
 dependencies {
+    // RIBs themselves don't need to use dagger. But the base library does use dagger
+    // in order to invert a dependency. With a bit of work this could be removed.
+    apt deps.apt.daggerCompiler
+
     compile project(':libraries:rib-uava')
     compile deps.external.reactiveStreams
     compile deps.external.rxrelay2
