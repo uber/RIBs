@@ -47,8 +47,8 @@ matrix:
         - instruments -s devices
         - pod install --repo-update
         - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
+        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
         - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
-        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
         - cd .. & pod lib lint;
           
 branches:
