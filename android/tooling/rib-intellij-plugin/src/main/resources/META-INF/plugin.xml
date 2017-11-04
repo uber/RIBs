@@ -1,6 +1,6 @@
 <idea-plugin version="2">
     <id>com.uber.rib.intellij-plugin</id>
-    <name>RIB Presidio Plugin</name>
+    <name>RIBs Plugin</name>
     <version>0.1.2</version>
     <vendor>
         Uber Mobile Platform Team
