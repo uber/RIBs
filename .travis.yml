@@ -19,14 +19,27 @@ matrix:
 
       env:
         global:
-          - secure: "SONATYPE_NEXUS_USERNAME TODO"
-          - secure: "SONATYPE_NEXUS_PASSWORD TODO"
+          - secure: "wYv3nOJsAQRGaSVONr8sCg6lI5fvyo/31utPvDrI56kaGMSRYwFbKXJyIL82nrqR/qKAQbc5kJFTGxPgDMDRpvy46bFVS7EC5KPv2U4KAFkZeDTogPFP4Fj5jmpSW8lbMO2JKAoGPujALRGIbmFNacGgqLFYpXFPYkfi3nHp0feFeS+sVMKZ8IwPrx/cJO2PY4fPHwhzhc5GLZ0gkhSDGPFgwp+qhANGPYxV0obCe6beB2npwUOWiyjHYCEt0Xx36cI+ihQkc27hJM1HOnZ99KNch5cN3q1xK5UzBxPw18bQ1vLwhXRJ3qXbZD3POT7qumC8adJDv7GFC6AYzzCDQd2ZQPWG/1KY1B21DyjeXPuFft8S2A89YBMqQ0/S3dVMtr73qgsIyMaM6dCXtKArlek46uLY0SLVvBC7ZTn7kvfAb2cBZjLRUOL/lKUC2thEFZ+eDpvmJEYOgWhvDniq/tBOpkeRlsA1HLo1PTb2feDcw8Oifnb8Jk2XlJwNM8uGwYjnKJJl6F7d/ZWWq51mNVXs78dBgbnkd3IwAkZWa5DbvvGK9ezPOypr2HH98s6hVPHIObzGdToYkLHm3+E0fKTnlOqRxJozkJk8FQs11MADFy3ag+Mpq7rKqoTr7X5bXQA+aTF924fMUs9hePqQ7wVoGGNSOpVybvTMq3Zq8l8="
+          - secure: "wriXSKjgiJwSY0yxkdbYLn1Tn8IqnGRqxmCkaNg1ihrsWu2T7UoDc16g0QTsfPt1Wf+sRvEtISNEcGk48P6Pyj2fiM9eugmsU03iDp8xuUqrJt6ga7a8/E4JgzSfZ+yWKuCqQH/HvWBGnrjHrKDPaRl8EoxkusQqzdrYyno6BFCl8OZREWa0V212ex6G37gC3buBzA6fSvmOZZYTJt3IZbEWKoxQiZuCKdq1ay3DLGx+msVDvLXWZb/jNp0vf9HefMY25XMZbXJ/JKvrq2cj+wJf9k73eAstewLfGdwUvYcJV3XW3TUqXkmYL7Cpeb2NEMGb5Ov/pxXF2AYHbug2KSimejzlR4uGPRwqvpM5gq4arWBcO8H60asG1IHtBMihhJzqNl2PWPKHrUcDdSmIvj2PEX++RSrUCX+qP8Ewm8jNrNvFl6RhHFCAo0hQ6IE6t10RGd+YSwmP9cLdPOSSoTLUDg+VQUrUdMv9h8FnHBh212iEYnjvHL2iRSkaAH/nOW9PJ3Y+bkZjehnt9IXgmTmMlKzJYNMGrwTwhfu+cGK9rgu+DR8GEEkvpFbIef2fS6eoBB7peplXjMdeGUub/puev7ZFpPpBB3fsGMGeOSzIvDi+TuqDy9yazeGneOevEC06npc4aT0mi4w9FGkzEQHq9kEglnLoaETKEgx0uSA="
 
       sudo: false
 
       cache:
         directories:
           - $HOME/.gradle
+
+      before_install:
+          # Install SDK license so Android Gradle plugin can install deps.
+          - mkdir "$ANDROID_HOME/licenses" || true
+          - echo "$LICENSES_HASH" > "$ANDROID_HOME/licenses/android-sdk-license"
+          - echo "$LICENSES_HASH_TWO" >> "$ANDROID_HOME/licenses/android-sdk-license"
+          # Install the rest of tools (e.g., avdmanager)
+          - sdkmanager tools
+          # Install the system image
+          - sdkmanager "system-images;android-18;default;armeabi-v7a"
+          # Create and start emulator for the script. Meant to race the install task.
+          - echo no | avdmanager create avd --force -n test -k "system-images;android-18;default;armeabi-v7a"
+          - $ANDROID_HOME/emulator/emulator -avd test -no-audio -no-window > /dev/null 2>&1 &
 
 
     - language: objective-c
