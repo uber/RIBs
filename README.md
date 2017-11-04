@@ -33,6 +33,7 @@ The integrate the recommended minimum setup for RIBs add the following to your `
 dependencies {
   annotationProcessor 'com.uber.rib:rib-compiler-test:0.9.0'
   compile 'com.uber.rib:rib-android:0.9.0'
+  testCompile 'com.uber.rib:rib-test-utils:0.9.0'
 }
 ```
 
