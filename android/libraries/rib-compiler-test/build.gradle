@@ -34,3 +34,5 @@ task copyTestResources(type: Copy) {
     into "${buildDir}/classes/test"
 }
 processTestResources.dependsOn copyTestResources
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

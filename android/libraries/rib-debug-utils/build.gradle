@@ -22,3 +22,5 @@ targetCompatibility = "1.7"
 dependencies {
     compile project(":libraries:rib-base")
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -49,3 +49,5 @@ dependencies {
     testCompile deps.support.appCompat
     testCompile project(":libraries:rib-test-utils")
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -38,15 +38,10 @@ android {
 }
 
 dependencies {
-    //Eventually we"ll want to break this dependency. It only needs the ViewUtils class from this library.
-    //compile project(":libraries:presidio:ui-core")
-
     compile deps.external.rxjava2
     compile deps.external.rxrelay2
     compile deps.external.rxbinding
     compile deps.support.annotations
-
-//    compile project(":libraries:foundation:lumber-logger")
-
-//    testCompile project(":libraries:presidio:presidio-test-base-android")
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

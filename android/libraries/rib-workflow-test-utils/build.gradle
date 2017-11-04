@@ -35,3 +35,5 @@ dependencies {
     compile deps.external.rxjava2
     compile deps.test.assertj
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

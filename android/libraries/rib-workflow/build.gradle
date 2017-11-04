@@ -38,8 +38,7 @@ android {
 }
 
 dependencies {
-    provided deps.support.annotations
-
+    compile deps.support.annotations
     compile deps.external.rxjava2
     compile deps.external.rxandroid2
     compile project(':libraries:rib-uava')
@@ -48,3 +47,5 @@ dependencies {
     testCompile deps.test.assertj
     testCompile deps.test.mockito
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
