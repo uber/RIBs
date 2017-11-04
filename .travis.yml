@@ -49,7 +49,7 @@ matrix:
         - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release ONLY_ACTIVE_ARCH=NO clean build | xcpretty -c;
         - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug ONLY_ACTIVE_ARCH=YES clean build test | xcpretty -c;
         - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Debug ONLY_ACTIVE_ARCH=YES GCC_INSTRUMENT_PROGRAM_FLOW_ARCS=YES GCC_GENERATE_TEST_COVERAGE_FILES=YES clean build test | xcpretty -c;
-        - pod lib lint;
+        - cd .. & pod lib lint;
           
 branches:
   except:
