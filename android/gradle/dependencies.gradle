@@ -16,7 +16,7 @@
 
 def versions = [
     dagger: "2.12",
-    support: '25.0.1',
+    support: '25.1.1',
     autodispose: '0.2.0',
     robolectric: "3.4.2",
     intellij: "2017.2",
@@ -25,7 +25,7 @@ def versions = [
 ]
 
 def apt = [
-    androidApi: "com.ubercab.android:android:4.1.1.5",
+    androidApi: "com.google.android:android:2.2.1",
     autoCommon: "com.google.auto:auto-common:0.8",
     autoService: "com.google.auto.service:auto-service:1.0-rc3",
     nullAway: 'com.uber.nullaway:nullaway:0.1.4',
