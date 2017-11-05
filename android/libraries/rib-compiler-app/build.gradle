@@ -15,7 +15,6 @@ dependencies {
     compileOnly deps.apt.androidApi
 
     testCompile deps.test.compileTesting
-    testCompile deps.test.tools
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
