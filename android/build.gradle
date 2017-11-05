@@ -21,12 +21,14 @@ subprojects {
         repositories {
             jcenter()
             maven { url deps.build.gradlePluginsUrl }
+            maven { url "https://maven.google.com" }
         }
     }
 
     repositories {
         jcenter()
         maven { url deps.build.gradlePluginsUrl }
+        maven { url "https://maven.google.com" }
     }
 
     apply plugin: 'checkstyle'
