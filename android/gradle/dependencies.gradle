@@ -69,7 +69,6 @@ def test = [
     mockito: "org.mockito:mockito-core:2.0.42-beta",
     assertj: "org.assertj:assertj-core:2.6.0",
     compileTesting: "com.google.testing.compile:compile-testing:0.11",
-    tools: "com.sun:tools:1.8.0-112",
 ]
 
 def external = [

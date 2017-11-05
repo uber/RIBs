@@ -25,7 +25,6 @@ dependencies {
 
     testCompile deps.support.annotations
     testCompile deps.test.compileTesting
-    testCompile deps.test.tools
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
