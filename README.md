@@ -2,7 +2,7 @@
 <img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="450" height="196" alt="RIBs"/>
 </p>
 
-[![Build Status](https://travis-ci.org/uber/RIBs.svg?branch=fix_travis)](https://travis-ci.org/uber/RIBs)
+[![Build Status](https://travis-ci.org/uber/RIBs.svg?branch=master)](https://travis-ci.org/uber/RIBs)
 
 RIBs is the cross-platform architecture behind many mobile apps at Uber. This architecture framework is designed for mobile apps with a large number of engineers and nested states.
 
