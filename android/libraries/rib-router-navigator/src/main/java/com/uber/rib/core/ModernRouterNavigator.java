@@ -15,7 +15,6 @@
  */
 package com.uber.rib.core;
 
-import android.annotation.SuppressLint;
 import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 
@@ -27,7 +26,6 @@ import java.util.Locale;
  *
  * @param <StateT> type of state to switch on.
  */
-@SuppressLint("PotentialRibletLeak")
 public class ModernRouterNavigator<StateT extends RouterNavigatorState>
     implements RouterNavigator<StateT> {
   private final ArrayDeque<RouterAndState<StateT>> navigationStack = new ArrayDeque<>();
