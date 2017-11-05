@@ -6,6 +6,7 @@ buildscript {
 
 apply plugin: "java"
 apply plugin: "maven"
+apply plugin: "org.jetbrains.intellij"
 
 group "com.uber.rib"
 
@@ -17,12 +18,6 @@ dependencies {
     compile deps.apt.androidApi
     compile deps.build.commonsLang
     compile deps.build.guava
-    compileOnly deps.intellij.android
-    compileOnly deps.intellij.annotations
-    compileOnly deps.intellij.extensions
-    compileOnly deps.intellij.idea
-    compileOnly deps.intellij.openapi
-    compileOnly deps.intellij.util
     compile deps.support.annotations
 
     if (!buildIntellijPlugin()) {
@@ -49,11 +44,6 @@ dependencies {
         testCompile deps.test.assertj
         testCompile deps.test.compileTesting
         testCompile deps.test.mockito
-        testCompile deps.intellij.annotations
-        testCompile deps.intellij.extensions
-        testCompile deps.intellij.idea
-        testCompile deps.intellij.openapi
-        testCompile deps.intellij.util
     } else {
         sourceSets.test.java.srcDirs = []
     }
@@ -71,7 +61,8 @@ def isReleaseBuild() {
 
 def buildIntellijPlugin() {
     // Important to check this property in order to minimize the number of dependencies during various build types.
-    // Fetching dependencies for this project is quite slow.
+    // Fetching dependencies for this project is quite slow. Originally when this code was written we only applied the
+    // `apply plugin: "org.jetbrains.intellij"` if this part of the intellij build was being done.
     return System.getProperty("build.intellijplugin", "false") == "true"
 }
 
