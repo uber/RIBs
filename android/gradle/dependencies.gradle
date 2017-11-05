@@ -82,15 +82,6 @@ def external = [
     leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.5.4'
 ]
 
-def intellij = [
-    android    : "com.uber.intellij:android:${versions.intellij}",
-    annotations: "com.uber.intellij:annotations:${versions.intellij}",
-    extensions : "com.uber.intellij:extensions:${versions.intellij}",
-    idea       : "com.uber.intellij:idea:${versions.intellij}",
-    openapi    : "com.uber.intellij:openapi:${versions.intellij}",
-    util       : "com.uber.intellij:util:${versions.intellij}",
-]
-
 def uber = [
     autodispose: "com.uber.autodispose:autodispose:${versions.autodispose}",
     autodisposeAndroid : "com.uber.autodispose:autodispose-android:${versions.autodispose}@aar",
@@ -101,7 +92,6 @@ ext.deps = [
     "apt": apt,
     "build": build,
     "external": external,
-    "intellij": intellij,
     "support": support,
     "test": test,
     "versions": versions,
