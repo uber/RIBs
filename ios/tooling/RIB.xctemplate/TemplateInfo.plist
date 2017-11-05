@@ -51,7 +51,7 @@
 			<key>Type</key>
 			<string>checkbox</string>
 			<key>Default</key>
-			<string>false</string>
+			<string>true</string>
 			<key>NotPersisted</key>
 			<string>true</string>
 		</dict>
