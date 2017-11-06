@@ -54,14 +54,6 @@ To integrate RIBs into your project using Carthage add the following to your `Ca
 github "uber/RIBs" ~> 0.9
 ```
 
-## Contributions
-
-We'd love for you to contribute to our open source projects. Before we can accept your contributions, we kindly ask you to sign our [Uber Contributor License Agreement](https://docs.google.com/a/uber.com/forms/d/1pAwS_-dA1KhPlfxzYLBqK6rsSWwRwH95OCCZrcsY5rk/viewform).
-
-- If you **find a bug**, please open an issue or submit a fix via a pull request.
-- If you **have a feature request**, please open an issue or submit an implementation via a pull request
-- If you **want to contribute**, please submit a pull request.
-
 ## License
 
     Copyright (C) 2017 Uber Technologies
