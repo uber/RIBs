@@ -14,6 +14,8 @@
 //  limitations under the License.
 //
 
+#if os(iOS)
+
 import UIKit
 
 /// The root `Router` of an application.
@@ -47,3 +49,5 @@ open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<Inte
         load()
     }
 }
+
+#endif

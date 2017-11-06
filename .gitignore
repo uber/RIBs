@@ -117,6 +117,7 @@ xcuserdata/
 
 # Swift Package Manager
 .build/
+Package.resolved
 
 # CocoaPods
 Pods/

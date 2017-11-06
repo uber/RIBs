@@ -16,7 +16,6 @@
 
 import Foundation
 import RxSwift
-import UIKit
 
 /// Protocol defining the activeness of an interactor's scope.
 public protocol InteractorScope: class {

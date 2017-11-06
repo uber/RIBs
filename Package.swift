@@ -1,3 +1,5 @@
+// swift-tools-version:4.0
+
 //
 //  Copyright (c) 2017. Uber Technologies
 //
@@ -14,25 +16,17 @@
 //  limitations under the License.
 //
 
+import PackageDescription
 
-#if os(iOS)
-import UIKit
-#endif
-
-/// Basic interface between a `Router` and the UIKit `UIViewController`.
-public protocol ViewControllable: class {
-
-#if os(iOS)
-    var uiviewController: UIViewController { get }
-#endif
-}
-
-#if os(iOS)
-/// Default implementation on `UIViewController` to conform to `ViewControllable` protocol
-public extension ViewControllable where Self: UIViewController {
-
-    var uiviewController: UIViewController {
-        return self
-    }
-}
-#endif
+let package = Package(
+    name: "RIBs", 
+    products: [
+        .library(name: "RIBs", targets: ["RIBs"])
+    ],
+    dependencies : [
+        .package(url: "https://github.com/ReactiveX/RxSwift", from: "4.0.0")
+    ],
+    targets: [
+        .target(name: "RIBs", dependencies: ["RxSwift"], path: "ios/RIBs")
+    ]
+)
