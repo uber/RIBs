@@ -14,6 +14,7 @@
 //  limitations under the License.
 //
 
+import Foundation
 import RxSwift
 
 /// Leak detection status.
@@ -107,6 +108,7 @@ public class LeakDetector {
         return handle
     }
 
+    #if os(iOS)
     /// Sets up an expectation for the given view controller to disappear within the given time.
     ///
     /// - parameter viewController: The `UIViewController` expected to disappear.
@@ -142,6 +144,7 @@ public class LeakDetector {
 
         return handle
     }
+    #endif
 
     // MARK: - Internal Interface
 

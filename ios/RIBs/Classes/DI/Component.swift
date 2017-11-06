@@ -14,6 +14,8 @@
 //  limitations under the License.
 //
 
+import Foundation
+
 /// The base class for all components.
 ///
 /// A component defines private properties a RIB provides to its internal `Router`, `Interactor`, `Presenter` and

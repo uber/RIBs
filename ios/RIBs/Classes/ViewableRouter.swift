@@ -58,13 +58,16 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
     // MARK: - Internal
 
     override func internalDidLoad() {
+        #if os(iOS)
         setupViewControllerLeakDetection()
+        #endif
 
         super.internalDidLoad()
     }
 
     // MARK: - Private
 
+    #if os(iOS)
     private var viewControllerDisappearExpectation: LeakDetectionHandle?
 
     private func setupViewControllerLeakDetection() {
@@ -88,8 +91,11 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
             })
         _ = deinitDisposable.insert(disposable)
     }
+    #endif
 
     deinit {
+        #if os(iOS)
         LeakDetector.instance.expectDeallocate(object: viewControllable.uiviewController, inTime: LeakDefaultExpectationTime.viewDisappear)
+        #endif
     }
 }
