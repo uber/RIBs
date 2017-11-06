@@ -1,10 +1,10 @@
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="450" height="196" alt="RIBs"/>
+<img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="60%" height="60%" alt="RIBs"/>
 </p>
 
 [![Build Status](https://travis-ci.org/uber/RIBs.svg?branch=master)](https://travis-ci.org/uber/RIBs)
 
-RIBs is the cross-platform architecture behind many mobile apps at Uber. This architecture framework is designed for mobile apps with a large number of engineers and nested states.
+RIBs is the cross-platform architecture behind many mobile apps at Uber. The name RIBs is short of Router, Interactor and Builder, which are core components of this architecture. This framework is designed for mobile apps with a large number of engineers and nested states.
 
 The RIBs architecture provides:
 * **Shared architecture across iOS and Android.** Build cross-platform apps that have similar architecture, enabling iOS and Android teams to cross-review business logic code.
@@ -17,6 +17,8 @@ The RIBs architecture provides:
 To get started with RIBs, please refer to the [RIBs documentation](https://github.com/uber/RIBs/wiki). This describes key concepts on RIBs, from what they are for, their structure and common use cases.
 
 To get more hands on with RIBs, we have written a [series of tutorials](https://github.com/uber/RIBs/wiki) that run you through the main aspects of the architecture with hands-on examples.
+
+To read about the backstory on why we created RIBs, see [this blog post](https://eng.uber.com/new-rider-app/) we wrote when releasing RIBs in production the first time and see [this short video](https://www.youtube.com/watch?v=Q5cTT0M0YXg) where we discussed how the RIBs architecture works.
 
 ## Usage
 
@@ -53,14 +55,6 @@ To integrate RIBs into your project using Carthage add the following to your `Ca
 ```ruby
 github "uber/RIBs" ~> 0.9
 ```
-
-## Contributions
-
-We'd love for you to contribute to our open source projects. Before we can accept your contributions, we kindly ask you to sign our [Uber Contributor License Agreement](https://docs.google.com/a/uber.com/forms/d/1pAwS_-dA1KhPlfxzYLBqK6rsSWwRwH95OCCZrcsY5rk/viewform).
-
-- If you **find a bug**, please open an issue or submit a fix via a pull request.
-- If you **have a feature request**, please open an issue or submit an implementation via a pull request
-- If you **want to contribute**, please submit a pull request.
 
 ## License
 

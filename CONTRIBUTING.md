@@ -2,6 +2,8 @@
 
 Uber welcomes contributions of all kinds and sizes. This includes everything from from simple bug reports to large features.
 
+Before we can accept your contributions, we kindly ask you to sign our [Contributor License Agreement](https://cla-assistant.io/uber/RIBs).
+
 Workflow
 --------
 
