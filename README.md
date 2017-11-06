@@ -29,7 +29,7 @@ For usage of the tooling built around RIBs, please see the [Tooling section](htt
 
 ## Installation for Android
 
-The integrate the recommended minimum setup for RIBs add the following to your `build.gradle`:
+To integrate the recommended minimum setup for RIBs add the following to your `build.gradle`:
 
 ```gradle
 dependencies {
