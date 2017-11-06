@@ -1,5 +1,5 @@
 <p align="center">
-<img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="450" height="196" alt="RIBs"/>
+<img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="60%" height="60%" alt="RIBs"/>
 </p>
 
 [![Build Status](https://travis-ci.org/uber/RIBs.svg?branch=master)](https://travis-ci.org/uber/RIBs)
