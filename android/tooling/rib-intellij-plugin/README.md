@@ -14,7 +14,7 @@ RIBs can be generated with or without Presenter and View classes.
 
 ## Installation Instructions
 
-In Intellij, open `IntelliJ IDEA > Preferences > Plugins` and select `Install Plugins From Disk`. Then install the [RIBs plugin jar](https://raw.githubusercontent.com/uber/RIBs/android-tooling-tutorial/android/tooling/rib-intellij-plugin/rib-tooling-2.png). After this, the plugin will appear in the `New` menu.
+In Intellij, open `IntelliJ IDEA > Preferences > Plugins` and select `Install Plugins From Disk`. Then install the [RIBs plugin jar](https://github.com/uber/RIBs/blob/master/android/tooling/rib-intellij-plugin/deploy/rib-intellij-plugin.jar?raw=true). After this, the plugin will appear in the `New` menu.
 
 ![Adding a new RIB from IntelliJ, after having installed the plugin](rib-tooling-2.png)
 
