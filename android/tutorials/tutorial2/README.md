@@ -6,7 +6,7 @@ This project is the completed code for [tutorial 1](https://github.com/uber/RIBs
 Run the code by
 
 ```
-./gradlew :tutorials:tutorial2-composing-ribs-starter-code:installDebug
+./gradlew :tutorials:tutorial2:installDebug
 ```
 
 Then follow the steps described in [tutorial 2](https://github.com/uber/RIBs/wiki/Android-Tutorial-2) on the RIBs wiki.

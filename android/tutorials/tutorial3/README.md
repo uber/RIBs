@@ -6,7 +6,7 @@ This project is the completed code for [tutorial 2](https://github.com/uber/RIBs
 Run the code by
 
 ```
-./gradlew :tutorials:tutorial3-rib-di-and-communication-starter-code:installDebug
+./gradlew :tutorials:tutorial3:installDebug
 ```
 
 Then follow the steps described in [tutorial 3](https://github.com/uber/RIBs/wiki/Android-Tutorial-3) on the RIBs wiki.
