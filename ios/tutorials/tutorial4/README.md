@@ -3,7 +3,13 @@
 This project is the starting point for [tutorial 4](https://github.com/uber/RIBs/wiki/iOS-Tutorial-4).
 
 ### Getting started
-First you need to install pods for the tutorial:
+Install tooling, unless you've done so already:
+
+```
+<RIBs path>/ios/tooling/install-xcode-template.sh
+```
+
+Then, install pods for the tutorial:
 
 ```
 gem install cocoapods # In case you don't have it
