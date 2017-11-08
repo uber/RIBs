@@ -14,7 +14,7 @@ protocol ___VARIABLE_productName___ViewControllable: ViewControllable {
 final class ___VARIABLE_productName___Router: Router<___VARIABLE_productName___Interactable>, ___VARIABLE_productName___Routing {
 
     // TODO: Constructor inject child builder protocols to allow building children.
-    override init(interactor: SampleInteractable) {
+    override init(interactor: ___VARIABLE_productName___Interactable) {
         super.init(interactor: interactor)
         interactor.router = self
     }
