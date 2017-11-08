@@ -1,3 +1,5 @@
+//___FILEHEADER___
+
 import RIBs
 
 protocol ___VARIABLE_productName___Interactable: Interactable {

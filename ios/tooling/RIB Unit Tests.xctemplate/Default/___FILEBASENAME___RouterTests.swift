@@ -1,3 +1,5 @@
+//___FILEHEADER___
+
 @testable import ___PROJECTNAME___
 import XCTest
 
