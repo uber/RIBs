@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'RIBs'
-  s.version          = '0.9.1'
+  s.version          = '0.9.2'
   s.summary          = 'Uber\'s cross-platform mobile architecture.'
   s.description      = <<-DESC
 RIBs is the cross-platform architecture behind many mobile apps at Uber. This architecture framework is designed for mobile apps with a large number of engineers and nested states.
