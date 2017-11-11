@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		7EDD59501FA13579005EC8B2 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 7EDD594F1FA13579005EC8B2 /* Default-568h@2x.png */; };
 		AEFA38604D7D1E4A08E9A7FA /* Pods_TicTacToe.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B99EABB5C8D25341027C05C5 /* Pods_TicTacToe.framework */; };
+		E90A68661FB7052F00D303EE /* Stub.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C86D9F1FA389F400B61DF6 /* Stub.swift */; };
 		E9C86DA01FA38A0A00B61DF6 /* RandomWinBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C86D9A1FA389EC00B61DF6 /* RandomWinBuilder.swift */; };
 		E9C86DA11FA38A0A00B61DF6 /* RandomWinInteractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C86D9B1FA389EC00B61DF6 /* RandomWinInteractor.swift */; };
 		E9C86DA21FA38A0A00B61DF6 /* RandomWinRouter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9C86D9C1FA389EC00B61DF6 /* RandomWinRouter.swift */; };
@@ -451,6 +452,7 @@
 				E9C86DA91FA38AEC00B61DF6 /* PlayerType.swift in Sources */,
 				E9CB1D631F9730EF00D84847 /* RootComponent+LoggedOut.swift in Sources */,
 				E9CB1D591F9730E700D84847 /* LoggedOutBuilder.swift in Sources */,
+				E90A68661FB7052F00D303EE /* Stub.swift in Sources */,
 				E9CB1D581F9730E400D84847 /* LoggedInRouter.swift in Sources */,
 				E9CB1D5F1F9730EB00D84847 /* OffGameRouter.swift in Sources */,
 				E9CB1D611F9730EF00D84847 /* RootBuilder.swift in Sources */,

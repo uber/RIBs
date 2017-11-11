@@ -14,4 +14,8 @@
 //  limitations under the License.
 //
 
-import Foundation
+import RIBs
+
+public class LaunchGameWorkflow: Workflow<RootActionableItem> {
+    init(url: URL) { super.init() }
+}
