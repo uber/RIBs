@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Kind</key>
+	<string>Xcode.IDEFoundation.TextSubstitutionFileTemplateKind</string>
+	<key>Summary</key>
+	<string>Component Extension</string>
+	<key>Description</key>
+	<string>Extend a component to provide dependencies for a child scope.</string>
+	<key>SortOrder</key>
+	<string>7</string>
+	<key>AllowedTypes</key>
+	<dict>
+		<key>Item 0</key>
+		<string>public.swift-source</string>
+	</dict>
+	<key>DefaultCompletionName</key>
+	<string>ComponentExtension</string>
+	<key>MainTemplateFiles</key>
+	<string>___FILEBASENAME___Component+___VARIABLE_childName___.swift</string>
+	<key>Platforms</key>
+	<array>
+		<string>com.apple.platform.iphoneos</string>
+	</array>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>productName</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Scope name:</string>
+			<key>Description</key>
+			<string>The name of the scope that needs to be extended.</string>
+			<key>Type</key>
+			<string>text</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>childName</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Child scope name:</string>
+			<key>Description</key>
+			<string>The name of the child scope that needs to be provided.</string>
+			<key>Type</key>
+			<string>text</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+		</dict>
+	</array>
+</dict>
+</plist>
