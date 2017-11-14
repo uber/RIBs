@@ -42,11 +42,11 @@ final class RouterTests: XCTestCase {
     func test_load_verifyLifecycleObservable() {
         var currentLifecycle: RouterLifecycle?
         var didComplete = false
-        lifecycleDisposable = router.lifecycle
+        lifecycleDisposable = router
+            .lifecycle
             .subscribe(onNext: { lifecycle in
                 currentLifecycle = lifecycle
-            },
-                       onCompleted: {
+            }, onCompleted: {
                 currentLifecycle = nil
                 didComplete = true
             })
