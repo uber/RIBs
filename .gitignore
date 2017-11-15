@@ -124,8 +124,7 @@ Podfile.lock
 *.xcworkspace/
 
 # Carthage 
-Carthage/Checkouts
-Carthage/Build
+Carthage/
 
 
 ### Other ###

@@ -41,6 +41,7 @@ matrix:
 
       script:
         - set -o pipefail
+        - mv Carthage ios
         - cd ios
         - xcodebuild -version
         - xcodebuild -showsdks
