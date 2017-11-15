@@ -32,12 +32,7 @@ matrix:
         global:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
-        - XCODE_PROJECT=RIBs.xcodeproj
         - IOS_SDK=iphonesimulator11.0
-
-      before_install:
-          - brew update
-          - brew upgrade carthage
 
       script:
         - set -o pipefail
@@ -46,9 +41,9 @@ matrix:
         - xcodebuild -version
         - xcodebuild -showsdks
         - instruments -s devices
-        - xcodebuild --project "$XCODE_PROJECT" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
-        - xcodebuild --project "$XCODE_PROJECT" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
-        - xcodebuild --project "$XCODE_PROJECT" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
+        - xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
+        - xcodebuild -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
+        - xcodebuild -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
           
 branches:
   except:
