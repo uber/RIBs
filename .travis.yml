@@ -41,12 +41,11 @@ matrix:
 
       script:
         - set -o pipefail
-        - mv Carthage ios
+        - carthage update --platform iOS --project-directory ios
         - cd ios
         - xcodebuild -version
         - xcodebuild -showsdks
         - instruments -s devices
-        - carthage update --platform iOS
         - xcodebuild --project "$XCODE_PROJECT" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
         - xcodebuild --project "$XCODE_PROJECT" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
         - xcodebuild --project "$XCODE_PROJECT" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
