@@ -123,7 +123,8 @@ Pods/
 Podfile.lock
 *.xcworkspace/
 
-# Carthage 
+# Carthage
+Cartfile.resolved
 Carthage/
 
 
