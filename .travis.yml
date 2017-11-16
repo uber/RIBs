@@ -36,6 +36,7 @@ matrix:
 
       script:
         - set -o pipefail
+        - mv Cartfile ios
         - carthage update --platform iOS --project-directory ios
         - cd ios
         - xcodebuild -version
