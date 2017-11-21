@@ -36,7 +36,7 @@ matrix:
 
       script:
         - set -o pipefail
-        - carthage update --platform iOS --project-directory ios
+        - carthage update --platform iOS
         - cd ios
         - xcodebuild -version
         - xcodebuild -showsdks
