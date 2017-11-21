@@ -32,22 +32,18 @@ matrix:
         global:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
-        - WORKSPACE=RIBs.xcworkspace
         - IOS_SDK=iphonesimulator11.0
-
-      before_install:
-          - gem install cocoapods --no-rdoc --no-ri --no-document --quiet
 
       script:
         - set -o pipefail
+        - carthage update --platform iOS
         - cd ios
         - xcodebuild -version
         - xcodebuild -showsdks
         - instruments -s devices
-        - pod install --repo-update
-        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
-        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
-        - xcodebuild -workspace "$WORKSPACE" -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
+        - xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
+        - xcodebuild -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
+        - xcodebuild -scheme "RIBs" -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
           
 branches:
   except:
