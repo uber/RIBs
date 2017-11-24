@@ -23,12 +23,9 @@ public extension Array {
     ///
     /// - parameter element: The element to remove.
     mutating func removeElementByReference(_ element: Element) {
-        let objIndex = index {
-            return $0 as AnyObject === element as AnyObject
+        guard let objIndex = index(where: { $0 as AnyObject === element as AnyObject }) else {
+            return
         }
-
-        if let objIndex = objIndex {
-            remove(at: objIndex)
-        }
+        remove(at: objIndex)
     }
 }

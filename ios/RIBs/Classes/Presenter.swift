@@ -24,11 +24,6 @@ public protocol Presentable: class {}
 /// its listener.
 open class Presenter<ViewControllerType>: Presentable {
 
-    /// The logging category of the presenter. Defaults to 'Presenter'.
-    ///
-    /// - SeeAlso: Logging
-    open var loggingCategory = "Presenter"
-
     /// The view controller of this presenter.
     public let viewController: ViewControllerType
 
