@@ -39,7 +39,7 @@ public class AppDelegate: UIResponder, UIApplicationDelegate {
         let result = RootBuilder(dependency: AppComponent()).build()
         launchRouter = result.launchRouter
         urlHandler = result.urlHandler
-        launchRouter?.launchFromWindow(window)
+        launchRouter.launch(from: window)
 
         return true
     }
