@@ -55,6 +55,27 @@
 			<key>NotPersisted</key>
 			<string>true</string>
 		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>withXIB</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Adds XIB file</string>
+			<key>Description</key>
+			<string>Whether this RIB contains a corresponding view with XIB</string>
+			<key>Type</key>
+			<string>checkbox</string>
+			<key>Default</key>
+			<string>false</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+			<key>RequiredOptions</key>
+			<dict>
+				<key>ownsView</key>
+				<string>true</string>
+			</dict>
+		</dict>
 	</array>
 </dict>
 </plist>
