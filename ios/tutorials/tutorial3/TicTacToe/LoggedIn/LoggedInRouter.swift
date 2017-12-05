@@ -26,15 +26,16 @@ protocol LoggedInViewControllable: ViewControllable {
     func dismiss(viewController: ViewControllable)
 }
 
-final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewControllable>, LoggedInRouting {
+final class LoggedInRouter: Router<LoggedInInteractable>, LoggedInRouting {
 
     init(interactor: LoggedInInteractable,
          viewController: LoggedInViewControllable,
          offGameBuilder: OffGameBuildable,
          ticTacToeBuilder: TicTacToeBuildable) {
+        self.viewController = viewController
         self.offGameBuilder = offGameBuilder
         self.ticTacToeBuilder = ticTacToeBuilder
-        super.init(interactor: interactor, viewController: viewController)
+        super.init(interactor: interactor)
         interactor.router = self
     }
 
@@ -67,6 +68,7 @@ final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewCon
 
     // MARK: - Private
 
+    private let viewController: LoggedInViewControllable
     private let offGameBuilder: OffGameBuildable
     private let ticTacToeBuilder: TicTacToeBuildable
 
