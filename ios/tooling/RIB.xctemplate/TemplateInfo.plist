@@ -74,6 +74,31 @@
 			<dict>
 				<key>ownsView</key>
 				<string>true</string>
+				<key>withStoryboard</key>
+				<string>false</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>withStoryboard</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Adds Storyboard file</string>
+			<key>Description</key>
+			<string>Whether this RIB contains a corresponding view with Storyboard</string>
+			<key>Type</key>
+			<string>checkbox</string>
+			<key>Default</key>
+			<string>false</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+			<key>RequiredOptions</key>
+			<dict>
+				<key>ownsView</key>
+				<string>true</string>
+				<key>withXIB</key>
+				<string>false</string>
 			</dict>
 		</dict>
 	</array>

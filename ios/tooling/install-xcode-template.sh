@@ -14,8 +14,8 @@ xcodeTemplate () {
   mkdir -p "$XCODE_TEMPLATE_DIR"
 
   cp -R $SCRIPT_DIR/*.xctemplate "$XCODE_TEMPLATE_DIR"
-  
   cp -R $SCRIPT_DIR/RIB.xctemplate/ownsView/* "$XCODE_TEMPLATE_DIR/RIB.xctemplate/ownsViewwithXIB/"
+  cp -R $SCRIPT_DIR/RIB.xctemplate/ownsView/* "$XCODE_TEMPLATE_DIR/RIB.xctemplate/ownsViewwithStoryboard/"
 }
 
 xcodeTemplate
