@@ -25,13 +25,14 @@ protocol LoggedInViewControllable: ViewControllable {
     func replaceModal(viewController: ViewControllable?)
 }
 
-final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewControllable>, LoggedInRouting {
+final class LoggedInRouter: Router<LoggedInInteractable>, LoggedInRouting {
 
     init(interactor: LoggedInInteractable,
          viewController: LoggedInViewControllable,
          offGameBuilder: OffGameBuildable) {
+        self.viewController = viewController
         self.offGameBuilder = offGameBuilder
-        super.init(interactor: interactor, viewController: viewController)
+        super.init(interactor: interactor)
         interactor.router = self
     }
 
@@ -59,6 +60,7 @@ final class LoggedInRouter: ViewableRouter<LoggedInInteractable, LoggedInViewCon
 
     // MARK: - Private
 
+    private let viewController: LoggedInViewControllable
     private let offGameBuilder: OffGameBuildable
 
     private var currentChild: ViewableRouting?
