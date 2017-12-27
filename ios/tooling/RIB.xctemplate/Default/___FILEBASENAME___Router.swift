@@ -18,7 +18,7 @@ final class ___VARIABLE_productName___Router: Router<___VARIABLE_productName___I
     // TODO: Constructor inject child builder protocols to allow building children.
     override init(interactor: ___VARIABLE_productName___Interactable, viewController: ___VARIABLE_productName___ViewControllable) {
         self.viewController = viewController
-        super.init(interactor: interactor, viewController: viewController)
+        super.init(interactor: interactor)
         interactor.router = self
     }
 
