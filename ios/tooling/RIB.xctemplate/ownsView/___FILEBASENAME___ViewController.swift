@@ -12,8 +12,5 @@ protocol ___VARIABLE_productName___PresentableListener: class {
 
 final class ___VARIABLE_productName___ViewController: UIViewController, ___VARIABLE_productName___Presentable, ___VARIABLE_productName___ViewControllable {
 
-    /// The UIKit view representation of this view.
-    public final var uiviewController: UIViewController { return self }
-
     weak var listener: ___VARIABLE_productName___PresentableListener?
 }
