@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Concrete</key>
+	<true/>
+	<key>Kind</key>
+	<string>Xcode.Xcode3.ProjectTemplateUnitKind</string>
+	<key>Identifier</key>
+	<string>com.uber.BaseApplication</string>
+	<key>Ancestors</key>
+	<array>
+		<string>com.apple.dt.unit.cocoaTouchApplicationBase</string>
+	</array>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>languageChoice</string>
+			<key>Values</key>
+			<array>
+				<string>Swift</string>
+			</array>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>productName</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Root RIB Name:</string>
+			<key>Description</key>
+			<string>The name of the RIB to create</string>
+			<key>Type</key>
+			<string>text</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+			<key>Default</key>
+			<string>Root</string>
+		</dict>
+	</array>
+	<key>Nodes</key>
+	<array>
+		<string>AppComponent.swift</string>
+		<string>AppDelegate.swift</string>
+		<string>___VARIABLE_productName___Builder.swift</string>
+		<string>___VARIABLE_productName___Interactor.swift</string>
+		<string>___VARIABLE_productName___Router.swift</string>
+		<string>___VARIABLE_productName___ViewController.swift</string>
+	</array>
+	<key>Definitions</key>
+	<dict>
+		<key>AppComponent.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>AppComponent.swift</string>
+		</dict>
+		<key>AppDelegate.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>AppDelegate.swift</string>
+		</dict>
+		<key>___VARIABLE_productName___ViewController.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>ViewController.swift</string>
+		</dict>
+		<key>___VARIABLE_productName___Interactor.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>Interactor.swift</string>
+		</dict>
+		<key>___VARIABLE_productName___Router.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>Router.swift</string>
+		</dict>
+		<key>___VARIABLE_productName___Builder.swift</key>
+		<dict>
+			<key>Path</key>
+			<string>Builder.swift</string>
+		</dict>
+	</dict>
+</dict>
+</plist>
