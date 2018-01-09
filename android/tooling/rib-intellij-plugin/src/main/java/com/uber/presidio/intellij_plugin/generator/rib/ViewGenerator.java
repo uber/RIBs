@@ -20,10 +20,10 @@ import com.uber.presidio.intellij_plugin.generator.Generator;
 /** Generate subclass that uses a view template. */
 public class ViewGenerator extends Generator {
 
-  private static final String TEMPLATE_NAME = "RibView.java.template";
+  private static final String TEMPLATE_NAME = "RibView";
 
-  public ViewGenerator(String packageName, String ribName) {
-    super(packageName, ribName, TEMPLATE_NAME);
+  public ViewGenerator(String packageName, String ribName, boolean isKotlinSelected) {
+    super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
   }
 
   @Override
