@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.uber.presidio.intellij_plugin.action.rib;
+package com.uber.presidio.intellij_plugin.action.rib;
 
 import com.intellij.openapi.ui.DialogWrapper;
 
@@ -24,47 +24,55 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-/** Dialog that prompts the user for information required to generate a new rib. */
+/**
+ * Dialog that prompts the user for information required to generate a new rib.
+ */
 public class GenerateRibDialog extends DialogWrapper {
 
-  private JPanel contentPane;
-  private JTextField ribNameTextField;
-  private JCheckBox createPresenterAndViewCheckBox;
+    private JPanel contentPane;
+    private JTextField ribNameTextField;
+    private JCheckBox createPresenterAndViewCheckBox;
+    private JCheckBox createKotlinCode;
 
-  private final Listener listener;
+    private final Listener listener;
 
-  public GenerateRibDialog(final Listener listener) {
-    super(null);
-    this.listener = listener;
-    init();
+    public GenerateRibDialog(final Listener listener) {
+        super(null);
+        this.listener = listener;
+        init();
 
-    createPresenterAndViewCheckBox.setSelected(true);
-  }
+        createPresenterAndViewCheckBox.setSelected(true);
+        createKotlinCode.setSelected(true);
+    }
 
-  @Nullable
-  @Override
-  protected JComponent createCenterPanel() {
-    return contentPane;
-  }
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        return contentPane;
+    }
 
-  @Override
-  protected void doOKAction() {
-    super.doOKAction();
+    @Override
+    protected void doOKAction() {
+        super.doOKAction();
 
-    this.listener.onGenerateClicked(
-        ribNameTextField.getText(), createPresenterAndViewCheckBox.isSelected());
-  }
-
-  /** Listener interface to be implemented by consumers of the dialog. */
-  public interface Listener {
+        this.listener.onGenerateClicked(
+                ribNameTextField.getText(),
+                createPresenterAndViewCheckBox.isSelected(),
+                createKotlinCode.isSelected());
+    }
 
     /**
-     * Called when the user clicks OK on the generate dialog.
-     *
-     * @param ribName name for new rib.
-     * @param createPresenterAndView {@code true} when a presenter and a corresponding view should
-     *     be created, {@code false} otherwise.
+     * Listener interface to be implemented by consumers of the dialog.
      */
-    void onGenerateClicked(String ribName, boolean createPresenterAndView);
-  }
+    public interface Listener {
+
+        /**
+         * Called when the user clicks OK on the generate dialog.
+         *
+         * @param ribName                name for new rib.
+         * @param createPresenterAndView {@code true} when a presenter and a corresponding view should
+         *                               be created, {@code false} otherwise.
+         */
+        void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected);
+    }
 }

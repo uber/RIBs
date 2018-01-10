@@ -19,10 +19,10 @@ import com.uber.presidio.intellij_plugin.generator.Generator;
 
 public class ViewRouterGenerator extends Generator {
 
-  private static final String TEMPLATE_NAME = "RibViewRouter.java.template";
+  private static final String TEMPLATE_NAME = "RibViewRouter";
 
-  public ViewRouterGenerator(String packageName, String ribName) {
-    super(packageName, ribName, TEMPLATE_NAME);
+  public ViewRouterGenerator(String packageName, String ribName, boolean isKotlinSelected) {
+    super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
   }
 
   @Override
