@@ -111,12 +111,12 @@ public abstract class GenerateAction extends AnAction {
                                                             createSourceFile(project, generator, directory);
                                                         }
 
-//                                                        PsiDirectory testDirectory =
-//                                                                RefactoringUtil.createPackageDirectoryInSourceRoot(
-//                                                                        targetPackage, testSourceFolder.getFile());
-//                                                        for (Generator generator : testSourceGenerators) {
-//                                                            createSourceFile(project, generator, testDirectory);
-//                                                        }
+                                                       PsiDirectory testDirectory =
+                                                               RefactoringUtil.createPackageDirectoryInSourceRoot(
+                                                                       targetPackage, testSourceFolder.getFile());
+                                                       for (Generator generator : testSourceGenerators) {
+                                                           createSourceFile(project, generator, testDirectory);
+                                                       }
                                                     }
                                                 },
                                                 "Generate new RIB",
