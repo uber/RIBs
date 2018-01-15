@@ -14,9 +14,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
-      <strong>0.1.0</strong><br/>
+      <strong>0.1.2</strong><br/>
       <ul>
-        <li>Initial release</li>
+        <li>Added Kotlin support</li>
       </ul>
     ]]></change-notes>
 
