@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
- package com.uber.presidio.intellij_plugin.action.rib;
+package com.uber.presidio.intellij_plugin.action.rib;
 
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.uber.presidio.intellij_plugin.generator.GeneratorPair;
@@ -24,19 +24,19 @@ import com.uber.presidio.intellij_plugin.generator.GeneratorPair;
  */
 public class GenerateRibAction extends GenerateAction implements GenerateRibDialog.Listener {
 
-  @Override
-  public void actionPerformed(AnActionEvent anActionEvent) {
-    GenerateRibDialog dialog = new GenerateRibDialog(this);
-    dialog.show();
-  }
+    @Override
+    public void actionPerformed(AnActionEvent anActionEvent) {
+        GenerateRibDialog dialog = new GenerateRibDialog(this);
+        dialog.show();
+    }
 
-  @Override
-  public void onGenerateClicked(String ribName, boolean createPresenterAndView) {
-    final GeneratorPair generators =
-        createPresenterAndView
-            ? Generators.getGeneratorsForRibWithPresenterAndView(getPackageName(), ribName)
-            : Generators.getGeneratorsForRibWithoutPresenterAndView(
-                getPackageName(), ribName);
-    generate(generators.getMainSourceSetGenerators(), generators.getTestSourceSetGenerators());
-  }
+    @Override
+    public void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected) {
+        final GeneratorPair generators =
+                createPresenterAndView
+                        ? Generators.getGeneratorsForRibWithPresenterAndView(getPackageName(), ribName, isKotlinSelected)
+                        : Generators.getGeneratorsForRibWithoutPresenterAndView(
+                        getPackageName(), ribName, isKotlinSelected);
+        generate(generators.getMainSourceSetGenerators(), generators.getTestSourceSetGenerators());
+    }
 }
