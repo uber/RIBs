@@ -44,6 +44,7 @@ import com.intellij.psi.PsiManager;
 import com.intellij.psi.PsiNameHelper;
 import com.intellij.psi.PsiPackage;
 import com.intellij.refactoring.PackageWrapper;
+import com.intellij.refactoring.util.RefactoringUtil;
 import com.uber.presidio.intellij_plugin.generator.Generator;
 
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
@@ -111,12 +112,12 @@ public abstract class GenerateAction extends AnAction {
                                                             createSourceFile(project, generator, directory);
                                                         }
 
-                                                       PsiDirectory testDirectory =
-                                                               RefactoringUtil.createPackageDirectoryInSourceRoot(
-                                                                       targetPackage, testSourceFolder.getFile());
-                                                       for (Generator generator : testSourceGenerators) {
-                                                           createSourceFile(project, generator, testDirectory);
-                                                       }
+                                                        PsiDirectory testDirectory =
+                                                                RefactoringUtil.createPackageDirectoryInSourceRoot(
+                                                                        targetPackage, testSourceFolder.getFile());
+                                                        for (Generator generator : testSourceGenerators) {
+                                                            createSourceFile(project, generator, testDirectory);
+                                                        }
                                                     }
                                                 },
                                                 "Generate new RIB",

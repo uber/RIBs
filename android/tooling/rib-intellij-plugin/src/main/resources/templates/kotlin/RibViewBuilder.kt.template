@@ -42,7 +42,9 @@ class ${rib_name}Builder(dependency: ParentComponent) : ViewBuilder<${rib_name}V
         return null
     }
 
-    interface ParentComponent// TODO: Define dependencies required from your parent interactor here.
+    interface ParentComponent {
+        // TODO: Define dependencies required from your parent interactor here.
+    }
 
     @dagger.Module
     abstract class Module {

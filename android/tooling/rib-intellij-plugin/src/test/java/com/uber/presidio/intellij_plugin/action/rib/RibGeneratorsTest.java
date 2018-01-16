@@ -42,14 +42,14 @@ public class RibGeneratorsTest {
 
   @Test
   public void ribGenerators_shouldGenerateClassesThatCompiler() {
-    testWithGenerators(Generators.getGeneratorsForRibWithoutPresenterAndView(TEST_PACKAGE_NAME, TEST_RIBLET_NAME));
+    testWithGenerators(Generators.getGeneratorsForRibWithoutPresenterAndView(TEST_PACKAGE_NAME, TEST_RIBLET_NAME, false));
   }
 
   @Test
   @Ignore("This test only passes when using buck+okbuck. Gradle is unable to import the rib-android aar as a test "
       + "dependency for this java module.")
   public void viewRibGenerators_shouldGenerateClassesThatCompile() {
-    testWithGenerators(Generators.getGeneratorsForRibWithPresenterAndView(TEST_PACKAGE_NAME, TEST_RIBLET_NAME));
+    testWithGenerators(Generators.getGeneratorsForRibWithPresenterAndView(TEST_PACKAGE_NAME, TEST_RIBLET_NAME, false));
   }
 
   private static void testWithGenerators(@NonNull GeneratorPair generators) {

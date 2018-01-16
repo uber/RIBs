@@ -28,7 +28,6 @@ class ${rib_name}Interactor : Interactor<${rib_name}Interactor.${rib_name}Presen
         // TODO: Perform any required clean up here, or delete this method entirely if not needed.
     }
 
-
     /**
      * Presenter interface implemented by this RIB's view.
      */

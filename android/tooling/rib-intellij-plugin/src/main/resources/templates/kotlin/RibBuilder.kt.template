@@ -30,7 +30,9 @@ class ${rib_name}Builder(dependency: ParentComponent) : Builder<${rib_name}Route
         return component.${rib_name_to_lower}Router()
     }
 
-    interface ParentComponent// TODO: Define dependencies required from your parent interactor here.
+    interface ParentComponent {
+        // TODO: Define dependencies required from your parent interactor here.
+    }
 
 
     @dagger.Module

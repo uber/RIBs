@@ -33,5 +33,4 @@ class ${rib_name}RouterTest : RibTestBasePlaceholder() {
 
         throw RuntimeException("Remove this test and add real tests.")
     }
-
 }
