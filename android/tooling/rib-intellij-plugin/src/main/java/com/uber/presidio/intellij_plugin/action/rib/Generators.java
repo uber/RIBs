@@ -34,55 +34,55 @@ import com.uber.presidio.intellij_plugin.generator.rib.ViewRouterTestGenerator;
  */
 public final class Generators {
 
-    private Generators() {
-    }
+  private Generators() {
+  }
 
-    /**
-     * @param packageName to use for generators.
-     * @param ribName     to use for generators.
-     * @return a list of generators to use when generating a rib with a presenter and view.
-     */
-    static GeneratorPair getGeneratorsForRibWithPresenterAndView(
-            String packageName, String ribName, boolean isKotlinSelected) {
+  /**
+   * @param packageName to use for generators.
+   * @param ribName     to use for generators.
+   * @return a list of generators to use when generating a rib with a presenter and view.
+   */
+  public static GeneratorPair getGeneratorsForRibWithPresenterAndView(
+      String packageName, String ribName, boolean isKotlinSelected) {
 
-        InteractorWithPresenterGenerator interactorGenerator =
-                new InteractorWithPresenterGenerator(packageName, ribName, isKotlinSelected);
-        ViewBuilderGenerator viewBuilderGenerator = new ViewBuilderGenerator(packageName, ribName, isKotlinSelected);
-        ViewGenerator viewGenerator = new ViewGenerator(packageName, ribName, isKotlinSelected);
-        ViewRouterGenerator viewRouterGenerator = new ViewRouterGenerator(packageName, ribName, isKotlinSelected);
+    InteractorWithPresenterGenerator interactorGenerator =
+        new InteractorWithPresenterGenerator(packageName, ribName, isKotlinSelected);
+    ViewBuilderGenerator viewBuilderGenerator = new ViewBuilderGenerator(packageName, ribName, isKotlinSelected);
+    ViewGenerator viewGenerator = new ViewGenerator(packageName, ribName, isKotlinSelected);
+    ViewRouterGenerator viewRouterGenerator = new ViewRouterGenerator(packageName, ribName, isKotlinSelected);
 
-        InteractorWithPresenterTestGenerator interactorWithPresenterTestGenerator =
-                new InteractorWithPresenterTestGenerator(packageName, ribName, isKotlinSelected);
-        ViewRouterTestGenerator viewRouterTestGenerator =
-                new ViewRouterTestGenerator(packageName, ribName, isKotlinSelected);
+    InteractorWithPresenterTestGenerator interactorWithPresenterTestGenerator =
+        new InteractorWithPresenterTestGenerator(packageName, ribName, isKotlinSelected);
+    ViewRouterTestGenerator viewRouterTestGenerator =
+        new ViewRouterTestGenerator(packageName, ribName, isKotlinSelected);
 
-        return new GeneratorPair(
-                ImmutableList.of(
-                        interactorGenerator,
-                        viewBuilderGenerator,
-                        viewGenerator,
-                        viewRouterGenerator),
-                ImmutableList.of(interactorWithPresenterTestGenerator, viewRouterTestGenerator));
-    }
+    return new GeneratorPair(
+        ImmutableList.of(
+            interactorGenerator,
+            viewBuilderGenerator,
+            viewGenerator,
+            viewRouterGenerator),
+        ImmutableList.of(interactorWithPresenterTestGenerator, viewRouterTestGenerator));
+  }
 
-    /**
-     * @param packageName to use for generators.
-     * @param ribName     to use for generators.
-     * @return a list of generators to use when generating a rib without a presenter and view.
-     */
-    static GeneratorPair getGeneratorsForRibWithoutPresenterAndView(
-            String packageName, String ribName, boolean isKotlinSelected) {
-        InteractorWithEmptyPresenterGenerator interactorGenerator =
-                new InteractorWithEmptyPresenterGenerator(packageName, ribName, isKotlinSelected);
-        BuilderGenerator builderGenerator = new BuilderGenerator(packageName, ribName, isKotlinSelected);
-        RouterGenerator routerGenerator = new RouterGenerator(packageName, ribName, isKotlinSelected);
+  /**
+   * @param packageName to use for generators.
+   * @param ribName     to use for generators.
+   * @return a list of generators to use when generating a rib without a presenter and view.
+   */
+  public static GeneratorPair getGeneratorsForRibWithoutPresenterAndView(
+      String packageName, String ribName, boolean isKotlinSelected) {
+    InteractorWithEmptyPresenterGenerator interactorGenerator =
+        new InteractorWithEmptyPresenterGenerator(packageName, ribName, isKotlinSelected);
+    BuilderGenerator builderGenerator = new BuilderGenerator(packageName, ribName, isKotlinSelected);
+    RouterGenerator routerGenerator = new RouterGenerator(packageName, ribName, isKotlinSelected);
 
-        InteractorWithEmptyPresenterTestGenerator interactorWithEmptyPresenterTestGenerator =
-                new InteractorWithEmptyPresenterTestGenerator(packageName, ribName, isKotlinSelected);
-        RouterTestGenerator routerTestGenerator = new RouterTestGenerator(packageName, ribName, isKotlinSelected);
+    InteractorWithEmptyPresenterTestGenerator interactorWithEmptyPresenterTestGenerator =
+        new InteractorWithEmptyPresenterTestGenerator(packageName, ribName, isKotlinSelected);
+    RouterTestGenerator routerTestGenerator = new RouterTestGenerator(packageName, ribName, isKotlinSelected);
 
-        return new GeneratorPair(
-                ImmutableList.of(interactorGenerator, builderGenerator, routerGenerator),
-                ImmutableList.of(interactorWithEmptyPresenterTestGenerator, routerTestGenerator));
-    }
+    return new GeneratorPair(
+        ImmutableList.of(interactorGenerator, builderGenerator, routerGenerator),
+        ImmutableList.of(interactorWithEmptyPresenterTestGenerator, routerTestGenerator));
+  }
 }

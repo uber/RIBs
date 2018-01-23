@@ -11,15 +11,15 @@ import android.view.View;
  */
 class ${rib_name}View extends View implements ${rib_name}Interactor.${rib_name}Presenter {
 
-    public ${rib_name}View(Context context) {
-        this(context, null);
-    }
+  public ${rib_name}View(Context context) {
+    this(context, null);
+  }
 
-    public ${rib_name}View(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
-    }
+  public ${rib_name}View(Context context, @Nullable AttributeSet attrs) {
+    this(context, attrs, 0);
+  }
 
-    public ${rib_name}View(Context context, @Nullable AttributeSet attrs, int defStyle) {
-        super(context, attrs, defStyle);
-    }
+  public ${rib_name}View(Context context, @Nullable AttributeSet attrs, int defStyle) {
+    super(context, attrs, defStyle);
+  }
 }

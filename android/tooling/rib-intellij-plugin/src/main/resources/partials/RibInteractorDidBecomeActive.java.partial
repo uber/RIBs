@@ -1,6 +1,6 @@
-    @Override
-    protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
-        super.didBecomeActive(savedInstanceState);
+  @Override
+  protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
+    super.didBecomeActive(savedInstanceState);
 
-        // TODO: Add attachment logic here (RxSubscriptions, etc.).
-    }
+    // TODO: Add attachment logic here (RxSubscriptions, etc.).
+  }

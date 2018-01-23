@@ -19,14 +19,14 @@ import com.uber.presidio.intellij_plugin.generator.Generator;
 
 public class InteractorWithEmptyPresenterGenerator extends Generator {
 
-    private static final String TEMPLATE_NAME = "RibInteractorWithEmptyPresenter";
+  private static final String TEMPLATE_NAME = "RibInteractorWithEmptyPresenter";
 
-    public InteractorWithEmptyPresenterGenerator(String packageName, String ribName, boolean isKotlinSelected) {
-        super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
-    }
+  public InteractorWithEmptyPresenterGenerator(String packageName, String ribName, boolean isKotlinSelected) {
+    super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
+  }
 
-    @Override
-    public String getClassName() {
-        return String.format("%sInteractor", getRibName());
-    }
+  @Override
+  public String getClassName() {
+    return String.format("%sInteractor", getRibName());
+  }
 }
