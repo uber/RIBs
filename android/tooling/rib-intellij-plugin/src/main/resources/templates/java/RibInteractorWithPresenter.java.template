@@ -17,15 +17,15 @@ import javax.inject.Inject;
  */
 @RibInteractor
 public class ${rib_name}Interactor
-        extends Interactor<${rib_name}Interactor.${rib_name}Presenter, ${rib_name}Router> {
+    extends Interactor<${rib_name}Interactor.${rib_name}Presenter, ${rib_name}Router> {
 
-    @Inject ${rib_name}Presenter presenter;
+  @Inject ${rib_name}Presenter presenter;
 
 ${partial: RibInteractorDidBecomeActive.java.partial}
 ${partial: RibInteractorWillResignActive.java.partial}
 
-    /**
-     * Presenter interface implemented by this RIB's view.
-     */
-    interface ${rib_name}Presenter { }
+  /**
+   * Presenter interface implemented by this RIB's view.
+   */
+  interface ${rib_name}Presenter { }
 }

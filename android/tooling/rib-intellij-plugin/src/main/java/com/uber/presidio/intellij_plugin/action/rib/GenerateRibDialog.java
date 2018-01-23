@@ -29,50 +29,49 @@ import javax.swing.JTextField;
  */
 public class GenerateRibDialog extends DialogWrapper {
 
-    private JPanel contentPane;
-    private JTextField ribNameTextField;
-    private JCheckBox createPresenterAndViewCheckBox;
-    private JCheckBox createKotlinCode;
+  private final Listener listener;
+  private JPanel contentPane;
+  private JTextField ribNameTextField;
+  private JCheckBox createPresenterAndViewCheckBox;
+  private JCheckBox createKotlinCode;
 
-    private final Listener listener;
+  public GenerateRibDialog(final Listener listener) {
+    super(null);
+    this.listener = listener;
+    init();
 
-    public GenerateRibDialog(final Listener listener) {
-        super(null);
-        this.listener = listener;
-        init();
+    createPresenterAndViewCheckBox.setSelected(true);
+    createKotlinCode.setSelected(true);
+  }
 
-        createPresenterAndViewCheckBox.setSelected(true);
-        createKotlinCode.setSelected(true);
-    }
+  @Nullable
+  @Override
+  protected JComponent createCenterPanel() {
+    return contentPane;
+  }
 
-    @Nullable
-    @Override
-    protected JComponent createCenterPanel() {
-        return contentPane;
-    }
+  @Override
+  protected void doOKAction() {
+    super.doOKAction();
 
-    @Override
-    protected void doOKAction() {
-        super.doOKAction();
+    this.listener.onGenerateClicked(
+        ribNameTextField.getText(),
+        createPresenterAndViewCheckBox.isSelected(),
+        createKotlinCode.isSelected());
+  }
 
-        this.listener.onGenerateClicked(
-                ribNameTextField.getText(),
-                createPresenterAndViewCheckBox.isSelected(),
-                createKotlinCode.isSelected());
-    }
+  /**
+   * Listener interface to be implemented by consumers of the dialog.
+   */
+  public interface Listener {
 
     /**
-     * Listener interface to be implemented by consumers of the dialog.
+     * Called when the user clicks OK on the generate dialog.
+     *
+     * @param ribName                name for new rib.
+     * @param createPresenterAndView {@code true} when a presenter and a corresponding view should
+     *                               be created, {@code false} otherwise.
      */
-    public interface Listener {
-
-        /**
-         * Called when the user clicks OK on the generate dialog.
-         *
-         * @param ribName                name for new rib.
-         * @param createPresenterAndView {@code true} when a presenter and a corresponding view should
-         *                               be created, {@code false} otherwise.
-         */
-        void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected);
-    }
+    void onGenerateClicked(String ribName, boolean createPresenterAndView, boolean isKotlinSelected);
+  }
 }

@@ -1,4 +1,4 @@
-package ${package_name};
+package ${package_name}
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -19,83 +19,83 @@ import javax.inject.Scope
  */
 class ${rib_name}Builder(dependency: ParentComponent) : ViewBuilder<${rib_name}View, ${rib_name}Router, ${rib_name}Builder.ParentComponent>(dependency) {
 
-    /**
-     * Builds a new [${rib_name}Router].
-     *
-     * @param parentViewGroup parent view group that this router's view will be added to.
-     * @return a new [${rib_name}Router].
-     */
-    fun build(parentViewGroup: ViewGroup): ${rib_name}Router {
-        val view = createView(parentViewGroup)
-        val interactor = ${rib_name}Interactor()
-        val component = Dagger${rib_name}Builder_Component.builder()
-                .parentComponent(dependency)
-                .view(view)
-                .interactor(interactor)
-                .build()
-        return component.${rib_name_to_lower}Router()
-    }
+  /**
+   * Builds a new [${rib_name}Router].
+   *
+   * @param parentViewGroup parent view group that this router's view will be added to.
+   * @return a new [${rib_name}Router].
+   */
+  fun build(parentViewGroup: ViewGroup): ${rib_name}Router {
+    val view = createView(parentViewGroup)
+    val interactor = ${rib_name}Interactor()
+    val component = Dagger${rib_name}Builder_Component.builder()
+        .parentComponent(dependency)
+        .view(view)
+        .interactor(interactor)
+        .build()
+    return component.${rib_name_to_lower}Router()
+  }
 
-    override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): ${rib_name}View? {
-        // TODO: Inflate a new view using the provided inflater, or create a new view programatically using the
-        // provided context from the parentViewGroup.
-        return null
-    }
+  override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): ${rib_name}View? {
+    // TODO: Inflate a new view using the provided inflater, or create a new view programatically using the
+    // provided context from the parentViewGroup.
+    return null
+  }
 
-    interface ParentComponent {
-        // TODO: Define dependencies required from your parent interactor here.
-    }
+  interface ParentComponent {
+    // TODO: Define dependencies required from your parent interactor here.
+  }
 
-    @dagger.Module
-    abstract class Module {
-
-        @${rib_name}Scope
-        @Binds
-        internal abstract fun presenter(view: ${rib_name}View): ${rib_name}Interactor.${rib_name}Presenter
-
-        @dagger.Module
-        companion object {
-
-            @${rib_name}Scope
-            @Provides
-            @JvmStatic
-            internal fun router(
-                    component: Component,
-                    view: ${rib_name}View,
-                    interactor: ${rib_name}Interactor): ${rib_name}Router {
-                return ${rib_name}Router(view, interactor, component)
-            }
-        }
-
-        // TODO: Create provider methods for dependencies created by this Rib. These should be static.
-    }
+  @dagger.Module
+  abstract class Module {
 
     @${rib_name}Scope
-    @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
-    interface Component : InteractorBaseComponent<${rib_name}Interactor>, BuilderComponent {
+    @Binds
+    internal abstract fun presenter(view: ${rib_name}View): ${rib_name}Interactor.${rib_name}Presenter
 
-        @dagger.Component.Builder
-        interface Builder {
-            @BindsInstance
-            fun interactor(interactor: ${rib_name}Interactor): Builder
+    @dagger.Module
+    companion object {
 
-            @BindsInstance
-            fun view(view: ${rib_name}View): Builder
-
-            fun parentComponent(component: ParentComponent): Builder
-            fun build(): Component
-        }
+      @${rib_name}Scope
+      @Provides
+      @JvmStatic
+      internal fun router(
+          component: Component,
+          view: ${rib_name}View,
+          interactor: ${rib_name}Interactor): ${rib_name}Router {
+        return ${rib_name}Router(view, interactor, component)
+      }
     }
 
-    interface BuilderComponent {
-        fun ${rib_name_to_lower}Router(): ${rib_name}Router
+    // TODO: Create provider methods for dependencies created by this Rib. These should be static.
+  }
+
+  @${rib_name}Scope
+  @dagger.Component(modules = arrayOf(Module::class), dependencies = arrayOf(ParentComponent::class))
+  interface Component : InteractorBaseComponent<${rib_name}Interactor>, BuilderComponent {
+
+    @dagger.Component.Builder
+    interface Builder {
+      @BindsInstance
+      fun interactor(interactor: ${rib_name}Interactor): Builder
+
+      @BindsInstance
+      fun view(view: ${rib_name}View): Builder
+
+      fun parentComponent(component: ParentComponent): Builder
+      fun build(): Component
     }
+  }
 
-    @Scope
-    @Retention(CLASS)
-    internal annotation class ${rib_name}Scope
+  interface BuilderComponent {
+    fun ${rib_name_to_lower}Router(): ${rib_name}Router
+  }
 
-    @Qualifier
-    @Retention(CLASS)
-    internal annotation class ${rib_name}Internal
+  @Scope
+  @Retention(CLASS)
+  internal annotation class ${rib_name}Scope
+
+  @Qualifier
+  @Retention(CLASS)
+  internal annotation class ${rib_name}Internal
 }

@@ -19,14 +19,14 @@ import com.uber.presidio.intellij_plugin.generator.Generator;
 
 public class RouterGenerator extends Generator {
 
-    private static final String TEMPLATE_NAME = "RibRouter";
+  private static final String TEMPLATE_NAME = "RibRouter";
 
-    public RouterGenerator(String packageName, String ribName, boolean isKotlinSelected) {
-        super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
-    }
+  public RouterGenerator(String packageName, String ribName, boolean isKotlinSelected) {
+    super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
+  }
 
-    @Override
-    public String getClassName() {
-        return String.format("%sRouter", getRibName());
-    }
+  @Override
+  public String getClassName() {
+    return String.format("%sRouter", getRibName());
+  }
 }

@@ -11,27 +11,27 @@ import org.mockito.MockitoAnnotations
 
 class ${rib_name}InteractorTest : RibTestBasePlaceholder() {
 
-    @Mock internal lateinit var presenter: EmptyPresenter
-    @Mock internal lateinit var router: ${rib_name}Router
+  @Mock internal lateinit var presenter: EmptyPresenter
+  @Mock internal lateinit var router: ${rib_name}Router
 
-    private var interactor: ${rib_name}Interactor? = null
+  private var interactor: ${rib_name}Interactor? = null
 
-    @Before
-    fun setup() {
-        MockitoAnnotations.initMocks(this)
+  @Before
+  fun setup() {
+    MockitoAnnotations.initMocks(this)
 
-        interactor = Test${rib_name}Interactor.create()
-    }
+    interactor = Test${rib_name}Interactor.create()
+  }
 
-    /**
-     * TODO: Delete this example and add real tests.
-     */
-    @Test
-    fun anExampleTest_withSomeConditions_shouldPass() {
-        // Use InteractorHelper to drive your interactor's lifecycle.
-        InteractorHelper.attach(interactor!!, presenter, router, null)
-        InteractorHelper.detach(interactor!!)
+  /**
+   * TODO: Delete this example and add real tests.
+   */
+  @Test
+  fun anExampleTest_withSomeConditions_shouldPass() {
+    // Use InteractorHelper to drive your interactor's lifecycle.
+    InteractorHelper.attach(interactor!!, presenter, router, null)
+    InteractorHelper.detach(interactor!!)
 
-        throw RuntimeException("Remove this test and add real tests.")
-    }
+    throw RuntimeException("Remove this test and add real tests.")
+  }
 }

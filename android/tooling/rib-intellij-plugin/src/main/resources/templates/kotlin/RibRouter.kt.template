@@ -1,4 +1,4 @@
-package ${package_name};
+package ${package_name}
 
 import com.uber.rib.core.Router
 
@@ -8,5 +8,5 @@ import com.uber.rib.core.Router
  * TODO describe the possible child configurations of this scope.
  */
 class ${rib_name}Router(
-        interactor: ${rib_name}Interactor,
-        component: ${rib_name}Builder.Component) : Router<${rib_name}Interactor, ${rib_name}Builder.Component>(interactor, component)
+    interactor: ${rib_name}Interactor,
+    component: ${rib_name}Builder.Component) : Router<${rib_name}Interactor, ${rib_name}Builder.Component>(interactor, component)

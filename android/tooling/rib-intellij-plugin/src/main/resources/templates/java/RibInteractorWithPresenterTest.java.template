@@ -10,17 +10,17 @@ import org.mockito.MockitoAnnotations;
 
 public class ${rib_name}InteractorTest extends RibTestBasePlaceholder {
 
-    @Mock ${rib_name}Interactor.${rib_name}Presenter presenter;
-    @Mock ${rib_name}Router router;
+  @Mock ${rib_name}Interactor.${rib_name}Presenter presenter;
+  @Mock ${rib_name}Router router;
 
-    private ${rib_name}Interactor interactor;
+  private ${rib_name}Interactor interactor;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
 
-        interactor = Test${rib_name}Interactor.create(presenter);
-    }
+    interactor = Test${rib_name}Interactor.create(presenter);
+  }
 
 ${partial: ExampleInteractorTest.java.partial}
 }
