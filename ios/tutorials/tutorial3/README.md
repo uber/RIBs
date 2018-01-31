@@ -1,7 +1,7 @@
 # RIBs Tutorial 3: RIB Dependency Injection and Communication
 
 
-This project is the completed code for [tutorial 2](https://github.com/uber/RIBs/wiki/iOS-Tutorial-2) and the starting point for [tutorial 3](https://github.com/uber/RIBs/wiki/iOS-Tutorial-3).
+This project is the starting point for [tutorial 3](https://github.com/uber/RIBs/wiki/iOS-Tutorial-3).
 
 ### Getting started
 Install tooling, unless you've done so already:
