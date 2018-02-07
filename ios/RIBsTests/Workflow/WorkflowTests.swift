@@ -20,9 +20,7 @@ import RxSwift
 
 final class WorkerflowTests: XCTestCase {
 
-    // MARK: - Tests
-
-    func test_nestedStepDoNotRepeat() {
+    func test_nestedStepsDoNotRepeat() {
         var outerStep1RunCount = 0
         var outerStep2RunCount = 0
         var outerStep3RunCount = 0
@@ -79,7 +77,7 @@ final class WorkerflowTests: XCTestCase {
         XCTAssertEqual(innerStep3RunCount, 1, "Inner step 3 should not have been run more than once")
     }
 
-    func test_workflowRecivesError() {
+    func test_workflowReceivesError() {
         let workflow = TestWorkflow()
 
         let emptyObservable = Observable.just(((), ()))
@@ -126,6 +124,37 @@ final class WorkerflowTests: XCTestCase {
         XCTAssertEqual(0, workflow.errorCallCount)
     }
 
+    func test_workflowDidFork() {
+        let workflow = TestWorkflow()
+
+        let emptyObservable = Observable.just(((), ()))
+        _ = workflow
+            .onStep { _ -> Observable<((), ())> in
+                return emptyObservable
+            }
+            .onStep { _, _ -> Observable<((), ())> in
+                return emptyObservable
+            }
+            .onStep { _, _ -> Observable<((), ())> in
+                return emptyObservable
+            }
+            .onStep { _, _ -> Observable<((), ())> in
+                let forkedStep: Step<(), (), ()>? = emptyObservable.fork(workflow)
+                forkedStep?
+                    .onStep { _, _ -> Observable<((), ())> in
+                        return emptyObservable
+                    }
+                    .commit()
+                return emptyObservable
+            }
+            .commit()
+            .subscribe(())
+
+        XCTAssertEqual(1, workflow.completeCallCount)
+        XCTAssertEqual(1, workflow.forkCallCount)
+        XCTAssertEqual(0, workflow.errorCallCount)
+    }
+
     func test_fork_verifySingleInvocationAtRoot() {
         let workflow = TestWorkflow()
 
@@ -135,7 +164,7 @@ final class WorkerflowTests: XCTestCase {
             .onStep { _ -> Observable<((), ())> in
                 rootCallCount += 1
                 return emptyObservable
-            }
+        }
 
         let firstFork: Step<(), (), ()>? = rootStep.asObservable().fork(workflow)
         _ = firstFork?
@@ -163,29 +192,20 @@ private enum WorkflowTestError: Error {
     case error
 }
 
-private final class TestWorkflow: Workflow<()> {
-
-    private(set) var completeCallCount: Int = 0
-    private(set) var errorCallCount: Int = 0
-    private(set) var forkCallCount: Int = 0
-
-    // MARK: - Overrides
+private class TestWorkflow: Workflow<()> {
+    var completeCallCount = 0
+    var errorCallCount = 0
+    var forkCallCount = 0
 
     override func didComplete() {
-        super.didComplete()
-
         completeCallCount += 1
     }
 
     override func didFork() {
-        super.didFork()
-
-        errorCallCount += 1
+        forkCallCount += 1
     }
 
     override func didReceiveError(_ error: Error) {
-        super.didReceiveError(error)
-
         errorCallCount += 1
     }
 }
