@@ -57,10 +57,12 @@ dependencies {
 
 tasks.withType(JavaCompile) {
     // NullAway configuration
-    options.compilerArgs += [
-            "-Xep:NullAway:ERROR",
-            "-XepOpt:NullAway:AnnotatedPackages=com.uber",
-            // Dagger doesn't pass the NullAway checks. So we
-            // use the following flag to disable Error Prone on generated code.
-            "-XepExcludedPaths:.*/build/generated/.*"]
+    if (!name.toLowerCase().contains("test")) {
+        options.compilerArgs += [
+                "-Xep:NullAway:ERROR",
+                "-XepOpt:NullAway:AnnotatedPackages=com.uber",
+                // Dagger doesn't pass the NullAway checks. So we
+                // use the following flag to disable Error Prone on generated code.
+                "-XepExcludedPaths:.*/build/generated/.*"]
+    }
 }
