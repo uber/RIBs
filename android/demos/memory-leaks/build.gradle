@@ -59,6 +59,7 @@ dependencies {
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-app")
     annotationProcessor project(":libraries:rib-compiler-test")
+    annotationProcessor deps.apt.nullAway
     compile project(":libraries:rib-android")
     compile deps.external.dagger
     compile deps.external.rxbinding
@@ -79,9 +80,11 @@ tasks.withType(JavaCompile) {
             "-Xep:InvalidPatternSyntax:OFF",
             "-Xep:OperatorPrecedence:OFF",
             "-Xep:DefaultCharset:OFF"]
-    // Dagger doesn't pass the NullAway checks. So we need to set NullAway to null
-    // use the following flag to disable nullaway on generated code.
+    // NullAway configuration
     options.compilerArgs += [
-            "-XepDisableWarningsInGeneratedCode"
-    ]
+            "-Xep:NullAway:ERROR",
+            "-XepOpt:NullAway:AnnotatedPackages=com.uber",
+            // Dagger doesn't pass the NullAway checks. So we
+            // use the following flag to disable Error Prone on generated code.
+            "-XepExcludedPaths:.*/build/generated/.*"]
 }
