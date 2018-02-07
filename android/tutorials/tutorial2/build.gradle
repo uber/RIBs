@@ -58,6 +58,8 @@ dependencies {
 }
 
 tasks.withType(JavaCompile) {
+    options.compilerArgs += [
+            "-Xep:CheckReturnValue:OFF"]
     // NullAway configuration
     options.compilerArgs += [
             "-Xep:NullAway:ERROR",
