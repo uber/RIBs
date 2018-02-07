@@ -17,6 +17,10 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'net.ltgt.errorprone'
 
+// we use this config to get the path of the JDK 9 javac jar, to
+// stick it in the bootclasspath when running tests
+configurations.maybeCreate("epJavac")
+
 sourceCompatibility = "1.8"
 targetCompatibility = "1.8"
 
@@ -30,8 +34,14 @@ dependencies {
     compileOnly deps.apt.autoService
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
+    epJavac deps.build.errorProneCore
+
     testCompile deps.test.junit
     testCompile(deps.build.errorProneTestHelpers) {
         exclude group: "junit", module: "junit"
     }
+}
+
+test {
+  jvmArgs "-Xbootclasspath/p:${configurations.epJavac.asPath}"
 }
