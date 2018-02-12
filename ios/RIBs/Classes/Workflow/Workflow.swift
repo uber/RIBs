@@ -77,10 +77,25 @@ open class Workflow<ActionableItemType> {
         return compositeDisposable
     }
 
-    // MARK: - Private Interface
+    // MARK: - Private
 
     private let subject = PublishSubject<(ActionableItemType, ())>()
+    private var didInvokeComplete = false
+
+    /// The composite disposable that contains all subscriptions including the original workflow
+    /// as well as all the forked ones.
     fileprivate let compositeDisposable = CompositeDisposable()
+
+    fileprivate func didCompleteIfNotYet() {
+        // Since a workflow may be forked to produce multiple subscribed Rx chains, we should
+        // ensure the didComplete method is only invoked once per Workflow instance. See `Step.commit`
+        // on why the side-effects must be added at the end of the Rx chains.
+        guard !didInvokeComplete else {
+            return
+        }
+        didInvokeComplete = true
+        didComplete()
+    }
 }
 
 /// Defines a single step in a `Workflow`.
@@ -145,8 +160,10 @@ open class Step<WorkflowActionableItemType, ActionableItemType, ValueType> {
     /// - returns: The committed `Workflow`.
     @discardableResult
     public final func commit() -> Workflow<WorkflowActionableItemType> {
+        // Side-effects must be chained at the last observable sequence, since errors and complete
+        // events can be emitted by any observables on any steps of the workflow.
         let disposable = observable
-            .do(onError: workflow.didReceiveError, onCompleted: workflow.didComplete)
+            .do(onError: workflow.didReceiveError, onCompleted: workflow.didCompleteIfNotYet)
             .subscribe()
         _ = workflow.compositeDisposable.insert(disposable)
         return workflow
