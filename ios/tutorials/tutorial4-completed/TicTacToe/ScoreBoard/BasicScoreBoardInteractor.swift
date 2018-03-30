@@ -22,7 +22,7 @@ public protocol BasicScoreBoardRouting: ViewableRouting {
 }
 
 protocol BasicScoreBoardPresentable: Presentable {
-    weak var listener: BasicScoreBoardPresentableListener? { get set }
+    var listener: BasicScoreBoardPresentableListener? { get set }
     func set(score: Score)
 }
 

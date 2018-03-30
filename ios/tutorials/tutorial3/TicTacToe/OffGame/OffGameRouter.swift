@@ -17,8 +17,8 @@
 import RIBs
 
 protocol OffGameInteractable: Interactable {
-    weak var router: OffGameRouting? { get set }
-    weak var listener: OffGameListener? { get set }
+    var router: OffGameRouting? { get set }
+    var listener: OffGameListener? { get set }
 }
 
 protocol OffGameViewControllable: ViewControllable {

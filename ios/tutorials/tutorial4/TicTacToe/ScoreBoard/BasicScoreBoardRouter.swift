@@ -17,8 +17,8 @@
 import RIBs
 
 protocol BasicScoreBoardInteractable: Interactable {
-    weak var router: BasicScoreBoardRouting? { get set }
-    weak var listener: BasicScoreBoardListener? { get set }
+    var router: BasicScoreBoardRouting? { get set }
+    var listener: BasicScoreBoardListener? { get set }
 }
 
 protocol BasicScoreBoardViewControllable: ViewControllable {

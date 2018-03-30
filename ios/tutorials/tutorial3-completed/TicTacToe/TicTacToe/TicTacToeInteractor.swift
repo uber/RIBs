@@ -22,7 +22,7 @@ protocol TicTacToeRouting: ViewableRouting {
 }
 
 protocol TicTacToePresentable: Presentable {
-    weak var listener: TicTacToePresentableListener? { get set }
+    var listener: TicTacToePresentableListener? { get set }
     func setCell(atRow row: Int, col: Int, withPlayerType playerType: PlayerType)
     func announce(winner: PlayerType?, withCompletionHandler handler: @escaping () -> ())
 }
