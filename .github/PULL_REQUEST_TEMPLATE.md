@@ -1,5 +1,5 @@
 <!--
-Thank you for contributing to AutoDispose. Before pressing the "Create Pull Request" button, please consider the following points.
+Thank you for contributing to RIBs. Before pressing the "Create Pull Request" button, please consider the following points.
 Feel free to remove any irrelevant parts that you know are not related to the issue.
 Any HTML comment like this will be stripped when rendering markdown, no need to delete them.
 -->
