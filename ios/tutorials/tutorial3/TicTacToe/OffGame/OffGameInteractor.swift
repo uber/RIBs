@@ -22,7 +22,7 @@ protocol OffGameRouting: ViewableRouting {
 }
 
 protocol OffGamePresentable: Presentable {
-    weak var listener: OffGamePresentableListener? { get set }
+    var listener: OffGamePresentableListener? { get set }
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 

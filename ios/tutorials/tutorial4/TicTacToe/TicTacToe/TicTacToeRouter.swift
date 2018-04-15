@@ -17,8 +17,8 @@
 import RIBs
 
 protocol TicTacToeInteractable: Interactable {
-    weak var router: TicTacToeRouting? { get set }
-    weak var listener: TicTacToeListener? { get set }
+    var router: TicTacToeRouting? { get set }
+    var listener: TicTacToeListener? { get set }
 }
 
 protocol TicTacToeViewControllable: ViewControllable {

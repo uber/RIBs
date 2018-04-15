@@ -17,8 +17,8 @@
 import RIBs
 
 protocol RandomWinInteractable: Interactable {
-    weak var router: RandomWinRouting? { get set }
-    weak var listener: RandomWinListener? { get set }
+    var router: RandomWinRouting? { get set }
+    var listener: RandomWinListener? { get set }
 }
 
 protocol RandomWinViewControllable: ViewControllable {

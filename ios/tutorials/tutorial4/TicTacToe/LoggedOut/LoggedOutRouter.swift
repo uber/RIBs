@@ -17,8 +17,8 @@
 import RIBs
 
 protocol LoggedOutInteractable: Interactable {
-    weak var router: LoggedOutRouting? { get set }
-    weak var listener: LoggedOutListener? { get set }
+    var router: LoggedOutRouting? { get set }
+    var listener: LoggedOutListener? { get set }
 }
 
 protocol LoggedOutViewControllable: ViewControllable {

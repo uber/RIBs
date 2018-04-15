@@ -3,8 +3,8 @@
 import RIBs
 
 protocol ___VARIABLE_productName___Interactable: Interactable {
-    weak var router: ___VARIABLE_productName___Routing? { get set }
-    weak var listener: ___VARIABLE_productName___Listener? { get set }
+    var router: ___VARIABLE_productName___Routing? { get set }
+    var listener: ___VARIABLE_productName___Listener? { get set }
 }
 
 protocol ___VARIABLE_productName___ViewControllable: ViewControllable {

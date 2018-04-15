@@ -17,8 +17,8 @@
 import RIBs
 
 protocol RootInteractable: Interactable, LoggedOutListener {
-    weak var router: RootRouting? { get set }
-    weak var listener: RootListener? { get set }
+    var router: RootRouting? { get set }
+    var listener: RootListener? { get set }
 }
 
 protocol RootViewControllable: ViewControllable {

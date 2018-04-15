@@ -22,7 +22,7 @@ public protocol RandomWinRouting: ViewableRouting {
 }
 
 protocol RandomWinPresentable: Presentable {
-    weak var listener: RandomWinPresentableListener? { get set }
+    var listener: RandomWinPresentableListener? { get set }
     func announce(winner: PlayerType, withCompletionHandler handler: @escaping () -> ())
 }
 
