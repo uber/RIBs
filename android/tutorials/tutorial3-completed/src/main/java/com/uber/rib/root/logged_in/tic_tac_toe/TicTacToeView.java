@@ -21,15 +21,12 @@ import android.support.annotation.Nullable;
 import android.support.percent.PercentRelativeLayout;
 import android.util.AttributeSet;
 import android.widget.TextView;
-
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
-
-import java.util.ArrayList;
-
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
+import java.util.ArrayList;
 
 /**
  * Top level view for {@link TicTacToeBuilder.TicTacToeScope}.

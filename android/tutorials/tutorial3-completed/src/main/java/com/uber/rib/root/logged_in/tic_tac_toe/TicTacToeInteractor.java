@@ -31,13 +31,15 @@ import javax.inject.Named;
  */
 @RibInteractor
 public class TicTacToeInteractor
-        extends Interactor<TicTacToeInteractor.TicTacToePresenter, TicTacToeRouter> {
+    extends Interactor<TicTacToeInteractor.TicTacToePresenter, TicTacToeRouter> {
 
   @Inject Board board;
+  @Inject Listener listener;
   @Inject TicTacToePresenter presenter;
 
-  private final String playerOne = "Fake name 1";
-  private final String playerTwo = "Fake name 2";
+  @Inject @Named("player_one") String playerOne;
+
+  @Inject @Named("player_two") String playerTwo;
 
   private MarkerType currentPlayer = MarkerType.CROSS;
 
@@ -46,37 +48,40 @@ public class TicTacToeInteractor
     super.didBecomeActive(savedInstanceState);
 
     presenter
-            .squareClicks()
-            .subscribe(
-                    new Consumer<BoardCoordinate>() {
-                      @Override
-                      public void accept(BoardCoordinate xy) throws Exception {
-                        if (board.cells[xy.getX()][xy.getY()] == null) {
-                          if (currentPlayer == MarkerType.CROSS) {
-                            board.cells[xy.getX()][xy.getY()] = MarkerType.CROSS;
-                            board.currentRow = xy.getX();
-                            board.currentCol = xy.getY();
-                            presenter.addCross(xy);
-                            currentPlayer = MarkerType.NOUGHT;
-                          } else {
-                            board.cells[xy.getX()][xy.getY()] = MarkerType.NOUGHT;
-                            board.currentRow = xy.getX();
-                            board.currentCol = xy.getY();
-                            presenter.addNought(xy);
-                            currentPlayer = MarkerType.CROSS;
-                          }
-                        }
-                        if (board.hasWon(MarkerType.CROSS)) {
-                          presenter.setPlayerWon(playerOne);
-                        } else if (board.hasWon(MarkerType.NOUGHT)) {
-                          presenter.setPlayerWon(playerTwo);
-                        } else if (board.isDraw()) {
-                          presenter.setPlayerTie();
-                        } else {
-                          updateCurrentPlayer();
-                        }
-                      }
-                    });
+        .squareClicks()
+        .subscribe(
+            new Consumer<BoardCoordinate>() {
+              @Override
+              public void accept(BoardCoordinate xy) throws Exception {
+                if (board.cells[xy.getX()][xy.getY()] == null) {
+                  if (currentPlayer == MarkerType.CROSS) {
+                    board.cells[xy.getX()][xy.getY()] = MarkerType.CROSS;
+                    board.currentRow = xy.getX();
+                    board.currentCol = xy.getY();
+                    presenter.addCross(xy);
+                    currentPlayer = MarkerType.NOUGHT;
+                  } else {
+                    board.cells[xy.getX()][xy.getY()] = MarkerType.NOUGHT;
+                    board.currentRow = xy.getX();
+                    board.currentCol = xy.getY();
+                    presenter.addNought(xy);
+                    currentPlayer = MarkerType.CROSS;
+                  }
+                }
+                if (board.hasWon(MarkerType.CROSS)) {
+                  presenter.setPlayerWon(playerOne);
+                  listener.gameWon(playerOne);
+                } else if (board.hasWon(MarkerType.NOUGHT)) {
+                  presenter.setPlayerWon(playerTwo);
+                  listener.gameWon(playerTwo);
+                } else if (board.isDraw()) {
+                  presenter.setPlayerTie();
+                  listener.gameWon(null);
+                } else {
+                  updateCurrentPlayer();
+                }
+              }
+            });
     updateCurrentPlayer();
   }
 
@@ -108,5 +113,11 @@ public class TicTacToeInteractor
 
   public interface Listener {
 
+    /**
+     * Called when the game is over.
+     *
+     * @param winner player that won, or null if it's a tie.
+     */
+    void gameWon(@Nullable String winner);
   }
 }

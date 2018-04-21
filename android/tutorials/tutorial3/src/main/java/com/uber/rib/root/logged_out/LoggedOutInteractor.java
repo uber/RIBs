@@ -18,6 +18,7 @@ package com.uber.rib.root.logged_out;
 
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;
+
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
@@ -40,12 +41,12 @@ public class LoggedOutInteractor
   protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
     super.didBecomeActive(savedInstanceState);
     presenter
-        .playerNames()
+        .loginName()
         .subscribe(new Consumer<Pair<String, String>>() {
           @Override
           public void accept(Pair<String, String> names) throws Exception {
             if (!isEmpty(names.first) && !isEmpty(names.second)) {
-              listener.requestLogin(names.first, names.second);
+              listener.login(names.first, names.second);
             }
           }
         });
@@ -60,12 +61,11 @@ public class LoggedOutInteractor
    */
   interface LoggedOutPresenter {
 
-    Observable<Pair<String, String>> playerNames();
+    Observable<Pair<String, String>> loginName();
   }
 
   public interface Listener {
-
-    void requestLogin(String playerOne, String playerTwo);
+    void login(String userNameA, String userNameB);
   }
 
 }

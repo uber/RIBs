@@ -63,6 +63,20 @@ public class OffGameView extends LinearLayout implements OffGameInteractor.OffGa
   }
 
   @Override
+  public void setPlayerNames(String playerOne, String playerTwo) {
+    playerOneName.setText(playerOne);
+    playerTwoName.setText(playerTwo);
+  }
+
+  @Override
+  public void setScores(Integer playerOneScore, Integer playerTwoScore) {
+    this.playerOneScore.setText(
+        String.format(Locale.getDefault(), "Win Count: %d", playerOneScore));
+    this.playerTwoScore.setText(
+        String.format(Locale.getDefault(), "Win Count: %d", playerTwoScore));
+  }
+
+  @Override
   public Observable<Object> startGameRequest() {
     return RxView.clicks(button);
   }

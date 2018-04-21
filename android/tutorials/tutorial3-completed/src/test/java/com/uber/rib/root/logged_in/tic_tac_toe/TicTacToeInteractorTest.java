@@ -10,9 +10,13 @@ import org.mockito.MockitoAnnotations;
 
 public class TicTacToeInteractorTest extends RibTestBasePlaceholder {
 
+    private final String playerOne = "playerOne";
+    private final String playerTwo = "playerTwo";
+
+    @Mock Board board;
+    @Mock TicTacToeInteractor.Listener listener;
     @Mock TicTacToeInteractor.TicTacToePresenter presenter;
     @Mock TicTacToeRouter router;
-    @Mock Board board;
 
     private TicTacToeInteractor interactor;
 
@@ -20,6 +24,11 @@ public class TicTacToeInteractorTest extends RibTestBasePlaceholder {
     public void setup() {
         MockitoAnnotations.initMocks(this);
 
-        interactor = TestTicTacToeInteractor.create(board, presenter);
+        interactor = TestTicTacToeInteractor.create(
+            board,
+            listener,
+            presenter,
+            playerOne,
+            playerTwo);
     }
 }
