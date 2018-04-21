@@ -74,6 +74,9 @@ public class LeakDetector {
     /// - returns: The handle that can be used to cancel the expectation.
     @discardableResult
     public func expectDeallocate(object: AnyObject, inTime time: TimeInterval = LeakDefaultExpectationTime.deallocation) -> LeakDetectionHandle {
+        if object is UIViewController {
+            return LeakDetectionHandleImpl {}
+        }
         expectationCount.value += 1
 
         let objectDescription = String(describing: object)
