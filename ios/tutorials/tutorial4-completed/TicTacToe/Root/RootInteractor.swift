@@ -55,8 +55,6 @@ final class RootInteractor: PresentableInteractor<RootPresentable>, RootInteract
 
     // MARK: - LoggedOutListener
 
-    // MARK: - LoggedOutListener
-
     func didLogin(withPlayer1Name player1Name: String, player2Name: String) {
         let loggedInActionableItem = router?.routeToLoggedIn(withPlayer1Name: player1Name, player2Name: player2Name)
         if let loggedInActionableItem = loggedInActionableItem {
