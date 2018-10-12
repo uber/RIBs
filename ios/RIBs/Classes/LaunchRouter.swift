@@ -34,7 +34,7 @@ open class LaunchRouter<InteractorType>: Router<InteractorType>, LaunchRouting {
     /// - parameter window: The corresponding `UIWindow` of this `Router`.
     private weak var window: UIWindow?
 
-    public override init(interactor: InteractorType, window: UIWindow) {
+    public init(interactor: InteractorType, window: UIWindow) {
         self.window = window
         window.makeKeyAndVisible()
         super.init(interactor: interactor)

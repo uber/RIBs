@@ -38,7 +38,7 @@ final class LaunchRouterTests: XCTestCase {
 
     func test_launchFromWindow() {
         let viewController = ViewControllableMock()
-        launchRouter.show(viewController: viewController)
+        launchRouter.show(viewController: viewController.uiviewController)
 
         XCTAssert(window.rootViewController === viewController.uiviewController)
         XCTAssert(window.isKeyWindow)
