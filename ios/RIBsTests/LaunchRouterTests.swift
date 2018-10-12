@@ -36,7 +36,7 @@ final class LaunchRouterTests: XCTestCase {
 
     // MARK: - Tests
 
-    func test_launchFromWindow() {
+    func test_showViewController() {
         let viewController = ViewControllableMock()
         launchRouter.show(viewController: viewController.uiviewController)
 
