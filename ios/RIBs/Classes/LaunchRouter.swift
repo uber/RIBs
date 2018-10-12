@@ -17,33 +17,36 @@
 import UIKit
 
 /// The root `Router` of an application.
-public protocol LaunchRouting: ViewableRouting {
+public protocol LaunchRouting: Routing {
 
     /// Launches the router tree.
     ///
     /// - parameter window: The application window to launch from.
-    func launch(from window: UIWindow)
+    func show(viewController: UIViewController)
 }
 
 /// The application root router base class, that acts as the root of the router tree.
-open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<InteractorType, ViewControllerType>, LaunchRouting {
+open class LaunchRouter<InteractorType>: Router<InteractorType>, LaunchRouting {
 
     /// Initializer.
     ///
     /// - parameter interactor: The corresponding `Interactor` of this `Router`.
-    /// - parameter viewController: The corresponding `ViewController` of this `Router`.
-    public override init(interactor: InteractorType, viewController: ViewControllerType) {
-        super.init(interactor: interactor, viewController: viewController)
-    }
+    /// - parameter window: The corresponding `UIWindow` of this `Router`.
+    private weak var window: UIWindow?
 
-    /// Launches the router tree.
-    ///
-    /// - parameter window: The window to launch the router tree in.
-    public final func launch(from window: UIWindow) {
-        window.rootViewController = viewControllable.uiviewController
+    public override init(interactor: InteractorType, window: UIWindow) {
+        self.window = window
         window.makeKeyAndVisible()
-
+        super.init(interactor: interactor)
+        
         interactable.activate()
         load()
+    }
+
+    /// Set root UIViewController.
+    ///
+    /// - parameter viewController: The viewController to be set as root of UIWindow.
+    public final func show(viewController: UIViewController) {
+        window?.rootViewController = viewController
     }
 }
