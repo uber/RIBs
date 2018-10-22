@@ -44,25 +44,25 @@ class ViewControllableMock: ViewControllable {
 
 class InteractorMock: Interactable {
     var isActive: Bool {
-        return active.value
+        return try! active.value()
     }
 
     var isActiveStream: Observable<Bool> {
         return active.asObservable()
     }
 
-    private let active = Variable<Bool>(false)
+    private let active = BehaviorSubject<Bool>(value: false)
 
     init() {}
 
     // MARK: - Lifecycle
 
     func activate() {
-        active.value = true
+        active.onNext(true)
     }
 
     func deactivate() {
-        active.value = false
+        active.onNext(false)
     }
 }
 
