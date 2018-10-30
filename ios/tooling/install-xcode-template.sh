@@ -1,7 +1,11 @@
 #!/usr/bin/env sh
 
 # Configuration
-XCODE_TEMPLATE_DIR=$HOME'/Library/Developer/Xcode/Templates/File Templates/RIBs'
+MY_XCODE_PATH="$(xcode-select -p)"
+XCODE_SELECT_PATH_SUFFIX='/Contents/Developer' # xcode-select -p includes this after the path we need to append templates to
+TEMPLATE_DIR_PATH_SUFFIX='/Templates/File Templates/RIBs'
+XCODE_TEMPLATE_DIR="$(echo ${MY_XCODE_PATH/$XCODE_SELECT_PATH_SUFFIX/$TEMPLATE_DIR_PATH_SUFFIX})"
+
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 # Copy RIBs file templates into the local RIBs template directory
