@@ -59,7 +59,7 @@ public class LeakDetector {
     /// The status changes between InProgress and DidComplete as units register for new detections, cancel existing
     /// detections, and existing detections complete.
     public var status: Observable<LeakDetectionStatus> {
-        return expectationCount
+        return expectationCountSubject
             .asObservable()
             .map { expectationCount in
                 expectationCount > 0 ? LeakDetectionStatus.InProgress : LeakDetectionStatus.DidComplete
@@ -74,14 +74,14 @@ public class LeakDetector {
     /// - returns: The handle that can be used to cancel the expectation.
     @discardableResult
     public func expectDeallocate(object: AnyObject, inTime time: TimeInterval = LeakDefaultExpectationTime.deallocation) -> LeakDetectionHandle {
-        expectationCount.value += 1
+        expectationCount += 1
 
         let objectDescription = String(describing: object)
         let objectId = String(ObjectIdentifier(object).hashValue) as NSString
         trackingObjects.setObject(object, forKey: objectId)
 
         let handle = LeakDetectionHandleImpl {
-            self.expectationCount.value -= 1
+            self.expectationCount -= 1
         }
 
         Executor.execute(withDelay: time) {
@@ -101,7 +101,7 @@ public class LeakDetector {
                 }
             }
 
-            self.expectationCount.value -= 1
+            self.expectationCount -= 1
         }
 
         return handle
@@ -114,10 +114,10 @@ public class LeakDetector {
     /// - returns: The handle that can be used to cancel the expectation.
     @discardableResult
     public func expectViewControllerDisappear(viewController: UIViewController, inTime time: TimeInterval = LeakDefaultExpectationTime.viewDisappear) -> LeakDetectionHandle {
-        expectationCount.value += 1
+        expectationCount += 1
 
         let handle = LeakDetectionHandleImpl {
-            self.expectationCount.value -= 1
+            self.expectationCount -= 1
         }
 
         Executor.execute(withDelay: time) { [weak viewController] in
@@ -137,7 +137,7 @@ public class LeakDetector {
                 }
             }
 
-            self.expectationCount.value -= 1
+            self.expectationCount -= 1
         }
 
         return handle
@@ -152,14 +152,19 @@ public class LeakDetector {
         /// Reset the state of Leak Detector, internal for UI test only.
         func reset() {
             trackingObjects.removeAllObjects()
-            expectationCount.value = 0
+            expectationCount = 0
         }
     #endif
 
     // MARK: - Private Interface
 
     private let trackingObjects = NSMapTable<AnyObject, AnyObject>.strongToWeakObjects()
-    private let expectationCount = Variable<Int>(0)
+    private let expectationCountSubject = ReplaySubject<Int>.create(bufferSize: 0)
+    private var expectationCount: Int {
+        didSet {
+            expectationCountSubject.onNext(expectationCount)
+        }
+    }
 
     lazy var disableLeakDetector: Bool = {
         if let environmentValue = ProcessInfo().environment["DISABLE_LEAK_DETECTION"] {
@@ -169,16 +174,15 @@ public class LeakDetector {
         return LeakDetector.disableLeakDetectorOverride
     }()
 
-    private init() {}
+    private init() {
+        expectationCount = 0
+    }
 }
 
 fileprivate class LeakDetectionHandleImpl: LeakDetectionHandle {
 
-    var cancelled: Bool {
-        return cancelledVariable.value
-    }
+    var cancelled = false
 
-    let cancelledVariable = Variable<Bool>(false)
     let cancelClosure: (() -> ())?
 
     init(cancelClosure: (() -> ())? = nil) {
@@ -186,7 +190,7 @@ fileprivate class LeakDetectionHandleImpl: LeakDetectionHandle {
     }
 
     func cancel() {
-        cancelledVariable.value = true
+        cancelled = true
         cancelClosure?()
     }
 }
