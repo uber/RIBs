@@ -194,3 +194,4 @@ fileprivate class LeakDetectionHandleImpl: LeakDetectionHandle {
         cancelClosure?()
     }
 }
+
