@@ -25,6 +25,20 @@ public protocol LaunchRouting: ViewableRouting {
     func launch(from window: UIWindow)
 }
 
+public extension LaunchRouting {
+
+    /// Launches the router tree.
+    ///
+    /// - parameter window: The window to launch the router tree in.
+    public func launch(from window: UIWindow) {
+        window.rootViewController = viewControllable.uiviewController
+        window.makeKeyAndVisible()
+
+        interactable.activate()
+        load()
+    }
+}
+
 /// The application root router base class, that acts as the root of the router tree.
 open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<InteractorType, ViewControllerType>, LaunchRouting {
 
@@ -34,16 +48,5 @@ open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<Inte
     /// - parameter viewController: The corresponding `ViewController` of this `Router`.
     public override init(interactor: InteractorType, viewController: ViewControllerType) {
         super.init(interactor: interactor, viewController: viewController)
-    }
-
-    /// Launches the router tree.
-    ///
-    /// - parameter window: The window to launch the router tree in.
-    public final func launch(from window: UIWindow) {
-        window.rootViewController = viewControllable.uiviewController
-        window.makeKeyAndVisible()
-
-        interactable.activate()
-        load()
     }
 }
