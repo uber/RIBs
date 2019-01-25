@@ -21,7 +21,7 @@ import XCTest
 final class RouterTests: XCTestCase {
 
     private var router: Router<Interactable>!
-    private var lifecycleDisposable: Disposable!
+    private var lifecycleDisposable: Disposable?
 
     // MARK: - Setup
 
@@ -33,8 +33,7 @@ final class RouterTests: XCTestCase {
 
     override func tearDown() {
         super.tearDown()
-
-        lifecycleDisposable.dispose()
+        lifecycleDisposable?.dispose()
     }
 
     // MARK: - Tests
@@ -64,4 +63,46 @@ final class RouterTests: XCTestCase {
         XCTAssertNil(currentLifecycle)
         XCTAssertTrue(didComplete)
     }
+
+    func test_attachingChildToInactiveRIB() {
+        let parentInteractor = InteractorMock()
+        let parentRouter = Router(interactor: parentInteractor)
+        parentRouter.load()
+
+        let childInteractor = InteractorMock()
+        let childRouter = Router(interactor: childInteractor)
+        parentRouter.attachChild(childRouter)
+
+        XCTAssertFalse(childRouter.interactable.isActive)
+
+        parentInteractor.activate()
+
+        XCTAssertTrue(childInteractor.isActive)
+
+        parentInteractor.deactivate()
+
+        XCTAssertFalse(childInteractor.isActive)
+    }
+
+    func test_attachingChildToActiveRIB() {
+        let parentInteractor = InteractorMock()
+        let parentRouter = Router(interactor: parentInteractor)
+        parentInteractor.activate()
+        parentRouter.load()
+
+        let childInteractor = InteractorMock()
+        let childRouter = Router(interactor: childInteractor)
+        parentRouter.attachChild(childRouter)
+
+        XCTAssertTrue(childRouter.interactable.isActive)
+
+        parentInteractor.deactivate()
+
+        XCTAssertFalse(childInteractor.isActive)
+
+        parentInteractor.activate()
+
+        XCTAssertTrue(childInteractor.isActive)
+    }
+
 }
