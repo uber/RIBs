@@ -185,7 +185,7 @@ public extension ObservableType {
     /// - parameter workflow: The workflow this step belongs to.
     /// - returns: The newly forked step in the workflow. `nil` if this observable does not conform to the required
     ///   generic type of (ActionableItemType, ValueType).
-    public func fork<WorkflowActionableItemType, ActionableItemType, ValueType>(_ workflow: Workflow<WorkflowActionableItemType>) -> Step<WorkflowActionableItemType, ActionableItemType, ValueType>? {
+    func fork<WorkflowActionableItemType, ActionableItemType, ValueType>(_ workflow: Workflow<WorkflowActionableItemType>) -> Step<WorkflowActionableItemType, ActionableItemType, ValueType>? {
         if let stepObservable = self as? Observable<(ActionableItemType, ValueType)> {
             workflow.didFork()
             return Step(workflow: workflow, observable: stepObservable)
@@ -206,7 +206,7 @@ public extension Disposable {
     /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a `Workflow`.
     ///
     /// - parameter workflow: The workflow to dispose the subscription with.
-    public func disposeWith<ActionableItemType>(worflow: Workflow<ActionableItemType>) {
+    func disposeWith<ActionableItemType>(worflow: Workflow<ActionableItemType>) {
         _ = worflow.compositeDisposable.insert(self)
     }
 }
