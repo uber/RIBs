@@ -216,7 +216,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
     return tag;
   }
 
-  void saveInstanceState(com.uber.rib.core.Bundle outState) {
+  public void saveInstanceState(com.uber.rib.core.Bundle outState) {
     Bundle interactorSavedInstanceState = new Bundle();
     getInteractor().onSaveInstanceState(interactorSavedInstanceState);
     outState.putBundleExtra(KEY_INTERACTOR, interactorSavedInstanceState);
