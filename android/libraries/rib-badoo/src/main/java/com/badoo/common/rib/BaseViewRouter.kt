@@ -5,8 +5,7 @@ import android.content.Intent
 import android.os.Parcelable
 import android.util.SparseArray
 import android.view.ViewGroup
-import com.badoo.common.rib.routing.action.AttachRibPermanentlyRoutingAction
-import com.badoo.common.rib.routing.action.MultiRoutingAction
+import com.badoo.common.rib.requestcode.RequestCodeRegistry
 import com.badoo.common.rib.routing.action.RoutingAction
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.uber.rib.core.Bundle
@@ -31,10 +30,8 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
     private var savedViewState: SparseArray<Parcelable> = SparseArray()
 
     private fun attachPermanentParts() {
-        attachPermanentParts = MultiRoutingAction(
-            permanentParts.map { AttachRibPermanentlyRoutingAction<V>(it) }
-        ).also {
-            it.onExecute(this::addChild)
+        permanentParts.forEach {
+            addChild(it())
         }
     }
 
@@ -73,7 +70,7 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
         }
 
         children.forEach {
-            addChildToView(it as BaseViewRouter<*, *>)
+            attachChildToView(it as BaseViewRouter<*, *>)
         }
     }
 
@@ -81,11 +78,11 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
         viewFactory?.invoke(parentViewGroup)
 
     fun addChild(child: BaseViewRouter<*, *>) {
-        addChildToView(child)
+        attachChildToView(child)
         attachChild(child)
     }
 
-    private fun addChildToView(child: BaseViewRouter<*, *>) {
+    protected fun attachChildToView(child: BaseViewRouter<*, *>) {
         parentViewGroup?.let {
             child.onAttachToView(
                 attachTargetForConfiguration(view, child, it)
@@ -96,13 +93,36 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
     open fun attachTargetForConfiguration(view: V?, child: BaseViewRouter<*, *>, parentViewGroup: ViewGroup): ViewGroup =
         view?.androidView ?: parentViewGroup
 
-    fun onDetachFromView(parentViewGroup: ViewGroup) {
+    fun removeChild(child: BaseViewRouter<*, *>) {
+        detachChild(child)
+        detachChildFromView(child, saveHierarchyState = false)
+    }
+
+    protected fun detachChildFromViewAndSaveHierarchyState(child: BaseViewRouter<*, *>) {
+        detachChildFromView(child, saveHierarchyState = true)
+    }
+
+    protected fun detachChildFromView(child: BaseViewRouter<*, *>, saveHierarchyState: Boolean) {
+        parentViewGroup?.let {
+            child.onDetachFromView(
+                parentViewGroup = attachTargetForConfiguration(view, child, it),
+                saveHierarchyState = saveHierarchyState
+            )
+        }
+    }
+
+    fun onDetachFromView(parentViewGroup: ViewGroup, saveHierarchyState: Boolean) {
         children.forEach {
-            removeChildFromView(it as BaseViewRouter<*, *>)
+            detachChildFromView(
+                child = it as BaseViewRouter<*, *>,
+                saveHierarchyState = saveHierarchyState
+            )
         }
 
         view?.let {
-            it.androidView.saveHierarchyState(savedViewState)
+            if (saveHierarchyState) {
+                it.androidView.saveHierarchyState(savedViewState)
+            }
 
             parentViewGroup.removeView(it.androidView)
             (interactor as BaseInteractor<*, *>).onViewDestroyed() // FIXME merge BaseInteractor to Interactor
@@ -110,19 +130,6 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
 
         view = null
         this.parentViewGroup = null
-    }
-
-    fun removeChild(child: BaseViewRouter<*, *>) {
-        detachChild(child)
-        removeChildFromView(child)
-    }
-
-    private fun removeChildFromView(child: BaseViewRouter<*, *>) {
-        parentViewGroup?.let {
-            child.onDetachFromView(
-                attachTargetForConfiguration(view, child, it)
-            )
-        }
     }
 
     fun onStart() {

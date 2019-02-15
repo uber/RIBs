@@ -9,15 +9,20 @@ class MultiRoutingAction< V : RibView>(
 
     constructor(routingActions: List<RoutingAction<V>>) : this(*routingActions.toTypedArray())
 
-    override fun onExecute(addChild: (BaseViewRouter<*, *>) -> Unit) {
+    override fun onExecuteCreateTheseRibs(): List<() -> BaseViewRouter<*, *>> =
+        routingActions.flatMap {
+            it.onExecuteCreateTheseRibs()
+        }
+
+    override fun onExecute() {
         routingActions.forEach {
-            it.onExecute(addChild)
+            it.onExecute()
         }
     }
 
-    override fun onLeave(removeChild: (BaseViewRouter<*, *>) -> Unit) {
+    override fun onLeave() {
         routingActions.forEach {
-            it.onLeave(removeChild)
+            it.onLeave()
         }
     }
 

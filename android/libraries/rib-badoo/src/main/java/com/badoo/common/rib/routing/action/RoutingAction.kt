@@ -5,10 +5,14 @@ import com.uber.rib.core.RibView
 
 interface RoutingAction<V : RibView> {
 
-    fun onExecute(addChild: (BaseViewRouter<*, *>) -> Unit) {
+    fun onExecuteCreateTheseRibs() : List<() -> BaseViewRouter<*, *>> =
+        emptyList()
+
+    fun onExecute() {
+
     }
 
-    fun onLeave(removeChild: (BaseViewRouter<*, *>) -> Unit)  {
+    fun onLeave()  {
     }
 
     companion object {

@@ -24,12 +24,7 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     interactor
 ) {
     private val binder = Binder()
-    private var configurationManager: RouterBackStackManager<C> =
-        RouterBackStackManager(
-            initialConfiguration = initialConfiguration,
-            timeCapsule = AndroidTimeCapsule(null),
-            tag = javaClass.canonicalName!!
-        )
+    private lateinit var configurationManager: RouterBackStackManager<C>
     protected val configuration: C?
         get() = configurationManager.state.current
     private var currentRoutingAction: RoutingAction<V>? = null
@@ -37,42 +32,27 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     override fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
         super.dispatchAttach(savedInstanceState, tag)
         initConfigurationManager(savedInstanceState)
-        subscribeToConfigurationChanges()
     }
 
     private fun initConfigurationManager(savedInstanceState: Bundle?) {
         timeCapsule = AndroidTimeCapsule(savedInstanceState?.wrappedBundle)
         configurationManager = RouterBackStackManager(
+            this::resolveConfiguration,
+            this::addChild,
+            this::attachChildToView,
+            this::detachChildFromViewAndSaveHierarchyState,
+            this::removeChild,
             initialConfiguration,
             timeCapsule,
             javaClass.name
         )
     }
 
-    private fun subscribeToConfigurationChanges() {
-        binder.bind(configurationManager to Consumer { state ->
-            enterConfiguration(state.current)
-        })
-    }
-
-    private fun enterConfiguration(config: C) {
-        leaveCurrentConfiguration()
-        resolveConfiguration(config).let {
-            currentRoutingAction = it
-            it.onExecute(this::addChild)
-        }
-    }
-
-    private fun leaveCurrentConfiguration() {
-        currentRoutingAction?.onLeave(this::removeChild)
-        currentRoutingAction = null
-    }
-
     abstract fun resolveConfiguration(configuration: C): RoutingAction<V>
 
     override fun dispatchDetach() {
         super.willDetach()
-        leaveCurrentConfiguration()
+        // todo consider if non-rib backstack elements should receive onLeave() callback here?
         binder.clear()
     }
 
