@@ -1,0 +1,57 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+//apply from: '../ribs.gradle'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+repositories {
+    maven { url 'https://jitpack.io' }
+}
+
+dependencies {
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+
+    kapt deps.apt.raveCompiler
+    kapt deps.apt.daggerCompiler
+
+    implementation project(":libraries:rib-android")
+    implementation project(":libraries:rib-workflow")
+    implementation deps.external.dagger
+    implementation deps.external.rxbinding
+    implementation deps.uber.rave
+    provided deps.apt.javax
+    provided deps.apt.autoValueAnnotations
+//    testImplementation project(":libraries:rib-test-utils")
+
+    implementation('com.github.badoo.mvicore:mvicore:1.1.2') {
+        exclude group: "io.reactivex.rxjava2"
+    }
+    implementation('com.github.badoo.mvicore:mvicore-android:1.1.2')
+}
