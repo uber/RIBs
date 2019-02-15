@@ -31,9 +31,8 @@ import static com.uber.rib.core.Preconditions.*;
  * Responsible for handling the addition and removal of children routers.
  *
  * @param <I> type of interactor this router routes.
- * @param <C> type of dependency held by this router.
  */
-public class Router<I extends com.uber.rib.core.Interactor, C extends InteractorBaseComponent> {
+public class Router<I extends com.uber.rib.core.Interactor> {
 
   @VisibleForTesting static final String KEY_CHILD_ROUTERS = "Router.childRouters";
   @VisibleForTesting static final String KEY_INTERACTOR = "Router.interactor";
@@ -49,17 +48,15 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
 
   private boolean isLoaded;
 
-  public Router(I interactor, C component) {
-    this(component, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
+  public Router(I interactor) {
+    this(interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
   }
 
   @SuppressWarnings("unchecked")
-  Router(
-      C component, I interactor, com.uber.rib.core.RibRefWatcher ribRefWatcher, Thread mainThread) {
+  Router(I interactor, com.uber.rib.core.RibRefWatcher ribRefWatcher, Thread mainThread) {
     this.interactor = interactor;
     this.ribRefWatcher = ribRefWatcher;
     this.mainThread = mainThread;
-    component.inject(interactor);
     interactor.setRouter(this);
   }
 
@@ -105,7 +102,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    * @param childRouter the {@link Router} to be attached.
    */
   @MainThread
-  protected void attachChild(Router<?, ?> childRouter) {
+  protected void attachChild(Router<?> childRouter) {
     attachChild(childRouter, childRouter.getClass().getName());
   }
 
@@ -116,7 +113,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    * @param tag an identifier to namespace saved instance state {@link Bundle} objects.
    */
   @MainThread
-  protected void attachChild(Router<?, ?> childRouter, String tag) {
+  protected void attachChild(Router<?> childRouter, String tag) {
     for (Router child : children) {
       if (tag.equals(child.tag)) {
         Rib.getConfiguration()
