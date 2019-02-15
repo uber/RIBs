@@ -17,6 +17,7 @@ package com.uber.rib.core;
 
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.util.SparseArray;
 
 /** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies. */
 public class Bundle {
@@ -142,7 +143,27 @@ public class Bundle {
     androidBundle.putString(key, value);
   }
 
-  android.os.Bundle getWrappedBundle() {
+  public int getInt(String key) {
+    return androidBundle.getInt(key);
+  }
+
+  public int getInt(String key, int defaultValue) {
+    return androidBundle.getInt(key, defaultValue);
+  }
+
+  public void putInt(String key, int value) {
+    androidBundle.putInt(key, value);
+  }
+
+  public void putSparseParcelableArray(String key, SparseArray<? extends Parcelable> value) {
+    androidBundle.putSparseParcelableArray(key, value);
+  }
+
+  public <T extends Parcelable> SparseArray<T> getSparseParcelableArray(String key) {
+    return androidBundle.getSparseParcelableArray(key);
+  }
+
+  public android.os.Bundle getWrappedBundle() {
     return androidBundle;
   }
 }
