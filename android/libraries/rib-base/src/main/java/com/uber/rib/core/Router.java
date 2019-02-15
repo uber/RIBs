@@ -164,7 +164,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
   }
 
   @CallSuper
-  protected void dispatchAttach(@Nullable final Bundle savedInstanceState) {
+  public void dispatchAttach(@Nullable final Bundle savedInstanceState) {
     dispatchAttach(savedInstanceState, this.getClass().getName());
   }
 
@@ -187,7 +187,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
     getInteractor().dispatchAttach(interactorBundle);
   }
 
-  protected void dispatchDetach() {
+  public void dispatchDetach() {
     checkForMainThread();
 
     getInteractor().dispatchDetach();
