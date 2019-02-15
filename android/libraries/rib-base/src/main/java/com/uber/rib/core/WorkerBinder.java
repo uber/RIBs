@@ -44,7 +44,7 @@ public final class WorkerBinder {
    * @param worker The class that wants to be informed when to start and stop doing work.
    * @return {@link WorkerUnbinder} to unbind {@link Worker Worker's} lifecycle.
    */
-  public static WorkerUnbinder bind(Interactor<?, ?> interactor, Worker worker) {
+  public static WorkerUnbinder bind(Interactor<?> interactor, Worker worker) {
     return bind(interactor.lifecycle(), worker);
   }
 

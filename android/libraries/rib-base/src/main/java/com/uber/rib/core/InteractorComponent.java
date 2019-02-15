@@ -21,9 +21,8 @@ package com.uber.rib.core;
  * Presidio Intellij Plugin.
  *
  * @param <T> type of interactor that is injected.
- * @param <P> type of presenter.
  */
-public interface InteractorComponent<P extends Presenter, T extends Interactor<P, ?>>
+public interface InteractorComponent<T extends Interactor<?>>
     extends InteractorBaseComponent<T> {
 
   /**
@@ -33,11 +32,4 @@ public interface InteractorComponent<P extends Presenter, T extends Interactor<P
    */
   @Override
   void inject(T interactor);
-
-  /**
-   * The presenter.
-   *
-   * @return the presenter.
-   */
-  P presenter();
 }

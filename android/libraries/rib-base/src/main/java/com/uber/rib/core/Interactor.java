@@ -17,15 +17,12 @@ package com.uber.rib.core;
 
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
 
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;
 import com.uber.autodispose.LifecycleEndedException;
 import com.uber.autodispose.LifecycleScopeProvider;
 import com.uber.rib.core.lifecycle.InteractorEvent;
-
-import javax.inject.Inject;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
@@ -36,10 +33,9 @@ import static com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE;
 /**
  * The base implementation for all {@link Interactor}s.
  *
- * @param <P> the type of {@link Presenter}.
  * @param <R> the type of {@link Router}.
  */
-public abstract class Interactor<P, R extends Router>
+public abstract class Interactor<R extends Router>
     implements LifecycleScopeProvider<InteractorEvent> {
 
   private static final Function<InteractorEvent, InteractorEvent> LIFECYCLE_MAP_FUNCTION =
@@ -54,8 +50,6 @@ public abstract class Interactor<P, R extends Router>
           }
         }
       };
-
-  @Inject P presenter;
 
   private final BehaviorRelay<InteractorEvent> behaviorRelay = BehaviorRelay.create();
   private final Relay<InteractorEvent> lifecycleRelay = behaviorRelay.toSerialized();
@@ -114,24 +108,13 @@ public abstract class Interactor<P, R extends Router>
   protected void dispatchAttach(@Nullable Bundle savedInstanceState) {
     lifecycleRelay.accept(ACTIVE);
 
-    if (getPresenter() instanceof Presenter) {
-      // Legacy support for lifecycled presenters.
-      Presenter presenter = (Presenter) getPresenter();
-      presenter.dispatchLoad();
-    }
     didBecomeActive(savedInstanceState);
   }
 
-  protected P dispatchDetach() {
-    if (getPresenter() instanceof Presenter) {
-      // Legacy support for lifecycled presenters.
-      Presenter presenter = (Presenter) getPresenter();
-      presenter.dispatchUnload();
-    }
+  protected void dispatchDetach() {
     willResignActive();
 
     lifecycleRelay.accept(INACTIVE);
-    return getPresenter();
   }
 
   protected void setRouter(R router) {
@@ -141,15 +124,6 @@ public abstract class Interactor<P, R extends Router>
       throw new IllegalStateException(
           "Attempting to set interactor's router after it has been set.");
     }
-  }
-
-  /** @return the currently attached presenter if there is one */
-  @VisibleForTesting
-  private P getPresenter() {
-    if (presenter == null) {
-      throw new IllegalStateException("Attempting to get interactor's presenter before being set.");
-    }
-    return presenter;
   }
 
   @Override
