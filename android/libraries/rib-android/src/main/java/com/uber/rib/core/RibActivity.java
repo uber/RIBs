@@ -18,6 +18,7 @@ package com.uber.rib.core;
 import android.content.Intent;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
+import android.view.View;
 import android.view.ViewGroup;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -147,7 +148,7 @@ public abstract class RibActivity extends AppCompatActivity
     }
     router.dispatchAttach(wrappedBundle);
 
-    rootViewGroup.addView(router.getView());
+    rootViewGroup.addView(router.getView().getAndroidView());
   }
 
   @Override

@@ -17,7 +17,6 @@ package com.uber.rib.core;
 
 import android.content.Context;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 
 /**
@@ -27,7 +26,7 @@ import android.view.ViewGroup;
  * @param <RouterT> type of router built by this builder.
  * @param <DependencyT> dependency required to create this router.
  */
-public abstract class ViewBuilder<ViewType extends View, RouterT extends Router, DependencyT>
+public abstract class ViewBuilder<ViewType, RouterT extends Router, DependencyT>
     extends Builder<RouterT, DependencyT> {
 
   public ViewBuilder(DependencyT dependency) {
@@ -45,9 +44,9 @@ public abstract class ViewBuilder<ViewType extends View, RouterT extends Router,
     final ViewType view =
         inflateView(LayoutInflater.from(onThemeContext(context)), parentViewGroup);
 
-    if (XRay.isEnabled()) {
-      XRay.apply(this, view);
-    }
+//    if (XRay.isEnabled()) {
+//      XRay.apply(this, view);
+//    }
 
     return view;
   }
