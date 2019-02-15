@@ -203,7 +203,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
    *
    * @return Children.
    */
-  List<Router> getChildren() {
+  protected List<Router> getChildren() {
     return children;
   }
 
