@@ -1,13 +1,14 @@
 package com.badoo.common.rib
 
 import android.os.Parcelable
+import com.badoo.common.rib.routing.RibConnector
 import com.badoo.common.rib.routing.action.RoutingAction
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.NewRoot
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Pop
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Push
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Replace
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.ShrinkToBundles
+import com.badoo.common.rib.routing.backstack.BackStackManager
+import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.NewRoot
+import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Pop
+import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Push
+import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Replace
+import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.ShrinkToBundles
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
 import com.uber.rib.core.Bundle
@@ -23,9 +24,10 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     viewFactory,
     interactor
 ) {
+
     private val binder = Binder()
     private lateinit var timeCapsule: AndroidTimeCapsule // = AndroidTimeCapsule(null)
-    private lateinit var configurationManager: RouterBackStackManager<C>
+    private lateinit var configurationManager: BackStackManager<C>
     protected val configuration: C?
         get() = configurationManager.state.current
     private var currentRoutingAction: RoutingAction<V>? = null
@@ -37,12 +39,14 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     }
 
     private fun initConfigurationManager() {
-        configurationManager = RouterBackStackManager(
+        configurationManager = BackStackManager(
             this::resolveConfiguration,
-            this::addChild,
-            this::attachChildToView,
-            this::detachChildFromViewAndSaveHierarchyState,
-            this::removeChild,
+            RibConnector.from(
+                this::addChild,
+                this::attachChildToView,
+                this::detachChildFromViewAndSaveHierarchyState,
+                this::removeChild
+            ),
             initialConfiguration,
             timeCapsule,
             javaClass.name
