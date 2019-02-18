@@ -129,9 +129,10 @@ public class Router<I extends com.uber.rib.core.Interactor> {
         "ATTACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     Bundle childBundle = null;
     if (this.savedInstanceState != null) {
-      Bundle previousChildren =
-          checkNotNull(this.savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
-      childBundle = previousChildren.getBundleExtra(tag);
+      Bundle previousChildren = this.savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS);
+      if (previousChildren != null) {
+        childBundle = previousChildren.getBundleExtra(tag);
+      }
     }
 
     childRouter.dispatchAttach(childBundle, tag);
@@ -155,8 +156,11 @@ public class Router<I extends com.uber.rib.core.Interactor> {
     ribRefWatcher.logBreadcrumb(
         "DETACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     if (savedInstanceState != null) {
-      Bundle childrenBundles =
-          checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
+      Bundle childrenBundles = savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS);
+      if (childrenBundles == null) {
+        childrenBundles = new Bundle();
+        savedInstanceState.putBundleExtra(KEY_CHILD_ROUTERS, childrenBundles);
+      }
       childrenBundles.putBundleExtra(childRouter.tag, null);
     }
 
