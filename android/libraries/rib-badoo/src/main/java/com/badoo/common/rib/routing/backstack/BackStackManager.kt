@@ -14,6 +14,7 @@ import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Pop
 import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Push
 import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.Replace
 import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.ShrinkToBundles
+import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.TearDown
 import com.badoo.common.rib.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
 import com.badoo.common.rib.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
 import com.badoo.mvicore.element.Actor
@@ -75,6 +76,7 @@ internal class BackStackManager<C : Parcelable>(
         data class NewRoot<C : Parcelable>(val configuration: C) : Wish<C>()
         class Pop<C : Parcelable> : Wish<C>()
         class ShrinkToBundles<C : Parcelable> : Wish<C>()
+        class TearDown<C : Parcelable> : Wish<C>()
     }
 
     sealed class Action<C : Parcelable> {
@@ -152,6 +154,11 @@ internal class BackStackManager<C : Parcelable>(
 
                         is ShrinkToBundles -> connector.shrinkToBundles(state.backStack).flatMap {
                             just(Effect.UpdateBackStack(it))
+                        }
+
+                        is TearDown -> Observable.defer {
+                            state.backStack.lastOrNull()?.routingAction?.onLeave()
+                            return@defer empty<Effect<C>>()
                         }
                     }
                 }
