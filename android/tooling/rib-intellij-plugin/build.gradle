@@ -32,9 +32,6 @@ dependencies {
     testImplementation(project(":libraries:rib-compiler-test")) {
         transitive = false
     }
-//    compileOnly(project(":libraries:rib-android")) {
-//        transitive = false
-//    }
 
     testImplementation deps.apt.daggerCompiler
     testImplementation deps.apt.javaxInject
