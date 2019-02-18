@@ -16,11 +16,10 @@
 package test;
 
 import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
 import com.uber.rib.core.RibInteractor;
 import com.uber.rib.core.Router;
 
 @RibInteractor
-public class AnnotatedInteractorNoSuffix extends Interactor<Presenter, Router> {
+public class AnnotatedInteractorNoSuffix extends Interactor<MyRouter> {
 
 }

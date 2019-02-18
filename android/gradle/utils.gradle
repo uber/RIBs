@@ -1,0 +1,28 @@
+ext.configureAndroidLibrary = { project ->
+    project.apply plugin: 'com.android.library'
+    configureAndroidModule(project)
+}
+
+ext.configureAndroidApp = { project ->
+    project.apply plugin: 'com.android.application'
+    configureAndroidModule(project)
+}
+
+private def configureAndroidModule(Project project) {
+    project.android {
+        compileSdkVersion deps.build.compileSdkVersion
+
+        defaultConfig {
+            minSdkVersion deps.build.minSdkVersion
+            targetSdkVersion deps.build.targetSdkVersion
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+
+        compileOptions {
+            sourceCompatibility JavaVersion.VERSION_1_8
+            targetCompatibility JavaVersion.VERSION_1_8
+        }
+
+        testOptions.unitTests.includeAndroidResources = true
+    }
+}

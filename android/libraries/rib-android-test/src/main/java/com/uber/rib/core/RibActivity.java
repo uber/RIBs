@@ -63,7 +63,7 @@ public abstract class RibActivity extends AppCompatActivity
       };
 
   @SuppressWarnings("NullableProblems")
-  private ViewRouter<?, ?, ?> router;
+  private ViewRouter<?, ?> router;
 
   private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
       BehaviorRelay.create();
@@ -147,7 +147,7 @@ public abstract class RibActivity extends AppCompatActivity
     }
     router.dispatchAttach(wrappedBundle);
 
-    rootViewGroup.addView(router.getView());
+    rootViewGroup.addView(router.getView().getAndroidView());
   }
 
   @Override
@@ -243,5 +243,5 @@ public abstract class RibActivity extends AppCompatActivity
    *
    * @return the {@link Interactor}.
    */
-  protected abstract ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup);
+  protected abstract ViewRouter<?, ?> createRouter(ViewGroup parentViewGroup);
 }
