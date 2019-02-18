@@ -46,7 +46,11 @@ dependencies {
     implementation('com.github.badoo.mvicore:mvicore-android:1.1.2')
 
     testImplementation project(":libraries:rib-test-utils")
-    testImplementation 'junit:junit:4.12'
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.assertj
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }
