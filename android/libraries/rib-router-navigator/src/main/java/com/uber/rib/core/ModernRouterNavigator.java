@@ -30,7 +30,7 @@ public class ModernRouterNavigator<StateT extends RouterNavigatorState>
     implements RouterNavigator<StateT> {
   private final ArrayDeque<RouterAndState<StateT>> navigationStack = new ArrayDeque<>();
 
-  private final Router<?, ?> hostRouter;
+  private final Router<?> hostRouter;
   private final String hostRouterName;
 
   @Nullable private RouterAndState<StateT> currentTransientRouterAndState;
@@ -40,7 +40,7 @@ public class ModernRouterNavigator<StateT extends RouterNavigatorState>
    *
    * @param hostRouter to add and remove children to.
    */
-  public ModernRouterNavigator(Router<?, ?> hostRouter) {
+  public ModernRouterNavigator(Router<?> hostRouter) {
     this.hostRouter = hostRouter;
     this.hostRouterName = hostRouter.getClass().getSimpleName();
     log(

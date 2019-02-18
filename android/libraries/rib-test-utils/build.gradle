@@ -20,12 +20,12 @@ sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
     compileOnly deps.support.annotations
-    compile deps.external.rxjava2
-    compile deps.test.junit
-    compile deps.test.assertj
-    compile deps.test.mockito
+    implementation deps.external.rxjava2
+    implementation deps.test.junit
+    implementation deps.test.assertj
+    implementation deps.test.mockito
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

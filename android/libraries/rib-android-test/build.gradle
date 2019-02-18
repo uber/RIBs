@@ -14,32 +14,18 @@
  * limitations under the License.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-    }
-}
-
-apply plugin: 'com.android.library'
-
-android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-}
+configureAndroidLibrary(project)
 
 dependencies {
-    compile project(":libraries:rib-android")
-    testCompile deps.external.roboelectricBase
-    testCompile deps.support.appCompat
-    testCompile project(":libraries:rib-test-utils")
+    implementation project(":libraries:rib-android")
+    implementation deps.external.rxrelay2
+    implementation deps.apt.javaxInject
+
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.support.appCompat
+    testImplementation project(":libraries:rib-test-utils")
+
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.assertj
 }

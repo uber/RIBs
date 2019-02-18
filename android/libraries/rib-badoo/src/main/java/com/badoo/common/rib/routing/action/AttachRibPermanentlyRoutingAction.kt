@@ -10,16 +10,16 @@ class AttachRibPermanentlyRoutingAction< V : RibView>(
 
     private var router: BaseViewRouter<*, *>? = null
 
-    override fun onExecute(addChild: (BaseViewRouter<*, *>) -> Unit) {
+    override fun onExecute(/* addChild: (BaseViewRouter<*, *>) -> Unit )*/) {
         if (router == null) {
             builder.invoke().let {
                 router = it
-                addChild(it)
+                // addChild(it)
             }
         }
     }
 
-    override fun onLeave(removeChild: (BaseViewRouter<*, *>) -> Unit) {
+    override fun onLeave(/* removeChild: (BaseViewRouter<*, *>) -> Unit */) {
         // no-op
     }
 

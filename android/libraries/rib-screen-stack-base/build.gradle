@@ -14,34 +14,13 @@
  * limitations under the License.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-    }
-}
-
-apply plugin: 'com.android.library'
-
-android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-}
+configureAndroidLibrary(project)
 
 dependencies {
-    compile deps.external.rxjava2
-    compile deps.external.rxrelay2
-    compile deps.external.rxbinding
-    compile deps.support.annotations
+    implementation deps.external.rxjava2
+    implementation deps.external.rxrelay2
+    implementation deps.external.rxbinding
+    implementation deps.support.annotations
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

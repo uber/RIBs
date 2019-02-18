@@ -20,6 +20,7 @@ import org.junit.Test;
 import static com.google.common.truth.Truth.assert_;
 import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 
+// TODO: fix failing tests
 public class InteractorAnnotationVerifierTest extends InteractorProcessorTestBase {
 
   @Test

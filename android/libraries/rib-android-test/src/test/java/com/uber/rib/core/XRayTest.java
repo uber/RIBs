@@ -37,7 +37,7 @@ public class XRayTest {
   private Context context;
 
   @Before
-  public void setUp() throws Exception {
+  public void setUp() {
     context = RuntimeEnvironment.application.getBaseContext();
   }
 

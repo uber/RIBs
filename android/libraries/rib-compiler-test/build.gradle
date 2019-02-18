@@ -17,21 +17,15 @@
 apply plugin: "java-library"
 
 dependencies {
-    compile project(":libraries:rib-compiler-app")
+    implementation project(":libraries:rib-compiler-app")
+    implementation deps.apt.javapoet
 
     compileOnly deps.support.annotations
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
 
-    testCompile deps.support.annotations
-    testCompile deps.test.compileTesting
+    testImplementation deps.support.annotations
+    testImplementation deps.test.compileTesting
 }
-
-// https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
-}
-processTestResources.dependsOn copyTestResources
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

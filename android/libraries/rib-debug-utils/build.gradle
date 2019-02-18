@@ -19,8 +19,12 @@ apply plugin: "java-library"
 sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

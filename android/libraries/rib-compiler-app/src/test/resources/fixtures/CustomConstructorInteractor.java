@@ -22,7 +22,7 @@ import com.uber.rib.core.RibInteractor;
 import com.uber.rib.core.Router;
 
 @RibInteractor
-public class CustomConstructorInteractor extends Interactor<Presenter, Router> {
+public class CustomConstructorInteractor extends Interactor<Router> {
 
     public CustomConstructorInteractor(String a, InteractorComponent dependency) { }
 }

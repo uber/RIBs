@@ -1,5 +1,7 @@
 package com.badoo.common.rib
 
+import com.badoo.common.rib.requestcode.RequestCodeDoesntFitInMask
+import com.badoo.common.rib.requestcode.RequestCodeRegistry
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Before

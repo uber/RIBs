@@ -15,7 +15,6 @@
  */
 
 plugins {
-    id "net.ltgt.apt" version "0.10"
     id "java-library"
 }
 
@@ -23,26 +22,23 @@ sourceCompatibility = "1.7"
 targetCompatibility = "1.7"
 
 dependencies {
-    // RIBs themselves don't need to use dagger. But the base library does use dagger
-    // in order to invert a dependency. With a bit of work this could be removed.
-    apt deps.apt.daggerCompiler
+    api deps.uber.autodispose
+    api project(':libraries:rib-uava')
 
-    compile project(':libraries:rib-uava')
-    compile deps.external.reactiveStreams
-    compile deps.external.rxrelay2
-    compile deps.external.rxjava2
-    compile deps.uber.autodispose
-    compile deps.apt.javaxInject
+    implementation deps.external.reactiveStreams
+    implementation deps.external.rxrelay2
+    implementation deps.external.rxjava2
+    implementation deps.apt.javaxInject
 
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.support.annotations
     compileOnly deps.apt.androidApi
 
-    testCompile deps.support.annotations
-    testCompile deps.apt.androidApi
-    testCompile deps.test.junit
-    testCompile deps.test.mockito
-    testCompile deps.test.assertj
+    testImplementation deps.support.annotations
+    testImplementation deps.apt.androidApi
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.assertj
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

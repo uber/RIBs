@@ -35,6 +35,7 @@ import dagger.internal.codegen.ComponentProcessor;
 import static com.google.common.truth.Truth.assert_;
 import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 
+// TODO: fix failing tests
 public class RibGeneratorsTest {
 
   private static final String TEST_PACKAGE_NAME = "com.test";

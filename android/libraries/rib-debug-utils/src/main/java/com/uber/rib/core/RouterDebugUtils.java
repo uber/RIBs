@@ -31,12 +31,12 @@ public final class RouterDebugUtils {
    *
    * @param router {@link Router}
    */
-  public static void printRouterSubtree(final Router<?, ?> router) {
+  public static void printRouterSubtree(final Router<?> router) {
     printRouterSubtree(router, "", true);
   }
 
   private static void printRouterSubtree(
-      final Router<?, ?> router, final String prefix, final boolean isTail) {
+      final Router<?> router, final String prefix, final boolean isTail) {
     Rib.getConfiguration()
         .handleDebugMessage(prefix + (isTail ? ARM_RIGHT : INTERSECTION) + router.getTag());
 
