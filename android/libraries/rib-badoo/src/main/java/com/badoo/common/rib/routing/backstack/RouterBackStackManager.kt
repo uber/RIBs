@@ -1,9 +1,14 @@
 package com.badoo.common.rib.routing.backstack
 
+import android.os.Bundle
 import android.os.Parcelable
 import com.badoo.common.rib.BaseViewRouter
 import com.badoo.common.rib.routing.action.RoutingAction
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.ActorImpl.DetachStrategy.*
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Action
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Action.Execute
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Action.ReattachRibsOfLastEntry
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.ActorImpl.DetachStrategy.DESTROY
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.ActorImpl.DetachStrategy.DETACH_VIEW
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Effect
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager.State
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish
@@ -11,6 +16,7 @@ import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.NewRoo
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Pop
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Push
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Replace
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.ShrinkToBundles
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.Reducer
@@ -22,19 +28,18 @@ import io.reactivex.Observable.just
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 
-// todo saveinstancestate for removed / restored configurations
 class RouterBackStackManager<C : Parcelable>(
     resolver: (C) -> RoutingAction<*>,
-    addChild: (BaseViewRouter<*, *>) -> Unit,
+    addChild: (BaseViewRouter<*, *>, com.uber.rib.core.Bundle?) -> Unit,
     attachChildToView: (BaseViewRouter<*, *>) -> Unit,
     detachChildFromView: (BaseViewRouter<*, *>) -> Unit,
     removeChild: (BaseViewRouter<*, *>) -> Unit,
     initialConfiguration: C,
     timeCapsule: TimeCapsule<State<C>>,
     tag: String
-): BaseFeature<Wish<C>, Wish<C>, Effect<C>, State<C>, Nothing>(
+): BaseFeature<Wish<C>, Action<C>, Effect<C>, State<C>, Nothing>(
     initialState = timeCapsule[tag] ?: State(),
-    wishToAction = { it },
+    wishToAction = { Execute(it) },
     bootstrapper = BooststrapperImpl(timeCapsule[tag] ?: State(), initialConfiguration),
     actor = ActorImpl<C>(
         resolver,
@@ -62,7 +67,8 @@ class RouterBackStackManager<C : Parcelable>(
 
     @Parcelize
     class BackStackElement<C : Parcelable>(
-        val configuration: C
+        val configuration: C,
+        var bundles: List<Bundle> = emptyList()
     ): Parcelable {
         @IgnoredOnParcel var routingAction: RoutingAction<*>? = null
         @IgnoredOnParcel var ribs: List<BaseViewRouter<*, *>>? = null
@@ -71,10 +77,10 @@ class RouterBackStackManager<C : Parcelable>(
     class BooststrapperImpl<C : Parcelable>(
         private val state: State<C>,
         private val initialConfiguration: C
-    ) : Bootstrapper<Wish<C>> {
-        override fun invoke(): Observable<Wish<C>> = when {
-            state.backStack.isEmpty() -> Observable.just(Wish.NewRoot(initialConfiguration))
-            else -> empty()
+    ) : Bootstrapper<Action<C>> {
+        override fun invoke(): Observable<Action<C>> = when {
+            state.backStack.isEmpty() -> just(Execute(NewRoot(initialConfiguration)))
+            else -> just(ReattachRibsOfLastEntry())
         }
     }
 
@@ -83,6 +89,12 @@ class RouterBackStackManager<C : Parcelable>(
         data class Push<C : Parcelable>(val configuration: C) : Wish<C>()
         data class NewRoot<C : Parcelable>(val configuration: C) : Wish<C>()
         class Pop<C : Parcelable> : Wish<C>()
+        class ShrinkToBundles<C : Parcelable> : Wish<C>()
+    }
+
+    sealed class Action<C : Parcelable> {
+        data class Execute<C : Parcelable>(val wish: Wish<C>) : Action<C>()
+        class ReattachRibsOfLastEntry<C : Parcelable> : Action<C>()
     }
 
     sealed class Effect<C : Parcelable> {
@@ -90,48 +102,78 @@ class RouterBackStackManager<C : Parcelable>(
         data class Push<C : Parcelable>(val updatedOldEntry: BackStackElement<C>, val newEntry: BackStackElement<C>) : Effect<C>()
         data class NewRoot<C : Parcelable>(val newEntry: BackStackElement<C>) : Effect<C>()
         data class Pop<C : Parcelable>(val updatedOldEntry: BackStackElement<C>) : Effect<C>()
+        data class UpdateBackStack<C : Parcelable>(val updatedBackStack: List<BackStackElement<C>>) : Effect<C>()
     }
 
     class ActorImpl<C : Parcelable>(
         private val resolver: (C) -> RoutingAction<*>,
-        private val addChild: (BaseViewRouter<*, *>) -> Unit,
+        private val addChild: (BaseViewRouter<*, *>, com.uber.rib.core.Bundle?) -> Unit,
         private val attachChildToView: (BaseViewRouter<*, *>) -> Unit,
         private val detachChildFromView: (BaseViewRouter<*, *>) -> Unit,
         private val removeChild: (BaseViewRouter<*, *>) -> Unit
-    ) : Actor<State<C>, Wish<C>, Effect<C>> {
-        override fun invoke(state: State<C>, wish: Wish<C>): Observable<out Effect<C>> =
-            when (wish) {
-                is Replace -> when {
-                    wish.configuration != state.backStack.last() ->
-                        switchToNew(state, wish.configuration, detachStrategy = DESTROY).flatMap {
-                            just(Effect.Replace(it.second))
-                        }
-
-                    else -> empty()
+    ) : Actor<State<C>, Action<C>, Effect<C>> {
+        override fun invoke(state: State<C>, action: Action<C>): Observable<out Effect<C>> =
+            when (action) {
+                is ReattachRibsOfLastEntry -> Observable.defer {
+                    return@defer just(
+                        enter(
+                            state.backStack.last()
+                        )
+                    ).flatMap { empty<Effect<C>>() }
                 }
+                is Execute -> {
+                    val wish = action.wish
+                    when (wish) {
+                        is Replace -> when {
+                            wish.configuration != state.backStack.last() ->
+                                switchToNew(
+                                    state,
+                                    wish.configuration,
+                                    detachStrategy = DESTROY
+                                ).flatMap {
+                                    just(Effect.Replace(it.second))
+                                }
 
-                is Push -> when {
-                    wish.configuration != state.backStack.last() ->
-                        switchToNew(state, wish.configuration, detachStrategy = DETACH_VIEW).flatMap {
-                            just(Effect.Push(it.first!!, it.second))
+                            else -> empty()
                         }
 
-                    else -> empty()
+                        is Push -> when {
+                            wish.configuration != state.backStack.last() ->
+                                switchToNew(
+                                    state,
+                                    wish.configuration,
+                                    detachStrategy = DETACH_VIEW
+                                ).flatMap {
+                                    just(Effect.Push(it.first!!, it.second))
+                                }
+
+                            else -> empty()
+                        }
+
+                        is NewRoot ->
+                            switchToNew(
+                                state,
+                                wish.configuration,
+                                detachStrategy = DESTROY
+                            ).flatMap {
+                                just(Effect.NewRoot(it.second))
+                            }
+
+                        is Pop -> when {
+                            state.canPop ->
+                                switchToPrevious(state, detachStrategy = DESTROY).flatMap {
+                                    just(Effect.Pop(it.second))
+                                }
+                            else -> empty()
+                        }
+
+                        is ShrinkToBundles -> shrinkToBundles(state).flatMap {
+                            just(Effect.UpdateBackStack(it))
+                        }
+                    }
                 }
-
-                is NewRoot ->
-                    switchToNew(state, wish.configuration, detachStrategy = DESTROY).flatMap {
-                        just(Effect.NewRoot(it.second))
-                    }
-
-                is Pop -> when {
-                    state.canPop ->
-                        switchToPrevious(state, detachStrategy = DESTROY).flatMap {
-                            just(Effect.Pop(it.second))
-                        }
-                        else -> empty()
-                    }
             }
+
 
         private enum class DetachStrategy {
             DESTROY, DETACH_VIEW
@@ -145,7 +187,7 @@ class RouterBackStackManager<C : Parcelable>(
                 from?.let { leave(it, detachStrategy = detachStrategy) }
                 enter(to)
 
-                return@defer Observable.just(from to to)
+                return@defer just(from to to)
             }
 
         private fun switchToPrevious(state: State<C>, detachStrategy: DetachStrategy): Observable<Pair<BackStackElement<C>, BackStackElement<C>>> =
@@ -156,7 +198,7 @@ class RouterBackStackManager<C : Parcelable>(
                 leave(from, detachStrategy = detachStrategy)
                 enter(to)
 
-                return@defer Observable.just(from to to)
+                return@defer just(from to to)
             }
 
         private fun leave(backStackElement: BackStackElement<C>, detachStrategy: DetachStrategy): BackStackElement<C> {
@@ -191,9 +233,15 @@ class RouterBackStackManager<C : Parcelable>(
                         .onExecuteCreateTheseRibs()
                         .map { it.invoke() }
                         .also {
-                            it.forEach {
+                            it.forEachIndexed { index, router ->
                                 // attachChildToView(it) is implied part of addChild:
-                                addChild(it)
+                                addChild(
+                                    router,
+                                    bundles.elementAtOrNull(index)?.let {
+                                        it.classLoader = RouterBackStackManager.State::class.java.classLoader
+                                        com.uber.rib.core.Bundle(it)
+                                    }
+                                )
                             }
                         }
                 } else {
@@ -206,6 +254,24 @@ class RouterBackStackManager<C : Parcelable>(
 
             return backStackElement
         }
+
+        private fun shrinkToBundles(state: State<C>): Observable<List<BackStackElement<C>>> =
+            Observable.defer {
+                state.backStack.forEach {
+                    it.bundles = it.ribs?.map { childRouter ->
+                        Bundle().also {
+                            childRouter.saveInstanceState(
+                                com.uber.rib.core.Bundle(it)
+                            )
+                        }
+                    } ?: emptyList()
+
+                    it.ribs?.forEach { removeChild(it) }
+                    it.ribs = null
+                }
+
+                return@defer just(state.backStack)
+            }
     }
 
     class ReducerImpl<C : Parcelable> : Reducer<State<C>, Effect<C>> {
@@ -221,6 +287,9 @@ class RouterBackStackManager<C : Parcelable>(
             )
             is Effect.Pop -> state.copy(
                 backStack = state.backStack.dropLast(2) + effect.updatedOldEntry
+            )
+            is Effect.UpdateBackStack -> state.copy(
+                backStack = effect.updatedBackStack
             )
         }
     }

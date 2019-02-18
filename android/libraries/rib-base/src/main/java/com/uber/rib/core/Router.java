@@ -139,6 +139,20 @@ public class Router<I extends com.uber.rib.core.Interactor> {
   }
 
   /**
+   * Attaches a child router to this router.
+   *
+   * @param childRouter the {@link Router} to be attached.
+   */
+  @MainThread
+  protected void attachChild(Router<?> childRouter, Bundle bundle) {
+    children.add(childRouter);
+    ribRefWatcher.logBreadcrumb(
+        "ATTACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
+
+    childRouter.dispatchAttach(bundle);
+  }
+
+  /**
    * Detaches the {@param childFactory} from the current {@link Interactor}. NOTE: No consumers of
    * this API should ever keep a reference to the detached child router, leak canary will enforce
    * that it gets garbage collected.

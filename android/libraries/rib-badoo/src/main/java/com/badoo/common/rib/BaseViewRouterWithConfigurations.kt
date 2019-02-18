@@ -1,18 +1,18 @@
 package com.badoo.common.rib
 
 import android.os.Parcelable
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Pop
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Push
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.NewRoot
-import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Replace
 import com.badoo.common.rib.routing.action.RoutingAction
 import com.badoo.common.rib.routing.backstack.RouterBackStackManager
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.NewRoot
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Pop
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Push
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.Replace
+import com.badoo.common.rib.routing.backstack.RouterBackStackManager.Wish.ShrinkToBundles
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibView
-import io.reactivex.functions.Consumer
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
 abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I : Interactor<*>>(
@@ -24,6 +24,7 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     interactor
 ) {
     private val binder = Binder()
+    private lateinit var timeCapsule: AndroidTimeCapsule // = AndroidTimeCapsule(null)
     private lateinit var configurationManager: RouterBackStackManager<C>
     protected val configuration: C?
         get() = configurationManager.state.current
@@ -31,11 +32,11 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
 
     override fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
         super.dispatchAttach(savedInstanceState, tag)
-        initConfigurationManager(savedInstanceState)
+        timeCapsule = AndroidTimeCapsule(savedInstanceState?.wrappedBundle)
+        initConfigurationManager()
     }
 
-    private fun initConfigurationManager(savedInstanceState: Bundle?) {
-        timeCapsule = AndroidTimeCapsule(savedInstanceState?.wrappedBundle)
+    private fun initConfigurationManager() {
         configurationManager = RouterBackStackManager(
             this::resolveConfiguration,
             this::addChild,
@@ -49,6 +50,12 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     }
 
     abstract fun resolveConfiguration(configuration: C): RoutingAction<V>
+
+    override fun saveInstanceState(outState: Bundle) {
+        super.saveInstanceState(outState)
+        configurationManager.accept(ShrinkToBundles())
+        timeCapsule.saveState(outState.wrappedBundle)
+    }
 
     override fun dispatchDetach() {
         super.willDetach()

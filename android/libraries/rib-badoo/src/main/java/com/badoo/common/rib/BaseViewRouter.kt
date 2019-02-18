@@ -7,7 +7,6 @@ import android.util.SparseArray
 import android.view.ViewGroup
 import com.badoo.common.rib.requestcode.RequestCodeRegistry
 import com.badoo.common.rib.routing.action.RoutingAction
-import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibView
@@ -23,7 +22,6 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
     private var ribId: Int? = null
     internal var view: V? = null
     protected var parentViewGroup: ViewGroup? = null
-    protected lateinit var timeCapsule: AndroidTimeCapsule
 
     private lateinit var attachPermanentParts: RoutingAction<V>
     protected open val permanentParts: List<() -> BaseViewRouter<*, *>> = emptyList()
@@ -31,7 +29,7 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
 
     private fun attachPermanentParts() {
         permanentParts.forEach {
-            addChild(it())
+            addChild(it()) // fixme save and restore these as well
         }
     }
 
@@ -54,7 +52,6 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
 
     override fun saveInstanceState(outState: Bundle) {
         super.saveInstanceState(outState)
-        timeCapsule.saveState(outState.wrappedBundle)
         outState.putInt(KEY_RIB_ID, ribId ?: generateGroupId().also { updateRibId(it) })
         outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
     }
@@ -77,9 +74,14 @@ open class BaseViewRouter<V : RibView, I : Interactor<*>>(
     private fun createView(parentViewGroup: ViewGroup): V? =
         viewFactory?.invoke(parentViewGroup)
 
-    fun addChild(child: BaseViewRouter<*, *>) {
+    fun addChild(child: BaseViewRouter<*, *>, bundle: Bundle? = null) {
         attachChildToView(child)
-        attachChild(child)
+        // todo refactor base implementation so that this branching is not necessary
+        if (bundle != null) {
+            attachChild(child, bundle)
+        } else {
+            attachChild(child)
+        }
     }
 
     protected fun attachChildToView(child: BaseViewRouter<*, *>) {
