@@ -30,23 +30,27 @@ dependencies {
     kapt deps.apt.raveCompiler
     kapt deps.apt.daggerCompiler
 
-    implementation deps.external.kotlinStdlib
-    implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation project(":libraries:rib-android")
     implementation project(":libraries:rib-workflow")
+    implementation deps.external.kotlinStdlib
+    implementation deps.support.appCompat
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     implementation deps.uber.rave
+    implementation(deps.external.mviCore) {
+        exclude group: "io.reactivex.rxjava2"
+    }
+    implementation(deps.external.mviCoreAndroid)
+
     compileOnly deps.apt.javax
     compileOnly deps.apt.autoValueAnnotations
 
-    implementation('com.github.badoo.mvicore:mvicore:1.1.2') {
-        exclude group: "io.reactivex.rxjava2"
-    }
-    implementation('com.github.badoo.mvicore:mvicore-android:1.1.2')
-
     testImplementation project(":libraries:rib-test-utils")
-    testImplementation 'junit:junit:4.12'
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.assertj
+
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 }

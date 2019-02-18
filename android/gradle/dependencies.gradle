@@ -22,7 +22,8 @@ def versions = [
     robolectric: '4.2',
     intellij: '2018.3.3',
     rave: '2.2.0',
-    autoValue: '1.6.3'
+    autoValue: '1.6.3',
+    mviCoreVersion: '1.1.2'
 ]
 
 def apt = [
@@ -70,6 +71,8 @@ def test = [
 def external = [
     kotlinStdlib: "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${versions.kotlin}",
     dagger: "com.google.dagger:dagger:${versions.dagger}",
+    mviCore: "com.github.badoo.mvicore:mvicore:${versions.mviCoreVersion}",
+    mviCoreAndroid: "com.github.badoo.mvicore:mvicore-android:${versions.mviCoreVersion}",
     rxjava2: "io.reactivex.rxjava2:rxjava:2.2.6",
     rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.1.0",
     rxandroid2: "io.reactivex.rxjava2:rxandroid:2.1.1",

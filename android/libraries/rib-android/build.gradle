@@ -12,6 +12,11 @@ dependencies {
     implementation deps.external.rxjava2
     implementation deps.apt.javaxInject
     implementation deps.support.annotations
+
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.assertj
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
