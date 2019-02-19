@@ -2,7 +2,6 @@ package com.badoo.common.rib.directory
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.badoo.common.rib.IViewFactory
 import com.badoo.common.rib.ViewFactory
 import kotlin.reflect.KClass
 
@@ -22,13 +21,9 @@ open class ViewCustomisationDirectory : MutableDirectory {
         map[key] as? T
 }
 
-fun <T> inflateOnDemandI(layoutResourceId: Int): IViewFactory<T> = object : IViewFactory<T> {
+fun <T> inflateOnDemand(layoutResourceId: Int): ViewFactory<T> = object : ViewFactory<T> {
     override fun invoke(parentViewGroup: ViewGroup): T =
         inflate(parentViewGroup, layoutResourceId)
-}
-
-fun <T> inflateOnDemand(layoutResourceId: Int): (ViewGroup) -> T = {
-        parentViewGroup -> inflate(parentViewGroup, layoutResourceId)
 }
 
 fun <T> inflate(parentViewGroup: ViewGroup, layoutResourceId: Int): T =
