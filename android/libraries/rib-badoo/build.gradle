@@ -34,6 +34,8 @@ dependencies {
     implementation project(":libraries:rib-workflow")
     implementation deps.external.kotlinStdlib
     implementation deps.support.appCompat
+    implementation deps.support.archLifecycleCommon // TODO: remove
+    implementation "io.reactivex.rxjava2:rxkotlin:2.2.0" // TODO: remove
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     implementation deps.uber.rave

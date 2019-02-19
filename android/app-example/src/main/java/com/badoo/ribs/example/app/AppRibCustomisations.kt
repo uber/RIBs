@@ -1,0 +1,9 @@
+package com.badoo.ribs.example.app
+
+import com.badoo.common.rib.directory.ViewCustomisationDirectory
+
+object AppRibCustomisations : ViewCustomisationDirectory() {
+
+    init {
+    }
+}
