@@ -37,10 +37,8 @@ dependencies {
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     implementation deps.uber.rave
-    implementation(deps.external.mviCore) {
-        exclude group: "io.reactivex.rxjava2"
-    }
-    implementation(deps.external.mviCoreAndroid)
+    implementation deps.external.mviCore
+    implementation deps.external.mviCoreAndroid
 
     compileOnly deps.apt.javax
     compileOnly deps.apt.autoValueAnnotations
