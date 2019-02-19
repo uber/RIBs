@@ -11,9 +11,12 @@ import com.badoo.mvicore.android.lifecycle.ResumePauseBinderLifecycle
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibView
+import io.reactivex.disposables.Disposable
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-abstract class BaseInteractor<V : RibView, R : BaseViewRouter<V, *>> : Interactor<R>(), LifecycleOwner {
+abstract class BaseInteractor<V : RibView, R : BaseViewRouter<V, *>>(
+    private val disposables: List<Disposable>
+) : Interactor<R>(), LifecycleOwner {
 
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
@@ -66,6 +69,7 @@ abstract class BaseInteractor<V : RibView, R : BaseViewRouter<V, *>> : Interacto
         super.willResignActive()
         viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY) // todo probably this is not needed?
         ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        disposables.forEach { it.dispose() }
     }
 
     override fun getLifecycle(): Lifecycle =
