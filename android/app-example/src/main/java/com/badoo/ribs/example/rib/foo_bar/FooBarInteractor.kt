@@ -1,9 +1,9 @@
 package com.badoo.ribs.example.rib.foo_bar
 
 import android.arch.lifecycle.Lifecycle
+import android.os.Bundle
 import com.badoo.mvicore.binder.using
 import com.badoo.common.rib.BaseInteractor
-import com.uber.rib.core.Bundle
 import com.uber.rib.core.RibInteractor
 import com.badoo.ribs.example.rib.foo_bar.analytics.FooBarAnalytics
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature

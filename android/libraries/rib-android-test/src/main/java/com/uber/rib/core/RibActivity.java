@@ -19,6 +19,7 @@ import android.content.Intent;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
 import android.view.ViewGroup;
+import android.os.Bundle;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.jakewharton.rxrelay2.Relay;
@@ -133,7 +134,7 @@ public abstract class RibActivity extends AppCompatActivity
   @Initializer
   @CallSuper
   @Override
-  protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
+  protected void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     ViewGroup rootViewGroup = ((ViewGroup) findViewById(android.R.id.content));
@@ -141,21 +142,17 @@ public abstract class RibActivity extends AppCompatActivity
     lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
     router = createRouter(rootViewGroup);
 
-    Bundle wrappedBundle = null;
-    if (savedInstanceState != null) {
-      wrappedBundle = new Bundle(savedInstanceState);
-    }
-    router.dispatchAttach(wrappedBundle);
+    router.dispatchAttach(savedInstanceState);
 
     rootViewGroup.addView(router.getView().getAndroidView());
   }
 
   @Override
   @CallSuper
-  protected void onSaveInstanceState(android.os.Bundle outState) {
+  protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     callbacksRelay.accept(ActivityCallbackEvent.createOnSaveInstanceStateEvent(outState));
-    Preconditions.checkNotNull(router).saveInstanceState(new Bundle(outState));
+    Preconditions.checkNotNull(router).saveInstanceState(outState);
   }
 
   @Override

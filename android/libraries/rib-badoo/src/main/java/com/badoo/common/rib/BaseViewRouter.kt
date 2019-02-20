@@ -1,13 +1,11 @@
 package com.badoo.common.rib
 
-import android.app.Activity
-import android.content.Intent
+import android.os.Bundle
 import android.os.Parcelable
 import android.util.SparseArray
 import android.view.ViewGroup
 import com.badoo.common.rib.requestcode.RequestCodeRegistry
 import com.badoo.common.rib.routing.action.RoutingAction
-import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibView
 import com.uber.rib.core.Router

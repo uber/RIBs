@@ -18,7 +18,6 @@ package com.uber.rib.core;
 import android.content.Intent;
 import android.support.annotation.CallSuper;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.view.ViewGroup;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -142,11 +141,7 @@ public abstract class RibActivity extends AppCompatActivity
     lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
     router = createRouter(rootViewGroup);
 
-    Bundle wrappedBundle = null;
-    if (savedInstanceState != null) {
-      wrappedBundle = new Bundle(savedInstanceState);
-    }
-    router.dispatchAttach(wrappedBundle);
+    router.dispatchAttach(savedInstanceState);
 
     rootViewGroup.addView(router.getView().getAndroidView());
   }
@@ -156,7 +151,7 @@ public abstract class RibActivity extends AppCompatActivity
   protected void onSaveInstanceState(android.os.Bundle outState) {
     super.onSaveInstanceState(outState);
     callbacksRelay.accept(ActivityCallbackEvent.createOnSaveInstanceStateEvent(outState));
-    Preconditions.checkNotNull(router).saveInstanceState(new Bundle(outState));
+    Preconditions.checkNotNull(router).saveInstanceState(outState);
   }
 
   @Override

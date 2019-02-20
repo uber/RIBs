@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core;
 
+import android.os.Bundle;
+
 import org.mockito.InOrder;
 import org.mockito.verification.VerificationMode;
 

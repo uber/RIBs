@@ -77,9 +77,8 @@ internal class BackStackRibConnector<C : Parcelable>(
                             // attachChildToView(it) is implied part of addChild:
                             connector.addChild(
                                 router,
-                                bundles.elementAtOrNull(index)?.let {
+                                bundles.elementAtOrNull(index)?.also {
                                     it.classLoader = BackStackManager.State::class.java.classLoader
-                                    com.uber.rib.core.Bundle(it)
                                 }
                             )
                         }
@@ -100,9 +99,7 @@ internal class BackStackRibConnector<C : Parcelable>(
             backStack.forEach {
                 it.bundles = it.ribs?.map { childRouter ->
                     Bundle().also {
-                        childRouter.saveInstanceState(
-                            com.uber.rib.core.Bundle(it)
-                        )
+                        childRouter.saveInstanceState(it)
                     }
                 } ?: emptyList()
 

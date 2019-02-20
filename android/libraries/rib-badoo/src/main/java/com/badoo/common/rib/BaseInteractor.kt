@@ -3,12 +3,12 @@ package com.badoo.common.rib
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
+import android.os.Bundle
 import android.support.annotation.CallSuper
 import com.badoo.mvicore.binder.Binder
 import com.badoo.mvicore.android.lifecycle.CreateDestroyBinderLifecycle
 import com.badoo.mvicore.android.lifecycle.StartStopBinderLifecycle
 import com.badoo.mvicore.android.lifecycle.ResumePauseBinderLifecycle
-import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibView
 import io.reactivex.disposables.Disposable

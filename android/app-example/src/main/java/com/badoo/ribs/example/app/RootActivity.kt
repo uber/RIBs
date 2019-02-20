@@ -20,7 +20,7 @@ class RootActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
         rootRouter = createRib().apply {
-            dispatchAttach(savedInstanceState?.let { com.uber.rib.core.Bundle(it) })
+            dispatchAttach(savedInstanceState)
             onAttachToView(findViewById(R.id.root))
         }
     }
@@ -58,7 +58,7 @@ class RootActivity : AppCompatActivity() {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        rootRouter.saveInstanceState(com.uber.rib.core.Bundle(outState))
+        rootRouter.saveInstanceState(outState)
     }
 
     override fun onDestroy() {

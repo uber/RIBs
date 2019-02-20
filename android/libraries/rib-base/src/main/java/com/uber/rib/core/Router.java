@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core;
 
+import android.os.Bundle;
 import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
@@ -107,9 +108,9 @@ public class Router<I extends com.uber.rib.core.Interactor> {
         "ATTACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     Bundle childBundle = null;
     if (this.savedInstanceState != null) {
-      Bundle previousChildren = this.savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS);
+      Bundle previousChildren = this.savedInstanceState.getBundle(KEY_CHILD_ROUTERS);
       if (previousChildren != null) {
-        childBundle = previousChildren.getBundleExtra(tag);
+        childBundle = previousChildren.getBundle(tag);
       }
     }
 
@@ -148,12 +149,12 @@ public class Router<I extends com.uber.rib.core.Interactor> {
     ribRefWatcher.logBreadcrumb(
         "DETACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     if (savedInstanceState != null) {
-      Bundle childrenBundles = savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS);
+      Bundle childrenBundles = savedInstanceState.getBundle(KEY_CHILD_ROUTERS);
       if (childrenBundles == null) {
         childrenBundles = new Bundle();
-        savedInstanceState.putBundleExtra(KEY_CHILD_ROUTERS, childrenBundles);
+        savedInstanceState.putBundle(KEY_CHILD_ROUTERS, childrenBundles);
       }
-      childrenBundles.putBundleExtra(childRouter.tag, null);
+      childrenBundles.putBundle(childRouter.tag, null);
     }
 
     childRouter.dispatchDetach();
@@ -172,7 +173,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
 
     Bundle interactorBundle = null;
     if (this.savedInstanceState != null) {
-      interactorBundle = this.savedInstanceState.getBundleExtra(KEY_INTERACTOR);
+      interactorBundle = this.savedInstanceState.getBundle(KEY_INTERACTOR);
     }
     getInteractor().dispatchAttach(interactorBundle);
   }
@@ -204,17 +205,17 @@ public class Router<I extends com.uber.rib.core.Interactor> {
     return tag;
   }
 
-  public void saveInstanceState(com.uber.rib.core.Bundle outState) {
+  public void saveInstanceState(Bundle outState) {
     Bundle interactorSavedInstanceState = new Bundle();
     getInteractor().onSaveInstanceState(interactorSavedInstanceState);
-    outState.putBundleExtra(KEY_INTERACTOR, interactorSavedInstanceState);
+    outState.putBundle(KEY_INTERACTOR, interactorSavedInstanceState);
 
     Bundle childBundles = new Bundle();
     for (Router child : children) {
       Bundle childBundle = new Bundle();
       child.saveInstanceState(childBundle);
-      childBundles.putBundleExtra(child.tag, childBundle);
+      childBundles.putBundle(child.tag, childBundle);
     }
-    outState.putBundleExtra(KEY_CHILD_ROUTERS, childBundles);
+    outState.putBundle(KEY_CHILD_ROUTERS, childBundles);
   }
 }

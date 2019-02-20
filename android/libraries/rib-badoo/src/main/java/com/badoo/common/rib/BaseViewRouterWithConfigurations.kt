@@ -1,5 +1,6 @@
 package com.badoo.common.rib
 
+import android.os.Bundle
 import android.os.Parcelable
 import com.badoo.common.rib.routing.RibConnector
 import com.badoo.common.rib.routing.action.RoutingAction
@@ -12,7 +13,6 @@ import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.ShrinkToBund
 import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.TearDown
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
-import com.uber.rib.core.Bundle
 import com.uber.rib.core.Interactor
 import com.uber.rib.core.RibView
 
@@ -35,7 +35,7 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
 
     override fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
         super.dispatchAttach(savedInstanceState, tag)
-        timeCapsule = AndroidTimeCapsule(savedInstanceState?.wrappedBundle)
+        timeCapsule = AndroidTimeCapsule(savedInstanceState)
         initConfigurationManager()
     }
 
@@ -59,7 +59,7 @@ abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I :
     override fun saveInstanceState(outState: Bundle) {
         super.saveInstanceState(outState)
         backStackManager.accept(ShrinkToBundles())
-        timeCapsule.saveState(outState.wrappedBundle)
+        timeCapsule.saveState(outState)
     }
 
     override fun dispatchDetach() {

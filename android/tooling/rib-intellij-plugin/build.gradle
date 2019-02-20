@@ -23,9 +23,6 @@ dependencies {
     testImplementation(project(":libraries:rib-base")) {
         transitive = false
     }
-    testImplementation(project(":libraries:rib-test-utils")) {
-        transitive = false
-    }
     testImplementation(project(":libraries:rib-compiler-app")) {
         transitive = false
     }

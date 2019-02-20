@@ -1,17 +1,17 @@
 package com.badoo.common.rib.routing
 
+import android.os.Bundle
 import com.badoo.common.rib.BaseViewRouter
-import com.uber.rib.core.Bundle
 
 interface RibConnector {
-    fun addChild(childRouter: BaseViewRouter<*, *>, bundle: com.uber.rib.core.Bundle? = null)
+    fun addChild(childRouter: BaseViewRouter<*, *>, bundle: Bundle? = null)
     fun attachChildToView(childRouter: BaseViewRouter<*, *>)
     fun detachChildFromView(childRouter: BaseViewRouter<*, *>)
     fun removeChild(childRouter: BaseViewRouter<*, *>)
 
     companion object {
         fun from(
-            addChild: (BaseViewRouter<*, *>, com.uber.rib.core.Bundle?) -> Unit,
+            addChild: (BaseViewRouter<*, *>, Bundle?) -> Unit,
             attachChildToView: (BaseViewRouter<*, *>) -> Unit,
             detachChildFromView: (BaseViewRouter<*, *>) -> Unit,
             removeChild: (BaseViewRouter<*, *>) -> Unit
