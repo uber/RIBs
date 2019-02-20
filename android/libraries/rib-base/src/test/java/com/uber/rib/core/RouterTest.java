@@ -15,31 +15,6 @@
  */
 package com.uber.rib.core;
 
-import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-
 public class RouterTest {
 
-  @Test
-  public void didLoad_shouldBeCalledAfterInstantiation() {
-    final AtomicBoolean didLoad = new AtomicBoolean(false);
-    Router router =
-        new Router<Interactor>(
-            mock(Interactor.class),
-            mock(RibRefWatcher.class)) {
-          @Override
-          protected void didLoad() {
-            super.didLoad();
-            didLoad.set(true);
-          }
-        };
-
-    router.dispatchAttach(null);
-
-    assertThat(didLoad.get()).isTrue();
-  }
 }

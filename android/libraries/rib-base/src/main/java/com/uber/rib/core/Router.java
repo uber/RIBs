@@ -15,7 +15,6 @@
  */
 package com.uber.rib.core;
 
-import android.os.Looper;
 import android.support.annotation.CallSuper;
 import android.support.annotation.MainThread;
 import android.support.annotation.Nullable;
@@ -24,8 +23,6 @@ import android.support.annotation.VisibleForTesting;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.uber.rib.core.Preconditions.*;
 
 /**
  * Responsible for handling the addition and removal of children routers.
@@ -44,9 +41,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
   private String tag;
 
   @Nullable private Bundle savedInstanceState;
-
-  private boolean isLoaded;
-
+  
   public Router(I interactor) {
     this(interactor, com.uber.rib.core.RibRefWatcher.getInstance());
   }
@@ -72,10 +67,6 @@ public class Router<I extends com.uber.rib.core.Interactor> {
     ribRefWatcher.logBreadcrumb("BACKPRESS", null, null);
     return getInteractor().handleBackPress();
   }
-
-  /** Called after the router has been loaded and initialized. */
-  @Initializer
-  protected void didLoad() {}
 
   /**
    * Called when a router is being attached. Router subclasses can perform setup here for anything
@@ -186,10 +177,6 @@ public class Router<I extends com.uber.rib.core.Interactor> {
 
   @CallSuper
   protected void dispatchAttach(@Nullable final Bundle savedInstanceState, String tag) {
-    if (!isLoaded) {
-      isLoaded = true;
-      didLoad();
-    }
     this.savedInstanceState = savedInstanceState;
     this.tag = tag;
     willAttach();
