@@ -21,7 +21,6 @@ import android.support.annotation.Nullable;
 import android.support.annotation.VisibleForTesting;
 
 import java.util.List;
-import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -41,7 +40,7 @@ public class Router<I extends com.uber.rib.core.Interactor> {
   private String tag;
 
   @Nullable private Bundle savedInstanceState;
-  
+
   public Router(I interactor) {
     this(interactor, com.uber.rib.core.RibRefWatcher.getInstance());
   }
@@ -103,16 +102,6 @@ public class Router<I extends com.uber.rib.core.Interactor> {
    */
   @MainThread
   protected void attachChild(Router<?> childRouter, String tag) {
-    for (Router child : children) {
-      if (tag.equals(child.tag)) {
-        Rib.getConfiguration()
-            .handleNonFatalWarning(
-                String.format(
-                    Locale.getDefault(), "There is already a child router with tag: %s", tag),
-                null);
-      }
-    }
-
     children.add(childRouter);
     ribRefWatcher.logBreadcrumb(
         "ATTACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
