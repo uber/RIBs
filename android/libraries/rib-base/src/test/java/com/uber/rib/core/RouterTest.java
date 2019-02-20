@@ -30,8 +30,7 @@ public class RouterTest {
     Router router =
         new Router<Interactor>(
             mock(Interactor.class),
-            mock(RibRefWatcher.class),
-            Thread.currentThread()) {
+            mock(RibRefWatcher.class)) {
           @Override
           protected void didLoad() {
             super.didLoad();

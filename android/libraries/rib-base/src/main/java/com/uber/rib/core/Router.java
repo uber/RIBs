@@ -39,7 +39,6 @@ public class Router<I extends com.uber.rib.core.Interactor> {
 
   private final List<Router> children = new CopyOnWriteArrayList<>();
   private final I interactor;
-  private final Thread mainThread;
   private final com.uber.rib.core.RibRefWatcher ribRefWatcher;
 
   private String tag;
@@ -49,14 +48,13 @@ public class Router<I extends com.uber.rib.core.Interactor> {
   private boolean isLoaded;
 
   public Router(I interactor) {
-    this(interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
+    this(interactor, com.uber.rib.core.RibRefWatcher.getInstance());
   }
 
   @SuppressWarnings("unchecked")
-  Router(I interactor, com.uber.rib.core.RibRefWatcher ribRefWatcher, Thread mainThread) {
+  Router(I interactor, com.uber.rib.core.RibRefWatcher ribRefWatcher) {
     this.interactor = interactor;
     this.ribRefWatcher = ribRefWatcher;
-    this.mainThread = mainThread;
     interactor.setRouter(this);
   }
 
@@ -188,8 +186,6 @@ public class Router<I extends com.uber.rib.core.Interactor> {
 
   @CallSuper
   protected void dispatchAttach(@Nullable final Bundle savedInstanceState, String tag) {
-    checkForMainThread();
-
     if (!isLoaded) {
       isLoaded = true;
       didLoad();
@@ -206,8 +202,6 @@ public class Router<I extends com.uber.rib.core.Interactor> {
   }
 
   public void dispatchDetach() {
-    checkForMainThread();
-
     getInteractor().dispatchDetach();
     willDetach();
 
@@ -246,21 +240,5 @@ public class Router<I extends com.uber.rib.core.Interactor> {
       childBundles.putBundleExtra(child.tag, childBundle);
     }
     outState.putBundleExtra(KEY_CHILD_ROUTERS, childBundles);
-  }
-
-  private void checkForMainThread() {
-    if (mainThread != Thread.currentThread()) {
-      String errorMessage = "Call must happen on the main thread";
-      IllegalStateException exception = new IllegalStateException(errorMessage);
-      Rib.getConfiguration().handleNonFatalError(errorMessage, exception);
-    }
-  }
-
-  private static Thread getMainThread() {
-    try {
-      return Looper.getMainLooper().getThread();
-    } catch (Exception e) {
-      return Thread.currentThread();
-    }
   }
 }
