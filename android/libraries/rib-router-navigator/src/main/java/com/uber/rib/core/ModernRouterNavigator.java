@@ -302,6 +302,6 @@ public class ModernRouterNavigator<StateT extends RouterNavigatorState>
 
   /** Writes out to the debug log. */
   private static void log(final String text) {
-    Rib.getErrorHandler().handleDebugMessage("%s: " + text, "RouterNavigator");
+    RIBs.getErrorHandler().handleDebugMessage("%s: " + text, "RouterNavigator");
   }
 }

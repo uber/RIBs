@@ -17,12 +17,12 @@ package com.uber.rib.core;
 
 import android.support.annotation.Nullable;
 
-/** Holds errorHandler and settings for riblets. */
-public class Rib {
+/** Holds errorHandler and settings for RIBs */
+public class RIBs {
 
   @Nullable private static ErrorHandler errorHandler = null;
 
-  private Rib() {}
+  private RIBs() {}
 
   /**
    * Sets the errorHandler to use in the application. This can only be called once before any RIB
@@ -32,10 +32,10 @@ public class Rib {
    * @param errorHandler to set.
    */
   public static void setErrorHandler(ErrorHandler errorHandler) {
-    if (Rib.errorHandler == null) {
-      Rib.errorHandler = errorHandler;
+    if (RIBs.errorHandler == null) {
+      RIBs.errorHandler = errorHandler;
     } else {
-      if (Rib.errorHandler instanceof DefaultErrorHandler) {
+      if (RIBs.errorHandler instanceof DefaultErrorHandler) {
         throw new IllegalStateException("Attempting to set a errorHandler after using RIB code.");
       } else {
         throw new IllegalStateException(
