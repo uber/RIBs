@@ -40,4 +40,12 @@ public class Bundle implements Parcelable {
   public void putString(String key, String value) {
     testData.put(key, value);
   }
+
+  public void putBundle(String key, Bundle value) {
+    testData.put(key, value);
+  }
+
+  public Bundle getBundle(String key) {
+    return (Bundle) testData.get(key);
+  }
 }

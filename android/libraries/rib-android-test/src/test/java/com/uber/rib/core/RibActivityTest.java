@@ -17,6 +17,7 @@ package com.uber.rib.core;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
@@ -54,10 +55,10 @@ public class RibActivityTest {
 
     @Test
     public void onCreate_withSaveInstanceState_shouldForwardToRootRiblet() {
-        android.os.Bundle interactorBundle = new android.os.Bundle();
+        Bundle interactorBundle = new Bundle();
         interactorBundle.putString(TEST_BUNDLE_KEY, TEST_BUNDLE_VALUE);
 
-        android.os.Bundle testBundle = new android.os.Bundle();
+        Bundle testBundle = new Bundle();
         testBundle.putBundle(Router.KEY_INTERACTOR, interactorBundle);
 
         ActivityController<EmptyActivity> activityController =
@@ -110,7 +111,7 @@ public class RibActivityTest {
         TestObserver<ActivityCallbackEvent.SaveInstanceState> testSub = new TestObserver<>();
         activity.callbacks(ActivityCallbackEvent.SaveInstanceState.class).subscribe(testSub);
 
-        android.os.Bundle state = new android.os.Bundle();
+        Bundle state = new Bundle();
         state.putString("hello", "seattle");
         activity.onSaveInstanceState(state);
 
@@ -128,7 +129,7 @@ public class RibActivityTest {
         TestObserver<ActivityCallbackEvent.ActivityResult> testSub = new TestObserver<>();
         activity.callbacks(ActivityCallbackEvent.ActivityResult.class).subscribe(testSub);
 
-        android.os.Bundle data = new android.os.Bundle();
+        Bundle data = new Bundle();
         data.putString("hello", "seattle");
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.putExtras(data);
@@ -189,10 +190,10 @@ public class RibActivityTest {
             Robolectric.buildActivity(EmptyActivity.class);
         EmptyActivity activity = activityController.setup().get();
 
-        android.os.Bundle bundle = new android.os.Bundle();
+        Bundle bundle = new Bundle();
         activity.onSaveInstanceState(bundle);
 
-        android.os.Bundle interactorBundle = bundle.getBundle(Router.KEY_INTERACTOR);
+        Bundle interactorBundle = bundle.getBundle(Router.KEY_INTERACTOR);
         assertThat(interactorBundle).isNotNull();
     }
 
