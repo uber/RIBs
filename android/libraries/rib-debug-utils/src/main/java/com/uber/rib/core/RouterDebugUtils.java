@@ -37,7 +37,7 @@ public final class RouterDebugUtils {
 
   private static void printRouterSubtree(
       final Router<?> router, final String prefix, final boolean isTail) {
-    Rib.getConfiguration()
+    Rib.getErrorHandler()
         .handleDebugMessage(prefix + (isTail ? ARM_RIGHT : INTERSECTION) + router.getTag());
 
     List<Router> children = router.getChildren();
