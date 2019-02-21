@@ -35,12 +35,13 @@ import com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE
  *
  * @param <R> the type of [Router].
 </R> */
-abstract class Interactor : LifecycleScopeProvider<InteractorEvent> {
+@Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
+abstract class Interactor<V : RibView> : LifecycleScopeProvider<InteractorEvent> {
 
     private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
     private val lifecycleRelay = behaviorRelay.toSerialized()
 
-    open var router: Router? = null
+    open var router: Router<V>? = null
         get() {
             if (field == null) {
                 throw IllegalStateException("Attempting to get interactor's router before being set.")

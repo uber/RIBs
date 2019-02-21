@@ -24,8 +24,8 @@ import java.util.concurrent.CopyOnWriteArrayList
 /**
  * Responsible for handling the addition and removal of child routers.
  **/
-open class Router(
-    val interactor: Interactor,
+open class Router<V : RibView>(
+    val interactor: Interactor<V>,
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
@@ -34,7 +34,7 @@ open class Router(
     }
 
     private var savedInstanceState: Bundle? = null
-    val children = CopyOnWriteArrayList<Router>()
+    val children = CopyOnWriteArrayList<Router<*>>()
     var tag: String? = null
         private set
 
@@ -74,7 +74,7 @@ open class Router(
     @MainThread
     @JvmOverloads
     protected fun attachChild(
-        childRouter: Router,
+        childRouter: Router<*>,
         tag: String = childRouter.javaClass.name
     ) {
         children.add(childRouter)
@@ -98,7 +98,7 @@ open class Router(
      * @param childRouter the [Router] to be attached.
      */
     @MainThread
-    protected fun attachChild(childRouter: Router, bundle: Bundle) {
+    protected fun attachChild(childRouter: Router<*>, bundle: Bundle) {
         children.add(childRouter)
         ribRefWatcher.logBreadcrumb(
             "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
@@ -118,7 +118,7 @@ open class Router(
      * @param childRouter the [Router] to be detached.
      */
     @MainThread
-    protected fun detachChild(childRouter: Router) {
+    protected fun detachChild(childRouter: Router<*>) {
         children.remove(childRouter)
 
         val interactor = childRouter.interactor
