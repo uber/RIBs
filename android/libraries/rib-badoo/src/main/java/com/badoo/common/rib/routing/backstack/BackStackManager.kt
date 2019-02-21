@@ -107,8 +107,7 @@ internal class BackStackManager<C : Parcelable>(
                 }
 
                 is Execute -> {
-                    val wish = action.wish
-                    when (wish) {
+                    when (val wish = action.wish) {
                         is Replace -> when {
                             wish.configuration != state.backStack.last() ->
                                 connector.switchToNew(
