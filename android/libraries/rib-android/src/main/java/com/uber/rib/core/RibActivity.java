@@ -35,204 +35,205 @@ import android.support.v7.app.AppCompatActivity;
 public abstract class RibActivity extends AppCompatActivity
     implements ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {
 
-  /**
-   * Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities.
-   */
-  private static final Function<ActivityLifecycleEvent, ActivityLifecycleEvent> ACTIVITY_LIFECYCLE =
-      new Function<ActivityLifecycleEvent, ActivityLifecycleEvent>() {
-        @Override
-        public ActivityLifecycleEvent apply(ActivityLifecycleEvent lastEvent) {
-          switch (lastEvent.getType()) {
-            case CREATE:
-              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
-            case START:
-              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
-            case RESUME:
-              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE);
-            case PAUSE:
-              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
-            case STOP:
-              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
-            case DESTROY:
-              throw new LifecycleEndedException(
-                  "Cannot bind to Activity lifecycle when outside of it.");
-          }
-          throw new UnsupportedOperationException(
-              "Binding to " + lastEvent + " not yet implemented");
-        }
-      };
-
-  @SuppressWarnings("NullableProblems")
-  private ViewRouter<?, ?> router;
-
-  private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
-      BehaviorRelay.create();
-  private final Relay<ActivityLifecycleEvent> lifecycleRelay =
-      lifecycleBehaviorRelay.toSerialized();
-  private final Relay<ActivityCallbackEvent> callbacksRelay =
-      PublishRelay.<ActivityCallbackEvent>create().toSerialized();
-
-  /** @return an observable of this activity's lifecycle events. */
-  @Override
-  public Observable<ActivityLifecycleEvent> lifecycle() {
-    return lifecycleRelay.hide();
-  }
-
-  /**
-   * @param <T> The type of {@link ActivityLifecycleEvent} subclass you want.
-   * @param clazz The {@link ActivityLifecycleEvent} subclass you want.
-   * @return an observable of this activity's lifecycle events.
-   */
-  public <T extends ActivityLifecycleEvent> Observable<T> lifecycle(final Class<T> clazz) {
-    return lifecycle()
-        .filter(
-            new Predicate<ActivityLifecycleEvent>() {
-              @Override
-              public boolean test(ActivityLifecycleEvent activityEvent) throws Exception {
-                return clazz.isAssignableFrom(activityEvent.getClass());
-              }
-            })
-        .cast(clazz);
-  }
-
-  /** @return an observable of this activity's lifecycle events. */
-  @Override
-  public Observable<ActivityCallbackEvent> callbacks() {
-    return callbacksRelay.hide();
-  }
-
-  /**
-   * @param <T> The type of {@link ActivityCallbackEvent} subclass you want.
-   * @param clazz The {@link ActivityCallbackEvent} subclass you want.
-   * @return an observable of this activity's callbacks events.
-   */
-  public <T extends ActivityCallbackEvent> Observable<T> callbacks(final Class<T> clazz) {
-    return callbacks()
-        .filter(
-            new Predicate<ActivityCallbackEvent>() {
-              @Override
-              public boolean test(ActivityCallbackEvent activityCallbackEvent) throws Exception {
-                return clazz.isAssignableFrom(activityCallbackEvent.getClass());
-              }
-            })
-        .cast(clazz);
-  }
-
-  @Override
-  public Function<ActivityLifecycleEvent, ActivityLifecycleEvent> correspondingEvents() {
-    return ACTIVITY_LIFECYCLE;
-  }
-
-  @Nullable
-  @Override
-  public ActivityLifecycleEvent peekLifecycle() {
-    return lifecycleBehaviorRelay.getValue();
-  }
-
-  @SuppressWarnings("CheckNullabilityTypes")
-  @Initializer
-  @CallSuper
-  @Override
-  protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    ViewGroup rootViewGroup = ((ViewGroup) findViewById(android.R.id.content));
-
-    lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
-    router = createRouter(rootViewGroup);
-
-    router.dispatchAttach(savedInstanceState);
-
-    rootViewGroup.addView(router.getView().getAndroidView());
-  }
-
-  @Override
-  @CallSuper
-  protected void onSaveInstanceState(android.os.Bundle outState) {
-    super.onSaveInstanceState(outState);
-    callbacksRelay.accept(ActivityCallbackEvent.createOnSaveInstanceStateEvent(outState));
-    Preconditions.checkNotNull(router).saveInstanceState(outState);
-  }
-
-  @Override
-  @CallSuper
-  protected void onStart() {
-    super.onStart();
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.START));
-  }
-
-  @Override
-  @CallSuper
-  protected void onResume() {
-    super.onResume();
-
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.RESUME));
-  }
-
-  @Override
-  @CallSuper
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-
-    callbacksRelay.accept(
-        ActivityCallbackEvent.createOnActivityResultEvent(requestCode, resultCode, data));
-  }
-
-  @Override
-  @CallSuper
-  protected void onPause() {
-
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE));
-    super.onPause();
-  }
-
-  @Override
-  @CallSuper
-  protected void onStop() {
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP));
-    super.onStop();
-  }
-
-  @Override
-  @CallSuper
-  @SuppressWarnings("CheckNullabilityTypes")
-  protected void onDestroy() {
-    if (lifecycleRelay != null) {
-      lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY));
-    }
-    if (router != null) {
-      router.dispatchDetach();
-    }
-    router = null;
-    super.onDestroy();
-  }
-
-  @Override
-  @CallSuper
-  public void onLowMemory() {
-    super.onLowMemory();
-    callbacksRelay.accept(ActivityCallbackEvent.create(ActivityCallbackEvent.Type.LOW_MEMORY));
-  }
-
-  @Override
-  public void onBackPressed() {
-    if (router != null && !router.handleBackPress()) {
-      super.onBackPressed();
-    }
-  }
-
-  /**
-   * @return the {@link Interactor} when the activity has alive.
-   * @throws IllegalStateException if the activity has not been created or has been destroyed.
-   */
-  protected Interactor getInteractor() {
-    if (router != null) {
-      return router.getInteractor();
-    } else {
-      throw new IllegalStateException(
-          "Attempting to get a router when activity is not created or has been " + "destroyed.");
-    }
-  }
+//  /**
+//   * Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities.
+//   */
+//  private static final Function<ActivityLifecycleEvent, ActivityLifecycleEvent> ACTIVITY_LIFECYCLE =
+//      new Function<ActivityLifecycleEvent, ActivityLifecycleEvent>() {
+//        @Override
+//        public ActivityLifecycleEvent apply(ActivityLifecycleEvent lastEvent) {
+//          switch (lastEvent.getType()) {
+//            case CREATE:
+//              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
+//            case START:
+//              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
+//            case RESUME:
+//              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE);
+//            case PAUSE:
+//              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
+//            case STOP:
+//              return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
+//            case DESTROY:
+//              throw new LifecycleEndedException(
+//                  "Cannot bind to Activity lifecycle when outside of it.");
+//          }
+//          throw new UnsupportedOperationException(
+//              "Binding to " + lastEvent + " not yet implemented");
+//        }
+//      };
+//
+//  @SuppressWarnings("NullableProblems")
+//  private Router router;
+//
+//  private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
+//      BehaviorRelay.create();
+//  private final Relay<ActivityLifecycleEvent> lifecycleRelay =
+//      lifecycleBehaviorRelay.toSerialized();
+//  private final Relay<ActivityCallbackEvent> callbacksRelay =
+//      PublishRelay.<ActivityCallbackEvent>create().toSerialized();
+//
+//  /** @return an observable of this activity's lifecycle events. */
+//  @Override
+//  public Observable<ActivityLifecycleEvent> lifecycle() {
+//    return lifecycleRelay.hide();
+//  }
+//
+//  /**
+//   * @param <T> The type of {@link ActivityLifecycleEvent} subclass you want.
+//   * @param clazz The {@link ActivityLifecycleEvent} subclass you want.
+//   * @return an observable of this activity's lifecycle events.
+//   */
+//  public <T extends ActivityLifecycleEvent> Observable<T> lifecycle(final Class<T> clazz) {
+//    return lifecycle()
+//        .filter(
+//            new Predicate<ActivityLifecycleEvent>() {
+//              @Override
+//              public boolean test(ActivityLifecycleEvent activityEvent) throws Exception {
+//                return clazz.isAssignableFrom(activityEvent.getClass());
+//              }
+//            })
+//        .cast(clazz);
+//  }
+//
+//  /** @return an observable of this activity's lifecycle events. */
+//  @Override
+//  public Observable<ActivityCallbackEvent> callbacks() {
+//    return callbacksRelay.hide();
+//  }
+//
+//  /**
+//   * @param <T> The type of {@link ActivityCallbackEvent} subclass you want.
+//   * @param clazz The {@link ActivityCallbackEvent} subclass you want.
+//   * @return an observable of this activity's callbacks events.
+//   */
+//  public <T extends ActivityCallbackEvent> Observable<T> callbacks(final Class<T> clazz) {
+//    return callbacks()
+//        .filter(
+//            new Predicate<ActivityCallbackEvent>() {
+//              @Override
+//              public boolean test(ActivityCallbackEvent activityCallbackEvent) throws Exception {
+//                return clazz.isAssignableFrom(activityCallbackEvent.getClass());
+//              }
+//            })
+//        .cast(clazz);
+//  }
+//
+//  @Override
+//  public Function<ActivityLifecycleEvent, ActivityLifecycleEvent> correspondingEvents() {
+//    return ACTIVITY_LIFECYCLE;
+//  }
+//
+//  @Nullable
+//  @Override
+//  public ActivityLifecycleEvent peekLifecycle() {
+//    return lifecycleBehaviorRelay.getValue();
+//  }
+//
+//  @SuppressWarnings("CheckNullabilityTypes")
+//  @Initializer
+//  @CallSuper
+//  @Override
+//  protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
+//    super.onCreate(savedInstanceState);
+//
+//    ViewGroup rootViewGroup = ((ViewGroup) findViewById(android.R.id.content));
+//
+//    lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
+//    router = createRouter(rootViewGroup);
+//
+//    router.dispatchAttach(savedInstanceState);
+//
+//    // fixme
+////    rootViewGroup.addView(router.getView().getAndroidView());
+//  }
+//
+//  @Override
+//  @CallSuper
+//  protected void onSaveInstanceState(android.os.Bundle outState) {
+//    super.onSaveInstanceState(outState);
+//    callbacksRelay.accept(ActivityCallbackEvent.createOnSaveInstanceStateEvent(outState));
+//    Preconditions.checkNotNull(router).saveInstanceState(outState);
+//  }
+//
+//  @Override
+//  @CallSuper
+//  protected void onStart() {
+//    super.onStart();
+//    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.START));
+//  }
+//
+//  @Override
+//  @CallSuper
+//  protected void onResume() {
+//    super.onResume();
+//
+//    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.RESUME));
+//  }
+//
+//  @Override
+//  @CallSuper
+//  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//    super.onActivityResult(requestCode, resultCode, data);
+//
+//    callbacksRelay.accept(
+//        ActivityCallbackEvent.createOnActivityResultEvent(requestCode, resultCode, data));
+//  }
+//
+//  @Override
+//  @CallSuper
+//  protected void onPause() {
+//
+//    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE));
+//    super.onPause();
+//  }
+//
+//  @Override
+//  @CallSuper
+//  protected void onStop() {
+//    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP));
+//    super.onStop();
+//  }
+//
+//  @Override
+//  @CallSuper
+//  @SuppressWarnings("CheckNullabilityTypes")
+//  protected void onDestroy() {
+//    if (lifecycleRelay != null) {
+//      lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY));
+//    }
+//    if (router != null) {
+//      router.dispatchDetach();
+//    }
+//    router = null;
+//    super.onDestroy();
+//  }
+//
+//  @Override
+//  @CallSuper
+//  public void onLowMemory() {
+//    super.onLowMemory();
+//    callbacksRelay.accept(ActivityCallbackEvent.create(ActivityCallbackEvent.Type.LOW_MEMORY));
+//  }
+//
+//  @Override
+//  public void onBackPressed() {
+//    if (router != null && !router.handleBackPress()) {
+//      super.onBackPressed();
+//    }
+//  }
+//
+//  /**
+//   * @return the {@link Interactor} when the activity has alive.
+//   * @throws IllegalStateException if the activity has not been created or has been destroyed.
+//   */
+//  protected Interactor getInteractor() {
+//    if (router != null) {
+//      return router.getInteractor();
+//    } else {
+//      throw new IllegalStateException(
+//          "Attempting to get a router when activity is not created or has been " + "destroyed.");
+//    }
+//  }
 
   /**
    * Creates the {@link Interactor}.
