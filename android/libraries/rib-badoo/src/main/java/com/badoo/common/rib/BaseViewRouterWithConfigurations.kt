@@ -13,15 +13,14 @@ import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.ShrinkToBund
 import com.badoo.common.rib.routing.backstack.BackStackManager.Wish.TearDown
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
-import com.uber.rib.core.Interactor
-import com.uber.rib.core.RibView
+import com.uber.rib.core.RibAndroidView
 
 @Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibView, I : Interactor<*>>(
+abstract class BaseViewRouterWithConfigurations<C : Parcelable, V : RibAndroidView, I : BaseInteractor<V, *>>(
     private val viewFactory: ViewFactory<V>?,
     interactor: I,
     private val initialConfiguration: C
-) : BaseViewRouter<V, I>(
+) : BaseViewRouter<V>(
     viewFactory,
     interactor
 ) {

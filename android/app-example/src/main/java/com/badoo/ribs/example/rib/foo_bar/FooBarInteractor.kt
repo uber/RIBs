@@ -38,4 +38,6 @@ class FooBarInteractor(
             bind(view to feature using ViewEventToWish)
         }
     }
+
+
 }

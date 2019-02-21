@@ -20,7 +20,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
@@ -42,8 +41,6 @@ import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.PublishSubject;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 import static org.robolectric.Robolectric.buildActivity;
 import static org.robolectric.Robolectric.setupActivity;
 
@@ -59,7 +56,8 @@ public class RibActivityTest {
         interactorBundle.putString(TEST_BUNDLE_KEY, TEST_BUNDLE_VALUE);
 
         Bundle testBundle = new Bundle();
-        testBundle.putBundle(Router.KEY_INTERACTOR, interactorBundle);
+        //noinspection KotlinInternalInJava
+        testBundle.putBundle(Router.Companion.getKEY_INTERACTOR$rib_base_debug(), interactorBundle);
 
         ActivityController<EmptyActivity> activityController =
             Robolectric.buildActivity(EmptyActivity.class);
@@ -193,7 +191,8 @@ public class RibActivityTest {
         Bundle bundle = new Bundle();
         activity.onSaveInstanceState(bundle);
 
-        Bundle interactorBundle = bundle.getBundle(Router.KEY_INTERACTOR);
+        //noinspection KotlinInternalInJava
+        Bundle interactorBundle = bundle.getBundle(Router.Companion.getKEY_INTERACTOR$rib_base_debug());
         assertThat(interactorBundle).isNotNull();
     }
 
@@ -235,16 +234,16 @@ public class RibActivityTest {
     }
 
     private static class EmptyRouter
-        extends ViewRouter<RibActivityTest.View, Interactor<?>> {
+        extends ViewRouter<RibActivityTest.View, Interactor> {
 
         EmptyRouter(
             @NonNull RibActivityTest.View view,
-            @NonNull Interactor<?> interactor) {
+            @NonNull Interactor interactor) {
             super(view, interactor);
         }
     }
 
-    private static class View implements RibView {
+    private static class View implements RibAndroidView {
 
         private ViewGroup view;
 
@@ -258,7 +257,7 @@ public class RibActivityTest {
         }
     }
 
-    private static class TestInteractor extends Interactor<EmptyRouter> {
+    private static class TestInteractor extends Interactor {
 
         private Bundle savedInstanceState;
 
@@ -266,11 +265,6 @@ public class RibActivityTest {
         protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
             super.didBecomeActive(savedInstanceState);
             this.savedInstanceState = savedInstanceState;
-        }
-
-        @Override
-        protected void onSaveInstanceState(@NonNull Bundle outState) {
-            super.onSaveInstanceState(outState);
         }
 
         Bundle getSavedInstanceState() {

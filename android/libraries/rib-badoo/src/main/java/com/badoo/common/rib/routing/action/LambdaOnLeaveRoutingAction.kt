@@ -1,8 +1,8 @@
 package com.badoo.common.rib.routing.action
 
-import com.uber.rib.core.RibView
+import com.uber.rib.core.RibAndroidView
 
-class LambdaOnLeaveRoutingAction< V : RibView>(
+class LambdaOnLeaveRoutingAction< V : RibAndroidView>(
     private val f: () -> Unit
 ) : RoutingAction<V> {
 
@@ -11,7 +11,7 @@ class LambdaOnLeaveRoutingAction< V : RibView>(
     }
 
     companion object {
-        fun < V : RibView> onLeave(onLeave: () -> Unit): RoutingAction<V> =
+        fun < V : RibAndroidView> onLeave(onLeave: () -> Unit): RoutingAction<V> =
             LambdaOnLeaveRoutingAction(onLeave)
     }
 }

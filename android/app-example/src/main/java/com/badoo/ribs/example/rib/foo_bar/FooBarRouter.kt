@@ -6,4 +6,4 @@ import com.badoo.common.rib.ViewFactory
 class FooBarRouter(
     viewFactory: ViewFactory<FooBarView>,
     interactor: FooBarInteractor
-) : BaseViewRouter<FooBarView, FooBarInteractor>(viewFactory, interactor)
+) : BaseViewRouter<FooBarView>(viewFactory, interactor)

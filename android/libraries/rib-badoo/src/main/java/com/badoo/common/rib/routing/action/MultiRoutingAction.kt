@@ -1,15 +1,15 @@
 package com.badoo.common.rib.routing.action
 
 import com.badoo.common.rib.BaseViewRouter
-import com.uber.rib.core.RibView
+import com.uber.rib.core.RibAndroidView
 
-class MultiRoutingAction< V : RibView>(
+class MultiRoutingAction< V : RibAndroidView>(
     private vararg val routingActions: RoutingAction<V>
 ) : RoutingAction<V> {
 
     constructor(routingActions: List<RoutingAction<V>>) : this(*routingActions.toTypedArray())
 
-    override fun onExecuteCreateTheseRibs(): List<() -> BaseViewRouter<*, *>> =
+    override fun onExecuteCreateTheseRibs(): List<() -> BaseViewRouter<*>> =
         routingActions.flatMap {
             it.onExecuteCreateTheseRibs()
         }
@@ -27,7 +27,7 @@ class MultiRoutingAction< V : RibView>(
     }
 
     companion object {
-        fun < V : RibView> multi(vararg routingActions: RoutingAction<V>): RoutingAction<V> =
+        fun < V : RibAndroidView> multi(vararg routingActions: RoutingAction<V>): RoutingAction<V> =
             MultiRoutingAction(*routingActions)
     }
 }

@@ -13,5 +13,5 @@ class BackStackElement<C : Parcelable>(
     var bundles: List<Bundle> = emptyList()
 ): Parcelable {
     @IgnoredOnParcel var routingAction: RoutingAction<*>? = null
-    @IgnoredOnParcel var ribs: List<BaseViewRouter<*, *>>? = null
+    @IgnoredOnParcel var ribs: List<BaseViewRouter<*>>? = null
 }

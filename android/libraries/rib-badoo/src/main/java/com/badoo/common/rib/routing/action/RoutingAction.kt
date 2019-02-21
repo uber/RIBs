@@ -1,11 +1,11 @@
 package com.badoo.common.rib.routing.action
 
 import com.badoo.common.rib.BaseViewRouter
-import com.uber.rib.core.RibView
+import com.uber.rib.core.RibAndroidView
 
-interface RoutingAction<V : RibView> {
+interface RoutingAction<V : RibAndroidView> {
 
-    fun onExecuteCreateTheseRibs() : List<() -> BaseViewRouter<*, *>> =
+    fun onExecuteCreateTheseRibs() : List<() -> BaseViewRouter<*>> =
         emptyList()
 
     fun onExecute() {
@@ -16,7 +16,7 @@ interface RoutingAction<V : RibView> {
     }
 
     companion object {
-        fun <V : RibView> noop(): RoutingAction<V> = object : RoutingAction<V> {}
+        fun <V : RibAndroidView> noop(): RoutingAction<V> = object : RoutingAction<V> {}
     }
 }
 

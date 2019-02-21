@@ -1,8 +1,8 @@
 package com.badoo.common.rib.routing.action
 
-import com.uber.rib.core.RibView
+import com.uber.rib.core.RibAndroidView
 
-class LambdaOnInvokeRoutingAction< V : RibView>(
+class LambdaOnInvokeRoutingAction< V : RibAndroidView>(
     private val onInvoke: () -> Unit
 ) : RoutingAction<V> {
 
@@ -11,7 +11,7 @@ class LambdaOnInvokeRoutingAction< V : RibView>(
     }
 
     companion object {
-        fun < V : RibView> execute(onInvoke: () -> Unit): RoutingAction<V> =
+        fun < V : RibAndroidView> execute(onInvoke: () -> Unit): RoutingAction<V> =
             LambdaOnInvokeRoutingAction(onInvoke)
     }
 }

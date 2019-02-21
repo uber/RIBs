@@ -5,18 +5,17 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
 import android.support.annotation.CallSuper
-import com.badoo.mvicore.binder.Binder
 import com.badoo.mvicore.android.lifecycle.CreateDestroyBinderLifecycle
-import com.badoo.mvicore.android.lifecycle.StartStopBinderLifecycle
 import com.badoo.mvicore.android.lifecycle.ResumePauseBinderLifecycle
+import com.badoo.mvicore.android.lifecycle.StartStopBinderLifecycle
+import com.badoo.mvicore.binder.Binder
 import com.uber.rib.core.Interactor
-import com.uber.rib.core.RibView
+import com.uber.rib.core.RibAndroidView
 import io.reactivex.disposables.Disposable
 
-@Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-abstract class BaseInteractor<V : RibView, R : BaseViewRouter<V, *>>(
+abstract class BaseInteractor<V : RibAndroidView, R : BaseViewRouter<V>>(
     private val disposables: List<Disposable>
-) : Interactor<R>(), LifecycleOwner {
+) : Interactor<V>(), LifecycleOwner {
 
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
@@ -33,7 +32,8 @@ abstract class BaseInteractor<V : RibView, R : BaseViewRouter<V, *>>(
     @CallSuper
     fun onViewCreated() {
         viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        onViewCreated(router.view!!, viewLifecycleRegistry)
+        // fixme
+        onViewCreated((router as BaseViewRouter<V>).view!!, viewLifecycleRegistry)
     }
 
     open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {

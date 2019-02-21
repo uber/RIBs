@@ -20,7 +20,7 @@ package com.uber.rib.core;
  *
  * @param <T> type of interactor that is injected.
  */
-public interface InteractorBaseComponent<T extends Interactor<?>> {
+public interface InteractorBaseComponent<T extends Interactor> {
 
   /**
    * Inject the interactor.

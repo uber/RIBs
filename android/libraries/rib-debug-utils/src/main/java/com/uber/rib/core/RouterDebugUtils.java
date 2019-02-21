@@ -40,7 +40,7 @@ public final class RouterDebugUtils {
     RIBs.getErrorHandler()
         .handleDebugMessage(prefix + (isTail ? ARM_RIGHT : INTERSECTION) + router.getTag());
 
-    List<Router> children = router.getChildren();
+    List<Router<?>> children = router.getChildren();
 
     for (int i = 0; i < children.size() - 1; i++) {
       printRouterSubtree(children.get(i), prefix + (isTail ? SPACE : LINE), false);

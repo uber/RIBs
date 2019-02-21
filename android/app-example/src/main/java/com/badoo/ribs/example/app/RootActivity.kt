@@ -14,7 +14,7 @@ import io.reactivex.functions.Consumer
 /** The sample app's single activity.  */
 class RootActivity : AppCompatActivity() {
 
-    private lateinit var rootRouter: BaseViewRouter<*, *>
+    private lateinit var rootRouter: BaseViewRouter<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    fun createRib(): BaseViewRouter<*, *> {
+    fun createRib(): BaseViewRouter<*> {
         val rootBuilder =
             FooBarBuilder(object : FooBar.Dependency {
                 override fun ribCustomisation(): Directory = AppRibCustomisations
