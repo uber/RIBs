@@ -1,7 +1,4 @@
-apply plugin: "java-library"
-
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+configureAndroidLibrary(project)
 
 dependencies {
     implementation project(":libraries:rib-base")
@@ -11,7 +8,7 @@ dependencies {
     implementation deps.apt.javapoet
 
     compileOnly deps.support.annotations
-    compileOnly deps.apt.autoService
+    annotationProcessor deps.apt.autoService
     compileOnly deps.apt.androidApi
 
     testImplementation deps.test.compileTesting

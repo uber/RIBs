@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-plugins {
-    id "java-library"
-}
+configureAndroidLibrary(project)
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
 
 dependencies {
     api deps.uber.autodispose
     api project(':libraries:rib-uava')
 
+    implementation deps.external.kotlinStdlib
     implementation deps.external.reactiveStreams
     implementation deps.external.rxrelay2
     implementation deps.external.rxjava2
     implementation deps.apt.javaxInject
 
-    compileOnly deps.apt.daggerCompiler
+    kapt deps.apt.daggerCompiler
     compileOnly deps.support.annotations
     compileOnly deps.apt.androidApi
 

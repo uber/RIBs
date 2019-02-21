@@ -20,16 +20,6 @@ dependencies {
     implementation deps.build.guava
     implementation deps.support.annotations
 
-    testImplementation(project(":libraries:rib-base")) {
-        transitive = false
-    }
-    testImplementation(project(":libraries:rib-compiler-app")) {
-        transitive = false
-    }
-    testImplementation(project(":libraries:rib-compiler-test")) {
-        transitive = false
-    }
-
     testImplementation deps.apt.daggerCompiler
     testImplementation deps.apt.javaxInject
     testImplementation deps.external.dagger

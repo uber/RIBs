@@ -14,14 +14,7 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
-
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
-
-javadoc {
-    options.encoding = 'UTF-8'
-}
+configureAndroidLibrary(project)
 
 dependencies {
     implementation project(":libraries:rib-base")
