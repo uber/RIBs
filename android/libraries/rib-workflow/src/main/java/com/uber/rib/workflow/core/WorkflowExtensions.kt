@@ -1,4 +1,4 @@
-package com.badoo.common.rib
+package com.uber.rib.workflow.core
 
 import com.uber.rib.workflow.core.ActionableItem
 import com.uber.rib.workflow.core.Step
