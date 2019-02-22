@@ -1,11 +1,13 @@
 package com.badoo.ribs.example.rib.foo_bar.builder
 
+import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Input
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Output
 import com.badoo.ribs.example.rib.foo_bar.FooBarInteractor
-import com.badoo.ribs.example.rib.foo_bar.FooBarNode
+import com.badoo.ribs.example.rib.foo_bar.FooBarRouter
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
+import com.uber.rib.core.Node
 import com.uber.rib.core.ViewFactory
 import dagger.Provides
 import io.reactivex.ObservableSource
@@ -17,12 +19,29 @@ internal object FooBarModule {
     @FooBarScope
     @Provides
     @JvmStatic
+    internal fun router(
+        // pass component to child rib builders, or remove if there are none
+        component: FooBarComponent
+    ): FooBarRouter =
+        FooBarRouter()
+
+    @FooBarScope
+    @Provides
+    @JvmStatic
+    internal fun feature(): FooBarFeature =
+        FooBarFeature()
+
+    @FooBarScope
+    @Provides
+    @JvmStatic
     internal fun interactor(
+        router: FooBarRouter,
         input: ObservableSource<Input>,
         output: Consumer<Output>,
         feature: FooBarFeature
     ): FooBarInteractor =
         FooBarInteractor(
+            router = router,
             input = input,
             output = output,
             feature = feature
@@ -31,20 +50,14 @@ internal object FooBarModule {
     @FooBarScope
     @Provides
     @JvmStatic
-    internal fun router(
-        // pass component to child rib builders, or remove if there are none
-        component: FooBarComponent,
+    internal fun node(
         viewFactory: ViewFactory<FooBarView>,
+        router: FooBarRouter,
         interactor: FooBarInteractor
-    ): FooBarNode =
-        FooBarNode(
-            viewFactory = viewFactory,
-            interactor = interactor
-        )
-
-    @FooBarScope
-    @Provides
-    @JvmStatic
-    internal fun feature(): FooBarFeature =
-        FooBarFeature()
+    ) : Node<FooBarView> = Node(
+        forClass = FooBar::class.java,
+        viewFactory = viewFactory,
+        router = router,
+        interactor = interactor
+    )
 }

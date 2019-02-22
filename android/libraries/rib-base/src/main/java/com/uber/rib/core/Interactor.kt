@@ -19,6 +19,7 @@ import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.annotation.CallSuper
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.LifecycleEndedException
@@ -36,9 +37,12 @@ import io.reactivex.functions.Function
  * @param <V> the type of [RibView].
  * @param <N> the type of [Node].
  **/
-abstract class Interactor<V : RibView, N : Node<V>>(
+abstract class Interactor<C : Parcelable, V : RibView>(
+    protected val router: Router<C, V>,
     private val disposables: Disposable
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
+
+    lateinit var node: Node<V>
 
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
@@ -46,8 +50,6 @@ abstract class Interactor<V : RibView, N : Node<V>>(
     // todo these are leftovers, reconsider them
     private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
     private val lifecycleRelay = behaviorRelay.toSerialized()
-
-    internal lateinit var node: Node<V>
 
     val isAttached: Boolean
         get() = behaviorRelay.value == ACTIVE
@@ -71,9 +73,9 @@ abstract class Interactor<V : RibView, N : Node<V>>(
     }
 
     @CallSuper
-    fun onViewCreated() {
+    fun onViewCreated(view: V) {
         viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        onViewCreated(node.view!!, viewLifecycleRegistry)
+        onViewCreated(view, viewLifecycleRegistry)
     }
 
     open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {

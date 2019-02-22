@@ -21,14 +21,12 @@ package com.uber.rib.core;
  * @param <V> type of view owned by the node.
  * @param <I> type of interactor owned by the node.
  */
-public abstract class ViewRouter<V extends RibView, I extends Interactor>
-    extends Node {
+public abstract class ViewRouter<V extends RibView, I extends Interactor> {
 
   private final V view;
 
   public ViewRouter(V view, I interactor) {
     //noinspection KotlinInternalInJava
-    super(null, interactor, RibRefWatcher.getInstance());
     this.view = view;
   }
 

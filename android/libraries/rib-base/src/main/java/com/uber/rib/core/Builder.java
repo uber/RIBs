@@ -21,10 +21,9 @@ package com.uber.rib.core;
  * asynchronously - or created dyanmically in the parent), they should be passed in via a build
  * method that vends a node.
  *
- * @param <T> type of interactor to build.
  * @param <D> type of dependency required to build the interactor.
  */
-public abstract class Builder<T extends Node, D> {
+public abstract class Builder<D> {
 
   private final D dependency;
 

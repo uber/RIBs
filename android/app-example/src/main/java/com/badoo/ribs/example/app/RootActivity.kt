@@ -14,12 +14,12 @@ import io.reactivex.functions.Consumer
 /** The sample app's single activity.  */
 class RootActivity : AppCompatActivity() {
 
-    private lateinit var rootRouter: Node<*>
+    private lateinit var rootNode: Node<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_root)
-        rootRouter = createRib().apply {
+        rootNode = createRib().apply {
             dispatchAttach(savedInstanceState)
             attachToView(findViewById(R.id.root))
         }
@@ -38,36 +38,36 @@ class RootActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        rootRouter.onStart()
+        rootNode.onStart()
     }
 
     override fun onStop() {
         super.onStop()
-        rootRouter.onStop()
+        rootNode.onStop()
     }
 
     override fun onPause() {
         super.onPause()
-        rootRouter.onPause()
+        rootNode.onPause()
     }
 
     override fun onResume() {
         super.onResume()
-        rootRouter.onResume()
+        rootNode.onResume()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        rootRouter.saveInstanceState(outState)
+        rootNode.saveInstanceState(outState)
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        rootRouter.onDetachFromView(findViewById(R.id.root))
+        rootNode.onDetachFromView(findViewById(R.id.root))
     }
 
     override fun onBackPressed() {
-        if (!rootRouter.handleBackPress()) {
+        if (!rootNode.handleBackPress()) {
             super.onBackPressed()
         }
     }

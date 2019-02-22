@@ -14,14 +14,8 @@ import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Replace
 import com.uber.rib.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
 import com.uber.rib.core.routing.backstack.BackStackManager.Wish.TearDown
 
-@Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interactor<V, *>>(
-    private val viewFactory: ViewFactory<V>?,
-    interactor: I,
+abstract class Router<C : Parcelable, V : RibView>(
     private val initialConfiguration: C
-) : Router<V>(
-    viewFactory,
-    interactor
 ) {
     private val binder = Binder()
     private lateinit var timeCapsule: AndroidTimeCapsule
@@ -29,8 +23,9 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
     protected val configuration: C?
         get() = backStackManager.state.current.configuration
 
-    override fun dispatchAttach(savedInstanceState: Bundle?) {
-        super.dispatchAttach(savedInstanceState)
+    lateinit var node: Node<V>
+
+    fun dispatchAttach(savedInstanceState: Bundle?) {
         timeCapsule = AndroidTimeCapsule(savedInstanceState)
         initConfigurationManager()
     }
@@ -39,10 +34,10 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
         backStackManager = BackStackManager(
             this::resolveConfiguration,
             RibConnector.from(
-                this::attachChild,
-                this::attachChildView,
-                this::detachChildView,
-                this::detachChild
+                node::attachChild,
+                node::attachChildView,
+                node::detachChildView,
+                node::detachChild
             ),
             initialConfiguration,
             timeCapsule
@@ -51,14 +46,12 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
 
     abstract fun resolveConfiguration(configuration: C): RoutingAction<V>
 
-    override fun saveInstanceState(outState: Bundle) {
-        super.saveInstanceState(outState)
+    fun saveInstanceState(outState: Bundle) {
         backStackManager.accept(ShrinkToBundles())
         timeCapsule.saveState(outState)
     }
 
-    override fun dispatchDetach() {
-        super.willDetach()
+    fun dispatchDetach() {
         backStackManager.accept(TearDown())
         binder.clear()
     }
@@ -81,12 +74,5 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
             true
         } else {
             false
-        }
-
-    override fun handleBackPress(): Boolean =
-        when {
-            children.any { it.handleBackPress() } -> true
-            popBackStack() -> true
-            else -> super.handleBackPress()
         }
 }

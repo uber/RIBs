@@ -27,10 +27,10 @@ import android.view.ViewGroup;
  * @param <DependencyT> dependency required to create this node.
  */
 public abstract class ViewBuilder<ViewType, RouterT extends Node, DependencyT>
-    extends Builder<RouterT, DependencyT> {
+     {
 
   public ViewBuilder(DependencyT dependency) {
-    super(dependency);
+//    super(dependency);
   }
 
   /**

@@ -11,14 +11,18 @@ import com.badoo.ribs.example.rib.foo_bar.mapper.NewsToOutput
 import com.badoo.ribs.example.rib.foo_bar.mapper.ViewEventToAnalyticsEvent
 import com.badoo.ribs.example.rib.foo_bar.mapper.ViewEventToWish
 import com.uber.rib.core.Interactor
+import com.uber.rib.core.Node
+import com.uber.rib.core.Router
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
 class FooBarInteractor(
+    router: Router<FooBarRouter.Configuration, FooBarView>,
     private val input: ObservableSource<FooBar.Input>,
     private val output: Consumer<FooBar.Output>,
     private val feature: FooBarFeature
-) : Interactor<FooBarView, FooBarNode>(
+) : Interactor<FooBarRouter.Configuration, FooBarView>(
+    router = router,
     disposables = feature
 ) {
 

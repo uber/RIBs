@@ -31,16 +31,24 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Responsible for handling the addition and removal of child nodes.
  **/
 open class Node<V : RibView>(
+    private val forClass: Class<*>,
     private val viewFactory: ViewFactory<V>?,
-    val interactor: Interactor<V, *>,
+    private val router: Router<*, V>,
+    private val interactor: Interactor<*, V>,
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
         @VisibleForTesting internal val KEY_CHILD_NODES = "node.children"
+        @VisibleForTesting internal val KEY_ROUTER = "node.router"
         @VisibleForTesting internal val KEY_INTERACTOR = "node.interactor"
         private const val KEY_RIB_ID = "rib.id"
         private const val KEY_VIEW_STATE = "view.state"
         private val requestCodeRegistry = RequestCodeRegistry(8)
+    }
+
+    init {
+        router.node = this
+        interactor.node = this
     }
 
     private var savedInstanceState: Bundle? = null
@@ -55,10 +63,6 @@ open class Node<V : RibView>(
     private lateinit var attachPermanentParts: RoutingAction<V>
     protected open val permanentParts: List<() -> Node<*>> = emptyList()
     private var savedViewState: SparseArray<Parcelable> = SparseArray()
-
-    init {
-        interactor.node = this
-    }
 
     private fun attachPermanentParts() {
         permanentParts.forEach {
@@ -82,7 +86,7 @@ open class Node<V : RibView>(
         view?.let {
             it.androidView.restoreHierarchyState(savedViewState)
             parentViewGroup.addView(it.androidView)
-            interactor.onViewCreated()
+            interactor.onViewCreated(view!!)
         }
 
         children.forEach {
@@ -160,7 +164,7 @@ open class Node<V : RibView>(
     @CallSuper
     open fun handleBackPress(): Boolean {
         ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
-        return interactor.handleBackPress()
+        return router.popBackStack() || interactor.handleBackPress()
     }
 
     /**
@@ -252,15 +256,13 @@ open class Node<V : RibView>(
         willAttach()
         attachPermanentParts()
 
-        var interactorBundle: Bundle? = null
-        if (this.savedInstanceState != null) {
-            interactorBundle = this.savedInstanceState!!.getBundle(KEY_INTERACTOR)
-        }
-        interactor.dispatchAttach(interactorBundle)
+        router.dispatchAttach(savedInstanceState?.getBundle(KEY_ROUTER))
+        interactor.dispatchAttach(savedInstanceState?.getBundle(KEY_INTERACTOR))
     }
 
     open fun dispatchDetach() {
         interactor.dispatchDetach()
+        router.dispatchDetach()
         willDetach()
 
         for (child in children) {
@@ -271,8 +273,16 @@ open class Node<V : RibView>(
     open fun saveInstanceState(outState: Bundle) {
         outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
         outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
+        saveRouterState(outState)
         saveInteractorState(outState)
         saveStateOfChildren(outState)
+    }
+
+    private fun saveRouterState(outState: Bundle) {
+        Bundle().let {
+            interactor.onSaveInstanceState(it)
+            outState.putBundle(KEY_RIB_ID, it)
+        }
     }
 
     private fun saveInteractorState(outState: Bundle) {

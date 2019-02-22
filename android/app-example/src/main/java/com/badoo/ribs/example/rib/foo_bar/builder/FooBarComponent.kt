@@ -1,7 +1,8 @@
 package com.badoo.ribs.example.rib.foo_bar.builder
 
 import com.badoo.ribs.example.rib.foo_bar.FooBar
-import com.badoo.ribs.example.rib.foo_bar.FooBarNode
+import com.badoo.ribs.example.rib.foo_bar.FooBarView
+import com.uber.rib.core.Node
 
 
 @FooBarScope
@@ -12,7 +13,7 @@ import com.badoo.ribs.example.rib.foo_bar.FooBarNode
         FooBar.Customisation::class
     ]
 )
-interface FooBarComponent {
+internal interface FooBarComponent {
 
     @dagger.Component.Builder
     interface Builder {
@@ -24,7 +25,7 @@ interface FooBarComponent {
         fun build(): FooBarComponent
     }
 
-    fun router(): FooBarNode
+    fun node(): Node<FooBarView>
 }
 
 
