@@ -16,6 +16,7 @@
 package com.uber.rib.core;
 
 import android.app.Activity;
+import android.arch.lifecycle.Lifecycle;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -34,6 +35,8 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
+
+import java.util.List;
 
 import io.reactivex.Observable;
 import io.reactivex.functions.Predicate;
@@ -243,7 +246,7 @@ public class RibActivityTest {
         }
     }
 
-    private static class View implements RibAndroidView {
+    private static class View implements RibView {
 
         private ViewGroup view;
 
@@ -261,9 +264,13 @@ public class RibActivityTest {
 
         private Bundle savedInstanceState;
 
+        public TestInteractor(List list) {
+            super(list);
+        }
+
         @Override
-        protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
-            super.didBecomeActive(savedInstanceState);
+        protected void didBecomeActive(Lifecycle ribLifecycle, Bundle savedInstanceState) {
+            super.didBecomeActive(ribLifecycle, savedInstanceState);
             this.savedInstanceState = savedInstanceState;
         }
 

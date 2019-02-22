@@ -14,6 +14,6 @@ class FooBarBuilder(dependency: FooBar.Dependency) :
             .customisation(customisation)
             .build()
 
-        return component.foobarRouter()
+        return component.router()
     }
 }

@@ -1,9 +1,9 @@
 package com.badoo.ribs.example.rib.foo_bar
 
-import com.badoo.common.rib.ViewFactory
-import com.badoo.common.rib.directory.Directory
-import com.badoo.common.rib.directory.inflateOnDemand
+import com.uber.rib.core.directory.Directory
+import com.uber.rib.core.directory.inflateOnDemand
 import com.badoo.ribs.example.R
+import com.uber.rib.core.ViewFactory
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 

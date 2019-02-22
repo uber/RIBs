@@ -1,12 +1,12 @@
 package com.badoo.ribs.example.rib.foo_bar.builder
 
-import com.badoo.common.rib.ViewFactory
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Input
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Output
 import com.badoo.ribs.example.rib.foo_bar.FooBarInteractor
 import com.badoo.ribs.example.rib.foo_bar.FooBarRouter
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
+import com.uber.rib.core.ViewFactory
 import dagger.Provides
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

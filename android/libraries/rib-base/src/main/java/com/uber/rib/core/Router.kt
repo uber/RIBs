@@ -16,37 +16,148 @@
 package com.uber.rib.core
 
 import android.os.Bundle
+import android.os.Parcelable
 import android.support.annotation.CallSuper
 import android.support.annotation.MainThread
 import android.support.annotation.VisibleForTesting
+import android.util.SparseArray
+import android.view.ViewGroup
+import com.uber.rib.core.requestcode.RequestCodeRegistry
+import com.uber.rib.core.routing.action.RoutingAction
+import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Responsible for handling the addition and removal of child routers.
  **/
 open class Router<V : RibView>(
-    val interactor: Interactor<V>,
+    private val viewFactory: ViewFactory<V>?,
+    val interactor: Interactor<V, *>,
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
-        @VisibleForTesting internal val KEY_CHILD_ROUTERS = "Router.childRouters"
-        @VisibleForTesting internal val KEY_INTERACTOR = "Router.interactor"
+        @VisibleForTesting internal val KEY_CHILD_ROUTERS = "router.children"
+        @VisibleForTesting internal val KEY_INTERACTOR = "router.interactor"
+        private const val KEY_RIB_ID = "rib.id"
+        private const val KEY_VIEW_STATE = "view.state"
+        private val requestCodeRegistry = RequestCodeRegistry(8)
     }
 
     private var savedInstanceState: Bundle? = null
     val children = CopyOnWriteArrayList<Router<*>>()
-    var tag: String? = null
-        private set
+    private var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
+    private var ribId: Int? = null
+    internal var view: V? = null
+    protected var parentViewGroup: ViewGroup? = null
+
+    private lateinit var attachPermanentParts: RoutingAction<V>
+    protected open val permanentParts: List<() -> Router<*>> = emptyList()
+    private var savedViewState: SparseArray<Parcelable> = SparseArray()
 
     init {
         interactor.router = this
     }
 
+    private fun attachPermanentParts() {
+        permanentParts.forEach {
+            addChild(it()) // fixme save and restore these as well
+        }
+    }
+
+    private fun generateRibId(): Int =
+        requestCodeRegistry.generateGroupId(tag)
+
+    private fun generateRequestCode(code: Int): Int =
+        requestCodeRegistry.generateRequestCode(tag, code)
+
+    private fun updateRibId(value: Int) {
+        ribId = value
+    }
+
+    // todo move this to base router class so no casting is needed inside foreach
+    fun onAttachToView(parentViewGroup: ViewGroup) {
+        this.parentViewGroup = parentViewGroup
+        view = createView(parentViewGroup)
+        view?.let {
+            it.androidView.restoreHierarchyState(savedViewState)
+            parentViewGroup.addView(it.androidView)
+            interactor.onViewCreated()
+        }
+
+        children.forEach {
+            attachChildToView(it)
+        }
+    }
+
+    private fun createView(parentViewGroup: ViewGroup): V? =
+        viewFactory?.invoke(parentViewGroup)
+
+    fun addChild(child: Router<*>, bundle: Bundle? = null) {
+        attachChildToView(child)
+        // todo refactor so that this branching is not necessary
+        if (bundle != null) {
+            attachChild(child, bundle)
+        } else {
+            attachChild(child)
+        }
+    }
+
+    protected fun attachChildToView(child: Router<*>) {
+        parentViewGroup?.let {
+            child.onAttachToView(
+                attachTargetForConfiguration(view, child, it)
+            )
+        }
+    }
+
+    open fun attachTargetForConfiguration(view: V?, child: Router<*>, parentViewGroup: ViewGroup): ViewGroup =
+        view?.androidView ?: parentViewGroup
+
+    fun removeChild(child: Router<*>) {
+        detachChild(child)
+        detachChildFromView(child, saveHierarchyState = false)
+    }
+
+    protected fun detachChildFromViewAndSaveHierarchyState(child: Router<*>) {
+        detachChildFromView(child, saveHierarchyState = true)
+    }
+
+    protected fun detachChildFromView(child: Router<*>, saveHierarchyState: Boolean) {
+        parentViewGroup?.let {
+            child.onDetachFromView(
+                parentViewGroup = attachTargetForConfiguration(view, child, it),
+                saveHierarchyState = saveHierarchyState
+            )
+        }
+    }
+
+    fun onDetachFromView(parentViewGroup: ViewGroup, saveHierarchyState: Boolean) {
+        children.forEach {
+            detachChildFromView(
+                child = it,
+                saveHierarchyState = saveHierarchyState
+            )
+        }
+
+        view?.let {
+            if (saveHierarchyState) {
+                it.androidView.saveHierarchyState(savedViewState)
+            }
+
+            parentViewGroup.removeView(it.androidView)
+            interactor.onViewDestroyed()
+        }
+
+        view = null
+        this.parentViewGroup = null
+    }
+
     /**
-     * Dispatch back press to the associated interactor. Do not override this.
+     * Dispatch back press to the associated interactor.
      *
-     * @return TRUE if the interactor handles the back press.
+     * @return TRUE if the interactor handled the back press and no further action is necessary.
      */
+    @CallSuper
     open fun handleBackPress(): Boolean {
         ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
         return interactor.handleBackPress()
@@ -72,11 +183,7 @@ open class Router<V : RibView>(
      * @param tag an identifier to namespace saved instance state [Bundle] objects.
      */
     @MainThread
-    @JvmOverloads
-    protected fun attachChild(
-        childRouter: Router<*>,
-        tag: String = childRouter.javaClass.name
-    ) {
+    protected fun attachChild(childRouter: Router<*>) {
         children.add(childRouter)
         ribRefWatcher.logBreadcrumb(
             "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
@@ -89,7 +196,7 @@ open class Router<V : RibView>(
             }
         }
 
-        childRouter.dispatchAttach(childBundle, tag)
+        childRouter.dispatchAttach(childBundle)
     }
 
     /**
@@ -139,15 +246,14 @@ open class Router<V : RibView>(
     }
 
     @CallSuper
-    fun dispatchAttach(savedInstanceState: Bundle?) {
-        dispatchAttach(savedInstanceState, this.javaClass.getName())
-    }
-
-    @CallSuper
-    open fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
+    open fun dispatchAttach(savedInstanceState: Bundle?) {
         this.savedInstanceState = savedInstanceState
-        this.tag = tag
+
+        updateRibId(savedInstanceState?.getInt(KEY_RIB_ID, generateRibId()) ?: generateRibId())
+        savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
+
         willAttach()
+        attachPermanentParts()
 
         var interactorBundle: Bundle? = null
         if (this.savedInstanceState != null) {
@@ -166,10 +272,20 @@ open class Router<V : RibView>(
     }
 
     open fun saveInstanceState(outState: Bundle) {
-        val interactorSavedInstanceState = Bundle()
-        interactor.onSaveInstanceState(interactorSavedInstanceState)
-        outState.putBundle(KEY_INTERACTOR, interactorSavedInstanceState)
+        outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
+        outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
+        saveInteractorState(outState)
+        saveStateOfChildren(outState)
+    }
 
+    private fun saveInteractorState(outState: Bundle) {
+        Bundle().let {
+            interactor.onSaveInstanceState(it)
+            outState.putBundle(KEY_INTERACTOR, it)
+        }
+    }
+
+    private fun saveStateOfChildren(outState: Bundle) {
         val childBundles = Bundle()
         for (child in children) {
             Bundle().let {
@@ -179,6 +295,26 @@ open class Router<V : RibView>(
 
         }
         outState.putBundle(KEY_CHILD_ROUTERS, childBundles)
+    }
+
+    fun onStart() {
+        interactor.onStart()
+        children.forEach { it.onStart() }
+    }
+
+    fun onStop() {
+        interactor.onStop()
+        children.forEach { it.onStop() }
+    }
+
+    fun onResume() {
+        interactor.onResume()
+        children.forEach { it.onResume() }
+    }
+
+    fun onPause() {
+        interactor.onPause()
+        children.forEach { it.onPause() }
     }
 }
 

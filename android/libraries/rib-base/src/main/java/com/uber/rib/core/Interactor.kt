@@ -15,60 +15,46 @@
  */
 package com.uber.rib.core
 
+import android.arch.lifecycle.Lifecycle
+import android.arch.lifecycle.LifecycleOwner
+import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
 import android.support.annotation.CallSuper
-
 import com.jakewharton.rxrelay2.BehaviorRelay
-import com.jakewharton.rxrelay2.Relay
 import com.uber.autodispose.LifecycleEndedException
 import com.uber.autodispose.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
-
-import io.reactivex.Observable
-import io.reactivex.functions.Function
-
 import com.uber.rib.core.lifecycle.InteractorEvent.ACTIVE
 import com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
+import io.reactivex.functions.Function
 
 /**
  * The base implementation for all [Interactor]s.
  *
+ * @param <V> the type of [RibView].
  * @param <R> the type of [Router].
-</R> */
-@Suppress("FINITE_BOUNDS_VIOLATION_IN_JAVA")
-abstract class Interactor<V : RibView> : LifecycleScopeProvider<InteractorEvent> {
+ **/
+abstract class Interactor<V : RibView, R : Router<V>>(
+    private val disposables: List<Disposable>
+) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
 
+    private val ribLifecycleRegistry = LifecycleRegistry(this)
+    private val viewLifecycleRegistry = LifecycleRegistry(this)
+
+    // todo these are leftovers, reconsider them
     private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
     private val lifecycleRelay = behaviorRelay.toSerialized()
 
-    open var router: Router<V>? = null
-        get() {
-            if (field == null) {
-                throw IllegalStateException("Attempting to get interactor's router before being set.")
-            }
+    internal lateinit var router: Router<V>
 
-            return field
-        }
-        internal set(value) {
-            if (field != null) {
-                throw IllegalStateException(
-                    "Attempting to set interactor's router after it has been set."
-                )
-            }
-
-            field = value
-        }
-
-    /** @return true if the controller is attached, false if not.
-     */
     val isAttached: Boolean
         get() = behaviorRelay.value == ACTIVE
 
-    /** @return an observable of this controller's lifecycle events.
-     */
-    override fun lifecycle(): Observable<InteractorEvent> {
-        return lifecycleRelay.hide()
-    }
+    // todo these are leftovers, reconsider them
+    override fun lifecycle(): Observable<InteractorEvent> =
+        lifecycleRelay.hide()
 
     /**
      * Called when attached. The presenter will automatically be added when this happens.
@@ -76,23 +62,69 @@ abstract class Interactor<V : RibView> : LifecycleScopeProvider<InteractorEvent>
      * @param savedInstanceState the saved [Bundle].
      */
     @CallSuper
-    protected open fun didBecomeActive(savedInstanceState: Bundle?) {
+    protected fun didBecomeActive(savedInstanceState: Bundle?) {
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        didBecomeActive(ribLifecycleRegistry, savedInstanceState)
     }
+
+    protected open fun didBecomeActive(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
+    }
+
+    @CallSuper
+    fun onViewCreated() {
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
+        onViewCreated(router.view!!, viewLifecycleRegistry)
+    }
+
+    open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
+    }
+
+    fun onViewDestroyed() {
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    }
+
+    fun onStart() {
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+    }
+
+    // todo call this when removed from view
+    fun onStop() {
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+    }
+
+    fun onResume() {
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    }
+
+    // todo call this when removed from view
+    fun onPause() {
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    }
+
+    /**
+     * Called when detached. The [Interactor] should do its cleanup here.
+     */
+    fun willResignActive() {
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY) // todo probably this is not needed?
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        disposables.forEach { it.dispose() }
+    }
+
+    override fun getLifecycle(): Lifecycle =
+        ribLifecycleRegistry
 
     /**
      * Handle an activity back press.
      *
-     * @return whether this interactor took action in response to a back press.
+     * @return TRUE if the interactor handled the back press and no further action is necessary.
      */
-    fun handleBackPress(): Boolean {
+    open fun handleBackPress(): Boolean {
         return false
     }
-
-    /**
-     * Called when detached. The [Interactor] should do its cleanup here. Note: View will be
-     * removed automatically so [Interactor] doesn't have to remove its view here.
-     */
-    protected open fun willResignActive() {}
 
     /**
      * Called when saving state.
@@ -113,12 +145,15 @@ abstract class Interactor<V : RibView> : LifecycleScopeProvider<InteractorEvent>
         lifecycleRelay.accept(INACTIVE)
     }
 
+    // todo these are leftovers, reconsider them
     override fun correspondingEvents(): Function<InteractorEvent, InteractorEvent> =
         LIFECYCLE_MAP_FUNCTION
 
+    // todo these are leftovers, reconsider them
     override fun peekLifecycle(): InteractorEvent? =
         behaviorRelay.value
 
+    // todo these are leftovers, reconsider them
     companion object {
         private val LIFECYCLE_MAP_FUNCTION: Function<InteractorEvent, InteractorEvent> =
             Function { interactorEvent ->

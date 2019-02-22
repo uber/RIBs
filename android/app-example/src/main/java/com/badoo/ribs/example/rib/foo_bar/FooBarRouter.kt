@@ -1,9 +1,9 @@
 package com.badoo.ribs.example.rib.foo_bar
 
-import com.badoo.common.rib.BaseViewRouter
-import com.badoo.common.rib.ViewFactory
+import com.uber.rib.core.Router
+import com.uber.rib.core.ViewFactory
 
 class FooBarRouter(
     viewFactory: ViewFactory<FooBarView>,
     interactor: FooBarInteractor
-) : BaseViewRouter<FooBarView>(viewFactory, interactor)
+) : Router<FooBarView>(viewFactory, interactor)

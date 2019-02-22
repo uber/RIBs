@@ -7,11 +7,11 @@ import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
 import com.uber.rib.core.Initializer
-import com.uber.rib.core.RibAndroidView
+import com.uber.rib.core.RibView
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface FooBarView : RibAndroidView,
+interface FooBarView : RibView,
     ObservableSource<Event>,
     Consumer<ViewModel> {
 

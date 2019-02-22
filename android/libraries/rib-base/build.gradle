@@ -20,19 +20,28 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 
+androidExtensions {
+    experimental = true
+}
+
 dependencies {
     api deps.uber.autodispose
     api project(':libraries:rib-uava')
 
+    kapt deps.apt.daggerCompiler
+    implementation deps.apt.javaxInject
+    compileOnly deps.apt.androidApi
+
     implementation deps.external.kotlinStdlib
+    implementation deps.external.mviCore
+    implementation deps.external.mviCoreAndroid
     implementation deps.external.reactiveStreams
     implementation deps.external.rxrelay2
     implementation deps.external.rxjava2
-    implementation deps.apt.javaxInject
 
-    kapt deps.apt.daggerCompiler
+    implementation deps.support.appCompat
+    implementation deps.support.archLifecycleCommon // TODO: remove
     compileOnly deps.support.annotations
-    compileOnly deps.apt.androidApi
 
     testImplementation deps.support.annotations
     testImplementation deps.apt.androidApi

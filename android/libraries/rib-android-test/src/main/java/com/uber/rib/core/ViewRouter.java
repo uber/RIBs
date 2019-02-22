@@ -21,13 +21,13 @@ package com.uber.rib.core;
  * @param <V> type of view owned by the router.
  * @param <I> type of interactor owned by the router.
  */
-public abstract class ViewRouter<V extends RibAndroidView, I extends Interactor<V>>
+public abstract class ViewRouter<V extends RibView, I extends Interactor<V, ?>>
     extends Router<V> {
 
   private final V view;
 
   public ViewRouter(V view, I interactor) {
-    super(interactor, RibRefWatcher.getInstance());
+    super(null, interactor, RibRefWatcher.getInstance());
     this.view = view;
   }
 

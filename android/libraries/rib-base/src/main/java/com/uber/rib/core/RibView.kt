@@ -1,3 +1,8 @@
 package com.uber.rib.core
 
-interface RibView
+import android.view.ViewGroup
+
+interface RibView {
+
+    val androidView: ViewGroup
+}

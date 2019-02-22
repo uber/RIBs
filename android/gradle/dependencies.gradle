@@ -23,7 +23,7 @@ def versions = [
     intellij: '2018.3.3',
     rave: '2.2.0',
     autoValue: '1.6.3',
-    mviCore: '1.1.4',
+    mviCore: '1.1.6',
     constraintLayout: '1.1.3',
     archLifecycleCommon: '1.1.1'
 ]
