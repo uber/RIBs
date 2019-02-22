@@ -1,11 +1,11 @@
 package com.uber.rib.core.routing.action
 
 import com.uber.rib.core.RibView
-import com.uber.rib.core.Router
+import com.uber.rib.core.Node
 
 interface RoutingAction<V : RibView> {
 
-    fun ribFactories() : List<() -> Router<*>> =
+    fun ribFactories() : List<() -> Node<*>> =
         emptyList()
 
     fun execute() {

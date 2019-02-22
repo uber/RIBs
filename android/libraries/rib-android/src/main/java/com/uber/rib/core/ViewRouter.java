@@ -18,11 +18,11 @@ package com.uber.rib.core;
 /**
  * Router subclass that has a view.
  *
- * @param <V> type of view owned by the router.
- * @param <I> type of interactor owned by the router.
+ * @param <V> type of view owned by the node.
+ * @param <I> type of interactor owned by the node.
  */
 public abstract class ViewRouter<V extends RibView, I extends Interactor>
-    extends Router {
+    extends Node {
 
   private final V view;
 
@@ -32,7 +32,7 @@ public abstract class ViewRouter<V extends RibView, I extends Interactor>
     this.view = view;
   }
 
-  /** @return the router's view. */
+  /** @return the node's view. */
   public V getView() {
     return view;
   }

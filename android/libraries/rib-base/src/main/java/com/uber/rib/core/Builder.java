@@ -16,24 +16,24 @@
 package com.uber.rib.core;
 
 /**
- * Responsible for building a router. Parent routers should pass in static dependencies via the
+ * Responsible for building a node. Parent routers should pass in static dependencies via the
  * dependency passed in via the constructor. For dynamic dependencies (things that are fetched
  * asynchronously - or created dyanmically in the parent), they should be passed in via a build
- * method that vends a router.
+ * method that vends a node.
  *
  * @param <T> type of interactor to build.
  * @param <D> type of dependency required to build the interactor.
  */
-public abstract class Builder<T extends Router, D> {
+public abstract class Builder<T extends Node, D> {
 
   private final D dependency;
 
-  /** @param dependency required to build the router. */
+  /** @param dependency required to build the node. */
   public Builder(D dependency) {
     this.dependency = dependency;
   }
 
-  /** @return the dependency required to to build the router. */
+  /** @return the dependency required to to build the node. */
   protected D getDependency() {
     return dependency;
   }

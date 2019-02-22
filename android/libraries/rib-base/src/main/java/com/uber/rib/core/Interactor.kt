@@ -34,9 +34,9 @@ import io.reactivex.functions.Function
  * The base implementation for all [Interactor]s.
  *
  * @param <V> the type of [RibView].
- * @param <R> the type of [Router].
+ * @param <N> the type of [Node].
  **/
-abstract class Interactor<V : RibView, R : Router<V>>(
+abstract class Interactor<V : RibView, N : Node<V>>(
     private val disposables: Disposable
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
 
@@ -47,7 +47,7 @@ abstract class Interactor<V : RibView, R : Router<V>>(
     private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
     private val lifecycleRelay = behaviorRelay.toSerialized()
 
-    internal lateinit var router: Router<V>
+    internal lateinit var node: Node<V>
 
     val isAttached: Boolean
         get() = behaviorRelay.value == ACTIVE
@@ -73,7 +73,7 @@ abstract class Interactor<V : RibView, R : Router<V>>(
     @CallSuper
     fun onViewCreated() {
         viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        onViewCreated(router.view!!, viewLifecycleRegistry)
+        onViewCreated(node.view!!, viewLifecycleRegistry)
     }
 
     open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {

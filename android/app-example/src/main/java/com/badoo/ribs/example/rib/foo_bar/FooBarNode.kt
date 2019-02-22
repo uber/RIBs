@@ -1,9 +1,9 @@
 package com.badoo.ribs.example.rib.foo_bar
 
-import com.uber.rib.core.Router
+import com.uber.rib.core.Node
 import com.uber.rib.core.ViewFactory
 
-class FooBarRouter(
+class FooBarNode(
     viewFactory: ViewFactory<FooBarView>,
     interactor: FooBarInteractor
-) : Router<FooBarView>(viewFactory, interactor)
+) : Node<FooBarView>(viewFactory, interactor)

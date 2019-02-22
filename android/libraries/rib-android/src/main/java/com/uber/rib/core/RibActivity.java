@@ -63,7 +63,7 @@ public abstract class RibActivity extends AppCompatActivity
 //      };
 //
 //  @SuppressWarnings("NullableProblems")
-//  private Router router;
+//  private Router node;
 //
 //  private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
 //      BehaviorRelay.create();
@@ -139,12 +139,12 @@ public abstract class RibActivity extends AppCompatActivity
 //    ViewGroup rootViewGroup = ((ViewGroup) findViewById(android.R.id.content));
 //
 //    lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
-//    router = createRouter(rootViewGroup);
+//    node = createRouter(rootViewGroup);
 //
-//    router.dispatchAttach(savedInstanceState);
+//    node.dispatchAttach(savedInstanceState);
 //
 //    // fixme
-////    rootViewGroup.addView(router.getView().getAndroidView());
+////    rootViewGroup.addView(node.getView().getAndroidView());
 //  }
 //
 //  @Override
@@ -152,7 +152,7 @@ public abstract class RibActivity extends AppCompatActivity
 //  protected void onSaveInstanceState(android.os.Bundle outState) {
 //    super.onSaveInstanceState(outState);
 //    callbacksRelay.accept(ActivityCallbackEvent.createOnSaveInstanceStateEvent(outState));
-//    Preconditions.checkNotNull(router).saveInstanceState(outState);
+//    Preconditions.checkNotNull(node).saveInstanceState(outState);
 //  }
 //
 //  @Override
@@ -201,10 +201,10 @@ public abstract class RibActivity extends AppCompatActivity
 //    if (lifecycleRelay != null) {
 //      lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY));
 //    }
-//    if (router != null) {
-//      router.dispatchDetach();
+//    if (node != null) {
+//      node.dispatchDetach();
 //    }
-//    router = null;
+//    node = null;
 //    super.onDestroy();
 //  }
 //
@@ -217,7 +217,7 @@ public abstract class RibActivity extends AppCompatActivity
 //
 //  @Override
 //  public void onBackPressed() {
-//    if (router != null && !router.handleBackPress()) {
+//    if (node != null && !node.handleBackPress()) {
 //      super.onBackPressed();
 //    }
 //  }
@@ -227,11 +227,11 @@ public abstract class RibActivity extends AppCompatActivity
 //   * @throws IllegalStateException if the activity has not been created or has been destroyed.
 //   */
 //  protected Interactor getInteractor() {
-//    if (router != null) {
-//      return router.getInteractor();
+//    if (node != null) {
+//      return node.getInteractor();
 //    } else {
 //      throw new IllegalStateException(
-//          "Attempting to get a router when activity is not created or has been " + "destroyed.");
+//          "Attempting to get a node when activity is not created or has been " + "destroyed.");
 //    }
 //  }
 

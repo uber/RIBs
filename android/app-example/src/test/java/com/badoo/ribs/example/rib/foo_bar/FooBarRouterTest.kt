@@ -4,7 +4,7 @@ import com.badoo.common.rib.ViewFactory
 
 import com.nhaarman.mockitokotlin2.mock
 import com.uber.rib.core.RibTestBasePlaceholder
-import com.uber.rib.core.RouterHelper
+import com.uber.rib.core.NodeHelper
 
 import org.junit.After
 import org.junit.Before
@@ -18,17 +18,17 @@ class FooBarRouterTest : RibTestBasePlaceholder() {
 
   private var interactor: FooBarInteractor = mock()
   private var viewFactory: ViewFactory<FooBarView> = mock()
-  private var router: FooBarRouter? = null
+  private var router: FooBarNode? = null
 
   @Before
   fun setup() {
-    router = FooBarRouter(viewFactory, interactor)
-    RouterHelper.attach(router)
+    router = FooBarNode(viewFactory, interactor)
+    NodeHelper.attach(router)
   }
 
   @After
   fun tearDown() {
-      RouterHelper.detach(router)
+      NodeHelper.detach(router)
   }
 
   /**

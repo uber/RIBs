@@ -1,50 +1,50 @@
 package com.uber.rib.core.routing
 
 import android.os.Bundle
-import com.uber.rib.core.Router
+import com.uber.rib.core.Node
 
 interface RibConnector {
     /**
-     * Implies attaching child router + view
+     * Implies attaching child node + view
      */
-    fun attachChild(childRouter: Router<*>, bundle: Bundle? = null)
+    fun attachChild(childRouter: Node<*>, bundle: Bundle? = null)
 
     /**
-     * Attaches child view only. Expectation is that child router should already be attached.
+     * Attaches child view only. Expectation is that child node should already be attached.
      */
-    fun attachChildView(childRouter: Router<*>)
+    fun attachChildView(childRouter: Node<*>)
 
     /**
-     * Detaches child view only, child router remains alive
+     * Detaches child view only, child node remains alive
      */
-    fun detachChildView(childRouter: Router<*>)
+    fun detachChildView(childRouter: Node<*>)
 
     /**
-     * Detaches child router + view, killing it
+     * Detaches child node + view, killing it
      */
-    fun detachChild(childRouter: Router<*>)
+    fun detachChild(childRouter: Node<*>)
 
     companion object {
         fun from(
-            attachChild: (Router<*>, Bundle?) -> Unit,
-            attachChildView: (Router<*>) -> Unit,
-            detachChildView: (Router<*>) -> Unit,
-            detachChild: (Router<*>) -> Unit
+            attachChild: (Node<*>, Bundle?) -> Unit,
+            attachChildView: (Node<*>) -> Unit,
+            detachChildView: (Node<*>) -> Unit,
+            detachChild: (Node<*>) -> Unit
         ) : RibConnector =
             object : RibConnector {
-                override fun attachChild(childRouter: Router<*>, bundle: Bundle?) {
+                override fun attachChild(childRouter: Node<*>, bundle: Bundle?) {
                     attachChild.invoke(childRouter, bundle)
                 }
 
-                override fun attachChildView(childRouter: Router<*>) {
+                override fun attachChildView(childRouter: Node<*>) {
                     attachChildView.invoke(childRouter)
                 }
 
-                override fun detachChildView(childRouter: Router<*>) {
+                override fun detachChildView(childRouter: Node<*>) {
                     detachChildView.invoke(childRouter)
                 }
 
-                override fun detachChild(childRouter: Router<*>) {
+                override fun detachChild(childRouter: Node<*>) {
                     detachChild.invoke(childRouter)
                 }
             }

@@ -10,8 +10,6 @@ import io.reactivex.functions.Consumer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 
 
 //@RunWith(RobolectricTestRunner::class)
@@ -20,7 +18,7 @@ class FooBarInteractorTest : RibTestBasePlaceholder() {
     private val input: ObservableSource<FooBar.Input> = mock()
     private val output: Consumer<FooBar.Output> = mock()
     private val feature: FooBarFeature = mock()
-    private val router: FooBarRouter = mock()
+    private val router: FooBarNode = mock()
     private lateinit var interactor: FooBarInteractor
 
     @Before
@@ -31,7 +29,7 @@ class FooBarInteractorTest : RibTestBasePlaceholder() {
             feature = feature
         )
 
-        InteractorHelper.attach<FooBarRouter>(interactor, router, null)
+        InteractorHelper.attach<FooBarNode>(interactor, router, null)
     }
 
     @After

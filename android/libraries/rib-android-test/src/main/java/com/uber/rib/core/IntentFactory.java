@@ -21,7 +21,7 @@ import android.content.Intent;
 public interface IntentFactory {
 
   /**
-   * Create a view router to be displayed for an {@link Intent}.
+   * Create a view node to be displayed for an {@link Intent}.
    *
    * @param intentCreator to create the {@link Intent}.
    * @return the activity {@link Intent}.

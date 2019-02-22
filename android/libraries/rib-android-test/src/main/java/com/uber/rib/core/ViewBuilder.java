@@ -23,11 +23,11 @@ import android.view.ViewGroup;
 /**
  * Router builder for routers that own a view.
  *
- * @param <ViewType> type of view owned by router.
- * @param <RouterT> type of router built by this builder.
- * @param <DependencyT> dependency required to create this router.
+ * @param <ViewType> type of view owned by node.
+ * @param <RouterT> type of node built by this builder.
+ * @param <DependencyT> dependency required to create this node.
  */
-public abstract class ViewBuilder<ViewType extends View, RouterT extends Router, DependencyT>
+public abstract class ViewBuilder<ViewType extends View, RouterT extends Node, DependencyT>
     extends Builder<RouterT, DependencyT> {
 
   public ViewBuilder(DependencyT dependency) {
@@ -35,10 +35,10 @@ public abstract class ViewBuilder<ViewType extends View, RouterT extends Router,
   }
 
   /**
-   * Utility method to create the view for this router.
+   * Utility method to create the view for this node.
    *
    * @param parentViewGroup to inflate view with.
-   * @return the view for a new router.
+   * @return the view for a new node.
    */
   protected final ViewType createView(ViewGroup parentViewGroup) {
     final Context context = parentViewGroup.getContext();
@@ -53,7 +53,7 @@ public abstract class ViewBuilder<ViewType extends View, RouterT extends Router,
   }
 
   /**
-   * Inflates the router's view with knowledge of its parent. This should never be called directly,
+   * Inflates the node's view with knowledge of its parent. This should never be called directly,
    * instead use {@link ViewBuilder#createView(ViewGroup)} which will automatically pass the correct
    * context.
    *

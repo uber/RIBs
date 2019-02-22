@@ -3,7 +3,7 @@ package com.badoo.ribs.example.rib.foo_bar.builder
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Input
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Output
 import com.badoo.ribs.example.rib.foo_bar.FooBarInteractor
-import com.badoo.ribs.example.rib.foo_bar.FooBarRouter
+import com.badoo.ribs.example.rib.foo_bar.FooBarNode
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
 import com.uber.rib.core.ViewFactory
@@ -36,8 +36,8 @@ internal object FooBarModule {
         component: FooBarComponent,
         viewFactory: ViewFactory<FooBarView>,
         interactor: FooBarInteractor
-    ): FooBarRouter =
-        FooBarRouter(
+    ): FooBarNode =
+        FooBarNode(
             viewFactory = viewFactory,
             interactor = interactor
         )

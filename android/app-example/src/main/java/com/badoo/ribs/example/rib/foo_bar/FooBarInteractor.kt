@@ -18,7 +18,7 @@ class FooBarInteractor(
     private val input: ObservableSource<FooBar.Input>,
     private val output: Consumer<FooBar.Output>,
     private val feature: FooBarFeature
-) : Interactor<FooBarView, FooBarRouter>(
+) : Interactor<FooBarView, FooBarNode>(
     disposables = feature
 ) {
 

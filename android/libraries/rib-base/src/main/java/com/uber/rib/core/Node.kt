@@ -28,23 +28,23 @@ import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
- * Responsible for handling the addition and removal of child routers.
+ * Responsible for handling the addition and removal of child nodes.
  **/
-open class Router<V : RibView>(
+open class Node<V : RibView>(
     private val viewFactory: ViewFactory<V>?,
     val interactor: Interactor<V, *>,
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
-        @VisibleForTesting internal val KEY_CHILD_ROUTERS = "router.children"
-        @VisibleForTesting internal val KEY_INTERACTOR = "router.interactor"
+        @VisibleForTesting internal val KEY_CHILD_NODES = "node.children"
+        @VisibleForTesting internal val KEY_INTERACTOR = "node.interactor"
         private const val KEY_RIB_ID = "rib.id"
         private const val KEY_VIEW_STATE = "view.state"
         private val requestCodeRegistry = RequestCodeRegistry(8)
     }
 
     private var savedInstanceState: Bundle? = null
-    val children = CopyOnWriteArrayList<Router<*>>()
+    val children = CopyOnWriteArrayList<Node<*>>()
     protected var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
         private set
     private var ribId: Int? = null
@@ -53,11 +53,11 @@ open class Router<V : RibView>(
     protected var parentViewGroup: ViewGroup? = null
 
     private lateinit var attachPermanentParts: RoutingAction<V>
-    protected open val permanentParts: List<() -> Router<*>> = emptyList()
+    protected open val permanentParts: List<() -> Node<*>> = emptyList()
     private var savedViewState: SparseArray<Parcelable> = SparseArray()
 
     init {
-        interactor.router = this
+        interactor.node = this
     }
 
     private fun attachPermanentParts() {
@@ -93,17 +93,17 @@ open class Router<V : RibView>(
     private fun createView(parentViewGroup: ViewGroup): V? =
         viewFactory?.invoke(parentViewGroup)
 
-    fun attachChild(child: Router<*>, bundle: Bundle? = null) {
+    internal fun attachChild(child: Node<*>, bundle: Bundle? = null) {
         attachChildView(child)
         // todo refactor so that this branching is not necessary
         if (bundle != null) {
-            attachChildRouter(child, bundle)
+            attachChildNode(child, bundle)
         } else {
-            attachChildRouter(child)
+            attachChildNode(child)
         }
     }
 
-    protected fun attachChildView(child: Router<*>) {
+    internal fun attachChildView(child: Node<*>) {
         parentViewGroup?.let {
             child.attachToView(
                 getParentViewForChild(child, view, it)
@@ -111,11 +111,14 @@ open class Router<V : RibView>(
         }
     }
 
-    open fun getParentViewForChild(child: Router<*>, view: V?, parentViewGroup: ViewGroup): ViewGroup =
+    /**
+     * todo consider a callback to [Router] with child, then falling back to this
+     */
+    open fun getParentViewForChild(child: Node<*>, view: V?, parentViewGroup: ViewGroup): ViewGroup =
         view?.androidView ?: parentViewGroup
 
-    fun detachChild(child: Router<*>) {
-        detachChildRouter(child)
+    internal fun detachChild(child: Node<*>) {
+        detachChildNode(child)
         detachChildView(child)
     }
 
@@ -125,7 +128,7 @@ open class Router<V : RibView>(
         }
     }
 
-    protected fun detachChildView(child: Router<*>) {
+    internal fun detachChildView(child: Node<*>) {
         parentViewGroup?.let {
             child.onDetachFromView(
                 parentViewGroup = getParentViewForChild(child, view, it)
@@ -161,85 +164,82 @@ open class Router<V : RibView>(
     }
 
     /**
-     * Called when a router is being attached. Router subclasses can perform setup here for anything
+     * Called when a node is being attached. Node subclasses can perform setup here for anything
      * that is needed again but is cleaned up in willDetach(). Use didLoad() if the setup is only
      * needed once.
      */
     protected fun willAttach() {}
 
     /**
-     * Called when a router is being a detached, router subclasses should perform any required clean
+     * Called when a node is being a detached, node subclasses should perform any required clean
      * up here.
      */
     protected fun willDetach() {}
 
     /**
-     * Attaches a child router to this router.
+     * Attaches a child node to this node.
      *
-     * @param childRouter the [Router] to be attached.
+     * @param childNode the [Node] to be attached.
      * @param tag an identifier to namespace saved instance state [Bundle] objects.
      */
     @MainThread
-    protected fun attachChildRouter(childRouter: Router<*>) {
-        children.add(childRouter)
+    protected fun attachChildNode(childNode: Node<*>) {
+        children.add(childNode)
         ribRefWatcher.logBreadcrumb(
-            "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
+            "ATTACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
         )
         var childBundle: Bundle? = null
         if (this.savedInstanceState != null) {
-            val previousChildren = this.savedInstanceState!!.getBundle(KEY_CHILD_ROUTERS)
+            val previousChildren = this.savedInstanceState!!.getBundle(KEY_CHILD_NODES)
             if (previousChildren != null) {
                 childBundle = previousChildren.getBundle(tag)
             }
         }
 
-        childRouter.dispatchAttach(childBundle)
+        childNode.dispatchAttach(childBundle)
     }
 
     /**
-     * Attaches a child router to this router.
+     * Attaches a child node to this node.
      *
-     * @param childRouter the [Router] to be attached.
+     * @param childNode the [Node] to be attached.
      */
     @MainThread
-    protected fun attachChildRouter(childRouter: Router<*>, bundle: Bundle?) {
-        children.add(childRouter)
+    protected fun attachChildNode(childNode: Node<*>, bundle: Bundle?) {
+        children.add(childNode)
         ribRefWatcher.logBreadcrumb(
-            "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
+            "ATTACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
         )
 
-        childRouter.dispatchAttach(bundle)
+        childNode.dispatchAttach(bundle)
     }
 
     /**
-     * Detaches the {@param childFactory} from the current [Interactor]. NOTE: No consumers of
-     * this API should ever keep a reference to the detached child router, leak canary will enforce
+     * Detaches the node from this parent. NOTE: No consumers of
+     * this API should ever keep a reference to the detached child, leak canary will enforce
      * that it gets garbage collected.
      *
-     *
-     * If you need to keep references to previous routers, use [RouterNavigator].
-     *
-     * @param childRouter the [Router] to be detached.
+     * @param childNode the [Node] to be detached.
      */
     @MainThread
-    protected fun detachChildRouter(childRouter: Router<*>) {
-        children.remove(childRouter)
+    protected fun detachChildNode(childNode: Node<*>) {
+        children.remove(childNode)
 
-        val interactor = childRouter.interactor
+        val interactor = childNode.interactor
         ribRefWatcher.watchDeletedObject(interactor)
         ribRefWatcher.logBreadcrumb(
-            "DETACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
+            "DETACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
         )
         if (savedInstanceState != null) {
-            var childrenBundles: Bundle? = savedInstanceState!!.getBundle(KEY_CHILD_ROUTERS)
+            var childrenBundles: Bundle? = savedInstanceState!!.getBundle(KEY_CHILD_NODES)
             if (childrenBundles == null) {
                 childrenBundles = Bundle()
-                savedInstanceState!!.putBundle(KEY_CHILD_ROUTERS, childrenBundles)
+                savedInstanceState!!.putBundle(KEY_CHILD_NODES, childrenBundles)
             }
-            childrenBundles.putBundle(childRouter.tag, null)
+            childrenBundles.putBundle(childNode.tag, null)
         }
 
-        childRouter.dispatchDetach()
+        childNode.dispatchDetach()
     }
 
     @CallSuper
@@ -264,7 +264,7 @@ open class Router<V : RibView>(
         willDetach()
 
         for (child in children) {
-            detachChildRouter(child)
+            detachChildNode(child)
         }
     }
 
@@ -291,7 +291,7 @@ open class Router<V : RibView>(
             }
 
         }
-        outState.putBundle(KEY_CHILD_ROUTERS, childBundles)
+        outState.putBundle(KEY_CHILD_NODES, childBundles)
     }
 
     fun onStart() {

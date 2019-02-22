@@ -29,16 +29,16 @@ public final class InteractorHelper {
   private InteractorHelper() {}
 
   /**
-   * Attaches the {@link Interactor} inside a given root ViewGroup using a mock router.
+   * Attaches the {@link Interactor} inside a given root ViewGroup using a mock node.
    *
    * @param <P> the type of presenter.
-   * @param <R> the type of router.
+   * @param <R> the type of node.
    * @param interactor the {@link Interactor}.
-   * @param router the mock router for the {@link Interactor}.
+   * @param router the mock node for the {@link Interactor}.
    * @param savedInstanceState the saved {@link Bundle}.
    */
   @SuppressWarnings("unchecked")
-  public static <R extends Router> void attach(
+  public static <R extends Node> void attach(
       Interactor<R> interactor,
       R router,
       @Nullable Bundle savedInstanceState) {

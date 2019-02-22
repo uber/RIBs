@@ -6,7 +6,7 @@ import com.uber.rib.core.directory.Directory
 import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.builder.FooBarBuilder
-import com.uber.rib.core.Router
+import com.uber.rib.core.Node
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
@@ -14,7 +14,7 @@ import io.reactivex.functions.Consumer
 /** The sample app's single activity.  */
 class RootActivity : AppCompatActivity() {
 
-    private lateinit var rootRouter: Router<*>
+    private lateinit var rootRouter: Node<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -25,7 +25,7 @@ class RootActivity : AppCompatActivity() {
         }
     }
 
-    fun createRib(): Router<*> {
+    fun createRib(): Node<*> {
         val rootBuilder =
             FooBarBuilder(object : FooBar.Dependency {
                 override fun ribCustomisation(): Directory = AppRibCustomisations

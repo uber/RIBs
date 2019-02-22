@@ -18,36 +18,36 @@ package com.uber.rib.core;
 import java.util.List;
 
 /** Debugging utilties when working with Routers. */
-public final class RouterDebugUtils {
+public final class NodeDebugUtils {
   private static final String ARM_RIGHT = "└── ";
   private static final String INTERSECTION = "├── ";
   private static final String LINE = "│   ";
   private static final String SPACE = "    ";
 
-  private RouterDebugUtils() {}
+  private NodeDebugUtils() {}
 
   /**
    * Prints out the tree of routers from this point.
    *
-   * @param router {@link Router}
+   * @param node {@link Node}
    */
-  public static void printRouterSubtree(final Router<?> router) {
-    printRouterSubtree(router, "", true);
+  public static void printNodeSubtree(final Node<?> node) {
+    printNodeSubtree(node, "", true);
   }
 
-  private static void printRouterSubtree(
-      final Router<?> router, final String prefix, final boolean isTail) {
+  private static void printNodeSubtree(
+      final Node<?> node, final String prefix, final boolean isTail) {
     RIBs.getErrorHandler()
-        .handleDebugMessage(prefix + (isTail ? ARM_RIGHT : INTERSECTION) + router.getTag());
+        .handleDebugMessage(prefix + (isTail ? ARM_RIGHT : INTERSECTION) + node.getTag());
 
-    List<Router<?>> children = router.getChildren();
+    List<Node<?>> children = node.getChildren();
 
     for (int i = 0; i < children.size() - 1; i++) {
-      printRouterSubtree(children.get(i), prefix + (isTail ? SPACE : LINE), false);
+      printNodeSubtree(children.get(i), prefix + (isTail ? SPACE : LINE), false);
     }
 
     if (children.size() > 0) {
-      printRouterSubtree(children.get(children.size() - 1), prefix + (isTail ? SPACE : LINE), true);
+      printNodeSubtree(children.get(children.size() - 1), prefix + (isTail ? SPACE : LINE), true);
     }
   }
 }

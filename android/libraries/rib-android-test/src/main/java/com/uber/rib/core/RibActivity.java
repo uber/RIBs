@@ -231,7 +231,7 @@ public abstract class RibActivity extends AppCompatActivity
       return router.getInteractor();
     } else {
       throw new IllegalStateException(
-          "Attempting to get a router when activity is not created or has been " + "destroyed.");
+          "Attempting to get a node when activity is not created or has been " + "destroyed.");
     }
   }
 

@@ -1,7 +1,7 @@
 package com.badoo.ribs.example.rib.foo_bar.builder
 
 import com.badoo.ribs.example.rib.foo_bar.FooBar
-import com.badoo.ribs.example.rib.foo_bar.FooBarRouter
+import com.badoo.ribs.example.rib.foo_bar.FooBarNode
 
 
 @FooBarScope
@@ -24,7 +24,7 @@ interface FooBarComponent {
         fun build(): FooBarComponent
     }
 
-    fun router(): FooBarRouter
+    fun router(): FooBarNode
 }
 
 
