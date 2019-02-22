@@ -2,16 +2,16 @@ package com.uber.rib.core.routing.action
 
 import com.uber.rib.core.RibView
 
-class LambdaOnInvokeRoutingAction< V : RibView>(
+class InvokeOnExecute< V : RibView>(
     private val onInvoke: () -> Unit
 ) : RoutingAction<V> {
 
-    override fun onExecute() {
+    override fun execute() {
         onInvoke()
     }
 
     companion object {
         fun < V : RibView> execute(onInvoke: () -> Unit): RoutingAction<V> =
-            LambdaOnInvokeRoutingAction(onInvoke)
+            InvokeOnExecute(onInvoke)
     }
 }

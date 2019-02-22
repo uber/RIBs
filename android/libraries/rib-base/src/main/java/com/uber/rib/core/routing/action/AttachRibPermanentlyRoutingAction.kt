@@ -9,16 +9,16 @@ class AttachRibPermanentlyRoutingAction< V : RibView>(
 
     private var router: Router<*>? = null
 
-    override fun onExecute() {
+    override fun execute() {
         if (router == null) {
             builder.invoke().let {
                 router = it
-                // addChild(it)
+                // attachChildRouter(it)
             }
         }
     }
 
-    override fun onLeave() {
+    override fun cleanup() {
         // no-op
     }
 

@@ -22,6 +22,7 @@ import com.uber.rib.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
 import com.uber.rib.core.routing.backstack.BackStackManager.Wish.TearDown
 import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
 import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
+import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.empty
 import io.reactivex.Observable.just
@@ -32,7 +33,7 @@ internal class BackStackManager<C : Parcelable>(
     ribConnector: RibConnector,
     initialConfiguration: C,
     timeCapsule: TimeCapsule<State<C>>,
-    tag: String
+    tag: String = "BackStackManager.State"
 ): BaseFeature<Wish<C>, Action<C>, Effect<C>, State<C>, Nothing>(
     initialState = timeCapsule[tag] ?: State(),
     wishToAction = { Execute(it) },
@@ -53,8 +54,8 @@ internal class BackStackManager<C : Parcelable>(
     data class State<C : Parcelable>(
         val backStack: List<BackStackElement<C>> = emptyList()
     ) : Parcelable {
-        val current: C
-            get() = backStack.last().configuration
+        val current: BackStackElement<C>
+            get() = backStack.last()
 
         val canPop: Boolean
             get() = backStack.size > 1
@@ -98,37 +99,33 @@ internal class BackStackManager<C : Parcelable>(
 
         override fun invoke(state: State<C>, action: Action<C>): Observable<out Effect<C>> =
             when (action) {
-                is ReattachRibsOfLastEntry -> Observable.defer {
-                    return@defer just(
-                        connector.enter(
-                            state.backStack.last()
-                        )
-                    ).flatMap { empty<Effect<C>>() }
-                }
+                is ReattachRibsOfLastEntry -> Completable.fromAction {
+                    connector.goTo(state.current)
+                }.toObservable()
 
                 is Execute -> {
                     when (val wish = action.wish) {
                         is Replace -> when {
-                            wish.configuration != state.backStack.last() ->
+                            wish.configuration != state.current.configuration ->
                                 connector.switchToNew(
                                     state.backStack,
                                     wish.configuration,
                                     detachStrategy = DESTROY
-                                ).flatMap {
-                                    just(Effect.Replace(it.second))
+                                ).map { (_, newEntry) ->
+                                    Effect.Replace(newEntry)
                                 }
 
                             else -> empty()
                         }
 
                         is Push -> when {
-                            wish.configuration != state.backStack.last() ->
+                            wish.configuration != state.current.configuration ->
                                 connector.switchToNew(
                                     state.backStack,
                                     wish.configuration,
                                     detachStrategy = DETACH_VIEW
-                                ).flatMap {
-                                    just(Effect.Push(it.first!!, it.second))
+                                ).map { (oldEntry, newEntry) ->
+                                    Effect.Push(oldEntry!!, newEntry)
                                 }
 
                             else -> empty()
@@ -139,26 +136,25 @@ internal class BackStackManager<C : Parcelable>(
                                 state.backStack,
                                 wish.configuration,
                                 detachStrategy = DESTROY
-                            ).flatMap {
-                                just(Effect.NewRoot(it.second))
+                            ).map { (_, newEntry) ->
+                                Effect.NewRoot(newEntry)
                             }
 
                         is Pop -> when {
                             state.canPop ->
-                                connector.switchToPrevious(state.backStack, detachStrategy = DESTROY).flatMap {
-                                    just(Effect.Pop(it.second))
+                                connector.switchToPrevious(state.backStack, detachStrategy = DESTROY).map { (oldEntry, _) ->
+                                    Effect.Pop(oldEntry)
                                 }
                             else -> empty()
                         }
 
-                        is ShrinkToBundles -> connector.shrinkToBundles(state.backStack).flatMap {
-                            just(Effect.UpdateBackStack(it))
+                        is ShrinkToBundles -> connector.shrinkToBundles(state.backStack).map {
+                            Effect.UpdateBackStack(it)
                         }
 
-                        is TearDown -> Observable.defer {
-                            state.backStack.lastOrNull()?.routingAction?.onLeave()
-                            return@defer empty<Effect<C>>()
-                        }
+                        is TearDown -> Completable.fromAction {
+                            state.backStack.lastOrNull()?.routingAction?.cleanup()
+                        }.toObservable()
                     }
                 }
             }
@@ -175,6 +171,7 @@ internal class BackStackManager<C : Parcelable>(
             is Effect.NewRoot -> state.copy(
                 backStack = listOf(effect.newEntry)
             )
+            // fixme guarantee that this is safe to do!
             is Effect.Pop -> state.copy(
                 backStack = state.backStack.dropLast(2) + effect.updatedOldEntry
             )

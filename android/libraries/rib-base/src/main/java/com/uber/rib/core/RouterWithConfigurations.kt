@@ -27,7 +27,7 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
     private lateinit var timeCapsule: AndroidTimeCapsule
     private lateinit var backStackManager: BackStackManager<C>
     protected val configuration: C?
-        get() = backStackManager.state.current
+        get() = backStackManager.state.current.configuration
 
     override fun dispatchAttach(savedInstanceState: Bundle?) {
         super.dispatchAttach(savedInstanceState)
@@ -39,14 +39,13 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
         backStackManager = BackStackManager(
             this::resolveConfiguration,
             RibConnector.from(
-                this::addChild,
-                this::attachChildToView,
-                this::detachChildFromViewAndSaveHierarchyState,
-                this::removeChild
+                this::attachChild,
+                this::attachChildView,
+                this::detachChildView,
+                this::detachChild
             ),
             initialConfiguration,
-            timeCapsule,
-            javaClass.name
+            timeCapsule
         )
     }
 
@@ -76,14 +75,13 @@ abstract class RouterWithConfigurations<C : Parcelable, V : RibView, I : Interac
         backStackManager.accept(NewRoot(configuration))
     }
 
-    fun popBackStack(): Boolean {
-        return if (backStackManager.state.canPop) {
+    fun popBackStack(): Boolean =
+        if (backStackManager.state.canPop) {
             backStackManager.accept(Pop())
             true
         } else {
             false
         }
-    }
 
     override fun handleBackPress(): Boolean =
         when {

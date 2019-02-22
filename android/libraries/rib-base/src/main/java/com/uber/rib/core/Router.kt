@@ -45,9 +45,11 @@ open class Router<V : RibView>(
 
     private var savedInstanceState: Bundle? = null
     val children = CopyOnWriteArrayList<Router<*>>()
-    private var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
+    protected var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
+        private set
     private var ribId: Int? = null
     internal var view: V? = null
+        private set
     protected var parentViewGroup: ViewGroup? = null
 
     private lateinit var attachPermanentParts: RoutingAction<V>
@@ -60,7 +62,7 @@ open class Router<V : RibView>(
 
     private fun attachPermanentParts() {
         permanentParts.forEach {
-            addChild(it()) // fixme save and restore these as well
+            attachChild(it()) // fixme save and restore these as well
         }
     }
 
@@ -74,8 +76,7 @@ open class Router<V : RibView>(
         ribId = value
     }
 
-    // todo move this to base router class so no casting is needed inside foreach
-    fun onAttachToView(parentViewGroup: ViewGroup) {
+    fun attachToView(parentViewGroup: ViewGroup) {
         this.parentViewGroup = parentViewGroup
         view = createView(parentViewGroup)
         view?.let {
@@ -85,65 +86,61 @@ open class Router<V : RibView>(
         }
 
         children.forEach {
-            attachChildToView(it)
+            attachChildView(it)
         }
     }
 
     private fun createView(parentViewGroup: ViewGroup): V? =
         viewFactory?.invoke(parentViewGroup)
 
-    fun addChild(child: Router<*>, bundle: Bundle? = null) {
-        attachChildToView(child)
+    fun attachChild(child: Router<*>, bundle: Bundle? = null) {
+        attachChildView(child)
         // todo refactor so that this branching is not necessary
         if (bundle != null) {
-            attachChild(child, bundle)
+            attachChildRouter(child, bundle)
         } else {
-            attachChild(child)
+            attachChildRouter(child)
         }
     }
 
-    protected fun attachChildToView(child: Router<*>) {
+    protected fun attachChildView(child: Router<*>) {
         parentViewGroup?.let {
-            child.onAttachToView(
-                attachTargetForConfiguration(view, child, it)
+            child.attachToView(
+                getParentViewForChild(child, view, it)
             )
         }
     }
 
-    open fun attachTargetForConfiguration(view: V?, child: Router<*>, parentViewGroup: ViewGroup): ViewGroup =
+    open fun getParentViewForChild(child: Router<*>, view: V?, parentViewGroup: ViewGroup): ViewGroup =
         view?.androidView ?: parentViewGroup
 
-    fun removeChild(child: Router<*>) {
-        detachChild(child)
-        detachChildFromView(child, saveHierarchyState = false)
+    fun detachChild(child: Router<*>) {
+        detachChildRouter(child)
+        detachChildView(child)
     }
 
-    protected fun detachChildFromViewAndSaveHierarchyState(child: Router<*>) {
-        detachChildFromView(child, saveHierarchyState = true)
+    internal fun saveViewState() {
+        view?.let {
+            it.androidView.saveHierarchyState(savedViewState)
+        }
     }
 
-    protected fun detachChildFromView(child: Router<*>, saveHierarchyState: Boolean) {
+    protected fun detachChildView(child: Router<*>) {
         parentViewGroup?.let {
             child.onDetachFromView(
-                parentViewGroup = attachTargetForConfiguration(view, child, it),
-                saveHierarchyState = saveHierarchyState
+                parentViewGroup = getParentViewForChild(child, view, it)
             )
         }
     }
 
-    fun onDetachFromView(parentViewGroup: ViewGroup, saveHierarchyState: Boolean) {
+    fun onDetachFromView(parentViewGroup: ViewGroup) {
         children.forEach {
-            detachChildFromView(
-                child = it,
-                saveHierarchyState = saveHierarchyState
+            detachChildView(
+                child = it
             )
         }
 
         view?.let {
-            if (saveHierarchyState) {
-                it.androidView.saveHierarchyState(savedViewState)
-            }
-
             parentViewGroup.removeView(it.androidView)
             interactor.onViewDestroyed()
         }
@@ -183,7 +180,7 @@ open class Router<V : RibView>(
      * @param tag an identifier to namespace saved instance state [Bundle] objects.
      */
     @MainThread
-    protected fun attachChild(childRouter: Router<*>) {
+    protected fun attachChildRouter(childRouter: Router<*>) {
         children.add(childRouter)
         ribRefWatcher.logBreadcrumb(
             "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
@@ -205,7 +202,7 @@ open class Router<V : RibView>(
      * @param childRouter the [Router] to be attached.
      */
     @MainThread
-    protected fun attachChild(childRouter: Router<*>, bundle: Bundle) {
+    protected fun attachChildRouter(childRouter: Router<*>, bundle: Bundle?) {
         children.add(childRouter)
         ribRefWatcher.logBreadcrumb(
             "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
@@ -225,7 +222,7 @@ open class Router<V : RibView>(
      * @param childRouter the [Router] to be detached.
      */
     @MainThread
-    protected fun detachChild(childRouter: Router<*>) {
+    protected fun detachChildRouter(childRouter: Router<*>) {
         children.remove(childRouter)
 
         val interactor = childRouter.interactor
@@ -267,7 +264,7 @@ open class Router<V : RibView>(
         willDetach()
 
         for (child in children) {
-            detachChild(child)
+            detachChildRouter(child)
         }
     }
 

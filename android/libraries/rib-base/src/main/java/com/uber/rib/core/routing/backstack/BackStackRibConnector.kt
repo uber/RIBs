@@ -18,41 +18,44 @@ internal class BackStackRibConnector<C : Parcelable>(
     }
 
     fun switchToNew(backStack: List<BackStackElement<C>>, newConfiguration: C, detachStrategy: DetachStrategy): Observable<Pair<BackStackElement<C>?, BackStackElement<C>>> =
-        Observable.defer {
-            val from = backStack.lastOrNull()
-            val to = BackStackElement(
+        Observable.fromCallable {
+            val oldEntry = backStack.lastOrNull()
+            val newEntry = BackStackElement(
                 newConfiguration
             )
 
-            from?.let { leave(it, detachStrategy = detachStrategy) }
-            enter(to)
+            oldEntry?.let { leave(it, detachStrategy = detachStrategy) }
+            goTo(newEntry)
 
-            return@defer Observable.just(from to to)
+            return@fromCallable oldEntry to newEntry
         }
 
     fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: DetachStrategy): Observable<Pair<BackStackElement<C>, BackStackElement<C>>> =
-        Observable.defer {
-            val from = backStack.last()
-            val to = backStack[backStack.lastIndex - 1]
+        Observable.fromCallable {
+            val oldEntry = backStack.last()
+            val newEntry = backStack[backStack.lastIndex - 1]
 
-            leave(from, detachStrategy = detachStrategy)
-            enter(to)
+            leave(oldEntry, detachStrategy = detachStrategy)
+            goTo(newEntry)
 
-            return@defer Observable.just(from to to)
+            return@fromCallable oldEntry to newEntry
         }
 
     fun leave(backStackElement: BackStackElement<C>, detachStrategy: DetachStrategy): BackStackElement<C> {
         with(backStackElement) {
-            routingAction?.onLeave()
+            routingAction?.cleanup()
 
             when (detachStrategy) {
                 DESTROY -> {
-                    ribs?.forEach { connector.removeChild(it) }
+                    ribs?.forEach { connector.detachChild(it) }
                     ribs = null
                 }
 
                 DETACH_VIEW -> {
-                    ribs?.forEach { connector.detachChildFromView(it) }
+                    ribs?.forEach {
+                        it.saveViewState()
+                        connector.detachChildView(it)
+                    }
                 }
             }
         }
@@ -60,22 +63,22 @@ internal class BackStackRibConnector<C : Parcelable>(
         return backStackElement
     }
 
-    fun enter(backStackElement: BackStackElement<C>): BackStackElement<C> {
+    fun goTo(backStackElement: BackStackElement<C>): BackStackElement<C> {
         with(backStackElement) {
             if (routingAction == null) {
                 routingAction = resolver.invoke(configuration)
             }
 
-            routingAction!!.onExecute()
+            routingAction!!.execute()
 
             if (ribs == null) {
                 ribs = routingAction!!
-                    .onExecuteCreateTheseRibs()
+                    .ribFactories()
                     .map { it.invoke() }
                     .also {
                         it.forEachIndexed { index, router ->
-                            // attachChildToView(it) is implied part of addChild:
-                            connector.addChild(
+                            // attachChildView is implied part of attachChild:
+                            connector.attachChild(
                                 router,
                                 bundles.elementAtOrNull(index)?.also {
                                     it.classLoader = BackStackManager.State::class.java.classLoader
@@ -86,7 +89,7 @@ internal class BackStackRibConnector<C : Parcelable>(
             } else {
                 ribs!!
                     .forEach {
-                        connector.attachChildToView(it)
+                        connector.attachChildView(it)
                     }
             }
         }
@@ -103,7 +106,7 @@ internal class BackStackRibConnector<C : Parcelable>(
                     }
                 } ?: emptyList()
 
-                it.ribs?.forEach { connector.removeChild(it) }
+                it.ribs?.forEach { connector.detachChild(it) }
                 it.ribs = null
             }
 

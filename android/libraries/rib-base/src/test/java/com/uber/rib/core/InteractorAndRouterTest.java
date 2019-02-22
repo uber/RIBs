@@ -97,7 +97,7 @@ public class InteractorAndRouterTest {
 //              }
 //            });
 //    router.dispatchAttach(null);
-//    router.attachChild(childRouter);
+//    router.attachChildRouter(childRouter);
 //
 //    // When.
 //    Bundle outState = new Bundle();
@@ -143,13 +143,13 @@ public class InteractorAndRouterTest {
 //              }
 //            });
 //    router.dispatchAttach(null);
-//    router.attachChild(childRouter);
+//    router.attachChildRouter(childRouter);
 //
 //    // When.
 //    Bundle outState = new Bundle();
 //    router.saveInstanceState(outState);
-//    router.detachChild(childRouter);
-//    router.attachChild(childRouter);
+//    router.detachChildRouter(childRouter);
+//    router.attachChildRouter(childRouter);
 //
 //    // Then.
 //    assertThat(childRouter.savedInstanceState).isNull();
@@ -203,7 +203,7 @@ public class InteractorAndRouterTest {
 //    final TestChildRouter childRouter = new TestChildRouter(childA, childComponent);
 //    RecordingObserver<InteractorEvent> childObserverA = new RecordingObserver<>();
 //    childA.lifecycle().subscribe(childObserverA);
-//    router.attachChild(childRouter);
+//    router.attachChildRouter(childRouter);
 //
 //    assertThat(childObserverA.takeNext()).isEqualTo(InteractorEvent.ACTIVE);
 //
@@ -212,7 +212,7 @@ public class InteractorAndRouterTest {
 //    childB.lifecycle().subscribe(childObserverB);
 //
 //    TestChildRouter childBRouter = new TestChildRouter(childB, childComponent);
-//    childRouter.attachChild(childBRouter);
+//    childRouter.attachChildRouter(childBRouter);
 //
 //    assertThat(childObserverB.takeNext()).isEqualTo(InteractorEvent.ACTIVE);
 //
@@ -240,12 +240,12 @@ public class InteractorAndRouterTest {
 //
 //    TestInteractorB childInteractor = new TestInteractorB();
 //    TestRouterB childRouter = new TestRouterB(childInteractor, component);
-//    router.attachChild(childRouter);
+//    router.attachChildRouter(childRouter);
 //
 //    verify(ribRefWatcher, never()).watchDeletedObject(anyObject());
 //
 //    // Action: Detach the child interactor.
-//    router.detachChild(childRouter);
+//    router.detachChildRouter(childRouter);
 //
 //    // Verify: the reference watcher observes the detached interactor and child.
 //    verify(ribRefWatcher).watchDeletedObject(eq(childInteractor));
@@ -270,7 +270,7 @@ public class InteractorAndRouterTest {
 //    verify(ribRefWatcher, never()).watchDeletedObject(anyObject());
 //
 //    // Action: Detach all child interactors.
-//    rootRouter.detachChild(child);
+//    rootRouter.detachChildRouter(child);
 //
 //    // Verify: called four times. Twice for each interactor.
 //    verify(ribRefWatcher, times(2)).watchDeletedObject(anyObject());
@@ -293,8 +293,8 @@ public class InteractorAndRouterTest {
 //    TestRouterB childRouter1 = new TestRouterB(component, new TestInteractorB(), ribRefWatcher);
 //    TestRouterB childRouter2 = new TestRouterB(component, new TestInteractorB(), ribRefWatcher);
 //
-//    router.attachChild(childRouter1);
-//    childRouter1.attachChild(childRouter2);
+//    router.attachChildRouter(childRouter1);
+//    childRouter1.attachChildRouter(childRouter2);
 //
 //    return childRouter1;
 //  }
@@ -320,7 +320,7 @@ public class InteractorAndRouterTest {
 //              mChildInteractor,
 //              RibRefWatcher.getInstance(),
 //              Thread.currentThread());
-//      getRouter().attachChild(router);
+//      getRouter().attachChildRouter(router);
 //    }
 //
 //    @Override

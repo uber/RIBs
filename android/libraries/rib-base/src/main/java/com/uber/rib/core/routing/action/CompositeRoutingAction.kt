@@ -3,31 +3,31 @@ package com.uber.rib.core.routing.action
 import com.uber.rib.core.RibView
 import com.uber.rib.core.Router
 
-class MultiRoutingAction< V : RibView>(
+class CompositeRoutingAction< V : RibView>(
     private vararg val routingActions: RoutingAction<V>
 ) : RoutingAction<V> {
 
     constructor(routingActions: List<RoutingAction<V>>) : this(*routingActions.toTypedArray())
 
-    override fun onExecuteCreateTheseRibs(): List<() -> Router<*>> =
+    override fun ribFactories(): List<() -> Router<*>> =
         routingActions.flatMap {
-            it.onExecuteCreateTheseRibs()
+            it.ribFactories()
         }
 
-    override fun onExecute() {
+    override fun execute() {
         routingActions.forEach {
-            it.onExecute()
+            it.execute()
         }
     }
 
-    override fun onLeave() {
+    override fun cleanup() {
         routingActions.forEach {
-            it.onLeave()
+            it.cleanup()
         }
     }
 
     companion object {
-        fun < V : RibView> multi(vararg routingActions: RoutingAction<V>): RoutingAction<V> =
-            MultiRoutingAction(*routingActions)
+        fun < V : RibView> composite(vararg routingActions: RoutingAction<V>): RoutingAction<V> =
+            CompositeRoutingAction(*routingActions)
     }
 }

@@ -21,7 +21,7 @@ class RootActivity : AppCompatActivity() {
         setContentView(R.layout.activity_root)
         rootRouter = createRib().apply {
             dispatchAttach(savedInstanceState)
-            onAttachToView(findViewById(R.id.root))
+            attachToView(findViewById(R.id.root))
         }
     }
 
@@ -63,7 +63,7 @@ class RootActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        rootRouter.onDetachFromView(findViewById(R.id.root), saveHierarchyState = false)
+        rootRouter.onDetachFromView(findViewById(R.id.root))
     }
 
     override fun onBackPressed() {

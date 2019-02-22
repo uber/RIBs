@@ -5,14 +5,14 @@ import com.uber.rib.core.Router
 
 interface RoutingAction<V : RibView> {
 
-    fun onExecuteCreateTheseRibs() : List<() -> Router<*>> =
+    fun ribFactories() : List<() -> Router<*>> =
         emptyList()
 
-    fun onExecute() {
+    fun execute() {
 
     }
 
-    fun onLeave()  {
+    fun cleanup()  {
     }
 
     companion object {
