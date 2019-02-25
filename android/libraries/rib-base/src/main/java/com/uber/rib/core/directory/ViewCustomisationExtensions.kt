@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import com.uber.rib.core.ViewFactory
 
 
-fun <T> inflateOnDemand(layoutResourceId: Int): ViewFactory<T> =
+fun <T> inflateOnDemand(@LayoutRes layoutResourceId: Int): ViewFactory<T> =
     object : ViewFactory<T> {
         override fun invoke(parentViewGroup: ViewGroup): T =
             inflate(parentViewGroup, layoutResourceId)
