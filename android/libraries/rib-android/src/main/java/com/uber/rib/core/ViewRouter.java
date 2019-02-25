@@ -15,6 +15,9 @@
  */
 package com.uber.rib.core;
 
+import com.badoo.ribs.core.Interactor;
+import com.badoo.ribs.core.view.RibView;
+
 /**
  * Router subclass that has a view.
  *

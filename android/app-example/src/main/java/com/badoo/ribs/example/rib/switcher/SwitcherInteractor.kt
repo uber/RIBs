@@ -1,8 +1,8 @@
 package com.badoo.ribs.example.rib.switcher
 
+import com.badoo.ribs.core.Interactor
+import com.badoo.ribs.core.Router
 import com.badoo.ribs.example.rib.menu.Menu
-import com.uber.rib.core.Interactor
-import com.uber.rib.core.Router
 import io.reactivex.functions.Consumer
 
 class SwitcherInteractor(

@@ -3,6 +3,7 @@ package com.uber.rib.core
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
+import com.badoo.ribs.core.Node
 
 abstract class RibActivity : AppCompatActivity() {
 

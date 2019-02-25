@@ -73,7 +73,7 @@ public class RibRefWatcher {
    * @param data breadcrumb data
    * @param parent breadcrumb parent if any
    */
-  void logBreadcrumb(
+  public void logBreadcrumb(
       final String eventType, @Nullable final String child, @Nullable final String parent) {
     if (referenceWatcher != null && breadcrumbsEnabled) {
       if (child == null || parent == null) {

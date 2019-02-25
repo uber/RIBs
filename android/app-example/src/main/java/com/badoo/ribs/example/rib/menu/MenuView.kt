@@ -10,7 +10,7 @@ import com.badoo.ribs.example.rib.menu.Menu.MenuItem
 import com.badoo.ribs.example.rib.menu.MenuView.Event
 import com.badoo.ribs.example.rib.menu.MenuView.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
-import com.uber.rib.core.RibView
+import com.badoo.ribs.core.view.RibView
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 

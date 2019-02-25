@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.badoo.ribs.core;
 
 /**
  * Responsible for building a node. Parent routers should pass in static dependencies via the

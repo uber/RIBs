@@ -7,8 +7,8 @@ import com.badoo.ribs.example.rib.foo_bar.FooBarInteractor
 import com.badoo.ribs.example.rib.foo_bar.FooBarRouter
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
-import com.uber.rib.core.Node
-import com.uber.rib.core.ViewFactory
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.view.ViewFactory
 import dagger.Provides
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

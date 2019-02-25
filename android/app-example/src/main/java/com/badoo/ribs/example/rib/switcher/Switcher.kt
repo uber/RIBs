@@ -1,9 +1,9 @@
 package com.badoo.ribs.example.rib.switcher
 
-import com.uber.rib.directory.Directory
-import com.uber.rib.directory.inflateOnDemand
+import com.badoo.ribs.core.directory.Directory
+import com.badoo.ribs.core.directory.inflateOnDemand
 import com.badoo.ribs.example.R
-import com.uber.rib.core.ViewFactory
+import com.badoo.ribs.core.view.ViewFactory
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
@@ -20,6 +20,8 @@ interface Switcher {
     sealed class Output
 
     class Customisation(
-        val viewFactory: ViewFactory<SwitcherView> = inflateOnDemand(R.layout.rib_switcher)
+        val viewFactory: ViewFactory<SwitcherView> = inflateOnDemand(
+            R.layout.rib_switcher
+        )
     )
 }

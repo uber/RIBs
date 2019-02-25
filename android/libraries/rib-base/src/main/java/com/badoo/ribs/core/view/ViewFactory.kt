@@ -1,4 +1,4 @@
-package com.uber.rib.core
+package com.badoo.ribs.core.view
 
 import android.view.ViewGroup
 

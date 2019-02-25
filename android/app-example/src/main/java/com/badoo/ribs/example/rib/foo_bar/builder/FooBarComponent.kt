@@ -2,7 +2,7 @@ package com.badoo.ribs.example.rib.foo_bar.builder
 
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
-import com.uber.rib.core.Node
+import com.badoo.ribs.core.Node
 
 
 @FooBarScope

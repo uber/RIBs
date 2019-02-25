@@ -1,9 +1,9 @@
-package com.uber.rib.core.routing.backstack
+package com.badoo.ribs.core.routing.backstack
 
 import android.os.Bundle
 import android.os.Parcelable
-import com.uber.rib.core.Node
-import com.uber.rib.core.routing.action.RoutingAction
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.routing.action.RoutingAction
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
 

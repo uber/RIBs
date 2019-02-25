@@ -2,7 +2,7 @@ package com.badoo.ribs.example.rib.menu.builder
 
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuView
-import com.uber.rib.core.Node
+import com.badoo.ribs.core.Node
 
 @MenuScope
 @dagger.Component(

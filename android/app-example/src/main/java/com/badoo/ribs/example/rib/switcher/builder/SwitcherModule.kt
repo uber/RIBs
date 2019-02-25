@@ -11,8 +11,8 @@ import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter
 import com.badoo.ribs.example.rib.switcher.SwitcherView
 import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature
-import com.uber.rib.core.Node
-import com.uber.rib.core.ViewFactory
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.view.ViewFactory
 import dagger.Provides
 import io.reactivex.Observable
 import io.reactivex.ObservableSource

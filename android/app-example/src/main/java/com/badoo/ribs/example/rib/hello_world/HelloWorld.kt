@@ -1,9 +1,9 @@
 package com.badoo.ribs.example.rib.hello_world
 
-import com.uber.rib.directory.Directory
-import com.uber.rib.directory.inflateOnDemand
+import com.badoo.ribs.core.directory.Directory
+import com.badoo.ribs.core.directory.inflateOnDemand
 import com.badoo.ribs.example.R
-import com.uber.rib.core.ViewFactory
+import com.badoo.ribs.core.view.ViewFactory
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
@@ -20,6 +20,8 @@ interface HelloWorld {
     sealed class Output
 
     class Customisation(
-        val viewFactory: ViewFactory<HelloWorldView> = inflateOnDemand(R.layout.rib_hello_world)
+        val viewFactory: ViewFactory<HelloWorldView> = inflateOnDemand(
+            R.layout.rib_hello_world
+        )
     )
 }

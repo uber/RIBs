@@ -1,4 +1,4 @@
-package com.uber.rib.core.routing.backstack
+package com.badoo.ribs.core.routing.backstack
 
 import android.os.Parcelable
 import com.badoo.mvicore.element.Actor
@@ -6,22 +6,22 @@ import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.element.TimeCapsule
 import com.badoo.mvicore.feature.BaseFeature
-import com.uber.rib.core.routing.RibConnector
-import com.uber.rib.core.routing.action.RoutingAction
-import com.uber.rib.core.routing.backstack.BackStackManager.Action
-import com.uber.rib.core.routing.backstack.BackStackManager.Action.Execute
-import com.uber.rib.core.routing.backstack.BackStackManager.Action.ReattachRibsOfLastEntry
-import com.uber.rib.core.routing.backstack.BackStackManager.Effect
-import com.uber.rib.core.routing.backstack.BackStackManager.State
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.NewRoot
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Pop
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Push
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Replace
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.TearDown
-import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
-import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
+import com.badoo.ribs.core.routing.RibConnector
+import com.badoo.ribs.core.routing.action.RoutingAction
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Action
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Action.Execute
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Action.ReattachRibsOfLastEntry
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Effect
+import com.badoo.ribs.core.routing.backstack.BackStackManager.State
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.NewRoot
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Pop
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Push
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Replace
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.TearDown
+import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
+import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.empty
@@ -37,7 +37,10 @@ internal class BackStackManager<C : Parcelable>(
 ): BaseFeature<Wish<C>, Action<C>, Effect<C>, State<C>, Nothing>(
     initialState = timeCapsule[tag] ?: State(),
     wishToAction = { Execute(it) },
-    bootstrapper = BooststrapperImpl(timeCapsule[tag] ?: State(), initialConfiguration),
+    bootstrapper = BooststrapperImpl(
+        timeCapsule[tag] ?: State(),
+        initialConfiguration
+    ),
     actor = ActorImpl<C>(
         connector = BackStackRibConnector(
             resolver,

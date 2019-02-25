@@ -20,6 +20,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.badoo.ribs.core.Builder;
+import com.badoo.ribs.core.Node;
+
 /**
  * Router builder for routers that own a view.
  *

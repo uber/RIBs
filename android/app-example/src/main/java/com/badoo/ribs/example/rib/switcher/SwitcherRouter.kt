@@ -12,12 +12,12 @@ import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Foo
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Hello
 import com.jakewharton.rxrelay2.PublishRelay
-import com.uber.rib.core.Node
-import com.uber.rib.core.Router
-import com.uber.rib.core.routing.action.AttachRibRoutingAction.Companion.attach
-import com.uber.rib.core.routing.action.CompositeRoutingAction.Companion.composite
-import com.uber.rib.core.routing.action.InvokeOnExecute.Companion.execute
-import com.uber.rib.core.routing.action.RoutingAction
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.Router
+import com.badoo.ribs.core.routing.action.AttachRibRoutingAction.Companion.attach
+import com.badoo.ribs.core.routing.action.CompositeRoutingAction.Companion.composite
+import com.badoo.ribs.core.routing.action.InvokeOnExecute.Companion.execute
+import com.badoo.ribs.core.routing.action.RoutingAction
 import kotlinx.android.parcel.Parcelize
 
 class SwitcherRouter(

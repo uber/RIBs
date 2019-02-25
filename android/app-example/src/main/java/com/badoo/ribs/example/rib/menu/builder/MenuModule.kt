@@ -5,8 +5,8 @@ import com.badoo.ribs.example.rib.menu.MenuInteractor
 import com.badoo.ribs.example.rib.menu.MenuRouter
 import com.badoo.ribs.example.rib.menu.MenuView
 import com.badoo.ribs.example.rib.menu.feature.MenuFeature
-import com.uber.rib.core.Node
-import com.uber.rib.core.ViewFactory
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.view.ViewFactory
 import dagger.Provides
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

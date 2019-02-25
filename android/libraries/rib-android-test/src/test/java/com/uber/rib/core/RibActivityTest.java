@@ -23,10 +23,12 @@ import android.support.annotation.NonNull;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import com.badoo.ribs.core.Node;
 import com.uber.autodispose.LifecycleEndedException;
 import com.uber.autodispose.ObservableScoper;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
+import com.badoo.ribs.core.view.RibView;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

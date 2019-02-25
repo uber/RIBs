@@ -4,11 +4,11 @@ import android.arch.lifecycle.Lifecycle
 import android.os.Bundle
 import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
+import com.badoo.ribs.core.Interactor
+import com.badoo.ribs.core.Router
 import com.badoo.ribs.example.rib.menu.feature.MenuFeature
 import com.badoo.ribs.example.rib.menu.mapper.StateToViewModel
 import com.badoo.ribs.example.rib.menu.mapper.ViewEventToOutput
-import com.uber.rib.core.Interactor
-import com.uber.rib.core.Router
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 

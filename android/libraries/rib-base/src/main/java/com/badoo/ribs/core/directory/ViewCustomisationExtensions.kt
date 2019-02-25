@@ -1,9 +1,9 @@
-package com.uber.rib.directory
+package com.badoo.ribs.core.directory
 
 import android.support.annotation.LayoutRes
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import com.uber.rib.core.ViewFactory
+import com.badoo.ribs.core.view.ViewFactory
 
 
 fun <T> inflateOnDemand(@LayoutRes layoutResourceId: Int): ViewFactory<T> =

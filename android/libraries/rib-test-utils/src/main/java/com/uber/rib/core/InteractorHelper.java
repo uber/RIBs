@@ -18,6 +18,8 @@ package com.uber.rib.core;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 
+import com.badoo.ribs.core.Node;
+
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.isNull;

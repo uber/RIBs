@@ -2,8 +2,8 @@ package com.badoo.ribs.example.rib.menu.builder
 
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuView
-import com.uber.rib.core.Builder
-import com.uber.rib.core.Node
+import com.badoo.ribs.core.Builder
+import com.badoo.ribs.core.Node
 
 class MenuBuilder(dependency: Menu.Dependency) :
     Builder<Menu.Dependency>(dependency) {

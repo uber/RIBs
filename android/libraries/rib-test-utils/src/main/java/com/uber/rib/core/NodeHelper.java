@@ -17,6 +17,8 @@ package com.uber.rib.core;
 
 import android.os.Bundle;
 
+import com.badoo.ribs.core.Node;
+
 import org.mockito.InOrder;
 import org.mockito.verification.VerificationMode;
 

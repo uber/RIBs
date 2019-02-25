@@ -8,7 +8,7 @@ import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.switcher.SwitcherView.Event
 import com.badoo.ribs.example.rib.switcher.SwitcherView.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
-import com.uber.rib.core.RibView
+import com.badoo.ribs.core.view.RibView
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 

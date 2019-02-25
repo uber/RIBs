@@ -2,9 +2,9 @@ package com.badoo.ribs.example.rib.menu
 
 import android.os.Parcelable
 import com.badoo.ribs.example.R
-import com.uber.rib.core.ViewFactory
-import com.uber.rib.directory.Directory
-import com.uber.rib.directory.inflateOnDemand
+import com.badoo.ribs.core.view.ViewFactory
+import com.badoo.ribs.core.directory.Directory
+import com.badoo.ribs.core.directory.inflateOnDemand
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 import kotlinx.android.parcel.Parcelize
@@ -31,6 +31,8 @@ interface Menu {
     }
 
     class Customisation(
-        val viewFactory: ViewFactory<MenuView> = inflateOnDemand(R.layout.rib_menu)
+        val viewFactory: ViewFactory<MenuView> = inflateOnDemand(
+            R.layout.rib_menu
+        )
     )
 }

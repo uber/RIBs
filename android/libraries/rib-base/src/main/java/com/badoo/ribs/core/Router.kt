@@ -1,19 +1,20 @@
-package com.uber.rib.core
+package com.badoo.ribs.core
 
 import android.os.Bundle
 import android.os.Parcelable
 import android.view.ViewGroup
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
-import com.uber.rib.core.routing.RibConnector
-import com.uber.rib.core.routing.action.RoutingAction
-import com.uber.rib.core.routing.backstack.BackStackManager
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.NewRoot
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Pop
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Push
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.Replace
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
-import com.uber.rib.core.routing.backstack.BackStackManager.Wish.TearDown
+import com.badoo.ribs.core.routing.RibConnector
+import com.badoo.ribs.core.routing.action.RoutingAction
+import com.badoo.ribs.core.routing.backstack.BackStackManager
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.NewRoot
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Pop
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Push
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Replace
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.TearDown
+import com.badoo.ribs.core.view.RibView
 
 abstract class Router<C : Parcelable, V : RibView>(
     private val initialConfiguration: C

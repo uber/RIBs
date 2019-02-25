@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core
+package com.badoo.ribs.core
 
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
@@ -27,6 +27,7 @@ import com.uber.autodispose.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.InteractorEvent.ACTIVE
 import com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE
+import com.badoo.ribs.core.view.RibView
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function

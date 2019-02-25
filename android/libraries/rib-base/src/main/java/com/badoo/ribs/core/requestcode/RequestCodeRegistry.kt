@@ -1,4 +1,4 @@
-package com.uber.rib.requestcode
+package com.badoo.ribs.core.requestcode
 
 import java.lang.IllegalArgumentException
 

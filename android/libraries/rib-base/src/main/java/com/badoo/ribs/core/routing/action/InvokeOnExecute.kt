@@ -1,6 +1,6 @@
-package com.uber.rib.core.routing.action
+package com.badoo.ribs.core.routing.action
 
-import com.uber.rib.core.RibView
+import com.badoo.ribs.core.view.RibView
 
 class InvokeOnExecute< V : RibView>(
     private val onInvoke: () -> Unit

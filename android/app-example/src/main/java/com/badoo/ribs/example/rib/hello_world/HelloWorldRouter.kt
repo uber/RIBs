@@ -1,10 +1,10 @@
 package com.badoo.ribs.example.rib.hello_world
 
 import android.os.Parcelable
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.Router
+import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.example.rib.hello_world.HelloWorldRouter.Configuration
-import com.uber.rib.core.Node
-import com.uber.rib.core.Router
-import com.uber.rib.core.routing.action.RoutingAction
 import kotlinx.android.parcel.Parcelize
 
 class HelloWorldRouter: Router<Configuration, HelloWorldView>(

@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core;
 
+import com.badoo.ribs.core.Node;
 import com.uber.rib.util.RIBs;
 
 import java.util.List;

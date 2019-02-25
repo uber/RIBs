@@ -1,7 +1,7 @@
-package com.uber.rib.core.routing
+package com.badoo.ribs.core.routing
 
 import android.os.Bundle
-import com.uber.rib.core.Node
+import com.badoo.ribs.core.Node
 
 interface RibConnector {
     /**

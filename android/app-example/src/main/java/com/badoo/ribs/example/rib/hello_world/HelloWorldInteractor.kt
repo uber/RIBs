@@ -4,14 +4,14 @@ import android.arch.lifecycle.Lifecycle
 import android.os.Bundle
 import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
+import com.badoo.ribs.core.Interactor
+import com.badoo.ribs.core.Router
 import com.badoo.ribs.example.rib.hello_world.analytics.HelloWorldAnalytics
 import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature
 import com.badoo.ribs.example.rib.hello_world.mapper.InputToWish
 import com.badoo.ribs.example.rib.hello_world.mapper.NewsToOutput
 import com.badoo.ribs.example.rib.hello_world.mapper.ViewEventToAnalyticsEvent
 import com.badoo.ribs.example.rib.hello_world.mapper.ViewEventToWish
-import com.uber.rib.core.Interactor
-import com.uber.rib.core.Router
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 

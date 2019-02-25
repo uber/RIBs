@@ -5,7 +5,7 @@ import com.badoo.ribs.example.rib.hello_world.HelloWorld
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.switcher.Switcher
 import com.badoo.ribs.example.rib.switcher.SwitcherView
-import com.uber.rib.core.Node
+import com.badoo.ribs.core.Node
 
 
 @SwitcherScope
