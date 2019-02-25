@@ -312,5 +312,8 @@ open class Node<V : RibView>(
         interactor.onPause()
         children.forEach { it.onPause() }
     }
+
+    override fun toString(): String =
+        "Node@${hashCode()} (${forClass.simpleName})"
 }
 
