@@ -28,8 +28,8 @@ abstract class Router<C : Parcelable, V : RibView>(
 
     fun dispatchAttach(savedInstanceState: Bundle?) {
         timeCapsule = AndroidTimeCapsule(savedInstanceState)
-        initConfigurationManager()
         attachPermanentParts()
+        initConfigurationManager()
     }
 
     private fun attachPermanentParts() {
