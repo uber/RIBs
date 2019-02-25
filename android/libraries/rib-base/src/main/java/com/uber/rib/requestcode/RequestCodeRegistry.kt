@@ -1,4 +1,4 @@
-package com.uber.rib.core.requestcode
+package com.uber.rib.requestcode
 
 import java.lang.IllegalArgumentException
 

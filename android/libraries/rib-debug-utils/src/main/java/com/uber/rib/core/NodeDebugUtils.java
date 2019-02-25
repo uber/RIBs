@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core;
 
+import com.uber.rib.util.RIBs;
+
 import java.util.List;
 
 /** Debugging utilties when working with Routers. */

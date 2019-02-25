@@ -1,4 +1,4 @@
-package com.uber.rib.core.directory
+package com.uber.rib.directory
 
 import kotlin.reflect.KClass
 

@@ -1,6 +1,6 @@
 package com.badoo.ribs.example.app
 
-import com.uber.rib.core.directory.ViewCustomisationDirectory
+import com.uber.rib.directory.ViewCustomisationDirectory
 
 object AppRibCustomisations : ViewCustomisationDirectory() {
 

@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core;
 
+import com.uber.rib.util.RibRefWatcher;
+
 /**
  * Router subclass that has a view.
  *

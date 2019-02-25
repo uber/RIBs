@@ -22,7 +22,8 @@ import android.support.annotation.MainThread
 import android.support.annotation.VisibleForTesting
 import android.util.SparseArray
 import android.view.ViewGroup
-import com.uber.rib.core.requestcode.RequestCodeRegistry
+import com.uber.rib.requestcode.RequestCodeRegistry
+import com.uber.rib.util.RibRefWatcher
 import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 

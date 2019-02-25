@@ -3,8 +3,8 @@ package com.badoo.ribs.example.rib.menu
 import android.os.Parcelable
 import com.badoo.ribs.example.R
 import com.uber.rib.core.ViewFactory
-import com.uber.rib.core.directory.Directory
-import com.uber.rib.core.directory.inflateOnDemand
+import com.uber.rib.directory.Directory
+import com.uber.rib.directory.inflateOnDemand
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 import kotlinx.android.parcel.Parcelize

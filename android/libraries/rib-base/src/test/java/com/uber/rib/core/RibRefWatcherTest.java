@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core;
 
+import com.uber.rib.util.RibRefWatcher;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +31,7 @@ public class RibRefWatcherTest {
 
   @Mock private RibRefWatcher.ReferenceWatcher referenceWatcher;
 
-  private final RibRefWatcher ribRefWatcher = new com.uber.rib.core.RibRefWatcher();
+  private final RibRefWatcher ribRefWatcher = new RibRefWatcher();
 
   @Before
   public void setup() {
