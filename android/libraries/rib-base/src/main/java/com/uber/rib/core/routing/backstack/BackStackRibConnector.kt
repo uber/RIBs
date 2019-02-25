@@ -30,15 +30,15 @@ internal class BackStackRibConnector<C : Parcelable>(
             return@fromCallable oldEntry to newEntry
         }
 
-    fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: DetachStrategy): Observable<Pair<BackStackElement<C>, BackStackElement<C>>> =
+    fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: DetachStrategy): Observable<BackStackElement<C>> =
         Observable.fromCallable {
-            val oldEntry = backStack.last()
-            val newEntry = backStack[backStack.lastIndex - 1]
+            val entryToPop = backStack.last()
+            val entryToRevive = backStack[backStack.lastIndex - 1]
 
-            leave(oldEntry, detachStrategy = detachStrategy)
-            goTo(newEntry)
+            leave(entryToPop, detachStrategy = detachStrategy)
+            goTo(entryToRevive)
 
-            return@fromCallable oldEntry to newEntry
+            return@fromCallable entryToRevive
         }
 
     fun leave(backStackElement: BackStackElement<C>, detachStrategy: DetachStrategy): BackStackElement<C> {

@@ -89,7 +89,7 @@ internal class BackStackManager<C : Parcelable>(
         data class Replace<C : Parcelable>(val newEntry: BackStackElement<C>) : Effect<C>()
         data class Push<C : Parcelable>(val updatedOldEntry: BackStackElement<C>, val newEntry: BackStackElement<C>) : Effect<C>()
         data class NewRoot<C : Parcelable>(val newEntry: BackStackElement<C>) : Effect<C>()
-        data class Pop<C : Parcelable>(val updatedOldEntry: BackStackElement<C>) : Effect<C>()
+        data class Pop<C : Parcelable>(val revivedEntry: BackStackElement<C>) : Effect<C>()
         data class UpdateBackStack<C : Parcelable>(val updatedBackStack: List<BackStackElement<C>>) : Effect<C>()
     }
 
@@ -142,8 +142,8 @@ internal class BackStackManager<C : Parcelable>(
 
                         is Pop -> when {
                             state.canPop ->
-                                connector.switchToPrevious(state.backStack, detachStrategy = DESTROY).map { (oldEntry, _) ->
-                                    Effect.Pop(oldEntry)
+                                connector.switchToPrevious(state.backStack, detachStrategy = DESTROY).map { revivedEntry ->
+                                    Effect.Pop(revivedEntry)
                                 }
                             else -> empty()
                         }
@@ -173,7 +173,7 @@ internal class BackStackManager<C : Parcelable>(
             )
             // fixme guarantee that this is safe to do!
             is Effect.Pop -> state.copy(
-                backStack = state.backStack.dropLast(2) + effect.updatedOldEntry
+                backStack = state.backStack.dropLast(2) + effect.revivedEntry
             )
             is Effect.UpdateBackStack -> state.copy(
                 backStack = effect.updatedBackStack
