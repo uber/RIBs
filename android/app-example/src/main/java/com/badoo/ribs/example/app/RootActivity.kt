@@ -3,8 +3,8 @@ package com.badoo.ribs.example.app
 import android.os.Bundle
 import android.view.ViewGroup
 import com.badoo.ribs.example.R
-import com.badoo.ribs.example.rib.foo_bar.FooBar
-import com.badoo.ribs.example.rib.foo_bar.builder.FooBarBuilder
+import com.badoo.ribs.example.rib.switcher.Switcher
+import com.badoo.ribs.example.rib.switcher.builder.SwitcherBuilder
 import com.uber.rib.core.Node
 import com.uber.rib.core.RibActivity
 import com.uber.rib.core.directory.Directory
@@ -25,10 +25,10 @@ class RootActivity : RibActivity() {
 
     override fun createRib(): Node<*> {
         val rootBuilder =
-            FooBarBuilder(object : FooBar.Dependency {
+            SwitcherBuilder(object : Switcher.Dependency {
                 override fun ribCustomisation(): Directory = AppRibCustomisations
-                override fun foobarInput(): ObservableSource<FooBar.Input> = Observable.empty()
-                override fun foobarOutput(): Consumer<FooBar.Output> = Consumer { }
+                override fun switcherInput(): ObservableSource<Switcher.Input> = Observable.empty()
+                override fun switcherOutput(): Consumer<Switcher.Output> = Consumer { }
             })
 
         return rootBuilder.build()

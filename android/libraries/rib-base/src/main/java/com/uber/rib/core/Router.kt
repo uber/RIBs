@@ -56,8 +56,13 @@ abstract class Router<C : Parcelable, V : RibView>(
 
     abstract fun resolveConfiguration(configuration: C): RoutingAction<V>
 
-    open fun getParentViewForChild(child: Node<*>, view: V?, parent: ViewGroup): ViewGroup =
-        view?.androidView ?: parent
+    /**
+     * @param view is null only in the case when the supplied ViewFactory in the Node is null,
+     *              and as such, it should be referenced by view!! when overriding this method
+     *              to catch any problems instead of silently returning null
+     */
+    open fun getParentViewForChild(child: Class<*>, view: V?): ViewGroup? =
+        view?.androidView
 
     fun saveInstanceState(outState: Bundle) {
         backStackManager.accept(ShrinkToBundles())

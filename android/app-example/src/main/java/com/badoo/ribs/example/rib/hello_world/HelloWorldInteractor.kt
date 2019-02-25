@@ -11,7 +11,6 @@ import com.badoo.ribs.example.rib.hello_world.mapper.NewsToOutput
 import com.badoo.ribs.example.rib.hello_world.mapper.ViewEventToAnalyticsEvent
 import com.badoo.ribs.example.rib.hello_world.mapper.ViewEventToWish
 import com.uber.rib.core.Interactor
-import com.uber.rib.core.Node
 import com.uber.rib.core.Router
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

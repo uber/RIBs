@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.badoo.ribs.example.rib.foo_bar.FooBarAndroidView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.badoo.ribs.example.rib.hello_world.HelloWorldViewImpl xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -15,4 +15,4 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-</com.badoo.ribs.example.rib.foo_bar.FooBarAndroidView>
+</com.badoo.ribs.example.rib.hello_world.HelloWorldViewImpl>

@@ -30,7 +30,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Responsible for handling the addition and removal of child nodes.
  **/
 open class Node<V : RibView>(
-    private val forClass: Class<*>,
+    val forClass: Class<*>,
     private val viewFactory: ViewFactory<V>?,
     private val router: Router<*, V>,
     private val interactor: Interactor<*, V>,
@@ -100,9 +100,10 @@ open class Node<V : RibView>(
     }
 
     internal fun attachChildView(child: Node<*>) {
+        // parentViewGroup is guaranteed to be non-null if and only if Android view system is available
         parentViewGroup?.let {
             child.attachToView(
-                router.getParentViewForChild(child, view, it)
+                router.getParentViewForChild(child.forClass, view) ?: it
             )
         }
     }
@@ -121,7 +122,7 @@ open class Node<V : RibView>(
     internal fun detachChildView(child: Node<*>) {
         parentViewGroup?.let {
             child.onDetachFromView(
-                parentViewGroup = router.getParentViewForChild(child, view, it)
+                parentViewGroup = router.getParentViewForChild(child.forClass, view) ?: it
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.badoo.ribs.example.rib.hello_world
+package com.badoo.ribs.example.rib.switcher
 
 import com.uber.rib.core.directory.Directory
 import com.uber.rib.core.directory.inflateOnDemand
@@ -7,11 +7,11 @@ import com.uber.rib.core.ViewFactory
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface HelloWorld {
+interface Switcher {
 
     interface Dependency {
-        fun helloWorldInput(): ObservableSource<Input>
-        fun helloWorldOutput(): Consumer<Output>
+        fun switcherInput(): ObservableSource<Input>
+        fun switcherOutput(): Consumer<Output>
         fun ribCustomisation(): Directory
     }
 
@@ -20,6 +20,6 @@ interface HelloWorld {
     sealed class Output
 
     class Customisation(
-        val viewFactory: ViewFactory<HelloWorldView> = inflateOnDemand(R.layout.rib_hello_world)
+        val viewFactory: ViewFactory<SwitcherView> = inflateOnDemand(R.layout.rib_switcher)
     )
 }

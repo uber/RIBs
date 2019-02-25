@@ -23,7 +23,7 @@ interface HelloWorldView : RibView,
 }
 
 
-class HelloWorldAndroidView private constructor(
+class HelloWorldViewImpl private constructor(
     context: Context, attrs: AttributeSet? = null, defStyle: Int = 0, private val events: PublishRelay<Event>
 ) : ConstraintLayout(context, attrs, defStyle),
     HelloWorldView,
