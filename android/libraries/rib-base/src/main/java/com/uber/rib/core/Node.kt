@@ -76,8 +76,8 @@ open class Node<V : RibView>(
         this.parentViewGroup = parentViewGroup
         view = createView(parentViewGroup)
         view?.let {
-            it.androidView.restoreHierarchyState(savedViewState)
             parentViewGroup.addView(it.androidView)
+            it.androidView.restoreHierarchyState(savedViewState)
             interactor.onViewCreated(view!!)
         }
 
