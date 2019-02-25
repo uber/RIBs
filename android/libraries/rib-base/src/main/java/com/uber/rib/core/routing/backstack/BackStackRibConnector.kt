@@ -2,6 +2,7 @@ package com.uber.rib.core.routing.backstack
 
 import android.os.Bundle
 import android.os.Parcelable
+import com.uber.rib.core.Node
 import com.uber.rib.core.routing.RibConnector
 import com.uber.rib.core.routing.action.RoutingAction
 import com.uber.rib.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
@@ -46,21 +47,24 @@ internal class BackStackRibConnector<C : Parcelable>(
             routingAction?.cleanup()
 
             when (detachStrategy) {
-                DESTROY -> {
-                    ribs?.forEach { connector.detachChild(it) }
-                    ribs = null
-                }
-
-                DETACH_VIEW -> {
-                    ribs?.forEach {
-                        it.saveViewState()
-                        connector.detachChildView(it)
-                    }
-                }
+                DESTROY -> destroyRibs()
+                DETACH_VIEW -> saveAndDetachView()
             }
         }
 
         return backStackElement
+    }
+
+    private fun BackStackElement<C>.destroyRibs() {
+        ribs?.forEach { connector.detachChild(it) }
+        ribs = null
+    }
+
+    private fun BackStackElement<C>.saveAndDetachView(): Unit? {
+        return ribs?.forEach {
+            it.saveViewState()
+            connector.detachChildView(it)
+        }
     }
 
     fun goTo(backStackElement: BackStackElement<C>): BackStackElement<C> {
@@ -75,17 +79,7 @@ internal class BackStackRibConnector<C : Parcelable>(
                 ribs = routingAction!!
                     .ribFactories()
                     .map { it.invoke() }
-                    .also {
-                        it.forEachIndexed { index, router ->
-                            // attachChildView is implied part of attachChild:
-                            connector.attachChild(
-                                router,
-                                bundles.elementAtOrNull(index)?.also {
-                                    it.classLoader = BackStackManager.State::class.java.classLoader
-                                }
-                            )
-                        }
-                    }
+                    .also { attachNodes(it) }
             } else {
                 ribs!!
                     .forEach {
@@ -95,6 +89,18 @@ internal class BackStackRibConnector<C : Parcelable>(
         }
 
         return backStackElement
+    }
+
+    private fun BackStackElement<C>.attachNodes(it: List<Node<*>>) {
+        it.forEachIndexed { index, router ->
+            // attachChildView is implied part of attachChild:
+            connector.attachChild(
+                router,
+                bundles.elementAtOrNull(index)?.also {
+                    it.classLoader = BackStackManager.State::class.java.classLoader
+                }
+            )
+        }
     }
 
     fun shrinkToBundles(backStack: List<BackStackElement<C>>): Observable<List<BackStackElement<C>>> =
