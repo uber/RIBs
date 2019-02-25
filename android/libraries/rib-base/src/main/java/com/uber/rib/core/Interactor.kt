@@ -39,7 +39,7 @@ import io.reactivex.functions.Function
  **/
 abstract class Interactor<C : Parcelable, V : RibView>(
     protected val router: Router<C, V>,
-    private val disposables: Disposable
+    private val disposables: Disposable?
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
 
     lateinit var node: Node<V>
@@ -113,7 +113,7 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     fun willResignActive() {
         viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY) // todo probably this is not needed?
         ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        disposables.dispose()
+        disposables?.dispose()
     }
 
     override fun getLifecycle(): Lifecycle =
