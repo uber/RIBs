@@ -2,6 +2,7 @@ package com.badoo.ribs.example.rib.foo_bar
 
 import android.os.Parcelable
 import com.badoo.ribs.example.rib.foo_bar.FooBarRouter.Configuration
+import com.uber.rib.core.Node
 import com.uber.rib.core.Router
 import com.uber.rib.core.routing.action.RoutingAction
 import kotlinx.android.parcel.Parcelize
@@ -9,6 +10,8 @@ import kotlinx.android.parcel.Parcelize
 class FooBarRouter: Router<Configuration, FooBarView>(
     initialConfiguration = Configuration.Default
 ) {
+    override val permanentParts: List<() -> Node<*>> =
+        emptyList()
 
     sealed class Configuration : Parcelable {
         @Parcelize object Default : Configuration()

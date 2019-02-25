@@ -23,7 +23,6 @@ import android.support.annotation.VisibleForTesting
 import android.util.SparseArray
 import android.view.ViewGroup
 import com.uber.rib.core.requestcode.RequestCodeRegistry
-import com.uber.rib.core.routing.action.RoutingAction
 import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -60,15 +59,8 @@ open class Node<V : RibView>(
         private set
     protected var parentViewGroup: ViewGroup? = null
 
-    private lateinit var attachPermanentParts: RoutingAction<V>
-    protected open val permanentParts: List<() -> Node<*>> = emptyList()
     private var savedViewState: SparseArray<Parcelable> = SparseArray()
 
-    private fun attachPermanentParts() {
-        permanentParts.forEach {
-            attachChild(it()) // fixme save and restore these as well
-        }
-    }
 
     private fun generateRibId(): Int =
         requestCodeRegistry.generateGroupId(tag)
@@ -110,16 +102,10 @@ open class Node<V : RibView>(
     internal fun attachChildView(child: Node<*>) {
         parentViewGroup?.let {
             child.attachToView(
-                getParentViewForChild(child, view, it)
+                router.getParentViewForChild(child, view, it)
             )
         }
     }
-
-    /**
-     * todo consider a callback to [Router] with child, then falling back to this
-     */
-    open fun getParentViewForChild(child: Node<*>, view: V?, parentViewGroup: ViewGroup): ViewGroup =
-        view?.androidView ?: parentViewGroup
 
     internal fun detachChild(child: Node<*>) {
         detachChildNode(child)
@@ -135,7 +121,7 @@ open class Node<V : RibView>(
     internal fun detachChildView(child: Node<*>) {
         parentViewGroup?.let {
             child.onDetachFromView(
-                parentViewGroup = getParentViewForChild(child, view, it)
+                parentViewGroup = router.getParentViewForChild(child, view, it)
             )
         }
     }
@@ -254,7 +240,6 @@ open class Node<V : RibView>(
         savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
 
         willAttach()
-        attachPermanentParts()
 
         router.dispatchAttach(savedInstanceState?.getBundle(KEY_ROUTER))
         interactor.dispatchAttach(savedInstanceState?.getBundle(KEY_INTERACTOR))

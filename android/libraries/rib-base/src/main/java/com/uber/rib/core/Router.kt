@@ -2,6 +2,7 @@ package com.uber.rib.core
 
 import android.os.Bundle
 import android.os.Parcelable
+import android.view.ViewGroup
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
 import com.uber.rib.core.routing.RibConnector
@@ -28,7 +29,16 @@ abstract class Router<C : Parcelable, V : RibView>(
     fun dispatchAttach(savedInstanceState: Bundle?) {
         timeCapsule = AndroidTimeCapsule(savedInstanceState)
         initConfigurationManager()
+        attachPermanentParts()
     }
+
+    private fun attachPermanentParts() {
+        permanentParts.forEach {
+            node.attachChild(it()) // fixme save and restore these as well
+        }
+    }
+
+    protected open val permanentParts: List<() -> Node<*>> = emptyList()
 
     private fun initConfigurationManager() {
         backStackManager = BackStackManager(
@@ -45,6 +55,9 @@ abstract class Router<C : Parcelable, V : RibView>(
     }
 
     abstract fun resolveConfiguration(configuration: C): RoutingAction<V>
+
+    open fun getParentViewForChild(child: Node<*>, view: V?, parent: ViewGroup): ViewGroup =
+        view?.androidView ?: parent
 
     fun saveInstanceState(outState: Bundle) {
         backStackManager.accept(ShrinkToBundles())
