@@ -30,7 +30,6 @@ dependencies {
 
     kapt deps.apt.daggerCompiler
     implementation deps.apt.javaxInject
-    compileOnly deps.apt.androidApi
 
     implementation deps.external.kotlinStdlib
     implementation deps.external.mviCore
@@ -44,10 +43,10 @@ dependencies {
     compileOnly deps.support.annotations
 
     testImplementation deps.support.annotations
-    testImplementation deps.apt.androidApi
     testImplementation deps.test.junit
     testImplementation deps.test.mockito
     testImplementation deps.test.assertj
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
