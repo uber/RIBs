@@ -149,12 +149,12 @@ afterEvaluate { project ->
     }
 
     task androidJavadocsJar(type: Jar, dependsOn: androidJavadocs) {
-      archiveClassifier = 'javadoc'
+      classifier = 'javadoc'
       from androidJavadocs.destinationDir
     }
 
     task androidSourcesJar(type: Jar) {
-      archiveClassifier = 'sources'
+      classifier = 'sources'
       from android.sourceSets.main.java.sourceFiles
     }
   } else {
@@ -195,12 +195,12 @@ afterEvaluate { project ->
     }
 
     task sourcesJar(type: Jar, dependsOn: classes) {
-      archiveClassifier = 'sources'
+      classifier = 'sources'
       from sourceSets.main.allSource
     }
 
     task javadocJar(type: Jar, dependsOn: javadoc) {
-      archiveClassifier = 'javadoc'
+      classifier = 'javadoc'
       from javadoc.destinationDir
     }
   }
