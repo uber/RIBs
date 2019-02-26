@@ -1,6 +1,7 @@
 package com.badoo.ribs.core.helper
 
 import android.os.Parcelable
+import android.view.ViewGroup
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.routing.action.RoutingAction
@@ -28,4 +29,8 @@ class TestRouter(
             is Configuration.C2 -> routingActionForC2
             is Configuration.C3 -> routingActionForC3
         }
+
+    override fun getParentViewForChild(child: Class<*>, view: TestView?): ViewGroup? {
+        return super.getParentViewForChild(child, view)
+    }
 }

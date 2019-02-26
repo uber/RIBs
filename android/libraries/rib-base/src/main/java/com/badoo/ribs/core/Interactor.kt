@@ -42,7 +42,7 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     protected val router: Router<C, V>,
     private val disposables: Disposable?
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
-    
+
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
 

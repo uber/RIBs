@@ -65,7 +65,7 @@ abstract class Router<C : Parcelable, V : RibView>(
     open fun getParentViewForChild(child: Class<*>, view: V?): ViewGroup? =
         view?.androidView
 
-    fun saveInstanceState(outState: Bundle) {
+    fun onSaveInstanceState(outState: Bundle) {
         backStackManager.accept(ShrinkToBundles())
         timeCapsule.saveState(outState)
     }

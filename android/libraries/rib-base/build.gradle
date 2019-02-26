@@ -46,6 +46,7 @@ dependencies {
     testImplementation deps.test.junit
     testImplementation deps.test.mockito
     testImplementation deps.test.assertj
+    testImplementation deps.external.roboelectricBase
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
 }
 

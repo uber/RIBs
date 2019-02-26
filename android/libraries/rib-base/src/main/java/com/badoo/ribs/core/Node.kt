@@ -40,9 +40,9 @@ open class Node<V : RibView>(
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
-        @VisibleForTesting internal val KEY_CHILD_NODES = "node.children"
-        @VisibleForTesting internal val KEY_ROUTER = "node.router"
-        @VisibleForTesting internal val KEY_INTERACTOR = "node.interactor"
+        internal const val KEY_CHILD_NODES = "node.children"
+        internal const val KEY_ROUTER = "node.router"
+        internal const val KEY_INTERACTOR = "node.interactor"
         private const val KEY_RIB_ID = "rib.id"
         private const val KEY_VIEW_STATE = "view.state"
         private val requestCodeRegistry = RequestCodeRegistry(8)
@@ -53,7 +53,7 @@ open class Node<V : RibView>(
     }
 
     private var savedInstanceState: Bundle? = null
-    val children = CopyOnWriteArrayList<Node<*>>()
+    internal val children = CopyOnWriteArrayList<Node<*>>()
     protected var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
         private set
     private var ribId: Int? = null
@@ -78,18 +78,19 @@ open class Node<V : RibView>(
         this.parentViewGroup = parentViewGroup
         view = createView(parentViewGroup)
         view?.let {
-            parentViewGroup.addView(it.androidView)
-            it.androidView.restoreHierarchyState(savedViewState)
-            interactor.onViewCreated(it)
+            parentViewGroup.addView(it.androidView) // todo test invoked
+            it.androidView.restoreHierarchyState(savedViewState) // todo test invoked
+            interactor.onViewCreated(it) // todo test invoked
         }
 
+        println("before children.forEach")
         children.forEach {
             attachChildView(it)
         }
     }
 
     private fun createView(parentViewGroup: ViewGroup): V? =
-        viewFactory?.invoke(parentViewGroup)
+        viewFactory?.invoke(parentViewGroup) // todo test invoked
 
     internal fun attachChild(child: Node<*>, bundle: Bundle? = null) {
         attachChildView(child)
@@ -104,6 +105,7 @@ open class Node<V : RibView>(
     internal fun attachChildView(child: Node<*>) {
         // parentViewGroup is guaranteed to be non-null if and only if Android view system is available
         parentViewGroup?.let {
+            println("before children.forEach")
             child.attachToView(
                 router.getParentViewForChild(child.forClass, view) ?: it
             )
@@ -131,9 +133,7 @@ open class Node<V : RibView>(
 
     fun onDetachFromView(parentViewGroup: ViewGroup) {
         children.forEach {
-            detachChildView(
-                child = it
-            )
+            detachChildView(it)
         }
 
         view?.let {
@@ -268,8 +268,8 @@ open class Node<V : RibView>(
 
     private fun saveRouterState(outState: Bundle) {
         Bundle().let {
-            interactor.onSaveInstanceState(it)
-            outState.putBundle(KEY_RIB_ID, it)
+            router.onSaveInstanceState(it)
+            outState.putBundle(KEY_ROUTER, it)
         }
     }
 

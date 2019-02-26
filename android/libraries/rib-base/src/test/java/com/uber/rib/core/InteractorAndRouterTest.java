@@ -101,7 +101,7 @@ public class InteractorAndRouterTest {
 //
 //    // When.
 //    Bundle outState = new Bundle();
-//    node.saveInstanceState(outState);
+//    node.onSaveInstanceState(outState);
 //
 //    // Then.
 //    verify(childInteractor).onSaveInstanceState(any(Bundle.class));
@@ -147,7 +147,7 @@ public class InteractorAndRouterTest {
 //
 //    // When.
 //    Bundle outState = new Bundle();
-//    node.saveInstanceState(outState);
+//    node.onSaveInstanceState(outState);
 //    node.detachChildNode(childRouter);
 //    node.attachChildNode(childRouter);
 //
