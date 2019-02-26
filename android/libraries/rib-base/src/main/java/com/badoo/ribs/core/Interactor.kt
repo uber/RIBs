@@ -35,16 +35,14 @@ import io.reactivex.functions.Function
 /**
  * The base implementation for all [Interactor]s.
  *
+ * @param <C> the type of Configuration this Interactor can expect to push to its [Router].
  * @param <V> the type of [RibView].
- * @param <N> the type of [Node].
  **/
 abstract class Interactor<C : Parcelable, V : RibView>(
     protected val router: Router<C, V>,
     private val disposables: Disposable?
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
-
-    lateinit var node: Node<V>
-
+    
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
 
@@ -79,7 +77,7 @@ abstract class Interactor<C : Parcelable, V : RibView>(
         onViewCreated(view, viewLifecycleRegistry)
     }
 
-    open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
+    protected open fun onViewCreated(view: V, viewLifecycle: Lifecycle) {
     }
 
     fun onViewDestroyed() {

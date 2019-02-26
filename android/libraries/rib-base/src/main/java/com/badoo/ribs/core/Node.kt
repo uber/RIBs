@@ -50,7 +50,6 @@ open class Node<V : RibView>(
 
     init {
         router.node = this
-        interactor.node = this
     }
 
     private var savedInstanceState: Bundle? = null
