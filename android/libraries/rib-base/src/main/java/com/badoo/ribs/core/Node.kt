@@ -60,7 +60,8 @@ open class Node<V : RibView>(
     protected var parentViewGroup: ViewGroup? = null
     private var savedInstanceState: Bundle? = null
     internal var savedViewState: SparseArray<Parcelable> = SparseArray()
-
+    internal var isViewAttached: Boolean = false
+        private set
 
     private fun generateRibId(): Int =
         requestCodeRegistry.generateGroupId(tag)
@@ -74,6 +75,7 @@ open class Node<V : RibView>(
 
     fun attachToView(parentViewGroup: ViewGroup) {
         this.parentViewGroup = parentViewGroup
+        isViewAttached = true
         view = createView(parentViewGroup)
         view?.let {
             parentViewGroup.addView(it.androidView)
@@ -95,10 +97,10 @@ open class Node<V : RibView>(
     }
 
     internal fun attachChildView(child: Node<*>) {
-        // parentViewGroup is guaranteed to be non-null if and only if Android view system is available
-        parentViewGroup?.let {
+        if (isViewAttached) {
             child.attachToView(
-                router.getParentViewForChild(child.forClass, view) ?: it
+                // parentViewGroup is guaranteed to be non-null if and only if view is attached
+                router.getParentViewForChild(child.forClass, view) ?: parentViewGroup!!
             )
         }
     }
@@ -133,6 +135,7 @@ open class Node<V : RibView>(
         }
 
         view = null
+        isViewAttached = false
         this.parentViewGroup = null
     }
 
