@@ -221,6 +221,88 @@ class NodeTest {
     }
 
     @Test
+    fun `Back press handling is forwarded to all children if none can handle it`() {
+        whenever(child1.handleBackPress()).thenReturn(false)
+        whenever(child2.handleBackPress()).thenReturn(false)
+        whenever(child3.handleBackPress()).thenReturn(false)
+
+        node.handleBackPress()
+
+        verify(child1).handleBackPress()
+        verify(child2).handleBackPress()
+        verify(child3).handleBackPress()
+    }
+
+    @Test
+    fun `Back press handling is forwarded to children only until first one handles it`() {
+        whenever(child1.handleBackPress()).thenReturn(false)
+        whenever(child2.handleBackPress()).thenReturn(true)
+        whenever(child3.handleBackPress()).thenReturn(false)
+
+        node.handleBackPress()
+
+        verify(child1).handleBackPress()
+        verify(child2).handleBackPress()
+        verify(child3, never()).handleBackPress()
+    }
+
+    @Test
+    fun `Back press handling is forwarded to Interactor if no children handled it`() {
+        whenever(child1.handleBackPress()).thenReturn(false)
+        whenever(child2.handleBackPress()).thenReturn(false)
+        whenever(child3.handleBackPress()).thenReturn(false)
+
+        node.handleBackPress()
+
+
+        verify(interactor).handleBackPress()
+    }
+
+    @Test
+    fun `Back press handling is not forwarded to Interactor if any children handled it`() {
+        whenever(child1.handleBackPress()).thenReturn(false)
+        whenever(child2.handleBackPress()).thenReturn(true)
+        whenever(child3.handleBackPress()).thenReturn(false)
+
+        node.handleBackPress()
+
+        verify(interactor, never()).handleBackPress()
+    }
+
+    @Test
+    fun `Router back stack popping is invoked if none of the children nor the Interactor handled back press`() {
+        whenever(child1.handleBackPress()).thenReturn(false)
+        whenever(child2.handleBackPress()).thenReturn(false)
+        whenever(child3.handleBackPress()).thenReturn(false)
+        whenever(interactor.handleBackPress()).thenReturn(false)
+
+        node.handleBackPress()
+
+        verify(router).popBackStack()
+    }
+
+    @Test
+    fun `Router back stack popping is not invoked if any of the children handled back press`() {
+        whenever(child1.handleBackPress()).thenReturn(false)
+        whenever(child2.handleBackPress()).thenReturn(true)
+        whenever(child3.handleBackPress()).thenReturn(false)
+        whenever(interactor.handleBackPress()).thenReturn(false)
+
+        node.handleBackPress()
+
+        verify(router, never()).popBackStack()
+    }
+
+    @Test
+    fun `Router back stack popping is not invoked if Interactor handled back press`() {
+        whenever(interactor.handleBackPress()).thenReturn(true)
+
+        node.handleBackPress()
+
+        verify(router, never()).popBackStack()
+    }
+
+    @Test
     fun `attachToView() calls all children to add themselves to the view `() {
         node.attachToView(parentViewGroup)
         allChildren.forEach {
