@@ -148,19 +148,6 @@ open class Node<V : RibView>(
     }
 
     /**
-     * Called when a node is being attached. Node subclasses can perform setup here for anything
-     * that is needed again but is cleaned up in willDetach(). Use didLoad() if the setup is only
-     * needed once.
-     */
-    protected fun willAttach() {}
-
-    /**
-     * Called when a node is being a detached, node subclasses should perform any required clean
-     * up here.
-     */
-    protected fun willDetach() {}
-
-    /**
      * Attaches a child node to this node.
      *
      * @param childNode the [Node] to be attached.
@@ -203,8 +190,6 @@ open class Node<V : RibView>(
         updateRibId(savedInstanceState?.getInt(KEY_RIB_ID, generateRibId()) ?: generateRibId())
         savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
 
-        willAttach()
-
         router.dispatchAttach(savedInstanceState?.getBundle(KEY_ROUTER))
         interactor.dispatchAttach(savedInstanceState?.getBundle(KEY_INTERACTOR))
     }
@@ -212,7 +197,6 @@ open class Node<V : RibView>(
     open fun dispatchDetach() {
         interactor.dispatchDetach()
         router.dispatchDetach()
-        willDetach()
 
         for (child in children) {
             detachChildNode(child)
