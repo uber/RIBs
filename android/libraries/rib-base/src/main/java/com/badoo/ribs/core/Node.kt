@@ -19,7 +19,6 @@ import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.CallSuper
 import android.support.annotation.MainThread
-import android.support.annotation.VisibleForTesting
 import android.util.SparseArray
 import android.view.ViewGroup
 import com.badoo.ribs.core.view.RibView
@@ -40,11 +39,11 @@ open class Node<V : RibView>(
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
-        internal const val KEY_CHILD_NODES = "node.children"
+        internal const val KEY_TAG = "rib.tag"
+        internal const val KEY_RIB_ID = "rib.id"
         internal const val KEY_ROUTER = "node.router"
         internal const val KEY_INTERACTOR = "node.interactor"
-        private const val KEY_RIB_ID = "rib.id"
-        private const val KEY_VIEW_STATE = "view.state"
+        internal const val KEY_VIEW_STATE = "view.state"
         private val requestCodeRegistry = RequestCodeRegistry(8)
     }
 
@@ -52,16 +51,15 @@ open class Node<V : RibView>(
         router.node = this
     }
 
-    private var savedInstanceState: Bundle? = null
-    internal val children = CopyOnWriteArrayList<Node<*>>()
-    protected var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
+    internal var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
         private set
-    private var ribId: Int? = null
+    internal var ribId: Int? = null
+    internal val children = CopyOnWriteArrayList<Node<*>>()
     internal var view: V? = null
         private set
     protected var parentViewGroup: ViewGroup? = null
-
-    private var savedViewState: SparseArray<Parcelable> = SparseArray()
+    private var savedInstanceState: Bundle? = null
+    internal var savedViewState: SparseArray<Parcelable> = SparseArray()
 
 
     private fun generateRibId(): Int =
@@ -78,19 +76,18 @@ open class Node<V : RibView>(
         this.parentViewGroup = parentViewGroup
         view = createView(parentViewGroup)
         view?.let {
-            parentViewGroup.addView(it.androidView) // todo test invoked
-            it.androidView.restoreHierarchyState(savedViewState) // todo test invoked
-            interactor.onViewCreated(it) // todo test invoked
+            parentViewGroup.addView(it.androidView)
+            it.androidView.restoreHierarchyState(savedViewState)
+            interactor.onViewCreated(it)
         }
 
-        println("before children.forEach")
         children.forEach {
             attachChildView(it)
         }
     }
 
     private fun createView(parentViewGroup: ViewGroup): V? =
-        viewFactory?.invoke(parentViewGroup) // todo test invoked
+        viewFactory?.invoke(parentViewGroup)
 
     internal fun attachChild(child: Node<*>, bundle: Bundle? = null) {
         attachChildView(child)
@@ -100,7 +97,6 @@ open class Node<V : RibView>(
     internal fun attachChildView(child: Node<*>) {
         // parentViewGroup is guaranteed to be non-null if and only if Android view system is available
         parentViewGroup?.let {
-            println("before children.forEach")
             child.attachToView(
                 router.getParentViewForChild(child.forClass, view) ?: it
             )
@@ -203,6 +199,7 @@ open class Node<V : RibView>(
     open fun dispatchAttach(savedInstanceState: Bundle?) {
         this.savedInstanceState = savedInstanceState
 
+        tag = savedInstanceState?.getString(KEY_TAG) ?: tag
         updateRibId(savedInstanceState?.getInt(KEY_RIB_ID, generateRibId()) ?: generateRibId())
         savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
 
@@ -223,6 +220,7 @@ open class Node<V : RibView>(
     }
 
     open fun saveInstanceState(outState: Bundle) {
+        outState.putString(KEY_TAG, tag)
         outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
         outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
         saveRouterState(outState)

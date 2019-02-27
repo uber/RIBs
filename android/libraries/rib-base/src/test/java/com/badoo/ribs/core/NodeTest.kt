@@ -1,9 +1,14 @@
 package com.badoo.ribs.core
 
 import android.os.Bundle
+import android.os.Parcelable
+import android.util.SparseArray
 import android.view.ViewGroup
 import com.badoo.ribs.core.Node.Companion.KEY_INTERACTOR
+import com.badoo.ribs.core.Node.Companion.KEY_RIB_ID
 import com.badoo.ribs.core.Node.Companion.KEY_ROUTER
+import com.badoo.ribs.core.Node.Companion.KEY_TAG
+import com.badoo.ribs.core.Node.Companion.KEY_VIEW_STATE
 import com.badoo.ribs.core.helper.TestPublicRibInterface
 import com.badoo.ribs.core.helper.TestRouter
 import com.badoo.ribs.core.helper.TestView
@@ -11,10 +16,13 @@ import com.badoo.ribs.core.view.ViewFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -59,9 +67,22 @@ class NodeTest {
             interactor = interactor
         )
 
-        child1 = mock { on { forClass }.thenReturn(RandomOtherNode1::class.java) }
-        child2 = mock { on { forClass }.thenReturn(RandomOtherNode2::class.java) }
-        child3 = mock { on { forClass }.thenReturn(RandomOtherNode3::class.java) }
+        addChildren()
+    }
+
+    private fun addChildren() {
+        child1 = mock {
+            on { forClass } doReturn RandomOtherNode1::class.java
+            on { tag } doReturn "child1"
+        }
+        child2 = mock {
+            on { forClass } doReturn RandomOtherNode2::class.java
+            on { tag } doReturn "child2"
+        }
+        child3 = mock {
+            on { forClass } doReturn RandomOtherNode3::class.java
+            on { tag } doReturn "child3"
+        }
         allChildren = listOf(child1, child2, child3)
         node.children.addAll(allChildren)
     }
@@ -200,7 +221,7 @@ class NodeTest {
     }
 
     @Test
-    fun `attachToView calls all children to add themselves to the view `() {
+    fun `attachToView() calls all children to add themselves to the view `() {
         node.attachToView(parentViewGroup)
         allChildren.forEach {
             verify(it).attachToView(any())
@@ -208,7 +229,7 @@ class NodeTest {
     }
 
     @Test
-    fun `attachToView results in children added to parentViewGroup given Router does not define something else `() {
+    fun `attachToView() results in children added to parentViewGroup given Router does not define something else `() {
         whenever(router.getParentViewForChild(any(), anyOrNull())).thenReturn(null)
         node.attachToView(parentViewGroup)
         allChildren.forEach {
@@ -217,7 +238,7 @@ class NodeTest {
     }
 
     @Test
-    fun `attachToView results in children added to target defined by Router`() {
+    fun `attachToView() results in children added to target defined by Router`() {
         whenever(router.getParentViewForChild(RandomOtherNode1::class.java, view)).thenReturn(someViewGroup1)
         whenever(router.getParentViewForChild(RandomOtherNode2::class.java, view)).thenReturn(someViewGroup2)
         whenever(router.getParentViewForChild(RandomOtherNode3::class.java, view)).thenReturn(someViewGroup3)
@@ -230,5 +251,124 @@ class NodeTest {
         verify(child1).attachToView(someViewGroup1)
         verify(child2).attachToView(someViewGroup1)
         verify(child3).attachToView(someViewGroup1)
+    }
+
+    @Test
+    fun `attachChild() does not imply attachToView when Android view system is not available`() {
+        node.attachChild(child1, null)
+        verify(child1, never()).attachToView(parentViewGroup)
+    }
+
+    @Test
+    fun `attachChild() implies attachToView() when Android view system is available`() {
+        node.attachToView(parentViewGroup)
+        node.attachChild(child1, null)
+        verify(child1).attachToView(parentViewGroup)
+    }
+
+    @Test
+    fun `Rib id is generated automatically`() {
+        node.dispatchAttach(null)
+        assertNotNull(node.ribId)
+    }
+
+    @Test
+    fun `Rib id is saved to bundle`() {
+        val outState = mock<Bundle>()
+        node.saveInstanceState(outState)
+        verify(outState).putInt(KEY_RIB_ID, node.ribId!!)
+    }
+
+    @Test
+    fun `Rib id is restored from bundle`() {
+        val savedInstanceState = mock<Bundle>()
+        whenever(savedInstanceState.getInt(KEY_RIB_ID)).thenReturn(999)
+        node.dispatchAttach(savedInstanceState)
+        assertEquals(999, node.ribId)
+    }
+
+    @Test
+    fun `Tag is generated automatically`() {
+        node.dispatchAttach(null)
+        assertNotNull(node.tag)
+    }
+
+    @Test
+    fun `Tag is saved to bundle`() {
+        val outState = mock<Bundle>()
+        node.saveInstanceState(outState)
+        verify(outState).putString(KEY_TAG, node.tag)
+    }
+
+    @Test
+    fun `Tag is restored from bundle`() {
+        val savedInstanceState = mock<Bundle>()
+        whenever(savedInstanceState.getString(KEY_TAG)).thenReturn("abcdef")
+        node.dispatchAttach(savedInstanceState)
+        assertEquals("abcdef", node.tag)
+    }
+
+    @Test
+    fun `View state saved to bundle`() {
+        val outState = mock<Bundle>()
+        node.savedViewState = mock()
+        node.saveInstanceState(outState)
+        verify(outState).putSparseParcelableArray(KEY_VIEW_STATE, node.savedViewState)
+    }
+
+    @Test
+    fun `View state is restored from bundle`() {
+        val savedInstanceState = mock<Bundle>()
+        val savedViewState = SparseArray<Parcelable>()
+        whenever(savedInstanceState.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE)).thenReturn(savedViewState)
+
+        node.dispatchAttach(savedInstanceState)
+        assertEquals(savedViewState, node.savedViewState)
+    }
+
+    @Test
+    fun `saveViewState() does its job`() {
+        node.savedViewState = mock()
+        node.saveViewState()
+        verify(view.androidView).saveHierarchyState(node.savedViewState)
+    }
+
+    @Test
+    fun `attachToView() restores view state`() {
+        node.savedViewState = mock()
+        node.attachToView(parentViewGroup)
+        verify(view.androidView).restoreHierarchyState(node.savedViewState)
+    }
+
+    @Test
+    fun `attachToView() invokes viewFactory`() {
+        node.attachToView(parentViewGroup)
+        verify(viewFactory).invoke(parentViewGroup)
+    }
+
+    @Test
+    fun `When current Node has a view, attachToView() adds view to parentViewGroup`() {
+        node.attachToView(parentViewGroup)
+        verify(parentViewGroup).addView(view.androidView)
+    }
+
+    @Test
+    fun `When current Node doesn't have a view, attachToView() does not add anything to parentViewGroup`() {
+        whenever(viewFactory.invoke(parentViewGroup)).thenReturn(null)
+        node.attachToView(parentViewGroup)
+        verify(parentViewGroup, never()).addView(anyOrNull())
+    }
+
+    @Test
+    fun `When current Node has a view, attachToView() notifies Interactor of view creation`() {
+        node.attachToView(parentViewGroup)
+        verify(interactor).onViewCreated(view)
+    }
+
+    @Test
+    fun `When current Node doesn't have a view, attachToView() does not notify Interactor of view creation`() {
+        whenever(viewFactory.invoke(parentViewGroup)).thenReturn(null)
+        node.attachToView(parentViewGroup)
+        verify(interactor, never()).onViewCreated(anyOrNull())
     }
 }
