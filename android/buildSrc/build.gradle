@@ -1,0 +1,42 @@
+apply plugin: 'groovy'
+apply plugin: 'kotlin'
+apply plugin: 'java-gradle-plugin'
+apply from: "$projectDir/../gradle/dependencies.gradle"
+
+buildscript {
+    apply from: "$projectDir/../gradle/dependencies.gradle"
+
+    repositories {
+        google()
+        jcenter()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.kotlin
+    }
+}
+
+sourceSets {
+    main.kotlin.srcDirs += 'src/main/kotlin'
+}
+
+repositories {
+    jcenter()
+    maven { url "https://maven.google.com" }
+    maven { url "https://jitpack.io" }
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
+}
+
+dependencies {
+    implementation localGroovy()
+    implementation gradleApi()
+    implementation deps.build.gradlePlugins.android
+    implementation deps.external.kotlinStdlib
+    implementation deps.external.gson
+}

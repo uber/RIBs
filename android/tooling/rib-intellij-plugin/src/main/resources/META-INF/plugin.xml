@@ -1,13 +1,13 @@
-<idea-plugin version="2">
+<idea-plugin>
     <id>com.uber.rib.intellij-plugin</id>
-    <name>RIBs Plugin</name>
-    <version>0.1.3</version>
+    <name>RIBs</name>
+    <version>0.1.0</version>
     <vendor>
-        Uber Mobile Platform Team
+        Badoo
     </vendor>
 
     <description><![CDATA[
-      Uber RIB Plugin <br /> <br />
+      Badoo RIB Plugin <br /> <br />
       <ul>
         <li>Easily create new RIBs.</li>
       </ul>
@@ -18,27 +18,24 @@
       <ul>
         <li>Initial release</li>
       </ul>
-      <strong>0.1.3</strong><br/>
-      <ul>
-        <li>Added Kotlin support (experimental)</li>
-      </ul>
-
     ]]>
 
     </change-notes>
 
     <idea-version since-build="163"/>
 
+    <depends optional="false">org.jetbrains.android</depends>
+
     <actions>
-        <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
+        <group description="RIB architecture templates" id="RibActionGroup" text="RIB">
             <separator/>
             <action
-                    class="com.uber.presidio.intellij_plugin.action.rib.GenerateRibAction"
+                    class="com.badoo.mobile.plugin.action.GenerateTemplateAction"
                     description="Generates a new RIB."
                     icon="/icons/generate_rib.png"
                     id="GenerateRib"
                     text="New RIB...">
-                <add-to-group anchor="last" group-id="NewGroup" relative-to-group="NewGroup"/>
+                <add-to-group anchor="last" group-id="NewGroup"/>
             </action>
         </group>
     </actions>
