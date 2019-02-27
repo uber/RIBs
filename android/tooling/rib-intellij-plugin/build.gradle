@@ -33,21 +33,15 @@ templates {
 }
 
 dependencies {
-    implementation deps.apt.androidApi
     implementation deps.build.commonsLang
-    implementation deps.build.guava
     implementation deps.support.annotations
     implementation deps.external.kotlinStdlib
     implementation deps.external.apacheCommons
     implementation deps.external.gson
 
-    testImplementation deps.apt.daggerCompiler
-    testImplementation deps.apt.javaxInject
-    testImplementation deps.external.dagger
-    testImplementation deps.uber.autodispose
+    testImplementation deps.test.junit
     testImplementation deps.test.assertj
-    testImplementation deps.test.compileTesting
-    testImplementation deps.test.mockito
+    testImplementation deps.test.mockitoKotlin
 }
 
 // Determines if the machine has Maven credentials.
@@ -65,7 +59,7 @@ version = pluginXml.version
 
 intellij {
     plugins = ['android']
-    version deps.versions.intellij
+    version = deps.versions.intellij
     pluginName "UberRIBPresidioPlugin"
     updateSinceUntilBuild false
     sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"

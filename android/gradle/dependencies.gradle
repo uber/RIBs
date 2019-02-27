@@ -69,6 +69,7 @@ def support = [
 def test = [
     junit: "junit:junit:4.12",
     mockito: "org.mockito:mockito-core:2.24.0",
+    mockitoKotlin: "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
     assertj: "org.assertj:assertj-core:3.11.1",
     compileTesting: "com.google.testing.compile:compile-testing:0.11",
 ]

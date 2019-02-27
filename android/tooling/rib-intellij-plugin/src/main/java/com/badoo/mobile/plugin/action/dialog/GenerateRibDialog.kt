@@ -50,6 +50,7 @@ class GenerateRibDialog(private val listener: Listener,
             }, createConstraints(
                 row = index,
                 column = 1,
+                fill = FILL_HORIZONTAL,
                 horizontalSizePolicy = SIZEPOLICY_CAN_GROW or SIZEPOLICY_WANT_GROW,
                 preferredSize = Dimension(150, 30)
             ))
