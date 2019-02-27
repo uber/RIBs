@@ -106,9 +106,9 @@ internal class BackStackRibConnector<C : Parcelable>(
     fun shrinkToBundles(backStack: List<BackStackElement<C>>): Observable<List<BackStackElement<C>>> =
         Observable.defer {
             backStack.forEach {
-                it.bundles = it.ribs?.map { childRouter ->
+                it.bundles = it.ribs?.map { childNode ->
                     Bundle().also {
-                        childRouter.saveInstanceState(it)
+                        childNode.saveInstanceState(it)
                     }
                 } ?: emptyList()
 

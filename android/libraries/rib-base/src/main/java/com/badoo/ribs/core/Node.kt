@@ -94,12 +94,7 @@ open class Node<V : RibView>(
 
     internal fun attachChild(child: Node<*>, bundle: Bundle? = null) {
         attachChildView(child)
-        // todo refactor so that this branching is not necessary
-        if (bundle != null) {
-            attachChildNode(child, bundle)
-        } else {
-            attachChildNode(child)
-        }
+        attachChildNode(child, bundle)
     }
 
     internal fun attachChildView(child: Node<*>) {
@@ -173,29 +168,6 @@ open class Node<V : RibView>(
      * Attaches a child node to this node.
      *
      * @param childNode the [Node] to be attached.
-     * @param tag an identifier to namespace saved instance state [Bundle] objects.
-     */
-    @MainThread
-    protected fun attachChildNode(childNode: Node<*>) {
-        children.add(childNode)
-        ribRefWatcher.logBreadcrumb(
-            "ATTACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
-        )
-        var childBundle: Bundle? = null
-        if (this.savedInstanceState != null) {
-            val previousChildren = this.savedInstanceState!!.getBundle(KEY_CHILD_NODES)
-            if (previousChildren != null) {
-                childBundle = previousChildren.getBundle(tag)
-            }
-        }
-
-        childNode.dispatchAttach(childBundle)
-    }
-
-    /**
-     * Attaches a child node to this node.
-     *
-     * @param childNode the [Node] to be attached.
      */
     @MainThread
     protected fun attachChildNode(childNode: Node<*>, bundle: Bundle?) {
@@ -223,14 +195,6 @@ open class Node<V : RibView>(
         ribRefWatcher.logBreadcrumb(
             "DETACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
         )
-        if (savedInstanceState != null) {
-            var childrenBundles: Bundle? = savedInstanceState!!.getBundle(KEY_CHILD_NODES)
-            if (childrenBundles == null) {
-                childrenBundles = Bundle()
-                savedInstanceState!!.putBundle(KEY_CHILD_NODES, childrenBundles)
-            }
-            childrenBundles.putBundle(childNode.tag, null)
-        }
 
         childNode.dispatchDetach()
     }
@@ -263,7 +227,6 @@ open class Node<V : RibView>(
         outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
         saveRouterState(outState)
         saveInteractorState(outState)
-        saveStateOfChildren(outState)
     }
 
     private fun saveRouterState(outState: Bundle) {
@@ -278,18 +241,6 @@ open class Node<V : RibView>(
             interactor.onSaveInstanceState(it)
             outState.putBundle(KEY_INTERACTOR, it)
         }
-    }
-
-    private fun saveStateOfChildren(outState: Bundle) {
-        val childBundles = Bundle()
-        for (child in children) {
-            Bundle().let {
-                child.saveInstanceState(it)
-                childBundles.putBundle(child.tag, it)
-            }
-
-        }
-        outState.putBundle(KEY_CHILD_NODES, childBundles)
     }
 
     fun onStart() {
