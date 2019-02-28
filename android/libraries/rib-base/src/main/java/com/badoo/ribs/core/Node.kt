@@ -147,7 +147,9 @@ open class Node<V : RibView>(
     @CallSuper
     open fun handleBackPress(): Boolean {
         ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
-        return children.any { it.handleBackPress() }
+        return children
+                .filter { it.isViewAttached }
+                .any { it.handleBackPress() }
             || interactor.handleBackPress()
             || router.popBackStack()
     }
