@@ -44,7 +44,7 @@ public class RIBs {
     }
   }
 
-  static ErrorHandler getErrorHandler() {
+  public static ErrorHandler getErrorHandler() {
     if (errorHandler == null) {
       errorHandler = new DefaultErrorHandler();
     }

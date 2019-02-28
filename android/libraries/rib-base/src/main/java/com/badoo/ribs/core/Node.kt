@@ -51,7 +51,7 @@ open class Node<V : RibView>(
         router.node = this
     }
 
-    internal var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
+    var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
         private set
     internal open var ribId: Int? = null
     internal val children = CopyOnWriteArrayList<Node<*>>()
@@ -62,6 +62,9 @@ open class Node<V : RibView>(
     internal open var savedViewState: SparseArray<Parcelable> = SparseArray()
     internal var isViewAttached: Boolean = false
         private set
+
+    fun getChildren(): List<Node<*>> =
+        children.toList()
 
     private fun generateRibId(): Int =
         requestCodeRegistry.generateGroupId(tag)
