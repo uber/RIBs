@@ -65,6 +65,8 @@ class GenerateRibDialog(private val listener: Listener,
                 verticalSizePolicy = SIZEPOLICY_CAN_GROW or SIZEPOLICY_WANT_GROW
             ))
 
+        fields.entries.firstOrNull()?.value?.requestFocus()
+
         tokenTextFields = fields
     }
 
@@ -79,8 +81,8 @@ class GenerateRibDialog(private val listener: Listener,
             return
         }
 
-        listener.onGenerateClicked(tokenValues, selectedTemplate.id)
         super.doOKAction()
+        listener.onGenerateClicked(tokenValues, selectedTemplate.id)
     }
 
     override fun createCenterPanel(): JComponent? = contentPanel

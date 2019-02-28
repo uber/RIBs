@@ -3,6 +3,7 @@ package com.badoo.mobile.plugin.action
 import com.badoo.mobile.plugin.action.dialog.GenerateRibDialog
 import com.badoo.mobile.plugin.generator.TemplateWriter
 import com.badoo.mobile.plugin.generator.createReplacements
+import com.badoo.mobile.plugin.template.JavaResourceProvider
 import com.badoo.mobile.plugin.template.MetaInformationProvider
 import com.badoo.mobile.plugin.template.ResourceProvider
 import com.badoo.mobile.plugin.template.TemplateFilesProvider
@@ -23,7 +24,7 @@ import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes
 
 open class GenerateTemplateAction : AnAction(), GenerateRibDialog.Listener {
 
-    private val resourceProvider = ResourceProvider()
+    private val resourceProvider = JavaResourceProvider()
     private val metaInformationProvider = MetaInformationProvider(resourceProvider)
     private val filesProvider = TemplateFilesProvider(resourceProvider, metaInformationProvider)
 

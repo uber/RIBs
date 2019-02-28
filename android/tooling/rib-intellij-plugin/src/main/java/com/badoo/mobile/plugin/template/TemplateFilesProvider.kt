@@ -2,6 +2,7 @@ package com.badoo.mobile.plugin.template
 
 import com.badoo.mobile.plugin.generator.SourceSet
 import com.badoo.mobile.plugin.template.file.ResourceTemplateFile
+import java.lang.IllegalStateException
 import java.nio.file.Paths
 
 class TemplateFilesProvider(
@@ -22,7 +23,8 @@ class TemplateFilesProvider(
         }
 
         return metaInformationProvider.templates.map { template ->
-            val templateResources = templateIdToFiles.getValue(template.id)
+            val templateResources = templateIdToFiles[template.id]
+                ?: throw IllegalStateException("Files for template with id ${template.id} not found")
             val sourceSetToFiles = templateResources
                 .map {
                     val sourceSet = it.removePrefix("templates/${template.id}/").substringBefore('/')
