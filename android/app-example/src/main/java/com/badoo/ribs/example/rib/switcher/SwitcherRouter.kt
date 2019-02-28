@@ -13,6 +13,7 @@ import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Foo
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter.Configuration.Hello
 import com.jakewharton.rxrelay2.PublishRelay
 import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.Rib
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.core.routing.action.AttachRibRoutingAction.Companion.attach
 import com.badoo.ribs.core.routing.action.CompositeRoutingAction.Companion.composite
@@ -50,9 +51,9 @@ class SwitcherRouter(
             )
         }
 
-    override fun getParentViewForChild(child: Class<*>, view: SwitcherView?): ViewGroup? =
+    override fun getParentViewForChild(child: Rib, view: SwitcherView?): ViewGroup? =
         when (child) {
-            Menu::class.java -> view!!.menuContainer
+            is Menu -> view!!.menuContainer
             else -> view!!.contentContainer
         }
 }

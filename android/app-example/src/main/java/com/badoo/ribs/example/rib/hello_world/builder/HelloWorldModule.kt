@@ -55,7 +55,7 @@ internal object HelloWorldModule {
         router: HelloWorldRouter,
         interactor: HelloWorldInteractor
     ) : Node<HelloWorldView> = Node(
-        forClass = HelloWorld::class.java,
+        identifier = object : HelloWorld {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor

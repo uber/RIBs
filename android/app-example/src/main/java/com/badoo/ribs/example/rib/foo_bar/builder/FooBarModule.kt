@@ -55,7 +55,7 @@ internal object FooBarModule {
         router: FooBarRouter,
         interactor: FooBarInteractor
     ) : Node<FooBarView> = Node(
-        forClass = FooBar::class.java,
+        identifier = object : FooBar {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor

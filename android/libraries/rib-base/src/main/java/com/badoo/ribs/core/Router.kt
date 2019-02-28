@@ -62,7 +62,7 @@ abstract class Router<C : Parcelable, V : RibView>(
      *              and as such, it should be referenced by view!! when overriding this method
      *              to catch any problems instead of silently returning null
      */
-    open fun getParentViewForChild(child: Class<*>, view: V?): ViewGroup? =
+    open fun getParentViewForChild(child: Rib, view: V?): ViewGroup? =
         view?.androidView
 
     fun onSaveInstanceState(outState: Bundle) {

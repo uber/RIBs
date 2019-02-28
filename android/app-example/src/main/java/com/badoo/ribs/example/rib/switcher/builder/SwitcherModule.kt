@@ -58,7 +58,7 @@ internal object SwitcherModule {
         router: SwitcherRouter,
         interactor: SwitcherInteractor
     ) : Node<SwitcherView> = Node(
-        forClass = Switcher::class.java,
+        identifier = object : Switcher {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor

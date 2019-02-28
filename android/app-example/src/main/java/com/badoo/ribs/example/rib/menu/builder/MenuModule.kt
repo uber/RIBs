@@ -50,7 +50,7 @@ internal object MenuModule {
         router: MenuRouter,
         interactor: MenuInteractor
     ) : Node<MenuView> = Node(
-        forClass = Menu::class.java,
+        identifier = object : Menu {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor

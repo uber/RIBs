@@ -1,5 +1,6 @@
 package com.badoo.ribs.example.rib.hello_world
 
+import com.badoo.ribs.core.Rib
 import com.badoo.ribs.core.directory.Directory
 import com.badoo.ribs.core.directory.inflateOnDemand
 import com.badoo.ribs.example.R
@@ -7,7 +8,7 @@ import com.badoo.ribs.core.view.ViewFactory
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
-interface HelloWorld {
+interface HelloWorld : Rib {
 
     interface Dependency {
         fun helloWorldInput(): ObservableSource<Input>
