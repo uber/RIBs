@@ -58,7 +58,7 @@ abstract class Interactor<C : Parcelable, V : RibView>(
         lifecycleRelay.hide()
 
     /**
-     * Called when attached. The presenter will automatically be added when this happens.
+     * Called when attached.
      *
      * @param savedInstanceState the saved [Bundle].
      */
