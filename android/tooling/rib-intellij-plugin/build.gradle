@@ -4,9 +4,10 @@ buildscript {
     }
 }
 
-apply plugin: "java"
+apply plugin: "kotlin"
 apply plugin: "maven"
 apply plugin: "org.jetbrains.intellij"
+apply plugin: "templates-generator"
 
 group "com.uber.rib"
 
@@ -14,19 +15,33 @@ repositories {
     mavenLocal()
 }
 
-dependencies {
-    implementation deps.apt.androidApi
-    implementation deps.build.commonsLang
-    implementation deps.build.guava
-    implementation deps.support.annotations
+templates {
+    template {
+        id = 'rib_with_view'
+        name = 'RIB with view'
 
-    testImplementation deps.apt.daggerCompiler
-    testImplementation deps.apt.javaxInject
-    testImplementation deps.external.dagger
-    testImplementation deps.uber.autodispose
+        fromProject = project(':app-example')
+        sourcePackage = 'com.badoo.ribs.example.template'
+        resources = ['rib_foo_bar.xml']
+
+        token {
+            id = "rib_name"
+            name = "RIB name"
+            sourceValue = "FooBar"
+        }
+    }
+}
+
+dependencies {
+    implementation deps.build.commonsLang
+    implementation deps.support.annotations
+    implementation deps.external.kotlinStdlib
+    implementation deps.external.apacheCommons
+    implementation deps.external.gson
+
+    testImplementation deps.test.junit
     testImplementation deps.test.assertj
-    testImplementation deps.test.compileTesting
-    testImplementation deps.test.mockito
+    testImplementation deps.test.mockitoKotlin
 }
 
 // Determines if the machine has Maven credentials.
@@ -43,12 +58,12 @@ ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.
 version = pluginXml.version
 
 intellij {
-    plugins = ['checkstyle-idea:5.5.0']
-    version deps.versions.intellij
+    plugins = ['android']
+    version = deps.versions.intellij
     pluginName "UberRIBPresidioPlugin"
     updateSinceUntilBuild false
     sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
-    downloadSources false
+    downloadSources true
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

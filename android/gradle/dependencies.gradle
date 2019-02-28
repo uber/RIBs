@@ -53,6 +53,7 @@ def build = [
     gradlePlugins: [
         android: 'com.android.tools.build:gradle:3.3.1',
         kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
+        gradleKotlinDsl: 'org.gradle.kotlin:plugins:1.2.2'
     ]
 ]
 
@@ -68,6 +69,7 @@ def support = [
 def test = [
     junit: "junit:junit:4.12",
     mockito: "org.mockito:mockito-core:2.24.0",
+    mockitoKotlin: "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0",
     assertj: "org.assertj:assertj-core:3.11.1",
     compileTesting: "com.google.testing.compile:compile-testing:0.11",
 ]
@@ -83,7 +85,9 @@ def external = [
     reactiveStreams: "org.reactivestreams:reactive-streams:1.0.0",
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
     rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.2.0',
-    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.6.3'
+    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.6.3',
+    apacheCommons: 'org.apache.commons:commons-lang3:3.0',
+    gson: 'com.google.code.gson:gson:2.8.5',
 ]
 
 def uber = [
