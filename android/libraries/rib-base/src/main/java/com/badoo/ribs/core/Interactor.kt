@@ -123,9 +123,8 @@ abstract class Interactor<C : Parcelable, V : RibView>(
      *
      * @return TRUE if the interactor handled the back press and no further action is necessary.
      */
-    open fun handleBackPress(): Boolean {
-        return false
-    }
+    open fun handleBackPress(): Boolean =
+        false
 
     /**
      * Called when saving state.
