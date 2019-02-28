@@ -9,6 +9,8 @@ import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.uiDesigner.core.Spacer
 import java.awt.Dimension
 import javax.swing.*
+import javax.swing.SwingUtilities.invokeLater
+
 
 class GenerateRibDialog(private val listener: Listener,
                         templates: List<Template>) : DialogWrapper(null) {
@@ -27,6 +29,12 @@ class GenerateRibDialog(private val listener: Listener,
         init()
         templateChooser.model = TemplateComboBoxModel(templates)
         populateTokenInputs(templates.first().tokens)
+
+        templateChooser.addActionListener {
+            if (it.actionCommand == "comboBoxChanged") {
+                populateTokenInputs(templates[templateChooser.selectedIndex].tokens)
+            }
+        }
     }
 
     private fun populateTokenInputs(tokens: List<Token>) {
@@ -65,9 +73,11 @@ class GenerateRibDialog(private val listener: Listener,
                 verticalSizePolicy = SIZEPOLICY_CAN_GROW or SIZEPOLICY_WANT_GROW
             ))
 
-        fields.entries.firstOrNull()?.value?.requestFocus()
-
+        invokeLater { fields.entries.firstOrNull()?.value?.requestFocusInWindow() }
         tokenTextFields = fields
+
+        paramsPanel.revalidate()
+        paramsPanel.repaint()
     }
 
     override fun doOKAction() {
