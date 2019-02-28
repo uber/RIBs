@@ -1,5 +1,5 @@
 <idea-plugin>
-    <id>com.uber.rib.intellij-plugin</id>
+    <id>com.badoo.ribs.intellij-plugin</id>
     <name>RIBs</name>
     <version>0.1.0</version>
     <vendor>
@@ -7,7 +7,7 @@
     </vendor>
 
     <description><![CDATA[
-      Badoo RIB Plugin <br /> <br />
+      Badoo RIBs template generator plugin <br /> <br />
       <ul>
         <li>Easily create new RIBs.</li>
       </ul>
@@ -30,7 +30,7 @@
         <group description="RIB architecture templates" id="RibActionGroup" text="RIB">
             <separator/>
             <action
-                    class="com.badoo.mobile.plugin.action.GenerateTemplateAction"
+                    class="com.badoo.ribs.plugin.action.GenerateTemplateAction"
                     description="Generates a new RIB."
                     icon="/icons/generate_rib.png"
                     id="GenerateRib"
