@@ -48,6 +48,7 @@ abstract class RibActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
+        rootNode.dispatchDetach()
         rootNode.onDetachFromView(findViewById(android.R.id.content))
     }
 
