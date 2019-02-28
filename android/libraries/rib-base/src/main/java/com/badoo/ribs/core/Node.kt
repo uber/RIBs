@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Responsible for handling the addition and removal of child nodes.
  **/
 open class Node<V : RibView>(
-    val forClass: Class<*>,
+    internal open val forClass: Class<*>,
     private val viewFactory: ViewFactory<V>?,
     private val router: Router<*, V>,
     private val interactor: Interactor<*, V>,
@@ -53,13 +53,13 @@ open class Node<V : RibView>(
 
     internal var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
         private set
-    internal var ribId: Int? = null
+    internal open var ribId: Int? = null
     internal val children = CopyOnWriteArrayList<Node<*>>()
     internal var view: V? = null
         private set
     protected var parentViewGroup: ViewGroup? = null
     private var savedInstanceState: Bundle? = null
-    internal var savedViewState: SparseArray<Parcelable> = SparseArray()
+    internal open var savedViewState: SparseArray<Parcelable> = SparseArray()
     internal var isViewAttached: Boolean = false
         private set
 

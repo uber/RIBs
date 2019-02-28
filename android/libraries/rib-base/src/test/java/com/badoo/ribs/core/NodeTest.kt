@@ -9,6 +9,7 @@ import com.badoo.ribs.core.Node.Companion.KEY_RIB_ID
 import com.badoo.ribs.core.Node.Companion.KEY_ROUTER
 import com.badoo.ribs.core.Node.Companion.KEY_TAG
 import com.badoo.ribs.core.Node.Companion.KEY_VIEW_STATE
+import com.badoo.ribs.core.helper.TestNode
 import com.badoo.ribs.core.helper.TestPublicRibInterface
 import com.badoo.ribs.core.helper.TestRouter
 import com.badoo.ribs.core.helper.TestView
@@ -16,7 +17,6 @@ import com.badoo.ribs.core.view.ViewFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -37,6 +37,7 @@ class NodeTest {
 
     private lateinit var node: Node<TestView>
     private lateinit var view: TestView
+    private lateinit var androidView: ViewGroup
     private lateinit var parentViewGroup: ViewGroup
     private lateinit var someViewGroup1: ViewGroup
     private lateinit var someViewGroup2: ViewGroup
@@ -44,9 +45,9 @@ class NodeTest {
     private lateinit var viewFactory: ViewFactory<TestView>
     private lateinit var router: Router<TestRouter.Configuration, TestView>
     private lateinit var interactor: Interactor<TestRouter.Configuration, TestView>
-    private lateinit var child1: Node<*>
-    private lateinit var child2: Node<*>
-    private lateinit var child3: Node<*>
+    private lateinit var child1: TestNode
+    private lateinit var child2: TestNode
+    private lateinit var child3: TestNode
     private lateinit var allChildren: List<Node<*>>
 
     @Before
@@ -55,7 +56,8 @@ class NodeTest {
         someViewGroup1 = mock()
         someViewGroup2 = mock()
         someViewGroup3 = mock()
-        view = mock { on { androidView }.thenReturn(mock()) }
+        androidView = mock()
+        view = mock { on { androidView }.thenReturn(androidView) }
         viewFactory = mock { on { invoke(parentViewGroup) }.thenReturn(view) }
         router = mock()
         interactor = mock()
@@ -71,18 +73,9 @@ class NodeTest {
     }
 
     private fun addChildren() {
-        child1 = mock {
-            on { forClass } doReturn RandomOtherNode1::class.java
-            on { tag } doReturn "child1"
-        }
-        child2 = mock {
-            on { forClass } doReturn RandomOtherNode2::class.java
-            on { tag } doReturn "child2"
-        }
-        child3 = mock {
-            on { forClass } doReturn RandomOtherNode3::class.java
-            on { tag } doReturn "child3"
-        }
+        child1 = TestNode(RandomOtherNode1::class.java)
+        child2 = TestNode(RandomOtherNode2::class.java)
+        child3 = TestNode(RandomOtherNode3::class.java)
         allChildren = listOf(child1, child2, child3)
         node.children.addAll(allChildren)
     }
@@ -190,79 +183,87 @@ class NodeTest {
 
     @Test
     fun `onStart is forwarded to all children`() {
+        val mocks = createAndAttachChildMocks(3)
         node.onStart()
-        allChildren.forEach {
+        mocks.forEach {
             verify(it).onStart()
         }
     }
 
     @Test
     fun `onStop is forwarded to all children`() {
+        val mocks = createAndAttachChildMocks(3)
         node.onStop()
-        allChildren.forEach {
+        mocks.forEach {
             verify(it).onStop()
         }
     }
 
     @Test
     fun `onPause is forwarded to all children`() {
+        val mocks = createAndAttachChildMocks(3)
         node.onPause()
-        allChildren.forEach {
+        mocks.forEach {
             verify(it).onPause()
         }
     }
 
     @Test
     fun `onResume() is forwarded to all children`() {
+        val mocks = createAndAttachChildMocks(3)
         node.onResume()
-        allChildren.forEach {
+        mocks.forEach {
             verify(it).onResume()
         }
     }
 
     @Test
-    fun `Back press handling is forwarded to all children if none can handle it`() {
-        whenever(child1.handleBackPress()).thenReturn(false)
-        whenever(child2.handleBackPress()).thenReturn(false)
-        whenever(child3.handleBackPress()).thenReturn(false)
+    fun `Back press handling is forwarded to all children attached to the view if none can handle it`() {
+        node.attachToView(parentViewGroup) // this attaches child1, child2, child3
+        node.detachChild(child2) // this means child2 should not even be asked
+        child1.handleBackPress = false
+        child2.handleBackPress = false
+        child3.handleBackPress = false
 
         node.handleBackPress()
 
-        verify(child1).handleBackPress()
-        verify(child2).handleBackPress()
-        verify(child3).handleBackPress()
+        assertEquals(true, child1.handleBackPressInvoked)
+        assertEquals(false, child2.handleBackPressInvoked)
+        assertEquals(true, child3.handleBackPressInvoked)
     }
 
     @Test
     fun `Back press handling is forwarded to children only until first one handles it`() {
-        whenever(child1.handleBackPress()).thenReturn(false)
-        whenever(child2.handleBackPress()).thenReturn(true)
-        whenever(child3.handleBackPress()).thenReturn(false)
+        node.attachToView(parentViewGroup) // this attaches child1, child2, child3
+        child1.handleBackPress = false
+        child2.handleBackPress = true
+        child3.handleBackPress = false
 
         node.handleBackPress()
 
-        verify(child1).handleBackPress()
-        verify(child2).handleBackPress()
-        verify(child3, never()).handleBackPress()
+        assertEquals(true, child1.handleBackPressInvoked)
+        assertEquals(true, child2.handleBackPressInvoked)
+        assertEquals(false, child3.handleBackPressInvoked)
     }
 
     @Test
     fun `Back press handling is forwarded to Interactor if no children handled it`() {
-        whenever(child1.handleBackPress()).thenReturn(false)
-        whenever(child2.handleBackPress()).thenReturn(false)
-        whenever(child3.handleBackPress()).thenReturn(false)
+        node.attachToView(parentViewGroup) // this attaches child1, child2, child3
+        child1.handleBackPress = false
+        child2.handleBackPress = false
+        child3.handleBackPress = false
 
         node.handleBackPress()
-
 
         verify(interactor).handleBackPress()
     }
 
     @Test
     fun `Back press handling is not forwarded to Interactor if any children handled it`() {
-        whenever(child1.handleBackPress()).thenReturn(false)
-        whenever(child2.handleBackPress()).thenReturn(true)
-        whenever(child3.handleBackPress()).thenReturn(false)
+        node.attachToView(parentViewGroup) // this attaches child1, child2, child3
+        child1.handleBackPress = false
+        child2.handleBackPress = true
+        child3.handleBackPress = false
 
         node.handleBackPress()
 
@@ -271,9 +272,10 @@ class NodeTest {
 
     @Test
     fun `Router back stack popping is invoked if none of the children nor the Interactor handled back press`() {
-        whenever(child1.handleBackPress()).thenReturn(false)
-        whenever(child2.handleBackPress()).thenReturn(false)
-        whenever(child3.handleBackPress()).thenReturn(false)
+        node.attachToView(parentViewGroup) // this attaches child1, child2, child3
+        child1.handleBackPress = false
+        child2.handleBackPress = false
+        child3.handleBackPress = false
         whenever(interactor.handleBackPress()).thenReturn(false)
 
         node.handleBackPress()
@@ -283,9 +285,10 @@ class NodeTest {
 
     @Test
     fun `Router back stack popping is not invoked if any of the children handled back press`() {
-        whenever(child1.handleBackPress()).thenReturn(false)
-        whenever(child2.handleBackPress()).thenReturn(true)
-        whenever(child3.handleBackPress()).thenReturn(false)
+        node.attachToView(parentViewGroup) // this attaches child1, child2, child3
+        child1.handleBackPress = false
+        child2.handleBackPress = true
+        child3.handleBackPress = false
         whenever(interactor.handleBackPress()).thenReturn(false)
 
         node.handleBackPress()
@@ -322,48 +325,73 @@ class NodeTest {
 
     @Test
     fun `attachToView() calls all children to add themselves to the view `() {
+        val mocks = createAndAttachChildMocks(3)
         node.attachToView(parentViewGroup)
-        allChildren.forEach {
+        mocks.forEach {
             verify(it).attachToView(any())
         }
+    }
+
+    private fun createAndAttachChildMocks(n: Int, forClassList: MutableList<Class<*>> = mutableListOf()): List<Node<*>> {
+        if (forClassList.isEmpty()) {
+            for (i in 0 until n) {
+                forClassList.add(Unit::class.java)
+            }
+        }
+        val mocks = mutableListOf<Node<*>>()
+        for (i in 0 until n) {
+            mocks.add(mock { on { forClass }.thenReturn(forClassList[i]) })
+        }
+        node.children.clear()
+        node.children.addAll(mocks)
+        return mocks
     }
 
     @Test
     fun `attachToView() results in children added to parentViewGroup given Router does not define something else `() {
         whenever(router.getParentViewForChild(any(), anyOrNull())).thenReturn(null)
+        val mocks = createAndAttachChildMocks(3)
         node.attachToView(parentViewGroup)
-        allChildren.forEach {
+        mocks.forEach {
             verify(it).attachToView(parentViewGroup)
         }
     }
 
     @Test
     fun `attachToView() results in children added to target defined by Router`() {
+        val mocks = createAndAttachChildMocks(3, mutableListOf(
+            RandomOtherNode1::class.java,
+            RandomOtherNode2::class.java,
+            RandomOtherNode3::class.java
+        ))
+
         whenever(router.getParentViewForChild(RandomOtherNode1::class.java, view)).thenReturn(someViewGroup1)
         whenever(router.getParentViewForChild(RandomOtherNode2::class.java, view)).thenReturn(someViewGroup2)
         whenever(router.getParentViewForChild(RandomOtherNode3::class.java, view)).thenReturn(someViewGroup3)
 
         node.attachToView(parentViewGroup)
-        verify(child1, never()).attachToView(parentViewGroup)
-        verify(child2, never()).attachToView(parentViewGroup)
-        verify(child3, never()).attachToView(parentViewGroup)
+        mocks.forEach {
+            verify(it, never()).attachToView(parentViewGroup)
+        }
 
-        verify(child1).attachToView(someViewGroup1)
-        verify(child2).attachToView(someViewGroup1)
-        verify(child3).attachToView(someViewGroup1)
+        verify(mocks[0]).attachToView(someViewGroup1)
+        verify(mocks[1]).attachToView(someViewGroup2)
+        verify(mocks[2]).attachToView(someViewGroup3)
     }
 
     @Test
     fun `attachChild() does not imply attachToView when Android view system is not available`() {
-        node.attachChild(child1, null)
-        verify(child1, never()).attachToView(parentViewGroup)
+        val child = mock<Node<*>>()
+        node.attachChild(child, null)
+        verify(child, never()).attachToView(parentViewGroup)
     }
 
     @Test
     fun `attachChild() implies attachToView() when Android view system is available`() {
+        val child = mock<Node<*>>()
         node.attachToView(parentViewGroup)
-        node.attachChild(child1, null)
-        verify(child1).attachToView(parentViewGroup)
+        node.attachChild(child, null)
+        verify(child).attachToView(parentViewGroup)
     }
 
     @Test
@@ -428,9 +456,8 @@ class NodeTest {
 
     @Test
     fun `saveViewState() does its job`() {
-        node.savedViewState = mock()
         node.saveViewState()
-        verify(view.androidView).saveHierarchyState(node.savedViewState)
+        verify(androidView).saveHierarchyState(node.savedViewState)
     }
 
     @Test
