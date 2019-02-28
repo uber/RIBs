@@ -7,22 +7,22 @@ interface RibConnector {
     /**
      * Implies attaching child node + view
      */
-    fun attachChild(childRouter: Node<*>, bundle: Bundle? = null)
+    fun attachChild(childNode: Node<*>, bundle: Bundle? = null)
 
     /**
      * Attaches child view only. Expectation is that child node should already be attached.
      */
-    fun attachChildView(childRouter: Node<*>)
+    fun attachChildView(childNode: Node<*>)
 
     /**
      * Detaches child view only, child node remains alive
      */
-    fun detachChildView(childRouter: Node<*>)
+    fun detachChildView(childNode: Node<*>)
 
     /**
      * Detaches child node + view, killing it
      */
-    fun detachChild(childRouter: Node<*>)
+    fun detachChild(childNode: Node<*>)
 
     companion object {
         fun from(
@@ -32,20 +32,20 @@ interface RibConnector {
             detachChild: (Node<*>) -> Unit
         ) : RibConnector =
             object : RibConnector {
-                override fun attachChild(childRouter: Node<*>, bundle: Bundle?) {
-                    attachChild.invoke(childRouter, bundle)
+                override fun attachChild(childNode: Node<*>, bundle: Bundle?) {
+                    attachChild.invoke(childNode, bundle)
                 }
 
-                override fun attachChildView(childRouter: Node<*>) {
-                    attachChildView.invoke(childRouter)
+                override fun attachChildView(childNode: Node<*>) {
+                    attachChildView.invoke(childNode)
                 }
 
-                override fun detachChildView(childRouter: Node<*>) {
-                    detachChildView.invoke(childRouter)
+                override fun detachChildView(childNode: Node<*>) {
+                    detachChildView.invoke(childNode)
                 }
 
-                override fun detachChild(childRouter: Node<*>) {
-                    detachChild.invoke(childRouter)
+                override fun detachChild(childNode: Node<*>) {
+                    detachChild.invoke(childNode)
                 }
             }
     }
