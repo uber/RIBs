@@ -7,7 +7,6 @@ import com.badoo.ribs.core.routing.RibConnector
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
-import io.reactivex.Observable
 
 internal class BackStackRibConnector<C : Parcelable>(
     private val resolver: (C) -> RoutingAction<*>,
@@ -17,30 +16,6 @@ internal class BackStackRibConnector<C : Parcelable>(
     enum class DetachStrategy {
         DESTROY, DETACH_VIEW
     }
-
-    fun switchToNew(backStack: List<BackStackElement<C>>, newConfiguration: C, detachStrategy: DetachStrategy): Observable<Pair<BackStackElement<C>?, BackStackElement<C>>> =
-        Observable.fromCallable {
-            val oldEntry = backStack.lastOrNull()
-            val newEntry = BackStackElement(
-                newConfiguration
-            )
-
-            oldEntry?.let { leave(it, detachStrategy = detachStrategy) }
-            goTo(newEntry)
-
-            return@fromCallable oldEntry to newEntry
-        }
-
-    fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: DetachStrategy): Observable<BackStackElement<C>> =
-        Observable.fromCallable {
-            val entryToPop = backStack.last()
-            val entryToRevive = backStack[backStack.lastIndex - 1]
-
-            leave(entryToPop, detachStrategy = detachStrategy)
-            goTo(entryToRevive)
-
-            return@fromCallable entryToRevive
-        }
 
     fun leave(backStackElement: BackStackElement<C>, detachStrategy: DetachStrategy): BackStackElement<C> {
         with(backStackElement) {
@@ -92,10 +67,10 @@ internal class BackStackRibConnector<C : Parcelable>(
     }
 
     private fun BackStackElement<C>.attachNodes(it: List<Node<*>>) {
-        it.forEachIndexed { index, router ->
+        it.forEachIndexed { index, node ->
             // attachChildView is implied part of attachChild:
             connector.attachChild(
-                router,
+                node,
                 bundles.elementAtOrNull(index)?.also {
                     it.classLoader = BackStackManager.State::class.java.classLoader
                 }
@@ -103,19 +78,18 @@ internal class BackStackRibConnector<C : Parcelable>(
         }
     }
 
-    fun shrinkToBundles(backStack: List<BackStackElement<C>>): Observable<List<BackStackElement<C>>> =
-        Observable.defer {
-            backStack.forEach {
-                it.bundles = it.ribs?.map { childNode ->
-                    Bundle().also {
-                        childNode.saveInstanceState(it)
-                    }
-                } ?: emptyList()
+    fun shrinkToBundles(backStack: List<BackStackElement<C>>): List<BackStackElement<C>> {
+        backStack.forEach {
+            it.bundles = it.ribs?.map { childNode ->
+                Bundle().also {
+                    childNode.saveInstanceState(it)
+                }
+            } ?: emptyList()
 
-                it.ribs?.forEach { connector.detachChild(it) }
-                it.ribs = null
-            }
-
-            return@defer Observable.just(backStack)
+            it.ribs?.forEach { connector.detachChild(it) }
+            it.ribs = null
         }
+
+        return backStack
+    }
 }

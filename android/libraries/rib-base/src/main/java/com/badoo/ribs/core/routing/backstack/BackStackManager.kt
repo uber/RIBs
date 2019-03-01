@@ -25,6 +25,7 @@ import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrateg
 import io.reactivex.Completable
 import io.reactivex.Observable
 import io.reactivex.Observable.empty
+import io.reactivex.Observable.fromCallable
 import io.reactivex.Observable.just
 import kotlinx.android.parcel.Parcelize
 
@@ -110,11 +111,13 @@ internal class BackStackManager<C : Parcelable>(
                     when (val wish = action.wish) {
                         is Replace -> when {
                             wish.configuration != state.current.configuration ->
-                                connector.switchToNew(
-                                    state.backStack,
-                                    wish.configuration,
-                                    detachStrategy = DESTROY
-                                ).map { (_, newEntry) ->
+                                fromCallable {
+                                    switchToNew(
+                                        state.backStack,
+                                        wish.configuration,
+                                        detachStrategy = DESTROY
+                                    )
+                                }.map { (_, newEntry) ->
                                     Effect.Replace(newEntry)
                                 }
 
@@ -123,11 +126,13 @@ internal class BackStackManager<C : Parcelable>(
 
                         is Push -> when {
                             wish.configuration != state.current.configuration ->
-                                connector.switchToNew(
-                                    state.backStack,
-                                    wish.configuration,
-                                    detachStrategy = DETACH_VIEW
-                                ).map { (oldEntry, newEntry) ->
+                                fromCallable {
+                                    switchToNew(
+                                        state.backStack,
+                                        wish.configuration,
+                                        detachStrategy = DETACH_VIEW
+                                    )
+                                }.map { (oldEntry, newEntry) ->
                                     Effect.Push(oldEntry!!, newEntry)
                                 }
 
@@ -135,25 +140,28 @@ internal class BackStackManager<C : Parcelable>(
                         }
 
                         is NewRoot ->
-                            connector.switchToNew(
-                                state.backStack,
-                                wish.configuration,
-                                detachStrategy = DESTROY
-                            ).map { (_, newEntry) ->
+                            fromCallable {
+                                switchToNew(
+                                    state.backStack,
+                                    wish.configuration,
+                                    detachStrategy = DESTROY
+                                )
+                            }.map { (_, newEntry) ->
                                 Effect.NewRoot(newEntry)
                             }
 
                         is Pop -> when {
                             state.canPop ->
-                                connector.switchToPrevious(state.backStack, detachStrategy = DESTROY).map { revivedEntry ->
-                                    Effect.Pop(revivedEntry)
-                                }
+                                fromCallable {
+                                    switchToPrevious(state.backStack, detachStrategy = DESTROY)
+                                }.map { revivedEntry -> Effect.Pop(revivedEntry) }
                             else -> empty()
                         }
 
-                        is ShrinkToBundles -> connector.shrinkToBundles(state.backStack).map {
-                            Effect.UpdateBackStack(it)
-                        }
+                        is ShrinkToBundles ->
+                            fromCallable {
+                                connector.shrinkToBundles(state.backStack)
+                            }.map { Effect.UpdateBackStack(it) }
 
                         is TearDown -> Completable.fromAction {
                             state.backStack.lastOrNull()?.routingAction?.cleanup()
@@ -161,6 +169,26 @@ internal class BackStackManager<C : Parcelable>(
                     }
                 }
             }
+
+        fun switchToNew(backStack: List<BackStackElement<C>>, newConfiguration: C, detachStrategy: BackStackRibConnector.DetachStrategy): Pair<BackStackElement<C>?, BackStackElement<C>> {
+            val oldEntry = backStack.lastOrNull()
+            val newEntry = BackStackElement(newConfiguration)
+
+            oldEntry?.let { connector.leave(it, detachStrategy = detachStrategy) }
+            connector.goTo(newEntry)
+
+            return oldEntry to newEntry
+        }
+
+        fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: BackStackRibConnector.DetachStrategy): BackStackElement<C> {
+            val entryToPop = backStack.last()
+            val entryToRevive = backStack[backStack.lastIndex - 1]
+
+            connector.leave(entryToPop, detachStrategy = detachStrategy)
+            connector.goTo(entryToRevive)
+
+            return entryToRevive
+        }
     }
 
     class ReducerImpl<C : Parcelable> : Reducer<State<C>, Effect<C>> {
