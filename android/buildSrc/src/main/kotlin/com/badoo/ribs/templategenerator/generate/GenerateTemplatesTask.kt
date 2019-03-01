@@ -49,6 +49,7 @@ open class GenerateTemplatesTask : DefaultTask() {
     }
 
     private fun writeTemplatesMeta(templates: List<Template>) {
+        outputDirectory.mkdirs()
         outputDirectory.resolve("templates_meta.json").writeText(gson.toJson(templates))
     }
 

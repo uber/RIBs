@@ -18,5 +18,3 @@ dependencies {
     testImplementation deps.test.mockito
     testImplementation deps.test.assertj
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

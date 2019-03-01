@@ -26,7 +26,6 @@ androidExtensions {
 
 dependencies {
     api deps.uber.autodispose
-    api project(':libraries:rib-uava')
 
     kapt deps.apt.daggerCompiler
     implementation deps.apt.javaxInject

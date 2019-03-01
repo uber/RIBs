@@ -18,6 +18,7 @@ configureAndroidLibrary(project)
 
 dependencies {
     implementation project(":libraries:rib-base")
+    implementation deps.external.kotlinStdlib
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
