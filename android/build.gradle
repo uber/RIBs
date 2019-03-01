@@ -29,6 +29,7 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.kotlin
+        classpath deps.build.gradlePlugins.mavenPublish
     }
 }
 
