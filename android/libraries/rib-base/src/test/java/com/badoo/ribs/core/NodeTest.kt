@@ -17,6 +17,7 @@ import com.badoo.ribs.core.view.ViewFactory
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -416,7 +417,7 @@ class NodeTest {
     @Test
     fun `Rib id is restored from bundle`() {
         val savedInstanceState = mock<Bundle>()
-        whenever(savedInstanceState.getInt(KEY_RIB_ID)).thenReturn(999)
+        whenever(savedInstanceState.getInt(eq(KEY_RIB_ID), any())).thenReturn(999)
         node.dispatchAttach(savedInstanceState)
         assertEquals(999, node.ribId)
     }
@@ -462,6 +463,7 @@ class NodeTest {
 
     @Test
     fun `saveViewState() does its job`() {
+        node.view = view
         node.saveViewState()
         verify(androidView).saveHierarchyState(node.savedViewState)
     }
