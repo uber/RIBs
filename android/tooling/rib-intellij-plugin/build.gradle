@@ -9,7 +9,7 @@ apply plugin: "maven"
 apply plugin: "org.jetbrains.intellij"
 apply plugin: "templates-generator"
 
-group "com.uber.rib"
+group "com.badoo.ribs"
 
 repositories {
     mavenLocal()

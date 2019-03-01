@@ -6,5 +6,3 @@ targetCompatibility = "1.7"
 dependencies {
     compileOnly deps.support.annotations
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

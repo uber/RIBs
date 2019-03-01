@@ -7,5 +7,3 @@ dependencies {
     implementation deps.external.rxjava2
     implementation deps.test.assertj
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

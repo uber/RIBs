@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-buildscript { 
+buildscript {
     ext.kotlin_version = '1.3.21'
 
     apply from: 'gradle/dependencies.gradle'
@@ -29,7 +29,8 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.kotlin
-    classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version" }
+        classpath deps.build.gradlePlugins.mavenPublish
+    }
 }
 
 apply from: 'gradle/dependencies.gradle'
