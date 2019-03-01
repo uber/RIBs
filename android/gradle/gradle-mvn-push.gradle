@@ -138,7 +138,7 @@ afterEvaluate { project ->
 
         task androidSourcesJar(type: Jar) {
             classifier = 'sources'
-            from android.sourceSets.main.java.sourceFiles
+            from android.sourceSets.main.java.srcDirs
         }
     } else {
         install {
