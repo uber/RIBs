@@ -31,9 +31,9 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class NodeTest {
 
-    class RandomOtherNode1
-    class RandomOtherNode2
-    class RandomOtherNode3
+    interface RandomOtherNode1 : Rib
+    interface RandomOtherNode2 : Rib
+    interface RandomOtherNode3 : Rib
 
     private lateinit var node: Node<TestView>
     private lateinit var view: TestView
@@ -63,7 +63,7 @@ class NodeTest {
         interactor = mock()
 
         node = Node(
-            forClass = TestPublicRibInterface::class.java,
+            identifier = object : TestPublicRibInterface {},
             viewFactory = viewFactory,
             router = router,
             interactor = interactor
@@ -73,9 +73,9 @@ class NodeTest {
     }
 
     private fun addChildren() {
-        child1 = TestNode(RandomOtherNode1::class.java)
-        child2 = TestNode(RandomOtherNode2::class.java)
-        child3 = TestNode(RandomOtherNode3::class.java)
+        child1 = TestNode(object : RandomOtherNode1 {})
+        child2 = TestNode(object : RandomOtherNode2 {})
+        child3 = TestNode(object : RandomOtherNode3 {})
         allChildren = listOf(child1, child2, child3)
         node.children.addAll(allChildren)
     }
@@ -332,15 +332,15 @@ class NodeTest {
         }
     }
 
-    private fun createAndAttachChildMocks(n: Int, forClassList: MutableList<Class<*>> = mutableListOf()): List<Node<*>> {
-        if (forClassList.isEmpty()) {
+    private fun createAndAttachChildMocks(n: Int, identifiers: MutableList<Rib> = mutableListOf()): List<Node<*>> {
+        if (identifiers.isEmpty()) {
             for (i in 0 until n) {
-                forClassList.add(Unit::class.java)
+                identifiers.add(object : Rib {})
             }
         }
         val mocks = mutableListOf<Node<*>>()
         for (i in 0 until n) {
-            mocks.add(mock { on { forClass }.thenReturn(forClassList[i]) })
+            mocks.add(mock { on { identifier }.thenReturn(identifiers[i]) })
         }
         node.children.clear()
         node.children.addAll(mocks)
@@ -359,15 +359,14 @@ class NodeTest {
 
     @Test
     fun `attachToView() results in children added to target defined by Router`() {
-        val mocks = createAndAttachChildMocks(3, mutableListOf(
-            RandomOtherNode1::class.java,
-            RandomOtherNode2::class.java,
-            RandomOtherNode3::class.java
-        ))
+        val n1 = object : RandomOtherNode1 {}
+        val n2 = object : RandomOtherNode2 {}
+        val n3 = object : RandomOtherNode3 {}
+        val mocks = createAndAttachChildMocks(3, mutableListOf(n1, n2, n3))
 
-        whenever(router.getParentViewForChild(RandomOtherNode1::class.java, view)).thenReturn(someViewGroup1)
-        whenever(router.getParentViewForChild(RandomOtherNode2::class.java, view)).thenReturn(someViewGroup2)
-        whenever(router.getParentViewForChild(RandomOtherNode3::class.java, view)).thenReturn(someViewGroup3)
+        whenever(router.getParentViewForChild(n1, view)).thenReturn(someViewGroup1)
+        whenever(router.getParentViewForChild(n2, view)).thenReturn(someViewGroup2)
+        whenever(router.getParentViewForChild(n3, view)).thenReturn(someViewGroup3)
 
         node.attachToView(parentViewGroup)
         mocks.forEach {

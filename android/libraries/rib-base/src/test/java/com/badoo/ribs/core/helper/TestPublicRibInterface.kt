@@ -1,4 +1,6 @@
 package com.badoo.ribs.core.helper
 
-interface TestPublicRibInterface {
+import com.badoo.ribs.core.Rib
+
+interface TestPublicRibInterface : Rib {
 }
