@@ -128,6 +128,13 @@ class NodeTest {
     }
 
     @Test
+    fun `Save instance state saves view state as well`() {
+        node.view = view
+        node.saveInstanceState(mock())
+        verify(androidView).saveHierarchyState(node.savedViewState)
+    }
+
+    @Test
     fun `Save instance state is forwarded to Router`() {
         node.saveInstanceState(mock())
         verify(router).onSaveInstanceState(any())

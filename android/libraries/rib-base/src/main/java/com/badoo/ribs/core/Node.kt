@@ -55,8 +55,7 @@ open class Node<V : RibView>(
         private set
     internal open var ribId: Int? = null
     internal val children = CopyOnWriteArrayList<Node<*>>()
-    internal var view: V? = null
-        private set
+    internal open var view: V? = null
     protected var parentViewGroup: ViewGroup? = null
     private var savedInstanceState: Bundle? = null
     internal open var savedViewState: SparseArray<Parcelable> = SparseArray()
@@ -214,11 +213,12 @@ open class Node<V : RibView>(
     }
 
     open fun saveInstanceState(outState: Bundle) {
-        outState.putString(KEY_TAG, tag)
-        outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
-        outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
         saveRouterState(outState)
         saveInteractorState(outState)
+        saveViewState() // todo write test for this
+        outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
+        outState.putString(KEY_TAG, tag)
+        outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
     }
 
     private fun saveRouterState(outState: Bundle) {
