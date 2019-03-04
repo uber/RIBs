@@ -62,7 +62,6 @@ abstract class Interactor<C : Parcelable, V : RibView>(
      *
      * @param savedInstanceState the saved [Bundle].
      */
-    @CallSuper
     protected fun didBecomeActive(savedInstanceState: Bundle?) {
         ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         didBecomeActive(ribLifecycleRegistry, savedInstanceState)
@@ -71,7 +70,6 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     protected open fun didBecomeActive(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
     }
 
-    @CallSuper
     fun onViewCreated(view: V) {
         viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         onViewCreated(view, viewLifecycleRegistry)
