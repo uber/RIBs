@@ -3,14 +3,14 @@ package com.badoo.ribs.core.routing.backstack
 import android.os.Bundle
 import android.os.Parcelable
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.routing.RibConnector
+import com.badoo.ribs.core.routing.NodeConnector
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
 
 internal class BackStackRibConnector<C : Parcelable>(
     private val resolver: (C) -> RoutingAction<*>,
-    private val connector: RibConnector
+    private val connector: NodeConnector
 ) {
 
     enum class DetachStrategy {

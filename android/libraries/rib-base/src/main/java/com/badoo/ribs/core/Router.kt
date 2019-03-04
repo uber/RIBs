@@ -5,7 +5,7 @@ import android.os.Parcelable
 import android.view.ViewGroup
 import com.badoo.mvicore.android.AndroidTimeCapsule
 import com.badoo.mvicore.binder.Binder
-import com.badoo.ribs.core.routing.RibConnector
+import com.badoo.ribs.core.routing.NodeConnector
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.backstack.BackStackManager
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.NewRoot

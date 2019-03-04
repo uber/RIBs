@@ -3,7 +3,7 @@ package com.badoo.ribs.core.routing
 import android.os.Bundle
 import com.badoo.ribs.core.Node
 
-interface RibConnector {
+interface NodeConnector {
     /**
      * Implies attaching child node + view
      */
@@ -30,8 +30,8 @@ interface RibConnector {
             attachChildView: (Node<*>) -> Unit,
             detachChildView: (Node<*>) -> Unit,
             detachChild: (Node<*>) -> Unit
-        ) : RibConnector =
-            object : RibConnector {
+        ) : NodeConnector =
+            object : NodeConnector {
                 override fun attachChild(childNode: Node<*>, bundle: Bundle?) {
                     attachChild.invoke(childNode, bundle)
                 }

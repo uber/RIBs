@@ -6,7 +6,6 @@ import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.element.TimeCapsule
 import com.badoo.mvicore.feature.BaseFeature
-import com.badoo.ribs.core.routing.RibConnector
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Action
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Action.Execute

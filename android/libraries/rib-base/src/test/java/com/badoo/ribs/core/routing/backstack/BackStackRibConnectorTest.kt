@@ -3,7 +3,7 @@ package com.badoo.ribs.core.routing.backstack
 import android.os.Bundle
 import android.os.Parcelable
 import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.routing.RibConnector
+import com.badoo.ribs.core.routing.NodeConnector
 import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DETACH_VIEW
@@ -29,7 +29,7 @@ class BackStackRibConnectorTest {
 
     private lateinit var backStackRibConnector: BackStackRibConnector<Configuration>
     private lateinit var resolver: (Configuration) -> RoutingAction<*>
-    private lateinit var connector: RibConnector
+    private lateinit var connector: NodeConnector
 
     private lateinit var routingAction1: RoutingAction<*>
     private lateinit var routingAction2: RoutingAction<*>
