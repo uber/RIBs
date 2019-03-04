@@ -1,0 +1,63 @@
+configureAndroidApp(project)
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+android {
+    compileSdkVersion 28
+
+    defaultConfig {
+        applicationId "com.badoo.ribs.example"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+
+dependencies {
+    implementation deps.external.kotlinStdlib
+
+    kapt deps.apt.daggerCompiler
+    compileOnly deps.apt.javax
+
+    implementation deps.support.appCompat
+    implementation deps.support.constraintLayout
+    implementation deps.support.percent
+
+    implementation project(":libraries:rib-android")
+    implementation project(":libraries:rib-workflow")
+
+    implementation deps.external.dagger
+    implementation deps.external.mviCore
+    implementation deps.external.mviCoreAndroid
+    implementation deps.external.rxrelay2
+
+    testImplementation project(":libraries:rib-test-utils")
+    testImplementation deps.external.roboelectricBase
+    testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'com.android.support.test:runner:1.0.2'
+    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
+//    androidTestImplementation 'org.robolectric:shadows-supportv4'
+}
+
+repositories {
+    mavenCentral()
+}

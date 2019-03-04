@@ -1,39 +1,9 @@
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-    }
-}
-
-apply plugin: 'com.android.library'
-
-android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
-    }
-
-    // This module is only testing utilities. Given this code isn't intended to be run inside a production
-    // android app this module confuses android lint. Let's just disable lint errors here.
-    lintOptions {
-        abortOnError false
-        disable 'InvalidPackage'
-    }
-}
+configureAndroidLibrary(project)
 
 dependencies {
-    provided deps.support.annotations
-    compile project(":libraries:rib-workflow")
-    compile project(":libraries:rib-uava")
-    compile deps.external.rxjava2
-    compile deps.test.assertj
+    compileOnly deps.support.annotations
+    implementation project(":libraries:rib-workflow")
+    implementation project(":libraries:rib-uava")
+    implementation deps.external.rxjava2
+    implementation deps.test.assertj
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

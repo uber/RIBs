@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+configureAndroidLibrary(project)
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+apply plugin: 'kotlin-android'
 
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
+    implementation deps.external.kotlinStdlib
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

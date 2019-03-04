@@ -1,27 +1,17 @@
-apply plugin: "java-library"
-
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+configureAndroidLibrary(project)
 
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
 
-    compile deps.apt.autoCommon
-    compile deps.external.dagger
-    compile deps.apt.javapoet
+    implementation deps.apt.autoCommon
+    implementation deps.external.dagger
+    implementation deps.apt.javapoet
 
     compileOnly deps.support.annotations
-    compileOnly deps.apt.autoService
+    annotationProcessor deps.apt.autoService
     compileOnly deps.apt.androidApi
 
-    testCompile deps.test.compileTesting
+    testImplementation deps.test.compileTesting
 }
-
-// https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
-}
-processTestResources.dependsOn copyTestResources
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

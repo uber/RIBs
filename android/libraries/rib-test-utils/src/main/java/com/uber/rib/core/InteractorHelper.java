@@ -15,7 +15,10 @@
  */
 package com.uber.rib.core;
 
+import android.os.Bundle;
 import android.support.annotation.Nullable;
+
+import com.badoo.ribs.core.Node;
 
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.Matchers.isA;
@@ -28,19 +31,19 @@ public final class InteractorHelper {
   private InteractorHelper() {}
 
   /**
-   * Attaches the {@link Interactor} inside a given root ViewGroup using a mock router.
+   * Attaches the {@link Interactor} inside a given root ViewGroup using a mock node.
    *
    * @param <P> the type of presenter.
-   * @param <R> the type of router.
+   * @param <R> the type of node.
    * @param interactor the {@link Interactor}.
-   * @param presenter the presenter for the {@link Interactor}.
-   * @param router the mock router for the {@link Interactor}.
+   * @param router the mock node for the {@link Interactor}.
    * @param savedInstanceState the saved {@link Bundle}.
    */
   @SuppressWarnings("unchecked")
-  public static <P, R extends Router> void attach(
-      Interactor<P, R> interactor, P presenter, R router, @Nullable Bundle savedInstanceState) {
-    interactor.presenter = presenter;
+  public static <R extends Node> void attach(
+      Interactor<R> interactor,
+      R router,
+      @Nullable Bundle savedInstanceState) {
     interactor.setRouter(router);
     interactor.dispatchAttach(savedInstanceState);
   }
@@ -60,7 +63,7 @@ public final class InteractorHelper {
    * @param interactor the {@link Interactor}.
    */
   @SuppressWarnings("unchecked")
-  public static void verifyAttached(Interactor<?, ?> interactor) {
+  public static void verifyAttached(Interactor<?> interactor) {
     verify(interactor).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)));
   }
 

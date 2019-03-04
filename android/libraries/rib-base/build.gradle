@@ -14,35 +14,39 @@
  * limitations under the License.
  */
 
-plugins {
-    id "net.ltgt.apt" version "0.10"
-    id "java-library"
+configureAndroidLibrary(project)
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+androidExtensions {
+    experimental = true
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
-
 dependencies {
-    // RIBs themselves don't need to use dagger. But the base library does use dagger
-    // in order to invert a dependency. With a bit of work this could be removed.
-    apt deps.apt.daggerCompiler
+    api deps.uber.autodispose
 
-    compile project(':libraries:rib-uava')
-    compile deps.external.reactiveStreams
-    compile deps.external.rxrelay2
-    compile deps.external.rxjava2
-    compile deps.uber.autodispose
-    compile deps.apt.javaxInject
+    kapt deps.apt.daggerCompiler
+    implementation deps.apt.javaxInject
 
-    compileOnly deps.apt.daggerCompiler
+    implementation deps.external.kotlinStdlib
+    implementation deps.external.mviCore
+    implementation deps.external.mviCoreAndroid
+    implementation deps.external.reactiveStreams
+    implementation deps.external.rxrelay2
+    implementation deps.external.rxjava2
+
+    implementation deps.support.appCompat
+    implementation deps.support.archLifecycleCommon // TODO: remove
     compileOnly deps.support.annotations
-    compileOnly deps.apt.androidApi
 
-    testCompile deps.support.annotations
-    testCompile deps.apt.androidApi
-    testCompile deps.test.junit
-    testCompile deps.test.mockito
-    testCompile deps.test.assertj
+    testImplementation deps.support.annotations
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.assertj
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.test.mockitoKotlin
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

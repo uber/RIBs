@@ -14,7 +14,27 @@
  * limitations under the License.
  */
 
+buildscript {
+    ext.kotlin_version = '1.3.21'
+
+    apply from: 'gradle/dependencies.gradle'
+
+    repositories {
+        jcenter()
+        google()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
+    }
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.kotlin
+        classpath deps.build.gradlePlugins.mavenPublish
+    }
+}
+
 apply from: 'gradle/dependencies.gradle'
+apply from: 'gradle/utils.gradle'
 
 subprojects {
     buildscript {
@@ -22,6 +42,7 @@ subprojects {
             jcenter()
             maven { url deps.build.gradlePluginsUrl }
             maven { url "https://maven.google.com" }
+            maven { url "https://plugins.gradle.org/m2/" }
         }
     }
 
@@ -29,18 +50,8 @@ subprojects {
         jcenter()
         maven { url deps.build.gradlePluginsUrl }
         maven { url "https://maven.google.com" }
+        maven { url "https://jitpack.io" }
     }
-
-    apply plugin: 'checkstyle'
-
-    checkstyle { -> rootProject
-        configFile rootProject.file('config/checkstyle/checkstyle.xml')
-    }
-}
-
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
 }
 
 task clean(type: Delete) {
