@@ -206,6 +206,23 @@ class BackStackRibConnectorTest {
     }
 
     @Test
+    fun `shrinkToBundles() calls cleanup() on last routing action`() {
+        backStackElement1.apply {
+            ribs = ribs1
+            routingAction = routingAction1
+        }
+        backStackElement2.apply {
+            ribs = ribs2
+            routingAction = routingAction2
+        }
+        val backStack = listOf(backStackElement1, backStackElement2)
+        backStackRibConnector.shrinkToBundles(backStack)
+        verify(routingAction2).cleanup()
+        verifyNoMoreInteractions(routingAction1)
+        verifyNoMoreInteractions(routingAction2)
+    }
+
+    @Test
     fun `shrinkToBundles() calls saveInstanceState() on all RIBs in back stack`() {
         backStackElement1.ribs = ribs1
         backStackElement2.ribs = ribs2

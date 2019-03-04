@@ -79,6 +79,7 @@ internal class BackStackRibConnector<C : Parcelable>(
     }
 
     fun shrinkToBundles(backStack: List<BackStackElement<C>>): List<BackStackElement<C>> {
+        backStack.lastOrNull()?.routingAction?.cleanup()
         backStack.forEach {
             it.bundles = it.ribs?.map { childNode ->
                 Bundle().also {
