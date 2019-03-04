@@ -93,4 +93,8 @@ internal class BackStackRibConnector<C : Parcelable>(
 
         return backStack
     }
+
+    fun tearDown(backStack: List<BackStackElement<C>>) {
+        backStack.lastOrNull()?.routingAction?.cleanup()
+    }
 }

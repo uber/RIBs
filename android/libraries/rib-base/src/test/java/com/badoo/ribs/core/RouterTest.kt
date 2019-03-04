@@ -15,6 +15,8 @@ class RouterTest {
     private lateinit var routingActionForC1: RoutingAction<TestView>
     private lateinit var routingActionForC2: RoutingAction<TestView>
     private lateinit var routingActionForC3: RoutingAction<TestView>
+    private lateinit var routingActionForC4: RoutingAction<TestView>
+    private lateinit var routingActionForC5: RoutingAction<TestView>
     private lateinit var permanentPartBuilder1: () -> Node<*>
     private lateinit var permanentPartBuilder2: () -> Node<*>
     private lateinit var node: Node<TestView>
@@ -30,6 +32,8 @@ class RouterTest {
         routingActionForC1 = mock()
         routingActionForC2 = mock()
         routingActionForC3 = mock()
+        routingActionForC4 = mock()
+        routingActionForC5 = mock()
         childNode1 = mock()
         childNode2 = mock()
         permanentPartBuilder1 = mock { on { invoke() }.thenReturn(childNode1) }
@@ -40,6 +44,8 @@ class RouterTest {
             routingActionForC1 = routingActionForC1,
             routingActionForC2 = routingActionForC2,
             routingActionForC3 = routingActionForC3,
+            routingActionForC4 = routingActionForC4,
+            routingActionForC5 = routingActionForC5,
             permanentParts = listOf(
                 permanentPartBuilder1,
                 permanentPartBuilder2

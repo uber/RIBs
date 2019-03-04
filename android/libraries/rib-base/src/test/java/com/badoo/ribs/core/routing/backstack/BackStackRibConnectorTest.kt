@@ -275,7 +275,13 @@ class BackStackRibConnectorTest {
         }
     }
 
-    fun testReturnValues() {
+    @Test
+    fun `tearDown() detaches all RIBs in back stack`() {
+        backStackElement1.routingAction = routingAction1
+        backStackElement2.routingAction = routingAction2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        backStackRibConnector.tearDown(backStack)
 
+        verify(routingAction2).cleanup()
     }
 }

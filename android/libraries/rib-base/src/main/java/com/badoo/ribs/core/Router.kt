@@ -14,6 +14,7 @@ import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Push
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Replace
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.TearDown
+import com.badoo.ribs.core.routing.backstack.BackStackRibConnector
 import com.badoo.ribs.core.view.RibView
 
 abstract class Router<C : Parcelable, V : RibView>(
@@ -43,15 +44,18 @@ abstract class Router<C : Parcelable, V : RibView>(
 
     private fun initConfigurationManager() {
         backStackManager = BackStackManager(
-            this::resolveConfiguration,
-            RibConnector.from(
-                node::attachChild,
-                node::attachChildView,
-                node::detachChildView,
-                node::detachChild
-            ),
-            initialConfiguration,
-            timeCapsule
+            backStackRibConnector =
+                BackStackRibConnector(
+                    this::resolveConfiguration,
+                    NodeConnector.from(
+                        node::attachChild,
+                        node::attachChildView,
+                        node::detachChildView,
+                        node::detachChild
+                    )
+                ),
+            initialConfiguration = initialConfiguration,
+            timeCapsule = timeCapsule
         )
     }
 

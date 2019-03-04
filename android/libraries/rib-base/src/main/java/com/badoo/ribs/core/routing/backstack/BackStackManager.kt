@@ -29,8 +29,7 @@ import io.reactivex.Observable.just
 import kotlinx.android.parcel.Parcelize
 
 internal class BackStackManager<C : Parcelable>(
-    resolver: (C) -> RoutingAction<*>,
-    ribConnector: RibConnector,
+    backStackRibConnector: BackStackRibConnector<C>,
     initialConfiguration: C,
     timeCapsule: TimeCapsule<State<C>>,
     tag: String = "BackStackManager.State"
@@ -42,10 +41,7 @@ internal class BackStackManager<C : Parcelable>(
         initialConfiguration
     ),
     actor = ActorImpl<C>(
-        connector = BackStackRibConnector(
-            resolver,
-            ribConnector
-        )
+        connector = backStackRibConnector
     ),
     reducer = ReducerImpl<C>()
 ) {
@@ -140,11 +136,8 @@ internal class BackStackManager<C : Parcelable>(
 
                         is NewRoot ->
                             fromCallable {
-                                switchToNew(
-                                    state.backStack,
-                                    wish.configuration,
-                                    detachStrategy = DESTROY
-                                )
+                                state.backStack.forEach { connector.leave(it, DESTROY) }
+                                switchToNew(emptyList(), wish.configuration, DESTROY)
                             }.map { (_, newEntry) ->
                                 Effect.NewRoot(newEntry)
                             }
@@ -162,14 +155,14 @@ internal class BackStackManager<C : Parcelable>(
                                 connector.shrinkToBundles(state.backStack)
                             }.map { Effect.UpdateBackStack(it) }
 
-                        is TearDown -> Completable.fromAction {
-                            state.backStack.lastOrNull()?.routingAction?.cleanup()
-                        }.toObservable()
+                        is TearDown -> Completable.fromCallable {
+                                connector.tearDown(state.backStack)
+                            }.toObservable()
                     }
                 }
             }
 
-        fun switchToNew(backStack: List<BackStackElement<C>>, newConfiguration: C, detachStrategy: BackStackRibConnector.DetachStrategy): Pair<BackStackElement<C>?, BackStackElement<C>> {
+        private fun switchToNew(backStack: List<BackStackElement<C>>, newConfiguration: C, detachStrategy: BackStackRibConnector.DetachStrategy): Pair<BackStackElement<C>?, BackStackElement<C>> {
             val oldEntry = backStack.lastOrNull()
             val newEntry = BackStackElement(newConfiguration)
 
@@ -179,7 +172,7 @@ internal class BackStackManager<C : Parcelable>(
             return oldEntry to newEntry
         }
 
-        fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: BackStackRibConnector.DetachStrategy): BackStackElement<C> {
+        private fun switchToPrevious(backStack: List<BackStackElement<C>>, detachStrategy: BackStackRibConnector.DetachStrategy): BackStackElement<C> {
             val entryToPop = backStack.last()
             val entryToRevive = backStack[backStack.lastIndex - 1]
 
