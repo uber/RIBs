@@ -25,8 +25,7 @@ class FooBarInteractor(
     disposables = feature
 ) {
 
-    override fun didBecomeActive(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
-        super.didBecomeActive(ribLifecycle, savedInstanceState)
+    override fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
         ribLifecycle.createDestroy {
             bind(feature.news to output using NewsToOutput)
             bind(input to feature using InputToWish)
@@ -34,7 +33,6 @@ class FooBarInteractor(
     }
 
     override fun onViewCreated(view: FooBarView, viewLifecycle: Lifecycle) {
-        super.onViewCreated(view, viewLifecycle)
         viewLifecycle.createDestroy {
             bind(view to FooBarAnalytics using ViewEventToAnalyticsEvent)
             bind(view to feature using ViewEventToWish)

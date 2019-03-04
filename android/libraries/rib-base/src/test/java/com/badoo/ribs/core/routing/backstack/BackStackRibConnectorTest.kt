@@ -231,7 +231,7 @@ class BackStackRibConnectorTest {
 
         listOf(ribs1, ribs2).forEach {
             it.forEach {
-                verify(it).saveInstanceState(any())
+                verify(it).onSaveInstanceState(any())
             }
         }
     }
@@ -252,7 +252,7 @@ class BackStackRibConnectorTest {
             val (ribList, bundleList) = it
             ribList.forEach {
                 val captor = argumentCaptor<Bundle>()
-                verify(it).saveInstanceState(captor.capture())
+                verify(it).onSaveInstanceState(captor.capture())
                 bundleList.add(captor.firstValue)
             }
         }

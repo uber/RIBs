@@ -25,8 +25,7 @@ class HelloWorldInteractor(
     disposables = feature
 ) {
 
-    override fun didBecomeActive(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
-        super.didBecomeActive(ribLifecycle, savedInstanceState)
+    override fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
         ribLifecycle.createDestroy {
             bind(feature.news to output using NewsToOutput)
             bind(input to feature using InputToWish)
@@ -34,7 +33,6 @@ class HelloWorldInteractor(
     }
 
     override fun onViewCreated(view: HelloWorldView, viewLifecycle: Lifecycle) {
-        super.onViewCreated(view, viewLifecycle)
         viewLifecycle.createDestroy {
             bind(view to HelloWorldAnalytics using ViewEventToAnalyticsEvent)
             bind(view to feature using ViewEventToWish)

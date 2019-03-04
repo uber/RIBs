@@ -83,7 +83,7 @@ internal class BackStackRibConnector<C : Parcelable>(
         backStack.forEach {
             it.bundles = it.ribs?.map { childNode ->
                 Bundle().also {
-                    childNode.saveInstanceState(it)
+                    childNode.onSaveInstanceState(it)
                 }
             } ?: emptyList()
 

@@ -43,7 +43,7 @@ public final class NodeHelper {
    */
   @SuppressWarnings("unchecked")
   public static <R extends Node> void attach(R router) {
-    router.dispatchAttach(null);
+    router.onAttach(null);
   }
 
   /**
@@ -52,7 +52,7 @@ public final class NodeHelper {
    * @param node the {@link Node}.
    */
   public static void detach(Node node) {
-    node.dispatchDetach();
+    node.onDetach();
   }
 
   /**
@@ -62,7 +62,7 @@ public final class NodeHelper {
    */
   @SuppressWarnings("unchecked")
   public static void verifyAttached(Node node) {
-    verify(node).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+    verify(node).onAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
   }
 
   /**
@@ -73,7 +73,7 @@ public final class NodeHelper {
    */
   @SuppressWarnings("unchecked")
   public static void verifyAttached(InOrder order, Node node) {
-    order.verify(node).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+    order.verify(node).onAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
   }
 
   /**
@@ -83,7 +83,7 @@ public final class NodeHelper {
    * @param tag the expected tag.
    */
   public static void verifyAttached(Node node, String tag) {
-    verify(node).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), eq(tag));
+    verify(node).onAttach(or(isNull(Bundle.class), isA(Bundle.class)), eq(tag));
   }
 
   /**
@@ -94,7 +94,7 @@ public final class NodeHelper {
    */
   @SuppressWarnings("unchecked")
   public static void verifyAttached(Node node, VerificationMode mode) {
-    verify(node, mode).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+    verify(node, mode).onAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
   }
 
   /**
@@ -105,7 +105,7 @@ public final class NodeHelper {
   @SuppressWarnings("unchecked")
   public static void verifyNotAttached(Node node) {
     verify(node, never())
-        .dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+        .onAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
   }
 
   /**
@@ -114,7 +114,7 @@ public final class NodeHelper {
    * @param node the {@link Node}.
    */
   public static void verifyDetached(Node node) {
-    verify(node).dispatchDetach();
+    verify(node).onDetach();
   }
 
   /**
@@ -124,7 +124,7 @@ public final class NodeHelper {
    * @param node the {@link Node}.
    */
   public static void verifyDetached(InOrder order, Node node) {
-    order.verify(node).dispatchDetach();
+    order.verify(node).onDetach();
   }
 
   /**
@@ -134,7 +134,7 @@ public final class NodeHelper {
    * @param mode The mockito verification mode. ie. {@code times(1)}.
    */
   public static void verifyDetached(Node node, VerificationMode mode) {
-    verify(node, mode).dispatchDetach();
+    verify(node, mode).onDetach();
   }
 
   /**
@@ -143,6 +143,6 @@ public final class NodeHelper {
    * @param node the {@link Node}.
    */
   public static void verifyNotDetached(Node node) {
-    verify(node, never()).dispatchDetach();
+    verify(node, never()).onDetach();
   }
 }

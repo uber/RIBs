@@ -28,7 +28,7 @@ abstract class Router<C : Parcelable, V : RibView>(
 
     lateinit var node: Node<V>
 
-    fun dispatchAttach(savedInstanceState: Bundle?) {
+    fun onAttach(savedInstanceState: Bundle?) {
         timeCapsule = AndroidTimeCapsule(savedInstanceState)
         attachPermanentParts()
         initConfigurationManager()
@@ -74,7 +74,7 @@ abstract class Router<C : Parcelable, V : RibView>(
         timeCapsule.saveState(outState)
     }
 
-    fun dispatchDetach() {
+    fun onDetach() {
         backStackManager.accept(TearDown())
         binder.clear()
     }

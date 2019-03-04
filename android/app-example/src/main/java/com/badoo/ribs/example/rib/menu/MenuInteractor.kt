@@ -22,15 +22,13 @@ class MenuInteractor(
     disposables = feature
 ) {
 
-    override fun didBecomeActive(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
-        super.didBecomeActive(ribLifecycle, savedInstanceState)
+    override fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
         ribLifecycle.createDestroy {
             bind(input to feature)
         }
     }
 
     override fun onViewCreated(view: MenuView, viewLifecycle: Lifecycle) {
-        super.onViewCreated(view, viewLifecycle)
         viewLifecycle.createDestroy {
             bind(feature to view using StateToViewModel)
             bind(view to output using ViewEventToOutput)

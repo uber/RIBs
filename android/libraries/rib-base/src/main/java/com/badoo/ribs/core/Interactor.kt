@@ -20,7 +20,6 @@ import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
 import android.os.Bundle
 import android.os.Parcelable
-import android.support.annotation.CallSuper
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.LifecycleEndedException
 import com.uber.autodispose.LifecycleScopeProvider
@@ -57,17 +56,20 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     override fun lifecycle(): Observable<InteractorEvent> =
         lifecycleRelay.hide()
 
-    /**
-     * Called when attached.
-     *
-     * @param savedInstanceState the saved [Bundle].
-     */
-    protected fun didBecomeActive(savedInstanceState: Bundle?) {
+    fun onAttach(savedInstanceState: Bundle?) {
+        lifecycleRelay.accept(ACTIVE)
         ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
-        didBecomeActive(ribLifecycleRegistry, savedInstanceState)
+        onAttach(ribLifecycleRegistry, savedInstanceState)
     }
 
-    protected open fun didBecomeActive(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
+    protected open fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
+    }
+
+    fun onDetach() {
+        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        disposables?.dispose()
+        lifecycleRelay.accept(INACTIVE)
     }
 
     fun onViewCreated(view: V) {
@@ -105,18 +107,6 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     }
 
     /**
-     * Called when detached. The [Interactor] should do its cleanup here.
-     */
-    fun willResignActive() {
-        viewLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY) // todo probably this is not needed?
-        ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-        disposables?.dispose()
-    }
-
-    override fun getLifecycle(): Lifecycle =
-        ribLifecycleRegistry
-
-    /**
      * Handle an activity back press.
      *
      * @return TRUE if the interactor handled the back press and no further action is necessary.
@@ -131,17 +121,8 @@ abstract class Interactor<C : Parcelable, V : RibView>(
      */
     open fun onSaveInstanceState(outState: Bundle) {}
 
-    fun dispatchAttach(savedInstanceState: Bundle?) {
-        lifecycleRelay.accept(ACTIVE)
-
-        didBecomeActive(savedInstanceState)
-    }
-
-    fun dispatchDetach() {
-        willResignActive()
-
-        lifecycleRelay.accept(INACTIVE)
-    }
+    override fun getLifecycle(): Lifecycle =
+        ribLifecycleRegistry
 
     // todo these are leftovers, reconsider them
     override fun correspondingEvents(): Function<InteractorEvent, InteractorEvent> =

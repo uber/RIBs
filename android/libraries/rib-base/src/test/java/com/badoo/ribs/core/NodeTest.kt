@@ -87,72 +87,72 @@ class NodeTest {
     }
 
     @Test
-    fun `dispatchAttach() notifies Router`() {
-        node.dispatchAttach(null)
-        verify(router).dispatchAttach(null)
+    fun `onAttach() notifies Router`() {
+        node.onAttach(null)
+        verify(router).onAttach(null)
     }
 
     @Test
-    fun `dispatchAttach() notifies Interactor`() {
-        node.dispatchAttach(null)
-        verify(interactor).dispatchAttach(null)
+    fun `onAttach() notifies Interactor`() {
+        node.onAttach(null)
+        verify(interactor).onAttach(null)
     }
 
     @Test
-    fun `A non-null Bundle in dispatchAttach() is passed to Router`() {
+    fun `A non-null Bundle in onAttach() is passed to Router`() {
         val bundle: Bundle = mock()
         val childBundle: Bundle = mock()
         whenever(bundle.getBundle(KEY_ROUTER)).thenReturn(childBundle)
-        node.dispatchAttach(bundle)
-        verify(router).dispatchAttach(childBundle)
+        node.onAttach(bundle)
+        verify(router).onAttach(childBundle)
     }
 
     @Test
-    fun `A non-null Bundle in dispatchAttach() is passed to Interactor`() {
+    fun `A non-null Bundle in onAttach() is passed to Interactor`() {
         val bundle: Bundle = mock()
         val childBundle: Bundle = mock()
         whenever(bundle.getBundle(KEY_INTERACTOR)).thenReturn(childBundle)
-        node.dispatchAttach(bundle)
-        verify(interactor).dispatchAttach(childBundle)
+        node.onAttach(bundle)
+        verify(interactor).onAttach(childBundle)
     }
 
     @Test
-    fun `Dispatch detach notifies Router`() {
-        node.dispatchDetach()
-        verify(router).dispatchDetach()
+    fun `onDetach() notifies Router`() {
+        node.onDetach()
+        verify(router).onDetach()
     }
 
     @Test
-    fun `Dispatch detach notifies Interactor`() {
-        node.dispatchDetach()
-        verify(interactor).dispatchDetach()
+    fun `onDetach() notifies Interactor`() {
+        node.onDetach()
+        verify(interactor).onDetach()
     }
 
     @Test
-    fun `Save instance state saves view state as well`() {
+    fun `onSaveInstanceState() saves view state as well`() {
         node.view = view
-        node.saveInstanceState(mock())
+        node.onSaveInstanceState(mock())
         verify(androidView).saveHierarchyState(node.savedViewState)
     }
 
     @Test
-    fun `Save instance state is forwarded to Router`() {
-        node.saveInstanceState(mock())
+    fun `onSaveInstanceState() is forwarded to Router`() {
+        node.onSaveInstanceState(mock())
         verify(router).onSaveInstanceState(any())
     }
 
     @Test
-    fun `Router's bundle from onSaveInstanceState call is put inside original bundle`() {
+    fun `Router's bundle from onSaveInstanceState() call is put inside original bundle`() {
         val bundle: Bundle = mock()
         val captor = argumentCaptor<Bundle>()
-        node.saveInstanceState(bundle)
+        node.onSaveInstanceState(bundle)
         verify(router).onSaveInstanceState(captor.capture())
         verify(bundle).putBundle(KEY_ROUTER, captor.firstValue)
     }
 
     @Test
-    fun `Save instance state is forwarded to Interactor`() {
-        node.saveInstanceState(mock())
+    fun `onSaveInstanceState() is forwarded to Interactor`() {
+        node.onSaveInstanceState(mock())
         verify(interactor).onSaveInstanceState(any())
     }
 
@@ -160,37 +160,37 @@ class NodeTest {
     fun `Interactor's bundle from onSaveInstanceState call is put inside original bundle`() {
         val bundle: Bundle = mock()
         val captor = argumentCaptor<Bundle>()
-        node.saveInstanceState(bundle)
+        node.onSaveInstanceState(bundle)
         verify(interactor).onSaveInstanceState(captor.capture())
         verify(bundle).putBundle(KEY_INTERACTOR, captor.firstValue)
     }
 
     @Test
-    fun `onStart is forwarded to Interactor`() {
+    fun `onStart() is forwarded to Interactor`() {
         node.onStart()
         verify(interactor).onStart()
     }
 
     @Test
-    fun `onStop is forwarded to Interactor`() {
+    fun `onStop() is forwarded to Interactor`() {
         node.onStop()
         verify(interactor).onStop()
     }
 
     @Test
-    fun `onPause is forwarded to Interactor`() {
+    fun `onPause() is forwarded to Interactor`() {
         node.onPause()
         verify(interactor).onPause()
     }
 
     @Test
-    fun `onResume() is forwarded to Interactor`() {
+    fun `onResume()() is forwarded to Interactor`() {
         node.onResume()
         verify(interactor).onResume()
     }
 
     @Test
-    fun `onStart is forwarded to all children`() {
+    fun `onStart() is forwarded to all children`() {
         val mocks = createAndAttachChildMocks(3)
         node.onStart()
         mocks.forEach {
@@ -199,7 +199,7 @@ class NodeTest {
     }
 
     @Test
-    fun `onStop is forwarded to all children`() {
+    fun `onStop() is forwarded to all children`() {
         val mocks = createAndAttachChildMocks(3)
         node.onStop()
         mocks.forEach {
@@ -208,7 +208,7 @@ class NodeTest {
     }
 
     @Test
-    fun `onPause is forwarded to all children`() {
+    fun `onPause() is forwarded to all children`() {
         val mocks = createAndAttachChildMocks(3)
         node.onPause()
         mocks.forEach {
@@ -327,7 +327,7 @@ class NodeTest {
     @Test
     fun `onDetachFromView() resets isViewAttached flag to false`() {
         node.attachToView(parentViewGroup)
-        node.onDetachFromView(parentViewGroup)
+        node.detachFromView(parentViewGroup)
         assertEquals(false, node.isViewAttached)
     }
 
@@ -403,14 +403,14 @@ class NodeTest {
 
     @Test
     fun `Rib id is generated automatically`() {
-        node.dispatchAttach(null)
+        node.onAttach(null)
         assertNotNull(node.ribId)
     }
 
     @Test
     fun `Rib id is saved to bundle`() {
         val outState = mock<Bundle>()
-        node.saveInstanceState(outState)
+        node.onSaveInstanceState(outState)
         verify(outState).putInt(KEY_RIB_ID, node.ribId!!)
     }
 
@@ -418,20 +418,20 @@ class NodeTest {
     fun `Rib id is restored from bundle`() {
         val savedInstanceState = mock<Bundle>()
         whenever(savedInstanceState.getInt(eq(KEY_RIB_ID), any())).thenReturn(999)
-        node.dispatchAttach(savedInstanceState)
+        node.onAttach(savedInstanceState)
         assertEquals(999, node.ribId)
     }
 
     @Test
     fun `Tag is generated automatically`() {
-        node.dispatchAttach(null)
+        node.onAttach(null)
         assertNotNull(node.tag)
     }
 
     @Test
     fun `Tag is saved to bundle`() {
         val outState = mock<Bundle>()
-        node.saveInstanceState(outState)
+        node.onSaveInstanceState(outState)
         verify(outState).putString(KEY_TAG, node.tag)
     }
 
@@ -439,7 +439,7 @@ class NodeTest {
     fun `Tag is restored from bundle`() {
         val savedInstanceState = mock<Bundle>()
         whenever(savedInstanceState.getString(KEY_TAG)).thenReturn("abcdef")
-        node.dispatchAttach(savedInstanceState)
+        node.onAttach(savedInstanceState)
         assertEquals("abcdef", node.tag)
     }
 
@@ -447,7 +447,7 @@ class NodeTest {
     fun `View state saved to bundle`() {
         val outState = mock<Bundle>()
         node.savedViewState = mock()
-        node.saveInstanceState(outState)
+        node.onSaveInstanceState(outState)
         verify(outState).putSparseParcelableArray(KEY_VIEW_STATE, node.savedViewState)
     }
 
@@ -457,7 +457,7 @@ class NodeTest {
         val savedViewState = SparseArray<Parcelable>()
         whenever(savedInstanceState.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE)).thenReturn(savedViewState)
 
-        node.dispatchAttach(savedInstanceState)
+        node.onAttach(savedInstanceState)
         assertEquals(savedViewState, node.savedViewState)
     }
 

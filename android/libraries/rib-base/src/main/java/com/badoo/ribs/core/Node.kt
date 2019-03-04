@@ -120,13 +120,13 @@ open class Node<V : RibView>(
 
     internal fun detachChildView(child: Node<*>) {
         parentViewGroup?.let {
-            child.onDetachFromView(
+            child.detachFromView(
                 parentViewGroup = router.getParentViewForChild(child.identifier, view) ?: it
             )
         }
     }
 
-    fun onDetachFromView(parentViewGroup: ViewGroup) {
+    fun detachFromView(parentViewGroup: ViewGroup) {
         children.forEach {
             detachChildView(it)
         }
@@ -168,7 +168,7 @@ open class Node<V : RibView>(
             "ATTACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
         )
 
-        childNode.dispatchAttach(bundle)
+        childNode.onAttach(bundle)
     }
 
     /**
@@ -188,34 +188,34 @@ open class Node<V : RibView>(
             "DETACHED", childNode.javaClass.simpleName, this.javaClass.simpleName
         )
 
-        childNode.dispatchDetach()
+        childNode.onDetach()
     }
 
     @CallSuper
-    open fun dispatchAttach(savedInstanceState: Bundle?) {
+    open fun onAttach(savedInstanceState: Bundle?) {
         this.savedInstanceState = savedInstanceState
 
         tag = savedInstanceState?.getString(KEY_TAG) ?: tag
         updateRibId(savedInstanceState?.getInt(KEY_RIB_ID, generateRibId()) ?: generateRibId())
         savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
 
-        router.dispatchAttach(savedInstanceState?.getBundle(KEY_ROUTER))
-        interactor.dispatchAttach(savedInstanceState?.getBundle(KEY_INTERACTOR))
+        router.onAttach(savedInstanceState?.getBundle(KEY_ROUTER))
+        interactor.onAttach(savedInstanceState?.getBundle(KEY_INTERACTOR))
     }
 
-    open fun dispatchDetach() {
-        interactor.dispatchDetach()
-        router.dispatchDetach()
+    open fun onDetach() {
+        interactor.onDetach()
+        router.onDetach()
 
         for (child in children) {
             detachChildNode(child)
         }
     }
 
-    open fun saveInstanceState(outState: Bundle) {
+    open fun onSaveInstanceState(outState: Bundle) {
         saveRouterState(outState)
         saveInteractorState(outState)
-        saveViewState() // todo write test for this
+        saveViewState()
         outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
         outState.putString(KEY_TAG, tag)
         outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
