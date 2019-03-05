@@ -3,16 +3,22 @@ package com.badoo.ribs.plugin.action
 import com.android.builder.model.AndroidProject
 import com.android.tools.idea.gradle.project.model.AndroidModuleModel
 import com.badoo.ribs.plugin.generator.SourceSet
-import com.badoo.ribs.plugin.generator.SourceSet.*
+import com.badoo.ribs.plugin.generator.SourceSet.ANDROID_TEST
+import com.badoo.ribs.plugin.generator.SourceSet.MAIN
+import com.badoo.ribs.plugin.generator.SourceSet.RESOURCES
+import com.badoo.ribs.plugin.generator.SourceSet.TEST
 import com.badoo.ribs.plugin.util.toPsiDirectory
 import com.intellij.openapi.project.Project
+import com.intellij.openapi.vfs.LocalFileSystem
 import com.intellij.psi.PsiDirectory
+import com.intellij.refactoring.PackageWrapper
+import com.intellij.refactoring.util.RefactoringUtil
 import org.jetbrains.android.facet.AndroidFacet
-import java.lang.IllegalStateException
 
 class SourceSetDirectoriesProvider(
     private val project: Project,
     private val androidFacet: AndroidFacet,
+    private val targetPackage: PackageWrapper,
     private val mainSourceDirectory: PsiDirectory
 ) {
 
@@ -36,7 +42,7 @@ class SourceSetDirectoriesProvider(
         val file = androidModel.getTestSourceProviders(artifact).firstOrNull()?.javaDirectories?.firstOrNull()
             ?: throw IllegalStateException("Source set directory for $artifact not found")
         file.mkdirs()
-        return file.toPsiDirectory(project)!!
+        val virtualFile = LocalFileSystem.getInstance().refreshAndFindFileByIoFile(file)
+        return RefactoringUtil.createPackageDirectoryInSourceRoot(targetPackage, virtualFile)
     }
-
 }
