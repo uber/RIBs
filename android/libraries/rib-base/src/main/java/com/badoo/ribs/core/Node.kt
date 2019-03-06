@@ -15,12 +15,14 @@
  */
 package com.badoo.ribs.core
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.CallSuper
 import android.support.annotation.MainThread
 import android.util.SparseArray
 import android.view.ViewGroup
+import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.core.requestcode.RequestCodeRegistry
@@ -36,6 +38,7 @@ open class Node<V : RibView>(
     private val viewFactory: ViewFactory<V>?,
     private val router: Router<*, V>,
     private val interactor: Interactor<*, V>,
+    private val activityStarter: ActivityStarter,
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
@@ -49,6 +52,7 @@ open class Node<V : RibView>(
 
     init {
         router.node = this
+        interactor.node = this
     }
 
     var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
@@ -254,6 +258,21 @@ open class Node<V : RibView>(
         interactor.onPause()
         children.forEach { it.onPause() }
     }
+
+    internal fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle? = null) {
+        activityStarter.startActivityForResult(intent, generateRequestCode(requestCode), options)
+    }
+
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean  =
+        if (requestCodeRegistry.resolveGroupId(requestCode) == ribId) {
+            interactor.onActivityResult(requestCodeRegistry.resolveRequestCode(requestCode), resultCode, data)
+            true
+
+        } else {
+            children.asReversed().any {
+                it.onActivityResult(requestCode, resultCode, data)
+            }
+        }
 
     override fun toString(): String =
         "Node@${hashCode()} ($identifier)"

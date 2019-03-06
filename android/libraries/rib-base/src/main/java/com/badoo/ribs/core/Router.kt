@@ -27,6 +27,7 @@ abstract class Router<C : Parcelable, V : RibView>(
         get() = backStackManager.state.current.configuration
 
     lateinit var node: Node<V>
+        internal set
 
     fun onAttach(savedInstanceState: Bundle?) {
         timeCapsule = AndroidTimeCapsule(savedInstanceState)
