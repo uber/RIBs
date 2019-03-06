@@ -44,7 +44,7 @@ open class Node<V : RibView>(
         internal const val KEY_ROUTER = "node.router"
         internal const val KEY_INTERACTOR = "node.interactor"
         internal const val KEY_VIEW_STATE = "view.state"
-        private val requestCodeRegistry = RequestCodeRegistry(8)
+        private val requestCodeRegistry = RequestCodeRegistry()
     }
 
     init {
