@@ -13,29 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.badoo.ribs.android
 
-import android.content.Intent;
+import android.content.Intent
+import android.os.Bundle
 
 /**
  * Start activities. A much cleaner dependency than an entire activity or context, and easier to
  * inject and mock in tests.
  */
-public interface ActivityStarter {
+interface ActivityStarter {
 
-  /**
-   * Start an activity with the given intent.
-   *
-   * @param intent The intent to open a new activity.
-   */
-  void startActivity(Intent intent);
+    /**
+     * Start an activity with the given intent.
+     *
+     * @param intent The intent to open a new activity.
+     */
+    fun startActivity(intent: Intent)
 
-  /**
-   * Start an activity with the given intent, to be notified when that activity finishes.
-   *
-   * @param intent The intent to open a new activity.
-   * @param requestCode The code unique to your current activity to know which activity result is
-   *     from this request.
-   */
-  void startActivityForResult(Intent intent, int requestCode);
+    /**
+     * Start an activity with the given intent, to be notified when that activity finishes.
+     *
+     * @param intent The intent to open a new activity.
+     * @param requestCode The code unique to your current activity to know which activity result is
+     * from this request.
+     */
+    fun startActivityForResult(intent: Intent, requestCode: Int, extras: Bundle? = null)
 }
