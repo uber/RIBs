@@ -59,12 +59,14 @@ def build = [
 ]
 
 def support = [
-    appcompat: "com.android.support:appcompat-v7:${versions.support}",
     annotations: "com.android.support:support-annotations:${versions.support}",
+    appcompat: "com.android.support:appcompat-v7:${versions.support}",
     appCompat: "com.android.support:appcompat-v7:${versions.support}",
-    percent: "com.android.support:percent:${versions.support}",
+    archLifecycleCommon: "android.arch.lifecycle:common-java8:${versions.archLifecycleCommon}",
     constraintLayout: "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
-    archLifecycleCommon: "android.arch.lifecycle:common-java8:${versions.archLifecycleCommon}"
+    design: "com.android.support:design:${versions.support}",
+    percent: "com.android.support:percent:${versions.support}"
+
 ]
 
 def test = [

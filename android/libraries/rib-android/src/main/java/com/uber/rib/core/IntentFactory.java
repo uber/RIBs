@@ -17,6 +17,8 @@ package com.uber.rib.core;
 
 import android.content.Intent;
 
+import com.badoo.ribs.android.IntentCreator;
+
 /** Factory for an {@link Intent} that opens an activity. */
 public interface IntentFactory {
 

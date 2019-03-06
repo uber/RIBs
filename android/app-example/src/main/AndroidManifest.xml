@@ -22,7 +22,7 @@
             android:name=".app.OtherActivity"
             android:label="@string/activity_other_title"
             android:theme="@style/AppTheme.NoActionBar" />
-        
+
     </application>
 
 </manifest>
