@@ -226,6 +226,10 @@ open class Node<V : RibView>(
         outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
     }
 
+    fun onLowMemory() {
+        router.onLowMemory()
+    }
+
     private fun saveRouterState(outState: Bundle) {
         Bundle().let {
             router.onSaveInstanceState(it)

@@ -11,6 +11,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import kotlinx.android.parcel.Parcelize
@@ -172,6 +173,94 @@ class BackStackRibConnectorTest {
     }
 
     @Test
+    fun `saveInstanceState() returns modified back stack`() {
+        backStackElement1.ribs = ribs1
+        backStackElement2.ribs = ribs2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        val returnedBackStack = backStackRibConnector.saveInstanceState(backStack)
+        assertEquals(backStack, returnedBackStack)
+    }
+
+    @Test
+    fun `saveInstanceState() returns back stack that contains bundles`() {
+        backStackElement1.ribs = ribs1
+        backStackElement2.ribs = ribs2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        val returnedBackStack = backStackRibConnector.saveInstanceState(backStack)
+
+        returnedBackStack.forEach {
+            assertNotNull(it.bundles)
+        }
+    }
+
+    @Test
+    fun `saveInstanceState() calls saveInstanceState() on all RIBs in back stack`() {
+        backStackElement1.ribs = ribs1
+        backStackElement2.ribs = ribs2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        backStackRibConnector.saveInstanceState(backStack)
+
+        listOf(ribs1, ribs2).forEach {
+            it.forEach {
+                verify(it).onSaveInstanceState(any())
+            }
+        }
+    }
+
+    @Test
+    fun `saveInstanceState() saves bundles of RIBs in the back stack`() {
+        backStackElement1.ribs = ribs1
+        backStackElement2.ribs = ribs2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        backStackRibConnector.saveInstanceState(backStack)
+        val expectedBundles1 = mutableListOf<Bundle>()
+        val expectedBundles2 = mutableListOf<Bundle>()
+
+        listOf(
+            ribs1 to expectedBundles1,
+            ribs2 to expectedBundles2
+        ).forEach {
+            val (ribList, bundleList) = it
+            ribList.forEach {
+                val captor = argumentCaptor<Bundle>()
+                verify(it).onSaveInstanceState(captor.capture())
+                bundleList.add(captor.firstValue)
+            }
+        }
+
+        assertEquals(expectedBundles1, backStackElement1.bundles)
+        assertEquals(expectedBundles2, backStackElement2.bundles)
+    }
+
+    @Test
+    fun `saveInstanceState() does not do any cleanup`() {
+        backStackElement1.apply {
+            ribs = ribs1
+            routingAction = routingAction1
+        }
+        backStackElement2.apply {
+            ribs = ribs2
+            routingAction = routingAction2
+        }
+        val backStack = listOf(backStackElement1, backStackElement2)
+        backStackRibConnector.saveInstanceState(backStack)
+        verify(routingAction1, never()).cleanup()
+        verify(routingAction2, never()).cleanup()
+    }
+
+    @Test
+    fun `saveInstanceState() does not clear rib references`() {
+        backStackElement1.ribs = ribs1
+        backStackElement2.ribs = ribs2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        val returnedBackStack = backStackRibConnector.saveInstanceState(backStack)
+
+        returnedBackStack.forEach {
+            assertNotNull(it.ribs)
+        }
+    }
+
+    @Test
     fun `shrinkToBundles() returns modified back stack`() {
         backStackElement1.ribs = ribs1
         backStackElement2.ribs = ribs2
@@ -189,37 +278,7 @@ class BackStackRibConnectorTest {
 
         returnedBackStack.forEach {
             assertNotNull(it.bundles)
-            assertNull(it.ribs)
         }
-    }
-
-    @Test
-    fun `shrinkToBundles() returns back stack that does not contain RIB references`() {
-        backStackElement1.ribs = ribs1
-        backStackElement2.ribs = ribs2
-        val backStack = listOf(backStackElement1, backStackElement2)
-        val returnedBackStack = backStackRibConnector.shrinkToBundles(backStack)
-
-        returnedBackStack.forEach {
-            assertNull(it.ribs)
-        }
-    }
-
-    @Test
-    fun `shrinkToBundles() calls cleanup() on last routing action`() {
-        backStackElement1.apply {
-            ribs = ribs1
-            routingAction = routingAction1
-        }
-        backStackElement2.apply {
-            ribs = ribs2
-            routingAction = routingAction2
-        }
-        val backStack = listOf(backStackElement1, backStackElement2)
-        backStackRibConnector.shrinkToBundles(backStack)
-        verify(routingAction2).cleanup()
-        verifyNoMoreInteractions(routingAction1)
-        verifyNoMoreInteractions(routingAction2)
     }
 
     @Test
@@ -259,6 +318,35 @@ class BackStackRibConnectorTest {
 
         assertEquals(expectedBundles1, backStackElement1.bundles)
         assertEquals(expectedBundles2, backStackElement2.bundles)
+    }
+
+    @Test
+    fun `shrinkToBundles() returns back stack that does not contain RIB references`() {
+        backStackElement1.ribs = ribs1
+        backStackElement2.ribs = ribs2
+        val backStack = listOf(backStackElement1, backStackElement2)
+        val returnedBackStack = backStackRibConnector.shrinkToBundles(backStack)
+
+        returnedBackStack.forEach {
+            assertNull(it.ribs)
+        }
+    }
+
+    @Test
+    fun `shrinkToBundles() calls cleanup() on last routing action`() {
+        backStackElement1.apply {
+            ribs = ribs1
+            routingAction = routingAction1
+        }
+        backStackElement2.apply {
+            ribs = ribs2
+            routingAction = routingAction2
+        }
+        val backStack = listOf(backStackElement1, backStackElement2)
+        backStackRibConnector.shrinkToBundles(backStack)
+        verify(routingAction2).cleanup()
+        verifyNoMoreInteractions(routingAction1)
+        verifyNoMoreInteractions(routingAction2)
     }
 
     @Test

@@ -263,6 +263,17 @@ class BackStackManagerTest {
         verify(backStackRibConnector, times(2)).goTo(lastElementAfterPop) // once initially + once when coming back
     }
 
+
+    @Test
+    fun `Wish_SaveInstanceState calls to connector`() {
+        backStackManager.accept(Push(Configuration.C2))
+        backStackManager.accept(Push(Configuration.C3))
+        backStackManager.accept(Push(Configuration.C4))
+        val backStackBeforeSaveInstanceState = backStackManager.state.backStack
+        backStackManager.accept(SaveInstanceState())
+        verify(backStackRibConnector).saveInstanceState(backStackBeforeSaveInstanceState)
+    }
+
     @Test
     fun `Wish_ShrinkToBundles calls to connector`() {
         backStackManager.accept(Push(Configuration.C2))

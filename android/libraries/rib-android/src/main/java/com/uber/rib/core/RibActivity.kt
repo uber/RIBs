@@ -49,6 +49,11 @@ abstract class RibActivity : AppCompatActivity(), ActivityStarter, IntentCreator
         rootNode.onSaveInstanceState(outState)
     }
 
+    override fun onLowMemory() {
+        super.onLowMemory()
+        rootNode.onLowMemory()
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         rootNode.onDetach()
