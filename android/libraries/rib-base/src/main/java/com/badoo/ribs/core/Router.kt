@@ -12,6 +12,7 @@ import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.NewRoot
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Pop
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Push
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Replace
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.SaveInstanceState
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.TearDown
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector
@@ -71,8 +72,12 @@ abstract class Router<C : Parcelable, V : RibView>(
         view?.androidView
 
     fun onSaveInstanceState(outState: Bundle) {
-        backStackManager.accept(ShrinkToBundles())
+        backStackManager.accept(SaveInstanceState())
         timeCapsule.saveState(outState)
+    }
+
+    fun onLowMemory() {
+        backStackManager.accept(ShrinkToBundles())
     }
 
     fun onDetach() {

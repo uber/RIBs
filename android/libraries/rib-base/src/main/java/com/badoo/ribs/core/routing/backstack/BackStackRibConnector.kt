@@ -78,17 +78,21 @@ internal class BackStackRibConnector<C : Parcelable>(
         }
     }
 
-    fun shrinkToBundles(backStack: List<BackStackElement<C>>): List<BackStackElement<C>> {
-        backStack.lastOrNull()?.routingAction?.cleanup()
+    fun shrinkToBundles(backStack: List<BackStackElement<C>>): List<BackStackElement<C>> =
+        saveInstanceState(backStack).apply {
+            dropLast(1).forEach {
+                it.ribs?.forEach { connector.detachChild(it) }
+                it.ribs = null
+            }
+        }
+
+    fun saveInstanceState(backStack: List<BackStackElement<C>>): List<BackStackElement<C>> {
         backStack.forEach {
             it.bundles = it.ribs?.map { childNode ->
                 Bundle().also {
                     childNode.onSaveInstanceState(it)
                 }
             } ?: emptyList()
-
-            it.ribs?.forEach { connector.detachChild(it) }
-            it.ribs = null
         }
 
         return backStack

@@ -6,7 +6,6 @@ import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.element.TimeCapsule
 import com.badoo.mvicore.feature.BaseFeature
-import com.badoo.ribs.core.routing.action.RoutingAction
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Action
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Action.Execute
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Action.ReattachRibsOfLastEntry
@@ -17,6 +16,7 @@ import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.NewRoot
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Pop
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Push
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.Replace
+import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.SaveInstanceState
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.ShrinkToBundles
 import com.badoo.ribs.core.routing.backstack.BackStackManager.Wish.TearDown
 import com.badoo.ribs.core.routing.backstack.BackStackRibConnector.DetachStrategy.DESTROY
@@ -75,6 +75,7 @@ internal class BackStackManager<C : Parcelable>(
         data class Push<C : Parcelable>(val configuration: C) : Wish<C>()
         data class NewRoot<C : Parcelable>(val configuration: C) : Wish<C>()
         class Pop<C : Parcelable> : Wish<C>()
+        class SaveInstanceState<C : Parcelable> : Wish<C>()
         class ShrinkToBundles<C : Parcelable> : Wish<C>()
         class TearDown<C : Parcelable> : Wish<C>()
     }
@@ -149,6 +150,11 @@ internal class BackStackManager<C : Parcelable>(
                                 }.map { revivedEntry -> Effect.Pop(revivedEntry) }
                             else -> empty()
                         }
+
+                        is SaveInstanceState ->
+                            fromCallable {
+                                connector.saveInstanceState(state.backStack)
+                            }.map { Effect.UpdateBackStack(it) }
 
                         is ShrinkToBundles ->
                             fromCallable {
