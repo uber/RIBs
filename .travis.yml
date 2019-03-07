@@ -13,6 +13,9 @@ script:
   - cd android
   - ./gradlew build
 
+env:
+  - TERM=dumb
+
 cache:
   directories:
     - $HOME/.gradle
