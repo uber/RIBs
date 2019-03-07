@@ -61,7 +61,10 @@ abstract class RibActivity : AppCompatActivity(), ActivityStarter, IntentCreator
         }
     }
 
-    override fun create(cls: Class<*>?): Intent =
+    override fun create(): Intent =
+        Intent()
+
+    override fun create(cls: Class<*>): Intent =
         Intent(this, cls)
 
 
