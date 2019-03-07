@@ -28,5 +28,6 @@ class FooBarRouterTest {
      */
     @Test
     fun `an example test with some conditions should pass`() {
+        throw RuntimeException("Add real tests.")
     }
 }
