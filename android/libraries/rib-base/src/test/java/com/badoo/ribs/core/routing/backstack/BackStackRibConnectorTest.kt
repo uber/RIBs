@@ -321,15 +321,14 @@ class BackStackRibConnectorTest {
     }
 
     @Test
-    fun `shrinkToBundles() returns back stack that does not contain RIB references`() {
+    fun `shrinkToBundles() returns clears RIB references in all but the last back stack element`() {
         backStackElement1.ribs = ribs1
         backStackElement2.ribs = ribs2
         val backStack = listOf(backStackElement1, backStackElement2)
         val returnedBackStack = backStackRibConnector.shrinkToBundles(backStack)
 
-        returnedBackStack.forEach {
-            assertNull(it.ribs)
-        }
+        assertNull(returnedBackStack[0].ribs)
+        assertNotNull(returnedBackStack[1].ribs)
     }
 
     @Test
@@ -350,16 +349,18 @@ class BackStackRibConnectorTest {
     }
 
     @Test
-    fun `shrinkToBundles() detaches all RIBs in back stack`() {
+    fun `shrinkToBundles() detaches RIBs in all but the last back stack element`() {
         backStackElement1.ribs = ribs1
         backStackElement2.ribs = ribs2
         val backStack = listOf(backStackElement1, backStackElement2)
         backStackRibConnector.shrinkToBundles(backStack)
 
-        listOf(ribs1, ribs2).forEach {
-            it.forEach {
-                verify(connector).detachChild(it)
-            }
+        ribs1.forEach {
+            verify(connector).detachChild(it)
+        }
+
+        ribs2.forEach {
+            verify(connector, never()).detachChild(it)
         }
     }
 
