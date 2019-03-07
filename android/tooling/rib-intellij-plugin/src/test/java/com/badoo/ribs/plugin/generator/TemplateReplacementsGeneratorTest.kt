@@ -1,6 +1,6 @@
 package com.badoo.ribs.plugin.generator
 
-import com.badoo.mobile.plugin.template.Token
+import com.badoo.ribs.plugin.template.Token
 import org.assertj.core.api.Assertions.assertThat
 import org.assertj.core.api.Assertions.assertThatExceptionOfType
 import org.junit.Test

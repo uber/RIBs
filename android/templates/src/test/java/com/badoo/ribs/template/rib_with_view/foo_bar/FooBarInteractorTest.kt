@@ -2,14 +2,13 @@ package com.badoo.ribs.template.rib_with_view.foo_bar
 
 import com.badoo.ribs.template.rib_with_view.foo_bar.feature.FooBarFeature
 import com.nhaarman.mockitokotlin2.mock
-import com.uber.rib.core.RibTestBasePlaceholder
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-class FooBarInteractorTest : RibTestBasePlaceholder() {
+class FooBarInteractorTest {
 
     private val input: ObservableSource<FooBar.Input> = mock()
     private val output: Consumer<FooBar.Output> = mock()
@@ -36,6 +35,5 @@ class FooBarInteractorTest : RibTestBasePlaceholder() {
      */
     @Test
     fun `an example test with some conditions should pass`() {
-        throw RuntimeException("Add real tests.")
     }
 }

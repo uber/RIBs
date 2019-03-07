@@ -25,7 +25,7 @@ dependencies {
     implementation deps.external.mviCoreAndroid
     implementation deps.external.rxrelay2
 
-    testImplementation project(":libraries:rib-test-utils")
+//    testImplementation project(":libraries:rib-test-utils")
     testImplementation deps.external.roboelectricBase
     testImplementation deps.test.mockitoKotlin
     testImplementation deps.test.junit
