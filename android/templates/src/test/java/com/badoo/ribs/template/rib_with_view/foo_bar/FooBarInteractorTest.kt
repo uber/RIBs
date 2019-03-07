@@ -1,10 +1,9 @@
-package com.badoo.ribs.example.rib.foo_bar
+package com.badoo.ribs.template.rib_with_view.foo_bar
 
-import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
+import com.badoo.ribs.template.rib_with_view.foo_bar.feature.FooBarFeature
 import com.nhaarman.mockitokotlin2.mock
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
-
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
@@ -36,5 +35,6 @@ class FooBarInteractorTest {
      */
     @Test
     fun `an example test with some conditions should pass`() {
+        throw RuntimeException("Add real tests.")
     }
 }

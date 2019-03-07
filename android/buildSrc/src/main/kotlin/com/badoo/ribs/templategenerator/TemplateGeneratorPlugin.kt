@@ -42,7 +42,8 @@ class TemplateGeneratorPlugin : Plugin<Project> {
                 name = it.name ?: throw IllegalArgumentException("Template name is mandatory"),
                 fromProject = it.fromProject
                     ?: throw IllegalArgumentException("fromProject property is mandatory"),
-                modulePackage = it.fromProject!!.androidPackageName,
+                modulePackage = it.fromProject!!.androidPackageName ?: it.modulePackage
+                    ?: throw IllegalArgumentException("modulePackage property is mandatory for library modules"),
                 sourcePackage = it.sourcePackage
                     ?: throw IllegalArgumentException("sourcePackage property is mandatory"),
                 resources = it.resources ?: emptyList(),
@@ -58,7 +59,7 @@ class TemplateGeneratorPlugin : Plugin<Project> {
         )
     }
 
-    private val Project.androidPackageName: String
+    private val Project.androidPackageName: String?
         get() {
             val androidExtension = extensions.getByType(BaseExtension::class.java)
             return androidExtension.defaultConfig.applicationId

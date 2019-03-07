@@ -55,7 +55,7 @@ open class GenerateTemplateAction : AnAction(), GenerateRibDialog.Listener {
 
         val template = metaInformationProvider.templates.find { it.id == templateId }!!
 
-        val sourceSetDirectories = SourceSetDirectoriesProvider(project, androidFacet, directory)
+        val sourceSetDirectories = SourceSetDirectoriesProvider(project, androidFacet, targetPackage, directory)
 
         val replacements = createReplacements(
             template.sourcePackage,

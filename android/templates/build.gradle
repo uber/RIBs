@@ -1,0 +1,42 @@
+configureAndroidLibrary(project)
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+
+androidExtensions {
+    experimental = true
+}
+
+dependencies {
+    implementation deps.external.kotlinStdlib
+
+    kapt deps.apt.daggerCompiler
+    compileOnly deps.apt.javax
+
+    implementation deps.support.appCompat
+    implementation deps.support.constraintLayout
+    implementation deps.support.percent
+
+    implementation project(":libraries:rib-android")
+
+    implementation deps.external.dagger
+    implementation deps.external.mviCore
+    implementation deps.external.mviCoreAndroid
+    implementation deps.external.rxrelay2
+
+//    testImplementation project(":libraries:rib-test-utils")
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.test.mockitoKotlin
+    testImplementation deps.test.junit
+}
+
+repositories {
+    mavenCentral()
+}
+
+afterEvaluate {
+    // Disable test tasks because they contain code that throws exception
+    project.tasks.getByName("testDebugUnitTest").configure { enabled = false }
+    project.tasks.getByName("testReleaseUnitTest").configure { enabled = false }
+}

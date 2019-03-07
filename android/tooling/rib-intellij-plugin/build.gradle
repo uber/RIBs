@@ -20,8 +20,9 @@ templates {
         id = 'rib_with_view'
         name = 'RIB with view'
 
-        fromProject = project(':app-example')
-        sourcePackage = 'com.badoo.ribs.example.template'
+        fromProject = project(':templates')
+        sourcePackage = 'com.badoo.ribs.template.rib_with_view'
+        modulePackage = 'com.badoo.ribs.template'
         resources = ['rib_foo_bar.xml']
 
         token {
@@ -64,6 +65,9 @@ intellij {
     updateSinceUntilBuild false
     sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
     downloadSources true
+
+    // Uncomment to test against Android Studio
+    // alternativeIdePath = '/Applications/Android Studio.app'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
