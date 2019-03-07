@@ -7,12 +7,38 @@
     tools:context=".app.RootActivity">
 
     <TextView
+        android:id="@+id/hello_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Hello World!"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/hello_id"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/hello_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/hello_title"
+        app:layout_constraintBottom_toTopOf="@id/hello_button_launch"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="3826750182" />
+
+    <Button
+        android:id="@+id/hello_button_launch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/launch_other_activity"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/hello_id"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
 
 </com.badoo.ribs.example.rib.hello_world.HelloWorldViewImpl>

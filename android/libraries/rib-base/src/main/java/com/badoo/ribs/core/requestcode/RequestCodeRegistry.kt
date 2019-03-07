@@ -3,23 +3,23 @@ package com.badoo.ribs.core.requestcode
 import java.lang.IllegalArgumentException
 
 class RequestCodeRegistry(
-    nbLowerBitsForIds: Int = 8
+    nbLowerBitsForIds: Int = 4
 ) {
     private val lowerBitsShift: Int = nbLowerBitsForIds - 0
     private val maskLowerBits = (1 shl lowerBitsShift) - 1
-    private val maskHigherBits = 0xFFFFFFFF.toInt() - maskLowerBits
+    private val maskHigherBits = 0x0000FFFF - maskLowerBits
     private val requestCodes = mutableMapOf<Int, String>()
 
     init {
         if (nbLowerBitsForIds < 1) throw IllegalArgumentException("nbLowerBitsForIds can't be less than 1")
-        if (nbLowerBitsForIds > 31) throw IllegalArgumentException("nbLowerBitsForIds can't be larger than 31")
+        if (nbLowerBitsForIds > 4) throw IllegalArgumentException("nbLowerBitsForIds can't be larger than 4")
     }
 
     fun generateGroupId(groupName: String): Int {
-        var code = groupName.hashCode() shl lowerBitsShift
+        var code = (groupName.hashCode() shl lowerBitsShift) and 0x0000FFFF
 
         while (requestCodes.containsKey(code) && requestCodes[code] != groupName) {
-            code += 1 shl lowerBitsShift
+            code += (1 shl lowerBitsShift) and 0x0000FFFF
         }
 
         requestCodes[code] = groupName

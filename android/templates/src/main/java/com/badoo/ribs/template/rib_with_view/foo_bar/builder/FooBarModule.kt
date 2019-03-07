@@ -1,5 +1,6 @@
 package com.badoo.ribs.template.rib_with_view.foo_bar.builder
 
+import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBar
@@ -53,11 +54,13 @@ internal object FooBarModule {
     internal fun node(
         viewFactory: ViewFactory<FooBarView>,
         router: FooBarRouter,
-        interactor: FooBarInteractor
+        interactor: FooBarInteractor,
+        activityStarter: ActivityStarter
     ) : Node<FooBarView> = Node(
         identifier = object : FooBar {},
         viewFactory = viewFactory,
         router = router,
-        interactor = interactor
+        interactor = interactor,
+        activityStarter = activityStarter
     )
 }

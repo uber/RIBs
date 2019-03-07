@@ -18,8 +18,10 @@ package com.badoo.ribs.core
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
+import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import com.badoo.ribs.android.IntentCreator
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.LifecycleEndedException
 import com.uber.autodispose.LifecycleScopeProvider
@@ -42,6 +44,8 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     private val disposables: Disposable?
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
 
+    lateinit var node: Node<V>
+        internal set
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
 
@@ -112,6 +116,13 @@ abstract class Interactor<C : Parcelable, V : RibView>(
      * @return TRUE if the interactor handled the back press and no further action is necessary.
      */
     open fun handleBackPress(): Boolean =
+        false
+
+    fun startActivityForResult(requestCode: Int, intentCreator: IntentCreator.() -> Intent) {
+        node.startActivityForResult(requestCode, intentCreator)
+    }
+
+    open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean =
         false
 
     /**

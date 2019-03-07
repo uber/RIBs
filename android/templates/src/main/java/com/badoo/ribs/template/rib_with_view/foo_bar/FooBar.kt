@@ -1,19 +1,17 @@
 package com.badoo.ribs.template.rib_with_view.foo_bar
 
 import com.badoo.ribs.core.Rib
-import com.badoo.ribs.core.directory.Directory
 import com.badoo.ribs.core.directory.inflateOnDemand
-import com.badoo.ribs.template.R
 import com.badoo.ribs.core.view.ViewFactory
+import com.badoo.ribs.template.R
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
 interface FooBar : Rib {
 
-    interface Dependency {
+    interface Dependency : Rib.Dependency {
         fun foobarInput(): ObservableSource<Input>
         fun foobarOutput(): Consumer<Output>
-        fun ribCustomisation(): Directory
     }
 
     sealed class Input

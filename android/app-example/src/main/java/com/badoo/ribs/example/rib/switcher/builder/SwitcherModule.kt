@@ -1,5 +1,6 @@
 package com.badoo.ribs.example.rib.switcher.builder
 
+import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.builder.FooBarBuilder
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
@@ -56,12 +57,14 @@ internal object SwitcherModule {
     internal fun node(
         viewFactory: ViewFactory<SwitcherView>,
         router: SwitcherRouter,
-        interactor: SwitcherInteractor
+        interactor: SwitcherInteractor,
+        activityStarter: ActivityStarter
     ) : Node<SwitcherView> = Node(
         identifier = object : Switcher {},
         viewFactory = viewFactory,
         router = router,
-        interactor = interactor
+        interactor = interactor,
+        activityStarter = activityStarter
     )
 
     @SwitcherScope

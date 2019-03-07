@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Example app</string>
+    <string name="launch_other_activity">Launch other Activity</string>
+    <string name="activity_other_title">Other Activity</string>
+    <string name="activity_other_content">Press FAB to return to previous screen with result OK + data containing \"foo\" -> 999 </string>
+    <string name="activity_other_incoming_title">Incoming data</string>
 </resources>

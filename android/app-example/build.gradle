@@ -39,6 +39,7 @@ dependencies {
 
     implementation deps.support.appCompat
     implementation deps.support.constraintLayout
+    implementation deps.support.design
     implementation deps.support.percent
 
     implementation project(":libraries:rib-android")
@@ -55,7 +56,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
-//    androidTestImplementation 'org.robolectric:shadows-supportv4'
 }
 
 repositories {

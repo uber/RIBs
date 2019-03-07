@@ -1,5 +1,6 @@
 package com.badoo.ribs.example.rib.menu.builder
 
+import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuInteractor
 import com.badoo.ribs.example.rib.menu.MenuRouter
@@ -48,11 +49,13 @@ internal object MenuModule {
     internal fun node(
         viewFactory: ViewFactory<MenuView>,
         router: MenuRouter,
-        interactor: MenuInteractor
+        interactor: MenuInteractor,
+        activityStarter: ActivityStarter
     ) : Node<MenuView> = Node(
         identifier = object : Menu {},
         viewFactory = viewFactory,
         router = router,
-        interactor = interactor
+        interactor = interactor,
+        activityStarter = activityStarter
     )
 }

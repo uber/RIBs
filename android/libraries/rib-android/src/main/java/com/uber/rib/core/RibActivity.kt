@@ -1,11 +1,14 @@
 package com.uber.rib.core
 
+import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
+import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.IntentCreator
 import com.badoo.ribs.core.Node
 
-abstract class RibActivity : AppCompatActivity() {
+abstract class RibActivity : AppCompatActivity(), ActivityStarter, IntentCreator {
 
     private lateinit var rootNode: Node<*>
 
@@ -56,5 +59,26 @@ abstract class RibActivity : AppCompatActivity() {
         if (!rootNode.handleBackPress()) {
             super.onBackPressed()
         }
+    }
+
+    override fun create(cls: Class<*>?): Intent =
+        cls?.let { Intent(this, it) } ?: Intent()
+
+    override fun startActivity(f: IntentCreator.() -> Intent) {
+        startActivity(this.f())
+    }
+
+    override fun startActivityForResult(requestCode: Int, intentCreator: IntentCreator.() -> Intent) {
+        startActivityForResult(this.intentCreator(), requestCode)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (!rootNode.onActivityResult(requestCode, resultCode, data)) {
+            onActivityResultNotHandledByRib(requestCode, resultCode, data)
+        }
+    }
+
+    open fun onActivityResultNotHandledByRib(requestCode: Int, resultCode: Int, data: Intent?) {
+        // crash it, log it, do whatever if this is unexpected
     }
 }
