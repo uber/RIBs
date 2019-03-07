@@ -270,6 +270,8 @@ open class Node<V : RibView>(
             true
 
         } else {
+            // most recently added children are more likely to be responsible
+            // old ones might be only alive in back stack and not even attached to view
             children.asReversed().any {
                 it.onActivityResult(requestCode, resultCode, data)
             }
