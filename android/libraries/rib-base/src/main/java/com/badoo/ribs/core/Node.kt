@@ -260,8 +260,8 @@ open class Node<V : RibView>(
         children.forEach { it.onPause() }
     }
 
-    internal fun startActivityForResult(requestCode: Int, f: IntentCreator.() -> Intent) {
-        activityStarter.startActivityForResult(generateRequestCode(requestCode), f)
+    internal fun startActivityForResult(requestCode: Int, intentCreator: IntentCreator.() -> Intent) {
+        activityStarter.startActivityForResult(generateRequestCode(requestCode), intentCreator)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean  =

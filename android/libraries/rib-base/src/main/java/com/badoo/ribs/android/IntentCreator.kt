@@ -4,7 +4,5 @@ import android.content.Intent
 
 interface IntentCreator {
 
-    fun create(): Intent
-
-    fun create(cls: Class<*>): Intent
+    fun create(cls: Class<*>? = null): Intent
 }

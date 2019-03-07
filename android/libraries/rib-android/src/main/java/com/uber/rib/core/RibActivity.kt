@@ -61,19 +61,15 @@ abstract class RibActivity : AppCompatActivity(), ActivityStarter, IntentCreator
         }
     }
 
-    override fun create(): Intent =
-        Intent()
-
-    override fun create(cls: Class<*>): Intent =
-        Intent(this, cls)
-
+    override fun create(cls: Class<*>?): Intent =
+        cls?.let { Intent(this, it) } ?: Intent()
 
     override fun startActivity(f: IntentCreator.() -> Intent) {
         startActivity(this.f())
     }
 
-    override fun startActivityForResult(requestCode: Int, f: IntentCreator.() -> Intent) {
-        startActivityForResult(this.f(), requestCode)
+    override fun startActivityForResult(requestCode: Int, intentCreator: IntentCreator.() -> Intent) {
+        startActivityForResult(this.intentCreator(), requestCode)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

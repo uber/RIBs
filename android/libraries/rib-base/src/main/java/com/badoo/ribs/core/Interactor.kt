@@ -118,8 +118,8 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     open fun handleBackPress(): Boolean =
         false
 
-    fun startActivityForResult(requestCode: Int, f: IntentCreator.() -> Intent) {
-        node.startActivityForResult(requestCode, f)
+    fun startActivityForResult(requestCode: Int, intentCreator: IntentCreator.() -> Intent) {
+        node.startActivityForResult(requestCode, intentCreator)
     }
 
     open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean =
