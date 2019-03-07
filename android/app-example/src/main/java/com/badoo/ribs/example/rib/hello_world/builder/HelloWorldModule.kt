@@ -40,15 +40,13 @@ internal object HelloWorldModule {
         router: HelloWorldRouter,
         input: ObservableSource<Input>,
         output: Consumer<Output>,
-        feature: HelloWorldFeature,
-        intentCreator: IntentCreator
+        feature: HelloWorldFeature
     ): HelloWorldInteractor =
         HelloWorldInteractor(
             router = router,
             input = input,
             output = output,
-            feature = feature,
-            intentCreator = intentCreator
+            feature = feature
         )
 
     @HelloWorldScope
