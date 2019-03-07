@@ -6,7 +6,6 @@ import android.content.Intent
 import android.os.Bundle
 import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
-import com.badoo.ribs.android.IntentCreator
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router
@@ -25,8 +24,7 @@ class HelloWorldInteractor(
     router: Router<HelloWorldRouter.Configuration, HelloWorldView>,
     private val input: ObservableSource<HelloWorld.Input>,
     private val output: Consumer<HelloWorld.Output>,
-    private val feature: HelloWorldFeature,
-    private val intentCreator: IntentCreator
+    private val feature: HelloWorldFeature
 ) : Interactor<HelloWorldRouter.Configuration, HelloWorldView>(
     router = router,
     disposables = feature
@@ -57,23 +55,23 @@ class HelloWorldInteractor(
     }
 
     private val viewEventConsumer : Consumer<HelloWorldView.Event> = Consumer {
-        val f: (Class<*>) -> Intent
-
-        startActivityForResult(
-            intentCreator.create(OtherActivity::class.java).apply {
+        startActivityForResult(REQUEST_CODE_OTHER_ACTIVITY) {
+            create(OtherActivity::class.java).apply {
                 putExtra(OtherActivity.KEY_INCOMING, "Data sent by HelloWorld - 123123")
-            },
-            REQUEST_CODE_OTHER_ACTIVITY
-        )
+            }
+
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == REQUEST_CODE_OTHER_ACTIVITY && resultCode == Activity.RESULT_OK) {
-            dummyViewInput.accept(
-                ViewModel(
-                    "Data returned: " + data?.getIntExtra(OtherActivity.KEY_RETURNED_DATA, -1)?.toString()
+        if (requestCode == REQUEST_CODE_OTHER_ACTIVITY) {
+            if (resultCode == Activity.RESULT_OK) {
+                dummyViewInput.accept(
+                    ViewModel(
+                        "Data returned: " + data?.getIntExtra(OtherActivity.KEY_RETURNED_DATA, -1)?.toString()
+                    )
                 )
-            )
+            }
 
             return true
         }

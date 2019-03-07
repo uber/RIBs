@@ -18,10 +18,8 @@ package com.uber.rib.core;
 import android.content.Context;
 import android.content.Intent;
 
-import com.badoo.ribs.android.IntentCreator;
-
 /** A default implementation of {@link IntentCreator}. */
-public class IntentCreatorImpl implements com.badoo.ribs.android.IntentCreator {
+public class IntentCreatorImpl implements IntentCreator {
 
   private final Context context;
 

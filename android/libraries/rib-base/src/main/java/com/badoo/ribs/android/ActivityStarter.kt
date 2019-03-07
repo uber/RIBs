@@ -16,7 +16,6 @@
 package com.badoo.ribs.android
 
 import android.content.Intent
-import android.os.Bundle
 
 /**
  * Start activities. A much cleaner dependency than an entire activity or context, and easier to
@@ -24,19 +23,7 @@ import android.os.Bundle
  */
 interface ActivityStarter {
 
-    /**
-     * Start an activity with the given intent.
-     *
-     * @param intent The intent to open a new activity.
-     */
-    fun startActivity(intent: Intent)
+    fun startActivity(f: IntentCreator.() -> Intent)
 
-    /**
-     * Start an activity with the given intent, to be notified when that activity finishes.
-     *
-     * @param intent The intent to open a new activity.
-     * @param requestCode The code unique to your current activity to know which activity result is
-     * from this request.
-     */
-    fun startActivityForResult(intent: Intent, requestCode: Int, extras: Bundle? = null)
+    fun startActivityForResult(requestCode: Int, f: IntentCreator.() -> Intent)
 }

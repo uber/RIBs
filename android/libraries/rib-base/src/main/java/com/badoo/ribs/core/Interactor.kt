@@ -21,6 +21,7 @@ import android.arch.lifecycle.LifecycleRegistry
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import com.badoo.ribs.android.IntentCreator
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.LifecycleEndedException
 import com.uber.autodispose.LifecycleScopeProvider
@@ -117,8 +118,8 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     open fun handleBackPress(): Boolean =
         false
 
-    fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle? = null) {
-        node.startActivityForResult(intent, requestCode, options)
+    fun startActivityForResult(requestCode: Int, f: IntentCreator.() -> Intent) {
+        node.startActivityForResult(requestCode, f)
     }
 
     open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean =

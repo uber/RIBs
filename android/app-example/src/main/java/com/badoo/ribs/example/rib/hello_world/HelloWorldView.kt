@@ -39,12 +39,11 @@ class HelloWorldViewImpl private constructor(
     ) : this(context, attrs, defStyle, PublishRelay.create<Event>())
 
     override val androidView = this
-    lateinit var idText: TextView
+    private val idText: TextView by lazy { findViewById<TextView>(R.id.hello_id) }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
         findViewById<View>(R.id.hello_button_launch).setOnClickListener { events.accept(Event.ButtonClicked) }
-        idText = findViewById(R.id.hello_id)
     }
 
     override fun accept(vm: ViewModel) {

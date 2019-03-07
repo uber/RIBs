@@ -28,15 +28,4 @@ public interface IntentCreator {
    * @return The intent.
    */
   Intent create(Class<?> cls);
-
-  /**
-   * Create an implicit intent targeted at an action, which may end up resolving to your app or to
-   * any other app on the device which decides to look for this intent action. If you use this and
-   * the intent is meant only for your app, it's wise to take additional precautions like setting
-   * the package on the intent to your own app's package.
-   *
-   * @param action The intent action, which any app may register to receive.
-   * @return The intent.
-   */
-  Intent create(String action);
 }

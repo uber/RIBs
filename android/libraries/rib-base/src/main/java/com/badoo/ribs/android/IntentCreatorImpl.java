@@ -36,9 +36,4 @@ public class IntentCreatorImpl implements IntentCreator {
   public Intent create(Class<?> cls) {
     return new Intent(context, cls);
   }
-
-  @Override
-  public Intent create(String action) {
-    return new Intent(action);
-  }
 }

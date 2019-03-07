@@ -23,6 +23,7 @@ import android.support.annotation.MainThread
 import android.util.SparseArray
 import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.IntentCreator
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.core.requestcode.RequestCodeRegistry
@@ -259,8 +260,8 @@ open class Node<V : RibView>(
         children.forEach { it.onPause() }
     }
 
-    internal fun startActivityForResult(intent: Intent, requestCode: Int, options: Bundle? = null) {
-        activityStarter.startActivityForResult(intent, generateRequestCode(requestCode), options)
+    internal fun startActivityForResult(requestCode: Int, f: IntentCreator.() -> Intent) {
+        activityStarter.startActivityForResult(generateRequestCode(requestCode), f)
     }
 
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean  =
