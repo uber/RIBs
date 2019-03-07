@@ -332,7 +332,7 @@ class BackStackRibConnectorTest {
     }
 
     @Test
-    fun `shrinkToBundles() calls cleanup() on last routing action`() {
+    fun `shrinkToBundles() does not call cleanup() on last routing action`() {
         backStackElement1.apply {
             ribs = ribs1
             routingAction = routingAction1
@@ -343,7 +343,7 @@ class BackStackRibConnectorTest {
         }
         val backStack = listOf(backStackElement1, backStackElement2)
         backStackRibConnector.shrinkToBundles(backStack)
-        verify(routingAction2).cleanup()
+        verify(routingAction2, never()).cleanup()
         verifyNoMoreInteractions(routingAction1)
         verifyNoMoreInteractions(routingAction2)
     }
