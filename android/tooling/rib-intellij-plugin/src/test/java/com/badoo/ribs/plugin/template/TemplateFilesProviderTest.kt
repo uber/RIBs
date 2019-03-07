@@ -1,7 +1,7 @@
 package com.badoo.ribs.plugin.template
 
-import com.badoo.mobile.plugin.generator.SourceSet
-import com.badoo.mobile.plugin.template.file.ResourceTemplateFile
+import com.badoo.ribs.plugin.generator.SourceSet
+import com.badoo.ribs.plugin.template.file.ResourceTemplateFile
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
 import org.assertj.core.api.Assertions.assertThat

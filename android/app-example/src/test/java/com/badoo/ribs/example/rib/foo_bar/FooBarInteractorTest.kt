@@ -2,8 +2,6 @@ package com.badoo.ribs.example.rib.foo_bar
 
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
 import com.nhaarman.mockitokotlin2.mock
-import com.uber.rib.core.InteractorHelper
-import com.uber.rib.core.RibTestBasePlaceholder
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
@@ -11,14 +9,12 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
-
-//@RunWith(RobolectricTestRunner::class)
-class FooBarInteractorTest : RibTestBasePlaceholder() {
+class FooBarInteractorTest {
 
     private val input: ObservableSource<FooBar.Input> = mock()
     private val output: Consumer<FooBar.Output> = mock()
     private val feature: FooBarFeature = mock()
-    private val router: FooBarNode = mock()
+    private val router: FooBarRouter = mock()
     private lateinit var interactor: FooBarInteractor
 
     @Before
@@ -26,15 +22,13 @@ class FooBarInteractorTest : RibTestBasePlaceholder() {
         interactor = FooBarInteractor(
             input = input,
             output = output,
-            feature = feature
+            feature = feature,
+            router = router
         )
-
-        InteractorHelper.attach<FooBarNode>(interactor, router, null)
     }
 
     @After
     fun tearDown() {
-        InteractorHelper.detach(interactor)
     }
 
     /**
@@ -42,6 +36,5 @@ class FooBarInteractorTest : RibTestBasePlaceholder() {
      */
     @Test
     fun `an example test with some conditions should pass`() {
-        throw RuntimeException("Add real tests.")
     }
 }

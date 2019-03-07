@@ -1,7 +1,7 @@
 package com.badoo.ribs.plugin.util
 
-import com.badoo.mobile.plugin.generator.Replacements
-import com.badoo.mobile.plugin.template.Token
+import com.badoo.ribs.plugin.generator.Replacements
+import com.badoo.ribs.plugin.template.Token
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.Test
 import org.junit.runner.RunWith
