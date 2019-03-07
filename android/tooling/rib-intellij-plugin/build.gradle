@@ -65,6 +65,9 @@ intellij {
     updateSinceUntilBuild false
     sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
     downloadSources true
+
+    // Uncomment to test against Android Studio
+    // alternativeIdePath = '/Applications/Android Studio.app'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

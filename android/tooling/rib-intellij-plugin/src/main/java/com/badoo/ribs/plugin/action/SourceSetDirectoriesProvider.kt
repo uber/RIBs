@@ -22,7 +22,7 @@ class SourceSetDirectoriesProvider(
     private val mainSourceDirectory: PsiDirectory
 ) {
 
-    private val androidModel = (androidFacet.androidModel as AndroidModuleModel)
+    private val androidModel = (AndroidModuleModel.get(androidFacet) as AndroidModuleModel)
     private val directoriesCache: MutableMap<SourceSet, PsiDirectory> = hashMapOf()
 
     fun getDirectory(sourceSet: SourceSet): PsiDirectory =
