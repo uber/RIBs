@@ -125,6 +125,17 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean =
         false
 
+    fun requestPermissions(requestCode: Int, permissions: Array<String>) {
+        node.requestPermissions(requestCode, permissions)
+    }
+
+    open fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean =
+        false
+
     /**
      * Called when saving state.
      *

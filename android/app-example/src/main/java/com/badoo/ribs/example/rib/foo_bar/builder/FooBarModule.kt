@@ -1,6 +1,7 @@
 package com.badoo.ribs.example.rib.foo_bar.builder
 
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Input
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Output
@@ -55,12 +56,14 @@ internal object FooBarModule {
         viewFactory: ViewFactory<FooBarView>,
         router: FooBarRouter,
         interactor: FooBarInteractor,
-        activityStarter: ActivityStarter
+        activityStarter: ActivityStarter,
+        permissionRequester: PermissionRequester
     ) : Node<FooBarView> = Node(
         identifier = object : FooBar {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor,
-        activityStarter = activityStarter
+        activityStarter = activityStarter,
+        permissionRequester = permissionRequester
     )
 }

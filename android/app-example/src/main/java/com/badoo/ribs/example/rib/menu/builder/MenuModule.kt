@@ -1,6 +1,7 @@
 package com.badoo.ribs.example.rib.menu.builder
 
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuInteractor
 import com.badoo.ribs.example.rib.menu.MenuRouter
@@ -50,12 +51,14 @@ internal object MenuModule {
         viewFactory: ViewFactory<MenuView>,
         router: MenuRouter,
         interactor: MenuInteractor,
-        activityStarter: ActivityStarter
+        activityStarter: ActivityStarter,
+        permissionRequester: PermissionRequester
     ) : Node<MenuView> = Node(
         identifier = object : Menu {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor,
-        activityStarter = activityStarter
+        activityStarter = activityStarter,
+        permissionRequester = permissionRequester
     )
 }

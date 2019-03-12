@@ -24,6 +24,7 @@ import android.util.SparseArray
 import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.IntentCreator
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.core.requestcode.RequestCodeRegistry
@@ -40,6 +41,7 @@ open class Node<V : RibView>(
     private val router: Router<*, V>,
     private val interactor: Interactor<*, V>,
     private val activityStarter: ActivityStarter,
+    private val permissionRequester: PermissionRequester,
     private val ribRefWatcher: RibRefWatcher = RibRefWatcher.getInstance()
 ) {
     companion object {
@@ -271,13 +273,32 @@ open class Node<V : RibView>(
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean  =
         if (requestCodeRegistry.resolveGroupId(requestCode) == ribId) {
             interactor.onActivityResult(requestCodeRegistry.resolveRequestCode(requestCode), resultCode, data)
-            true
 
         } else {
             // most recently added children are more likely to be responsible
             // old ones might be only alive in back stack and not even attached to view
             children.asReversed().any {
                 it.onActivityResult(requestCode, resultCode, data)
+            }
+        }
+
+    internal fun requestPermissions(requestCode: Int, permissions: Array<String>) {
+        permissionRequester.requestPermissions(generateRequestCode(requestCode), permissions)
+    }
+
+    fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Boolean =
+        if (requestCodeRegistry.resolveGroupId(requestCode) == ribId) {
+            interactor.onRequestPermissionsResult(requestCodeRegistry.resolveRequestCode(requestCode), permissions, grantResults)
+
+        } else {
+            // most recently added children are more likely to be responsible
+            // old ones might be only alive in back stack and not even attached to view
+            children.asReversed().any {
+                it.onRequestPermissionsResult(requestCode, permissions, grantResults)
             }
         }
 

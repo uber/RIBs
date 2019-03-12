@@ -1,14 +1,20 @@
 package com.uber.rib.core
 
+import android.annotation.TargetApi
 import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.IntentCreator
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.core.Node
 
-abstract class RibActivity : AppCompatActivity(), ActivityStarter, IntentCreator {
+abstract class RibActivity : AppCompatActivity(),
+    ActivityStarter,
+    IntentCreator,
+    PermissionRequester {
 
     private lateinit var rootNode: Node<*>
 
@@ -84,6 +90,29 @@ abstract class RibActivity : AppCompatActivity(), ActivityStarter, IntentCreator
     }
 
     open fun onActivityResultNotHandledByRib(requestCode: Int, resultCode: Int, data: Intent?) {
+        // crash it, log it, do whatever if this is unexpected
+    }
+
+    @TargetApi(Build.VERSION_CODES.M)
+    override fun requestPermissions(requestCode: Int, permissions: Array<String>) {
+        requestPermissions(permissions, requestCode)
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (!rootNode.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+
+        }
+    }
+
+    open fun onRequestPermissionsResultNotHandledByRib(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         // crash it, log it, do whatever if this is unexpected
     }
 }

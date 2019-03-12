@@ -1,6 +1,7 @@
 package com.badoo.ribs.example.rib.switcher.builder
 
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.builder.FooBarBuilder
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
@@ -58,13 +59,15 @@ internal object SwitcherModule {
         viewFactory: ViewFactory<SwitcherView>,
         router: SwitcherRouter,
         interactor: SwitcherInteractor,
-        activityStarter: ActivityStarter
+        activityStarter: ActivityStarter,
+        permissionRequester: PermissionRequester
     ) : Node<SwitcherView> = Node(
         identifier = object : Switcher {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor,
-        activityStarter = activityStarter
+        activityStarter = activityStarter,
+        permissionRequester = permissionRequester
     )
 
     @SwitcherScope
