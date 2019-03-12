@@ -8,12 +8,17 @@ import org.junit.runner.Description
 import org.junit.runners.model.Statement
 
 open class RibsRule(
-    builder: ((RibTestActivity) -> Node<*>)
+    builder: ((RibTestActivity) -> Node<*>)? = null
 ): ActivityTestRule<RibTestActivity>(
-    RibTestActivity::class.java, true, true
+    RibTestActivity::class.java, true, builder != null
 ) {
     init {
         RibTestActivity.ribFactory = builder
+    }
+
+    fun start(ribFactory: ((RibTestActivity) -> Node<*>)) {
+        RibTestActivity.ribFactory = ribFactory
+        launchActivity(null)
     }
 
     override fun apply(base: Statement, description: Description?): Statement =
