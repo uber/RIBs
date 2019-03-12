@@ -26,6 +26,7 @@ androidExtensions {
 
 dependencies {
     api deps.uber.autodispose
+    api deps.support.appCompat
 
     kapt deps.apt.daggerCompiler
     implementation deps.apt.javaxInject
@@ -37,7 +38,6 @@ dependencies {
     implementation deps.external.rxrelay2
     implementation deps.external.rxjava2
 
-    implementation deps.support.appCompat
     implementation deps.support.archLifecycleCommon // TODO: remove
     compileOnly deps.support.annotations
 

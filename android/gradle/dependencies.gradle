@@ -15,17 +15,18 @@
  */
 
 def versions = [
-    dagger: '2.21',
-    kotlin: '1.3.21',
-    support: '28.0.0', // TODO: migrate to androidx
+    archLifecycleCommon: '1.1.1',
     autodispose: '0.2.0', // TODO: migrate to the new autodispose version with androidx support
-    robolectric: '4.2',
-    intellij: '2018.3.3',
-    rave: '2.2.0',
     autoValue: '1.6.3',
-    mviCore: '1.1.6',
     constraintLayout: '1.1.3',
-    archLifecycleCommon: '1.1.1'
+    dagger: '2.21',
+    intellij: '2018.3.3',
+    kotlin: '1.3.21',
+    mviCore: '1.1.6',
+    rave: '2.2.0',
+    robolectric: '4.2',
+    support: '28.0.0', // TODO: migrate to androidx
+    supportTest: '1.0.2'
 ]
 
 def apt = [
@@ -65,7 +66,10 @@ def support = [
     archLifecycleCommon: "android.arch.lifecycle:common-java8:${versions.archLifecycleCommon}",
     constraintLayout: "com.android.support.constraint:constraint-layout:${versions.constraintLayout}",
     design: "com.android.support:design:${versions.support}",
-    percent: "com.android.support:percent:${versions.support}"
+    percent: "com.android.support:percent:${versions.support}",
+    runner: "com.android.support.test:runner:${versions.supportTest}",
+    rules: "com.android.support.test:rules:${versions.supportTest}"
+
 
 ]
 
