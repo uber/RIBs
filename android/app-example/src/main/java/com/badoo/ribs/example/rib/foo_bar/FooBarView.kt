@@ -3,10 +3,15 @@ package com.badoo.ribs.example.rib.foo_bar
 import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
+import android.view.View
+import android.widget.Button
+import android.widget.TextView
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.ViewModel
 import com.jakewharton.rxrelay2.PublishRelay
 import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.example.R
+import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.*
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
@@ -15,10 +20,12 @@ interface FooBarView : RibView,
     Consumer<ViewModel> {
 
     sealed class Event {
+        object CheckPermissionsButtonClicked : Event()
+        object RequestPermissionsButtonClicked : Event()
     }
 
     data class ViewModel(
-        val i: Int = 0
+        val text: String
     )
 }
 
@@ -35,11 +42,17 @@ class FooBarViewImpl private constructor(
     ) : this(context, attrs, defStyle, PublishRelay.create<Event>())
 
     override val androidView = this
+    private val text: TextView by lazy { findViewById<TextView>(R.id.foobar_debug) }
+    private val checkButton: Button by lazy { findViewById<Button>(R.id.foobar_button_check_permissions) }
+    private val requestButton: Button by lazy { findViewById<Button>(R.id.foobar_button_request_permissions) }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
+        checkButton.setOnClickListener { events.accept(CheckPermissionsButtonClicked)}
+        requestButton.setOnClickListener { events.accept(RequestPermissionsButtonClicked)}
     }
 
-    override fun accept(vm: ViewModel) {
+    override fun accept(vm: FooBarView.ViewModel) {
+        text.text = vm.text
     }
 }

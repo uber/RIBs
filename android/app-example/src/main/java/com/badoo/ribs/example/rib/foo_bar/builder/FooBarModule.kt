@@ -38,15 +38,11 @@ internal object FooBarModule {
     @JvmStatic
     internal fun interactor(
         router: FooBarRouter,
-        input: ObservableSource<Input>,
-        output: Consumer<Output>,
-        feature: FooBarFeature
+        permissionRequester: PermissionRequester
     ): FooBarInteractor =
         FooBarInteractor(
             router = router,
-            input = input,
-            output = output,
-            feature = feature
+            permissionRequester = permissionRequester
         )
 
     @FooBarScope
@@ -56,14 +52,12 @@ internal object FooBarModule {
         viewFactory: ViewFactory<FooBarView>,
         router: FooBarRouter,
         interactor: FooBarInteractor,
-        activityStarter: ActivityStarter,
-        permissionRequester: PermissionRequester
+        activityStarter: ActivityStarter
     ) : Node<FooBarView> = Node(
         identifier = object : FooBar {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor,
-        activityStarter = activityStarter,
-        permissionRequester = permissionRequester
+        activityStarter = activityStarter
     )
 }

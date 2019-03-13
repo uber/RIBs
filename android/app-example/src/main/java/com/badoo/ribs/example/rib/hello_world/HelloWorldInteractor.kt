@@ -5,9 +5,9 @@ import android.app.Activity
 import android.arch.lifecycle.Lifecycle
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router
@@ -57,23 +57,11 @@ class HelloWorldInteractor(
     }
 
     private val viewEventConsumer : Consumer<HelloWorldView.Event> = Consumer {
-        requestPermissions(REQUEST_CODE_OTHER_ACTIVITY, arrayOf(Manifest.permission.ACCESS_WIFI_STATE))
-
-//        startActivityForResult(REQUEST_CODE_OTHER_ACTIVITY) {
-//            create(OtherActivity::class.java).apply {
-//                putExtra(OtherActivity.KEY_INCOMING, "Data sent by HelloWorld - 123123")
-//            }
-//
-//        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ): Boolean {
-        Log.d("Permissions", "$requestCode - $permissions - $grantResults")
-        return true
+        startActivityForResult(REQUEST_CODE_OTHER_ACTIVITY) {
+            create(OtherActivity::class.java).apply {
+                putExtra(OtherActivity.KEY_INCOMING, "Data sent by HelloWorld - 123123")
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {

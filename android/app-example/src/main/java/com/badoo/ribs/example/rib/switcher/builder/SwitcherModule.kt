@@ -59,15 +59,13 @@ internal object SwitcherModule {
         viewFactory: ViewFactory<SwitcherView>,
         router: SwitcherRouter,
         interactor: SwitcherInteractor,
-        activityStarter: ActivityStarter,
-        permissionRequester: PermissionRequester
+        activityStarter: ActivityStarter
     ) : Node<SwitcherView> = Node(
         identifier = object : Switcher {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor,
-        activityStarter = activityStarter,
-        permissionRequester = permissionRequester
+        activityStarter = activityStarter
     )
 
     @SwitcherScope

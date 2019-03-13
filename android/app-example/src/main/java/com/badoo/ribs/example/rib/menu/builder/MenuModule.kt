@@ -51,14 +51,12 @@ internal object MenuModule {
         viewFactory: ViewFactory<MenuView>,
         router: MenuRouter,
         interactor: MenuInteractor,
-        activityStarter: ActivityStarter,
-        permissionRequester: PermissionRequester
+        activityStarter: ActivityStarter
     ) : Node<MenuView> = Node(
         identifier = object : Menu {},
         viewFactory = viewFactory,
         router = router,
         interactor = interactor,
-        activityStarter = activityStarter,
-        permissionRequester = permissionRequester
+        activityStarter = activityStarter
     )
 }
