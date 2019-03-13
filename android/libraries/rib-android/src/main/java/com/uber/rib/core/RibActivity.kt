@@ -1,20 +1,28 @@
 package com.uber.rib.core
 
-import android.annotation.TargetApi
 import android.content.Intent
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.IntentCreator
 import com.badoo.ribs.android.PermissionRequester
+import com.badoo.ribs.android.PermissionRequesterImpl
+import com.badoo.ribs.core.Identifiable
 import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.requestcode.RequestCodeRegistry
+import io.reactivex.Observable
 
 abstract class RibActivity : AppCompatActivity(),
     ActivityStarter,
     IntentCreator,
     PermissionRequester {
+
+    private val requestCodeRegistry = RequestCodeRegistry()
+    private val permissionRequester = PermissionRequesterImpl(
+        this,
+        requestCodeRegistry
+    )
 
     private lateinit var rootNode: Node<*>
 
@@ -93,26 +101,16 @@ abstract class RibActivity : AppCompatActivity(),
         // crash it, log it, do whatever if this is unexpected
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
-    override fun requestPermissions(requestCode: Int, permissions: Array<String>) {
-        requestPermissions(permissions, requestCode)
-    }
+    override fun checkPermissions(client: Identifiable, permissions: Array<String>) =
+        permissionRequester.checkPermissions(client, permissions)
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        if (!rootNode.onRequestPermissionsResult(requestCode, permissions, grantResults)) {
+    override fun requestPermissions(client: Identifiable, requestCode: Int, permissions: Array<String>) =
+        permissionRequester.requestPermissions(client, requestCode, permissions)
 
-        }
-    }
+    override fun events(client: Identifiable, requestCode: Int): Observable<PermissionRequester.RequestPermissionsEvent> =
+        permissionRequester.events(client, requestCode)
 
-    open fun onRequestPermissionsResultNotHandledByRib(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        // crash it, log it, do whatever if this is unexpected
-    }
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
+        permissionRequester.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
 }
