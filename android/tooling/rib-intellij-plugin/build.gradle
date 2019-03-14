@@ -127,7 +127,7 @@ static boolean needToPublishPlugin() {
 static boolean containsTemplateChanges() {
     def lines = executeBash("git diff --name-only HEAD~1 HEAD").split("\n")
     def changedTemplateFilesCount = lines.count {
-        it.startsWith("android/templates/src")
+        it.startsWith("android/templates/src") || it.startsWith("android/tooling/rib-intellij-plugin")
     }
     return changedTemplateFilesCount > 0
 }
