@@ -2,9 +2,7 @@
     <id>com.badoo.ribs.intellij-plugin</id>
     <name>RIBs</name>
     <version>0.1.0</version>
-    <vendor>
-        Badoo
-    </vendor>
+    <vendor url="https://github.com/badoo" email="release@corp.badoo.com">Badoo</vendor>
 
     <description><![CDATA[
       Badoo RIBs template generator plugin <br /> <br />
