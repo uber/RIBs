@@ -18,18 +18,16 @@ package com.badoo.ribs.core
 import android.arch.lifecycle.Lifecycle
 import android.arch.lifecycle.LifecycleOwner
 import android.arch.lifecycle.LifecycleRegistry
-import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
 import android.support.annotation.CallSuper
-import com.badoo.ribs.android.IntentCreator
+import com.badoo.ribs.core.view.RibView
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.LifecycleEndedException
 import com.uber.autodispose.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.InteractorEvent.ACTIVE
 import com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE
-import com.badoo.ribs.core.view.RibView
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
@@ -46,9 +44,6 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     private val disposables: Disposable?
 ) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner, Identifiable {
 
-    // TODO make private / or remove altogether if activity launching is refactored
-    lateinit var node: Node<V>
-        internal set
     private val ribLifecycleRegistry = LifecycleRegistry(this)
     private val viewLifecycleRegistry = LifecycleRegistry(this)
 
@@ -126,13 +121,6 @@ abstract class Interactor<C : Parcelable, V : RibView>(
      * @return TRUE if the interactor handled the back press and no further action is necessary.
      */
     open fun handleBackPress(): Boolean =
-        false
-
-    fun startActivityForResult(requestCode: Int, intentCreator: IntentCreator.() -> Intent) {
-        node.startActivityForResult(requestCode, intentCreator)
-    }
-
-    open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean =
         false
 
     @CallSuper

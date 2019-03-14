@@ -1,15 +1,14 @@
 package com.badoo.ribs.android
 
+import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent
+import com.badoo.ribs.android.RequestCodeBasedEventStream.RequestCodeBasedEvent
 import com.badoo.ribs.core.Identifiable
-import io.reactivex.Observable
 
-interface PermissionRequester {
+interface PermissionRequester : RequestCodeBasedEventStream<RequestPermissionsEvent> {
 
     fun checkPermissions(client: Identifiable, permissions: Array<String>) : CheckPermissionsResult
 
     fun requestPermissions(client: Identifiable, requestCode: Int, permissions: Array<String>)
-
-    fun events(client: Identifiable): Observable<RequestPermissionsEvent>
 
     data class CheckPermissionsResult(
         val granted: List<String>,
@@ -20,9 +19,7 @@ interface PermissionRequester {
             notGranted.isEmpty() && shouldShowRationale.isEmpty()
     }
 
-    sealed class RequestPermissionsEvent {
-        abstract val requestCode: Int
-
+    sealed class RequestPermissionsEvent : RequestCodeBasedEvent {
         data class Cancelled(
             override val requestCode: Int
         ) : RequestPermissionsEvent()

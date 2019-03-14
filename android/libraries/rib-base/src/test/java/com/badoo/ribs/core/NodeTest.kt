@@ -67,8 +67,7 @@ class NodeTest {
             identifier = object : TestPublicRibInterface {},
             viewFactory = viewFactory,
             router = router,
-            interactor = interactor,
-            activityStarter = mock()
+            interactor = interactor
         )
 
         addChildren()

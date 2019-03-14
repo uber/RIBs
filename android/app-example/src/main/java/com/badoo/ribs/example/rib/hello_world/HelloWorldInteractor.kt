@@ -1,13 +1,12 @@
 package com.badoo.ribs.example.rib.hello_world
 
-import android.Manifest
 import android.app.Activity
 import android.arch.lifecycle.Lifecycle
-import android.content.Intent
 import android.os.Bundle
 import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
-import com.badoo.ribs.android.PermissionRequester
+import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.ActivityStarter.ActivityResultEvent
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router
@@ -18,7 +17,7 @@ import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature
 import com.badoo.ribs.example.rib.hello_world.mapper.InputToWish
 import com.badoo.ribs.example.rib.hello_world.mapper.NewsToOutput
 import com.badoo.ribs.example.rib.hello_world.mapper.ViewEventToAnalyticsEvent
-import com.jakewharton.rxrelay2.PublishRelay
+import com.jakewharton.rxrelay2.BehaviorRelay
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
@@ -26,7 +25,8 @@ class HelloWorldInteractor(
     router: Router<HelloWorldRouter.Configuration, HelloWorldView>,
     private val input: ObservableSource<HelloWorld.Input>,
     private val output: Consumer<HelloWorld.Output>,
-    private val feature: HelloWorldFeature
+    private val feature: HelloWorldFeature,
+    private val activityStarter: ActivityStarter
 ) : Interactor<HelloWorldRouter.Configuration, HelloWorldView>(
     router = router,
     disposables = feature
@@ -35,7 +35,9 @@ class HelloWorldInteractor(
         private const val REQUEST_CODE_OTHER_ACTIVITY = 1
     }
 
-    private val dummyViewInput = PublishRelay.create<ViewModel>()
+    private val dummyViewInput = BehaviorRelay.createDefault(
+        ViewModel("My id: " + id.replace("${HelloWorldInteractor::class.java.name}.", ""))
+    )
 
     override fun onAttach(ribLifecycle: Lifecycle, savedInstanceState: Bundle?) {
         ribLifecycle.createDestroy {
@@ -48,35 +50,28 @@ class HelloWorldInteractor(
         viewLifecycle.createDestroy {
             bind(view to HelloWorldAnalytics using ViewEventToAnalyticsEvent)
             bind(view to viewEventConsumer)
+            bind(activityStarter.events(this@HelloWorldInteractor) to activityResultConsumer)
             bind(dummyViewInput to view)
         }
-
-        dummyViewInput.accept(
-            ViewModel("My id: " + node.tag.replace("${Node::class.java.name}.", ""))
-        )
     }
 
     private val viewEventConsumer : Consumer<HelloWorldView.Event> = Consumer {
-        startActivityForResult(REQUEST_CODE_OTHER_ACTIVITY) {
+        activityStarter.startActivityForResult(this, REQUEST_CODE_OTHER_ACTIVITY) {
             create(OtherActivity::class.java).apply {
                 putExtra(OtherActivity.KEY_INCOMING, "Data sent by HelloWorld - 123123")
             }
         }
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean {
-        if (requestCode == REQUEST_CODE_OTHER_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK) {
+    private val activityResultConsumer : Consumer<ActivityResultEvent> = Consumer {
+        if (it.requestCode == REQUEST_CODE_OTHER_ACTIVITY) {
+            if (it.resultCode == Activity.RESULT_OK) {
                 dummyViewInput.accept(
                     ViewModel(
-                        "Data returned: " + data?.getIntExtra(OtherActivity.KEY_RETURNED_DATA, -1)?.toString()
+                        "Data returned: " + it.data?.getIntExtra(OtherActivity.KEY_RETURNED_DATA, -1)?.toString()
                     )
                 )
             }
-
-            return true
         }
-
-        return false
     }
 }

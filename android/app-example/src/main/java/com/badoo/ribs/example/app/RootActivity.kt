@@ -3,7 +3,6 @@ package com.badoo.ribs.example.app
 import android.os.Bundle
 import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
-import com.badoo.ribs.android.IntentCreator
 import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.directory.Directory
@@ -30,8 +29,8 @@ class RootActivity : RibActivity() {
         val rootBuilder =
             SwitcherBuilder(object : Switcher.Dependency {
                 override fun ribCustomisation(): Directory = AppRibCustomisations
-                override fun activityStarter(): ActivityStarter = this@RootActivity
-                override fun permissionRequester(): PermissionRequester = this@RootActivity
+                override fun activityStarter(): ActivityStarter = activityStarter
+                override fun permissionRequester(): PermissionRequester = permissionRequester
                 override fun switcherInput(): ObservableSource<Switcher.Input> = Observable.empty()
                 override fun switcherOutput(): Consumer<Switcher.Output> = Consumer { }
             })
