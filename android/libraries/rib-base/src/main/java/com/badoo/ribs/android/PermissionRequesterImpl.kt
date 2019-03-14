@@ -13,6 +13,7 @@ import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.Reques
 import com.badoo.ribs.core.Identifiable
 import com.badoo.ribs.core.requestcode.RequestCodeRegistry
 import com.jakewharton.rxrelay2.PublishRelay
+import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable
 
 class PermissionRequesterImpl(
@@ -20,26 +21,24 @@ class PermissionRequesterImpl(
     private val requestCodeRegistry: RequestCodeRegistry
 ) : PermissionRequester, PermissionRequestResultHandler {
 
-    private val events = HashMap<Int, HashMap<Int, PublishRelay<RequestPermissionsEvent>>>()
+    private val events = HashMap<Int, HashMap<Int, Relay<RequestPermissionsEvent>>>()
 
     override fun checkPermissions(
         client: Identifiable,
         permissions: Array<String>
     ) : CheckPermissionsResult {
         val granted = mutableListOf<String>()
-        val canAsk = mutableListOf<String>()
         val shouldShowRationale = mutableListOf<String>()
+        val canAsk = mutableListOf<String>()
 
         permissions.forEach { permission ->
-            if (ContextCompat.checkSelfPermission(activity, permission) == PackageManager.PERMISSION_GRANTED) {
-                granted.add(permission)
-            } else {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(activity, permission)) {
-                    shouldShowRationale.add(permission)
-                } else {
-                    canAsk.add(permission)
-                }
+            val list = when {
+                permission.isGranted() -> granted
+                permission.shouldShowRationale() -> shouldShowRationale
+                else -> canAsk
             }
+
+            list += permission
         }
 
         return CheckPermissionsResult(
@@ -47,13 +46,19 @@ class PermissionRequesterImpl(
         )
     }
 
+    private fun String.isGranted(): Boolean =
+        ContextCompat.checkSelfPermission(activity, this) == PackageManager.PERMISSION_GRANTED
+
+    private fun String.shouldShowRationale(): Boolean =
+        ActivityCompat.shouldShowRequestPermissionRationale(activity, this)
+
     @TargetApi(Build.VERSION_CODES.M)
     override fun requestPermissions(
         client: Identifiable,
         requestCode: Int,
         permissions: Array<String>
     ) {
-        val code = requestCodeRegistry.generateRequestCode(client.id(), requestCode)
+        val code = requestCodeRegistry.generateRequestCode(client.id, requestCode)
 
         ActivityCompat.requestPermissions(activity,
             permissions,
@@ -63,10 +68,9 @@ class PermissionRequesterImpl(
 
     // TODO Consider what is better: with requestCode here (separate streams) or without (client code branching on single stream)
     override fun events(client: Identifiable, requestCode: Int): Observable<RequestPermissionsEvent> {
-        val id = requestCodeRegistry.generateGroupId(client.id())
-        ensureSubject(id, requestCode)
+        val id = requestCodeRegistry.generateGroupId(client.id)
 
-        return events[id]!![requestCode]!!
+        return ensureSubject(id, requestCode)
             .doOnDispose { cleanup(id, requestCode) }
             .hide()
     }
@@ -75,7 +79,7 @@ class PermissionRequesterImpl(
         id: Int,
         requestCode: Int,
         onSubjectDidNotExist: (() -> Unit)? = null
-    ) {
+    ): Relay<RequestPermissionsEvent> {
         var subjectJustCreated = false
 
         if (!events.containsKey(id)) {
@@ -91,6 +95,8 @@ class PermissionRequesterImpl(
         if (subjectJustCreated) {
             onSubjectDidNotExist?.invoke()
         }
+
+        return events.getValue(id).getValue(requestCode)
     }
 
     private fun cleanup(id: Int, requestCode: Int) {

@@ -26,7 +26,7 @@ interface PermissionRequester {
         val notGranted: List<String>,
         val shouldShowRationale: List<String>
     ) {
-        fun allGranted() : Boolean =
+        val allGranted: Boolean =
             notGranted.isEmpty() && shouldShowRationale.isEmpty()
     }
 
