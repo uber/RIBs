@@ -98,7 +98,7 @@ build.dependsOn uploadArchives
 if (needToPublishPlugin()) {
     def pluginVersion = VERSION_NAME + "-" + (System.currentTimeMillis() / 1000)
     println("Publishing Intellij plugin $pluginVersion to JetBrains repository")
-    
+
     publishPlugin {
         token System.getenv("IDEA_PLUGIN_PUBLICATION_TOKEN")
     }
@@ -106,7 +106,7 @@ if (needToPublishPlugin()) {
     patchPluginXml {
         version pluginVersion
     }
-    
+
     build.dependsOn publishPlugin
 }
 
@@ -125,8 +125,8 @@ static boolean needToPublishPlugin() {
 }
 
 static boolean containsTemplateChanges() {
-    def lines = executeBash("git diff --name-only HEAD~1 HEAD").split("\n")
-    def changedTemplateFilesCount = lines.count {
+    def lastCommitChangedFiles = executeBash("git diff --name-only HEAD~1 HEAD").split("\n")
+    def changedTemplateFilesCount = lastCommitChangedFiles.count {
         it.startsWith("android/templates/src") || it.startsWith("android/tooling/rib-intellij-plugin")
     }
     return changedTemplateFilesCount > 0
