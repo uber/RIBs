@@ -115,7 +115,7 @@ static boolean needToPublishPlugin() {
     def isMergeCommit = parentCommitsNumber > 0
     def isMainBranch = executeBash("git symbolic-ref --short HEAD").trim() == "master"
     def isContainsTemplateChanges = containsTemplateChanges()
-    def isCi = System.getenv("CI")
+    def isCi = System.getenv("CI") == "true"
     println("Checking IDEA plugin publishing conditions: " +
             "isMergeCommit = $isMergeCommit, " +
             "isMainBranch = $isMainBranch, " +
