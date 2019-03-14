@@ -11,10 +11,9 @@ jdk: oraclejdk8
 
 script:
   - cd android
-  - ./gradlew build
+  - ./gradlew build --console=plain
 
 env:
-  - TERM=dumb
   # IDEA_PLUGIN_PUBLICATION_TOKEN environment variable
   - secure: "PdBxf0s9ekI/reM9iz6pp0jl4AOIwKmRcs+4u9LdK30/dQlClxAQK7QzgWOlGg2CfXjZ16C8qZPnRD91AbtYoR+uQL+/0xmmTV5mgCE5hXMcoGg8OIxdhV4V5su6+H+QGdPJW5kbWUeI4Ow8DRT3wkBT+BEhp6VyZbmHrNVV5ZwiPzYZu0HVKbfxN1sscpR0YvgptBiOFUnkhefdZWOFog2iZXabcyouVhwhNK+3o3/A8++leKDR2IsGiBmQOPAxaYUrrI85CdPNDb72Z94AbXOUJOZXnL2hpvIv6JmkiBJTSVAtLmeV3M24vA0rG8qbPnPJzzeL/P8/SbIPYFm3vMnQ+Vl8W+hThaT5mso8nmVJ4oO/7z31U0Q/m/29vm7BEWYPLLfkztEivLUEIjbE8ys1nIBZgXErM2d02RdeVkhoVrwXHxtkys3XTZXfji7nbDBoJUiz9YBlLUwM1R3vdfENPgKhPUUROk8d+2kn4plsfdNEwALGVgnyrxRE8/BgI/JM86cmNoLz/9IeaEnqx9omZSRKfAVdpRDa30IWA8nGTUL8kVfWLRnwDX4ELuWyf5+fo9w7+E7nuBRtWteG9a9jCDd3e4r925oTjoGQ/hJwcyHK7T8JwziCcbrGxuI6gINK3BLObK0bf27rCYppqHeT2eQwcCOwSbxljlAZulY="
 
