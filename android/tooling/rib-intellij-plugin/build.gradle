@@ -61,7 +61,6 @@ version = pluginXml.version
 intellij {
     plugins = ['android']
     version = deps.versions.intellij
-    pluginName "UberRIBPresidioPlugin"
     updateSinceUntilBuild false
     sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
     downloadSources true
@@ -95,3 +94,46 @@ uploadArchives {
     }
 }
 build.dependsOn uploadArchives
+
+if (needToPublishPlugin()) {
+    def pluginVersion = VERSION_NAME + "-" + (System.currentTimeMillis() / 1000)
+    println("Publishing Intellij plugin $pluginVersion to JetBrains repository")
+
+    publishPlugin {
+        token System.getenv("IDEA_PLUGIN_PUBLICATION_TOKEN")
+    }
+
+    patchPluginXml {
+        version pluginVersion
+    }
+
+    build.dependsOn publishPlugin
+}
+
+static boolean needToPublishPlugin() {
+    def parentCommitsNumber = executeBash("git show -s --pretty=%p HEAD | wc -w").trim().toInteger()
+    def isMergeCommit = parentCommitsNumber > 0
+    def isMainBranch = executeBash("git symbolic-ref --short HEAD").trim() == "master"
+    def isContainsTemplateChanges = containsTemplateChanges()
+    def isCi = System.getenv("CI") == "true"
+    println("Checking IDEA plugin publishing conditions: " +
+            "isMergeCommit = $isMergeCommit, " +
+            "isMainBranch = $isMainBranch, " +
+            "isContainsTemplateChanges = $isContainsTemplateChanges, " +
+            "isCi = $isCi")
+    return isMergeCommit && isMainBranch && isContainsTemplateChanges && isCi
+}
+
+static boolean containsTemplateChanges() {
+    def lastCommitChangedFiles = executeBash("git diff --name-only HEAD~1 HEAD").split("\n")
+    def changedTemplateFilesCount = lastCommitChangedFiles.count {
+        it.startsWith("android/templates/src") || it.startsWith("android/tooling/rib-intellij-plugin")
+    }
+    return changedTemplateFilesCount > 0
+}
+
+static String executeBash(String command) {
+    def proc = ['bash', '-c', command].execute()
+    proc.waitFor()
+    return proc.text
+}
