@@ -108,6 +108,8 @@ if (needToPublishPlugin()) {
     }
 
     build.dependsOn publishPlugin
+} else {
+    println("Publishing Intellij plugin to JetBrains repository will be skipped")
 }
 
 static boolean needToPublishPlugin() {
