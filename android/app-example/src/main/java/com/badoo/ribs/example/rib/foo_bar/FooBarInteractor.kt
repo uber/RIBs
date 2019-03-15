@@ -66,9 +66,6 @@ class FooBarInteractor(
     private fun requestPermissions() {
         permissionRequester.requestPermissions(
             client = this,
-            // We can even make requestCode optional with a default value of 1
-            // (will be masked onto unique id anyway)
-            // and then get rid of the constant in this class in most cases
             requestCode = REQUEST_CODE_CAMERA,
             permissions = arrayOf(
                 Manifest.permission.CAMERA

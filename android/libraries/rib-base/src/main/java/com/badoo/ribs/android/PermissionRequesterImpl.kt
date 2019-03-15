@@ -66,7 +66,6 @@ class PermissionRequesterImpl(
         )
     }
 
-    // TODO Consider what is better: with requestCode here (separate streams) or without (client code branching on single stream)
     override fun events(client: Identifiable): Observable<RequestPermissionsEvent> {
         val id = requestCodeRegistry.generateGroupId(client.id)
 
