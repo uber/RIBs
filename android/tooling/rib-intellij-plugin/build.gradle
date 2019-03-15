@@ -113,15 +113,17 @@ if (needToPublishPlugin()) {
 static boolean needToPublishPlugin() {
     def parentCommitsNumber = executeBash("git show -s --pretty=%p HEAD | wc -w").trim().toInteger()
     def isMergeCommit = parentCommitsNumber > 0
-    def isMainBranch = executeBash("git symbolic-ref --short HEAD").trim() == "master"
+    def isMainBranch = System.getenv("TRAVIS_BRANCH") == "master"
+    def isNotPullRequest = System.getenv("TRAVIS_PULL_REQUEST") == "false"
     def isContainsTemplateChanges = containsTemplateChanges()
     def isCi = System.getenv("CI") == "true"
     println("Checking IDEA plugin publishing conditions: " +
             "isMergeCommit = $isMergeCommit, " +
             "isMainBranch = $isMainBranch, " +
             "isContainsTemplateChanges = $isContainsTemplateChanges, " +
+            "isNotPullRequest = $isNotPullRequest, " +
             "isCi = $isCi")
-    return isMergeCommit && isMainBranch && isContainsTemplateChanges && isCi
+    return isMergeCommit && isMainBranch && isNotPullRequest && isContainsTemplateChanges && isCi
 }
 
 static boolean containsTemplateChanges() {
@@ -129,6 +131,8 @@ static boolean containsTemplateChanges() {
     def changedTemplateFilesCount = lastCommitChangedFiles.count {
         it.startsWith("android/templates/src") || it.startsWith("android/tooling/rib-intellij-plugin")
     }
+    println("Changed files:")
+    println(lastCommitChangedFiles)
     return changedTemplateFilesCount > 0
 }
 
