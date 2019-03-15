@@ -6,6 +6,8 @@ import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
 import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent
+import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.Cancelled
+import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.RequestPermissionsResult
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.CheckPermissionsButtonClicked
@@ -14,7 +16,6 @@ import com.badoo.ribs.example.rib.foo_bar.FooBarView.ViewModel
 import com.badoo.ribs.example.rib.foo_bar.analytics.FooBarAnalytics
 import com.badoo.ribs.example.rib.foo_bar.mapper.ViewEventToAnalyticsEvent
 import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
 import io.reactivex.functions.Consumer
 
 class FooBarInteractor(
@@ -30,15 +31,13 @@ class FooBarInteractor(
     }
 
     private val dummyViewInput = PublishRelay.create<FooBarView.ViewModel>()
-    private val permissionEvents: Observable<RequestPermissionsEvent>
-        get() = permissionRequester.events(this, REQUEST_CODE_CAMERA)
 
     override fun onViewCreated(view: FooBarView, viewLifecycle: Lifecycle) {
         viewLifecycle.createDestroy {
             bind(view to FooBarAnalytics using ViewEventToAnalyticsEvent)
             bind(view to viewEventConsumer)
             bind(dummyViewInput to view)
-            bind(permissionEvents to permissionEventConsumer)
+            bind(permissionRequester.events(this@FooBarInteractor) to permissionEventConsumer)
         }
 
         dummyViewInput.accept(
@@ -67,6 +66,9 @@ class FooBarInteractor(
     private fun requestPermissions() {
         permissionRequester.requestPermissions(
             client = this,
+            // We can even make requestCode optional with a default value of 1
+            // (will be masked onto unique id anyway)
+            // and then get rid of the constant in this class in most cases
             requestCode = REQUEST_CODE_CAMERA,
             permissions = arrayOf(
                 Manifest.permission.CAMERA
@@ -75,8 +77,15 @@ class FooBarInteractor(
     }
 
     private val permissionEventConsumer : Consumer<RequestPermissionsEvent> = Consumer {
-        dummyViewInput.accept(
-            ViewModel("Permission event: $it")
-        )
+        // If it's a single request code, we might as well ignore the whole branching
+        // as it's impossible to receive events that are not meant for this RIB
+        when (it.requestCode) {
+            REQUEST_CODE_CAMERA -> when (it) {
+                // We can also filter for only actual results in the stream so even this branching is not necessary
+                is RequestPermissionsResult -> dummyViewInput.accept(ViewModel("Permission event: $it"))
+                is Cancelled -> dummyViewInput.accept(ViewModel("Permission request cancelled"))
+            }
+
+        }
     }
 }

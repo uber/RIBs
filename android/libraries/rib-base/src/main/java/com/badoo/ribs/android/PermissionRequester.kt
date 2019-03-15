@@ -9,7 +9,7 @@ interface PermissionRequester {
 
     fun requestPermissions(client: Identifiable, requestCode: Int, permissions: Array<String>)
 
-    fun events(client: Identifiable, requestCode: Int): Observable<RequestPermissionsEvent>
+    fun events(client: Identifiable): Observable<RequestPermissionsEvent>
 
     data class CheckPermissionsResult(
         val granted: List<String>,
@@ -21,12 +21,14 @@ interface PermissionRequester {
     }
 
     sealed class RequestPermissionsEvent {
+        abstract val requestCode: Int
+
         data class Cancelled(
-            val requestCode: Int
+            override val requestCode: Int
         ) : RequestPermissionsEvent()
 
         data class RequestPermissionsResult(
-            val requestCode: Int,
+            override val requestCode: Int,
             val granted: List<String>,
             val denied: List<String>
         ) : RequestPermissionsEvent()

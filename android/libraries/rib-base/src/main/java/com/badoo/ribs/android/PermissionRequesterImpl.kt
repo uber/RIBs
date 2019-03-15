@@ -21,7 +21,7 @@ class PermissionRequesterImpl(
     private val requestCodeRegistry: RequestCodeRegistry
 ) : PermissionRequester, PermissionRequestResultHandler {
 
-    private val events = HashMap<Int, HashMap<Int, Relay<RequestPermissionsEvent>>>()
+    private val events = HashMap<Int, Relay<RequestPermissionsEvent>>()
 
     override fun checkPermissions(
         client: Identifiable,
@@ -67,28 +67,22 @@ class PermissionRequesterImpl(
     }
 
     // TODO Consider what is better: with requestCode here (separate streams) or without (client code branching on single stream)
-    override fun events(client: Identifiable, requestCode: Int): Observable<RequestPermissionsEvent> {
+    override fun events(client: Identifiable): Observable<RequestPermissionsEvent> {
         val id = requestCodeRegistry.generateGroupId(client.id)
 
-        return ensureSubject(id, requestCode)
-            .doOnDispose { cleanup(id, requestCode) }
+        return ensureSubject(id)
+            .doOnDispose { cleanup(id) }
             .hide()
     }
 
     private fun ensureSubject(
         id: Int,
-        requestCode: Int,
         onSubjectDidNotExist: (() -> Unit)? = null
     ): Relay<RequestPermissionsEvent> {
         var subjectJustCreated = false
 
         if (!events.containsKey(id)) {
-            events[id] = hashMapOf()
-            subjectJustCreated = true
-        }
-
-        if (!events.getValue(id).contains(requestCode)) {
-            events.getValue(id)[requestCode] = PublishRelay.create()
+            events[id] = PublishRelay.create()
             subjectJustCreated = true
         }
 
@@ -96,14 +90,11 @@ class PermissionRequesterImpl(
             onSubjectDidNotExist?.invoke()
         }
 
-        return events.getValue(id).getValue(requestCode)
+        return events.getValue(id)
     }
 
-    private fun cleanup(id: Int, requestCode: Int) {
-        events[id]?.remove(requestCode)
-        if (events[id]?.isEmpty() == true) {
-            events.remove(id)
-        }
+    private fun cleanup(id: Int) {
+        events.remove(id)
     }
 
     override fun onRequestPermissionsResult(
@@ -113,7 +104,7 @@ class PermissionRequesterImpl(
     ) {
         val id = requestCodeRegistry.resolveGroupId(requestCode)
         val code = requestCodeRegistry.resolveRequestCode(requestCode)
-        ensureSubject(id, code) {
+        ensureSubject(id) {
             throw PermissionRequesterException(
                 "There's no one listening for permission request result! " +
                     "requestCode: $requestCode, " +
@@ -132,7 +123,7 @@ class PermissionRequesterImpl(
     }
 
     private fun onPermissionRequestCancelled(id: Int, requestCode: Int) {
-        events.getValue(id).getValue(requestCode).accept(
+        events.getValue(id).accept(
             Cancelled(requestCode)
         )
     }
@@ -154,7 +145,7 @@ class PermissionRequesterImpl(
             }
         }
 
-        events.getValue(id).getValue(requestCode).accept(
+        events.getValue(id).accept(
             RequestPermissionsResult(
                 requestCode, granted, denied
             )

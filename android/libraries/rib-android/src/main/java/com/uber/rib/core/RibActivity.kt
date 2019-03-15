@@ -103,8 +103,8 @@ abstract class RibActivity : AppCompatActivity(),
     override fun requestPermissions(client: Identifiable, requestCode: Int, permissions: Array<String>) =
         permissionRequester.requestPermissions(client, requestCode, permissions)
 
-    override fun events(client: Identifiable, requestCode: Int): Observable<PermissionRequester.RequestPermissionsEvent> =
-        permissionRequester.events(client, requestCode)
+    override fun events(client: Identifiable): Observable<PermissionRequester.RequestPermissionsEvent> =
+        permissionRequester.events(client)
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) =
         permissionRequester.onRequestPermissionsResult(requestCode, permissions, grantResults)
