@@ -19,11 +19,7 @@ abstract class RibActivity : AppCompatActivity(),
     PermissionRequester {
 
     private val requestCodeRegistry = RequestCodeRegistry()
-    private val permissionRequester = PermissionRequesterImpl(
-        this,
-        requestCodeRegistry
-    )
-
+    private val permissionRequester = PermissionRequesterImpl(this, requestCodeRegistry)
     private lateinit var rootNode: Node<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {

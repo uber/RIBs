@@ -87,8 +87,8 @@ class PermissionRequesterImpl(
             subjectJustCreated = true
         }
 
-        if (!events[id]!!.contains(requestCode)) {
-            events[id]!![requestCode] = PublishRelay.create()
+        if (!events.getValue(id).contains(requestCode)) {
+            events.getValue(id)[requestCode] = PublishRelay.create()
             subjectJustCreated = true
         }
 
@@ -132,7 +132,7 @@ class PermissionRequesterImpl(
     }
 
     private fun onPermissionRequestCancelled(id: Int, requestCode: Int) {
-        events[id]!![requestCode]!!.accept(
+        events.getValue(id).getValue(requestCode).accept(
             Cancelled(requestCode)
         )
     }
@@ -154,7 +154,7 @@ class PermissionRequesterImpl(
             }
         }
 
-        events[id]!![requestCode]!!.accept(
+        events.getValue(id).getValue(requestCode).accept(
             RequestPermissionsResult(
                 requestCode, granted, denied
             )

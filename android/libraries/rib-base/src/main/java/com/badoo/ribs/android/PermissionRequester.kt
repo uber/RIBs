@@ -5,21 +5,11 @@ import io.reactivex.Observable
 
 interface PermissionRequester {
 
-    fun checkPermissions(
-        client: Identifiable,
-        permissions: Array<String>
-    ) : CheckPermissionsResult
+    fun checkPermissions(client: Identifiable, permissions: Array<String>) : CheckPermissionsResult
 
-    fun requestPermissions(
-        client: Identifiable,
-        requestCode: Int,
-        permissions: Array<String>
-    )
+    fun requestPermissions(client: Identifiable, requestCode: Int, permissions: Array<String>)
 
-    fun events(
-        client: Identifiable,
-        requestCode: Int
-    ): Observable<RequestPermissionsEvent>
+    fun events(client: Identifiable, requestCode: Int): Observable<RequestPermissionsEvent>
 
     data class CheckPermissionsResult(
         val granted: List<String>,
