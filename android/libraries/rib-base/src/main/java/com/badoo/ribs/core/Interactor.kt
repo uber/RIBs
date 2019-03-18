@@ -57,8 +57,8 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     internal var tag = "${this::class.java.name}.${UUID.randomUUID()}"
         private set
 
-    override val id: String =
-        tag
+    override val id: String
+        get() = tag
 
     // todo these are leftovers, reconsider them
     override fun lifecycle(): Observable<InteractorEvent> =
