@@ -22,7 +22,7 @@ interface HelloWorldView : RibView,
     }
 
     data class ViewModel(
-        val id: String
+        val text: String
     )
 }
 
@@ -39,7 +39,7 @@ class HelloWorldViewImpl private constructor(
     ) : this(context, attrs, defStyle, PublishRelay.create<Event>())
 
     override val androidView = this
-    private val idText: TextView by lazy { findViewById<TextView>(R.id.hello_id) }
+    private val text: TextView by lazy { findViewById<TextView>(R.id.hello_debug) }
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -47,6 +47,6 @@ class HelloWorldViewImpl private constructor(
     }
 
     override fun accept(vm: ViewModel) {
-        idText.text = vm.id
+        text.text = vm.text
     }
 }

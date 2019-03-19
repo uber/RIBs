@@ -1,6 +1,7 @@
 package com.badoo.ribs.example.rib.menu.builder
 
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.example.rib.menu.Menu
 import com.badoo.ribs.example.rib.menu.MenuInteractor
 import com.badoo.ribs.example.rib.menu.MenuRouter

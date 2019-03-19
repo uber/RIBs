@@ -1,6 +1,7 @@
 package com.badoo.ribs.example.rib.hello_world.builder
 
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.example.rib.hello_world.HelloWorld

@@ -21,6 +21,7 @@ import android.arch.lifecycle.LifecycleRegistry
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcelable
+import android.support.annotation.CallSuper
 import com.badoo.ribs.android.IntentCreator
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.LifecycleEndedException
@@ -32,6 +33,7 @@ import com.badoo.ribs.core.view.RibView
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.Function
+import java.util.UUID
 
 /**
  * The base implementation for all [Interactor]s.
@@ -42,8 +44,9 @@ import io.reactivex.functions.Function
 abstract class Interactor<C : Parcelable, V : RibView>(
     protected val router: Router<C, V>,
     private val disposables: Disposable?
-) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner {
+) : LifecycleScopeProvider<InteractorEvent>, LifecycleOwner, Identifiable {
 
+    // TODO make private / or remove altogether if activity launching is refactored
     lateinit var node: Node<V>
         internal set
     private val ribLifecycleRegistry = LifecycleRegistry(this)
@@ -56,11 +59,18 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     val isAttached: Boolean
         get() = behaviorRelay.value == ACTIVE
 
+    internal var tag = "${this::class.java.name}.${UUID.randomUUID()}"
+        private set
+
+    override val id: String =
+        tag
+
     // todo these are leftovers, reconsider them
     override fun lifecycle(): Observable<InteractorEvent> =
         lifecycleRelay.hide()
 
     fun onAttach(savedInstanceState: Bundle?) {
+        tag = savedInstanceState?.getString(KEY_TAG) ?: tag
         lifecycleRelay.accept(ACTIVE)
         ribLifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_CREATE)
         onAttach(ribLifecycleRegistry, savedInstanceState)
@@ -125,12 +135,10 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     open fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean =
         false
 
-    /**
-     * Called when saving state.
-     *
-     * @param outState the saved [Bundle].
-     */
-    open fun onSaveInstanceState(outState: Bundle) {}
+    @CallSuper
+    open fun onSaveInstanceState(outState: Bundle) {
+        outState.putString(KEY_TAG, tag)
+    }
 
     override fun getLifecycle(): Lifecycle =
         ribLifecycleRegistry
@@ -143,8 +151,10 @@ abstract class Interactor<C : Parcelable, V : RibView>(
     override fun peekLifecycle(): InteractorEvent? =
         behaviorRelay.value
 
-    // todo these are leftovers, reconsider them
     companion object {
+        internal const val KEY_TAG = "interactor.tag"
+
+        // todo these are leftovers, reconsider them
         private val LIFECYCLE_MAP_FUNCTION: Function<InteractorEvent, InteractorEvent> =
             Function { interactorEvent ->
                 when (interactorEvent) {

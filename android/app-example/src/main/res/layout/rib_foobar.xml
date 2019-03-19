@@ -7,12 +7,48 @@
     tools:context=".app.RootActivity">
 
     <TextView
+        android:id="@+id/foobar_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Let's have a drink in the Foo Bar"
+        android:text="Let's have a drink in the Foo Bar!"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/foobar_debug"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
+
+    <TextView
+        android:id="@+id/foobar_debug"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="24dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/foobar_title"
+        app:layout_constraintBottom_toTopOf="@id/foobar_button_check_permissions"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        tools:text="3826750182" />
+
+    <Button
+        android:id="@+id/foobar_button_check_permissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/check_permissions"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/foobar_debug"
+        app:layout_constraintBottom_toTopOf="@id/foobar_button_request_permissions"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/foobar_button_request_permissions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/request_permissions"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/foobar_button_check_permissions"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </com.badoo.ribs.example.rib.foo_bar.FooBarViewImpl>

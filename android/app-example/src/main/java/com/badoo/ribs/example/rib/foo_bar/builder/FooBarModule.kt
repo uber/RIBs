@@ -1,6 +1,7 @@
 package com.badoo.ribs.example.rib.foo_bar.builder
 
 import com.badoo.ribs.android.ActivityStarter
+import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Input
 import com.badoo.ribs.example.rib.foo_bar.FooBar.Output
@@ -37,15 +38,11 @@ internal object FooBarModule {
     @JvmStatic
     internal fun interactor(
         router: FooBarRouter,
-        input: ObservableSource<Input>,
-        output: Consumer<Output>,
-        feature: FooBarFeature
+        permissionRequester: PermissionRequester
     ): FooBarInteractor =
         FooBarInteractor(
             router = router,
-            input = input,
-            output = output,
-            feature = feature
+            permissionRequester = permissionRequester
         )
 
     @FooBarScope

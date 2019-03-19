@@ -271,7 +271,6 @@ open class Node<V : RibView>(
     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?): Boolean  =
         if (requestCodeRegistry.resolveGroupId(requestCode) == ribId) {
             interactor.onActivityResult(requestCodeRegistry.resolveRequestCode(requestCode), resultCode, data)
-            true
 
         } else {
             // most recently added children are more likely to be responsible
