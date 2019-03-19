@@ -1,4 +1,4 @@
-package com.badoo.ribs.core.requestcode
+package com.badoo.ribs.android.requestcode
 
 import java.lang.RuntimeException
 

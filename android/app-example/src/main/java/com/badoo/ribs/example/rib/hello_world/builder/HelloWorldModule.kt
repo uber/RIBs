@@ -35,17 +35,20 @@ internal object HelloWorldModule {
     @HelloWorldScope
     @Provides
     @JvmStatic
+    @SuppressWarnings("LongParameterList")
     internal fun interactor(
         router: HelloWorldRouter,
         input: ObservableSource<Input>,
         output: Consumer<Output>,
-        feature: HelloWorldFeature
+        feature: HelloWorldFeature,
+        activityStarter: ActivityStarter
     ): HelloWorldInteractor =
         HelloWorldInteractor(
             router = router,
             input = input,
             output = output,
-            feature = feature
+            feature = feature,
+            activityStarter = activityStarter
         )
 
     @HelloWorldScope
@@ -54,13 +57,11 @@ internal object HelloWorldModule {
     internal fun node(
         viewFactory: ViewFactory<HelloWorldView>,
         router: HelloWorldRouter,
-        interactor: HelloWorldInteractor,
-        activityStarter: ActivityStarter
+        interactor: HelloWorldInteractor
     ) : Node<HelloWorldView> = Node(
         identifier = object : HelloWorld {},
         viewFactory = viewFactory,
         router = router,
-        interactor = interactor,
-        activityStarter = activityStarter
+        interactor = interactor
     )
 }

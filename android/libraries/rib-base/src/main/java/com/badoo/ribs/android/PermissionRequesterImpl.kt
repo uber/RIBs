@@ -10,18 +10,16 @@ import com.badoo.ribs.android.PermissionRequester.CheckPermissionsResult
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.Cancelled
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.RequestPermissionsResult
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStreamImpl
 import com.badoo.ribs.core.Identifiable
-import com.badoo.ribs.core.requestcode.RequestCodeRegistry
-import com.jakewharton.rxrelay2.PublishRelay
-import com.jakewharton.rxrelay2.Relay
-import io.reactivex.Observable
+import com.badoo.ribs.android.requestcode.RequestCodeRegistry
 
 class PermissionRequesterImpl(
     private val activity: AppCompatActivity,
-    private val requestCodeRegistry: RequestCodeRegistry
-) : PermissionRequester, PermissionRequestResultHandler {
-
-    private val events = HashMap<Int, Relay<RequestPermissionsEvent>>()
+    requestCodeRegistry: RequestCodeRegistry
+) : RequestCodeBasedEventStreamImpl<RequestPermissionsEvent>(requestCodeRegistry),
+    PermissionRequester,
+    PermissionRequestResultHandler {
 
     override fun checkPermissions(
         client: Identifiable,
@@ -58,42 +56,10 @@ class PermissionRequesterImpl(
         requestCode: Int,
         permissions: Array<String>
     ) {
-        val code = requestCodeRegistry.generateRequestCode(client.id, requestCode)
-
         ActivityCompat.requestPermissions(activity,
             permissions,
-            code
+            client.forgeExternalRequestCode(requestCode)
         )
-    }
-
-    override fun events(client: Identifiable): Observable<RequestPermissionsEvent> {
-        val id = requestCodeRegistry.generateGroupId(client.id)
-
-        return ensureSubject(id)
-            .doOnDispose { cleanup(id) }
-            .hide()
-    }
-
-    private fun ensureSubject(
-        id: Int,
-        onSubjectDidNotExist: (() -> Unit)? = null
-    ): Relay<RequestPermissionsEvent> {
-        var subjectJustCreated = false
-
-        if (!events.containsKey(id)) {
-            events[id] = PublishRelay.create()
-            subjectJustCreated = true
-        }
-
-        if (subjectJustCreated) {
-            onSubjectDidNotExist?.invoke()
-        }
-
-        return events.getValue(id)
-    }
-
-    private fun cleanup(id: Int) {
-        events.remove(id)
     }
 
     override fun onRequestPermissionsResult(
@@ -101,38 +67,44 @@ class PermissionRequesterImpl(
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
-        val id = requestCodeRegistry.resolveGroupId(requestCode)
-        val code = requestCodeRegistry.resolveRequestCode(requestCode)
-        ensureSubject(id) {
-            throw PermissionRequesterException(
-                "There's no one listening for permission request result! " +
-                    "requestCode: $requestCode, " +
-                    "resolved group: $id, " +
-                    "resolved code: $code, " +
-                    "permissions: ${permissions.toList()}"
-            )
-        }
-
         if (grantResults.isEmpty()) {
-            onPermissionRequestCancelled(id, code)
+            onPermissionRequestCancelled(requestCode)
 
         } else {
-            onPermissionRequestFinished(id, code, permissions, grantResults)
+            onPermissionRequestFinished(requestCode, permissions, grantResults)
         }
     }
 
-    private fun onPermissionRequestCancelled(id: Int, requestCode: Int) {
-        events.getValue(id).accept(
-            Cancelled(requestCode)
+    private fun onPermissionRequestCancelled(externalRequestCode: Int) {
+        publish(
+            externalRequestCode,
+            Cancelled(
+                requestCode = externalRequestCode.toInternalRequestCode()
+            )
         )
     }
 
     private fun onPermissionRequestFinished(
-        id: Int,
-        requestCode: Int,
+        externalRequestCode: Int,
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        val (granted, denied) = sortResults(permissions, grantResults)
+
+        publish(
+            externalRequestCode,
+            RequestPermissionsResult(
+                requestCode = externalRequestCode.toInternalRequestCode(),
+                granted = granted,
+                denied = denied
+            )
+        )
+    }
+
+    private fun sortResults(
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Pair<MutableList<String>, MutableList<String>> {
         val granted = mutableListOf<String>()
         val denied = mutableListOf<String>()
 
@@ -144,10 +116,6 @@ class PermissionRequesterImpl(
             }
         }
 
-        events.getValue(id).accept(
-            RequestPermissionsResult(
-                requestCode, granted, denied
-            )
-        )
+        return granted to denied
     }
 }

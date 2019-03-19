@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.badoo.common.rib.test.activity.R
 import com.badoo.ribs.core.Node
-import com.uber.rib.core.RibActivity
+import com.badoo.ribs.android.RibActivity
 
 
 class RibTestActivity : RibActivity() {

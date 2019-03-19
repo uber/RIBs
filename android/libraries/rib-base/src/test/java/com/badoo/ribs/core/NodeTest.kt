@@ -18,6 +18,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -67,8 +68,7 @@ class NodeTest {
             identifier = object : TestPublicRibInterface {},
             viewFactory = viewFactory,
             router = router,
-            interactor = interactor,
-            activityStarter = mock()
+            interactor = interactor
         )
 
         addChildren()
@@ -403,45 +403,14 @@ class NodeTest {
     }
 
     @Test
-    fun `Rib id is generated automatically`() {
-        node.onAttach(null)
-        assertNotNull(node.ribId)
-    }
-
-    @Test
-    fun `Rib id is saved to bundle`() {
-        val outState = mock<Bundle>()
-        node.onSaveInstanceState(outState)
-        verify(outState).putInt(KEY_RIB_ID, node.ribId!!)
-    }
-
-    @Test
-    fun `Rib id is restored from bundle`() {
-        val savedInstanceState = mock<Bundle>()
-        whenever(savedInstanceState.getInt(eq(KEY_RIB_ID), any())).thenReturn(999)
-        node.onAttach(savedInstanceState)
-        assertEquals(999, node.ribId)
-    }
-
-    @Test
-    fun `Tag is generated automatically`() {
-        node.onAttach(null)
-        assertNotNull(node.tag)
-    }
-
-    @Test
-    fun `Tag is saved to bundle`() {
-        val outState = mock<Bundle>()
-        node.onSaveInstanceState(outState)
-        verify(outState).putString(KEY_TAG, node.tag)
-    }
-
-    @Test
-    fun `Tag is restored from bundle`() {
-        val savedInstanceState = mock<Bundle>()
-        whenever(savedInstanceState.getString(KEY_TAG)).thenReturn("abcdef")
-        node.onAttach(savedInstanceState)
-        assertEquals("abcdef", node.tag)
+    fun `attachChild() calls logical attach and view attach in correct order`() {
+        val child = mock<Node<*>>()
+        node.attachToView(parentViewGroup)
+        node.attachChild(child, null)
+        inOrder(child) {
+            verify(child).onAttach(null)
+            verify(child).attachToView(parentViewGroup)
+        }
     }
 
     @Test

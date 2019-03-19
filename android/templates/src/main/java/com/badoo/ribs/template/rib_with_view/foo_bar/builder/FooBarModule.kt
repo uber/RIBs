@@ -1,15 +1,14 @@
 package com.badoo.ribs.template.rib_with_view.foo_bar.builder
 
-import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBar
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBar.Input
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBar.Output
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBarInteractor
-import com.badoo.ribs.template.rib_with_view.foo_bar.feature.FooBarFeature
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBarRouter
 import com.badoo.ribs.template.rib_with_view.foo_bar.FooBarView
+import com.badoo.ribs.template.rib_with_view.foo_bar.feature.FooBarFeature
 import dagger.Provides
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
@@ -54,13 +53,11 @@ internal object FooBarModule {
     internal fun node(
         viewFactory: ViewFactory<FooBarView>,
         router: FooBarRouter,
-        interactor: FooBarInteractor,
-        activityStarter: ActivityStarter
+        interactor: FooBarInteractor
     ) : Node<FooBarView> = Node(
         identifier = object : FooBar {},
         viewFactory = viewFactory,
         router = router,
-        interactor = interactor,
-        activityStarter = activityStarter
+        interactor = interactor
     )
 }

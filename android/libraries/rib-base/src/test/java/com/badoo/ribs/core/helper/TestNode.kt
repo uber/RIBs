@@ -10,8 +10,7 @@ class TestNode(
     identifier = identifier,
     viewFactory = mock(),
     router = mock(),
-    interactor = mock(),
-    activityStarter = mock()
+    interactor = mock()
 ) {
     var handleBackPress: Boolean =
         false

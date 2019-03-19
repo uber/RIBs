@@ -4,12 +4,12 @@ import android.os.Bundle
 import android.view.ViewGroup
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.PermissionRequester
+import com.badoo.ribs.android.RibActivity
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.directory.Directory
+import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.switcher.Switcher
 import com.badoo.ribs.example.rib.switcher.builder.SwitcherBuilder
-import com.uber.rib.core.RibActivity
-import com.badoo.ribs.example.R
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
@@ -29,8 +29,8 @@ class RootActivity : RibActivity() {
         val rootBuilder =
             SwitcherBuilder(object : Switcher.Dependency {
                 override fun ribCustomisation(): Directory = AppRibCustomisations
-                override fun activityStarter(): ActivityStarter = this@RootActivity
-                override fun permissionRequester(): PermissionRequester = this@RootActivity
+                override fun activityStarter(): ActivityStarter = activityStarter
+                override fun permissionRequester(): PermissionRequester = permissionRequester
                 override fun switcherInput(): ObservableSource<Switcher.Input> = Observable.empty()
                 override fun switcherOutput(): Consumer<Switcher.Output> = Consumer { }
             })
