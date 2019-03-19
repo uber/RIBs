@@ -1,17 +1,14 @@
 package com.badoo.ribs.example.rib.switcher.feature
 
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.State
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.Wish
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.Wish.*
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.Effect
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.Effect.*
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.News
-import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.News.*
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.NewsPublisher
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.ActorReducerFeature
+import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.Effect
+import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.News
+import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.State
+import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature.Wish
 import io.reactivex.Observable
 import io.reactivex.Observable.empty
 

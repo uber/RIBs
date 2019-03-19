@@ -50,3 +50,5 @@ fun KClass<*>.getResourceListing(path: String): Array<String> {
 
     throw UnsupportedOperationException("Cannot list files for URL $dirUrl")
 }
+
+private fun getJar

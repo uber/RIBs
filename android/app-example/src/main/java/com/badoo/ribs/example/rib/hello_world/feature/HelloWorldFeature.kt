@@ -1,17 +1,14 @@
 package com.badoo.ribs.example.rib.hello_world.feature
 
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.State
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.Wish
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.Wish.*
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.Effect
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.Effect.*
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.News
-import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.News.*
 import com.badoo.mvicore.element.Actor
 import com.badoo.mvicore.element.Bootstrapper
 import com.badoo.mvicore.element.NewsPublisher
 import com.badoo.mvicore.element.Reducer
 import com.badoo.mvicore.feature.ActorReducerFeature
+import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.Effect
+import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.News
+import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.State
+import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature.Wish
 import io.reactivex.Observable
 import io.reactivex.Observable.empty
 

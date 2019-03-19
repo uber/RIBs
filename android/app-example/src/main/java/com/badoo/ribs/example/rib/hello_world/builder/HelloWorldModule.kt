@@ -10,7 +10,6 @@ import com.badoo.ribs.example.rib.hello_world.HelloWorldInteractor
 import com.badoo.ribs.example.rib.hello_world.HelloWorldRouter
 import com.badoo.ribs.example.rib.hello_world.HelloWorldView
 import com.badoo.ribs.example.rib.hello_world.feature.HelloWorldFeature
-import com.badoo.ribs.android.IntentCreator
 import dagger.Provides
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

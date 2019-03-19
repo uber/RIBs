@@ -7,7 +7,11 @@ import com.badoo.ribs.plugin.template.JavaResourceProvider
 import com.badoo.ribs.plugin.template.MetaInformationProvider
 import com.badoo.ribs.plugin.template.TemplateFilesProvider
 import com.intellij.facet.FacetManager
-import com.intellij.openapi.actionSystem.*
+import com.intellij.openapi.actionSystem.AnAction
+import com.intellij.openapi.actionSystem.AnActionEvent
+import com.intellij.openapi.actionSystem.CommonDataKeys
+import com.intellij.openapi.actionSystem.DataContext
+import com.intellij.openapi.actionSystem.LangDataKeys
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.command.CommandProcessor
 import com.intellij.openapi.module.ModuleUtilCore
