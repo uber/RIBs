@@ -35,6 +35,7 @@ internal object HelloWorldModule {
     @HelloWorldScope
     @Provides
     @JvmStatic
+    @SuppressWarnings("LongParameterList")
     internal fun interactor(
         router: HelloWorldRouter,
         input: ObservableSource<Input>,

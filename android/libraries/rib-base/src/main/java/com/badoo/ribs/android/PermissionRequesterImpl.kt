@@ -89,6 +89,22 @@ class PermissionRequesterImpl(
         permissions: Array<out String>,
         grantResults: IntArray
     ) {
+        val (granted, denied) = sortResults(permissions, grantResults)
+
+        publish(
+            externalRequestCode,
+            RequestPermissionsResult(
+                requestCode = externalRequestCode.toInternalRequestCode(),
+                granted = granted,
+                denied = denied
+            )
+        )
+    }
+
+    private fun sortResults(
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ): Pair<MutableList<String>, MutableList<String>> {
         val granted = mutableListOf<String>()
         val denied = mutableListOf<String>()
 
@@ -100,13 +116,6 @@ class PermissionRequesterImpl(
             }
         }
 
-        publish(
-            externalRequestCode,
-            RequestPermissionsResult(
-                requestCode = externalRequestCode.toInternalRequestCode(),
-                granted = granted,
-                denied = denied
-            )
-        )
+        return granted to denied
     }
 }

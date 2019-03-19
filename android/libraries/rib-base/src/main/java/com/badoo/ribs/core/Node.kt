@@ -24,7 +24,6 @@ import android.view.ViewGroup
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.core.view.ViewFactory
 import com.uber.rib.util.RibRefWatcher
-import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 
 /**
