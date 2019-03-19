@@ -1,10 +1,12 @@
 package com.badoo.ribs.android
 
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent
-import com.badoo.ribs.android.RequestCodeBasedEventStream.RequestCodeBasedEvent
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStream
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStream.RequestCodeBasedEvent
 import com.badoo.ribs.core.Identifiable
 
-interface PermissionRequester : RequestCodeBasedEventStream<RequestPermissionsEvent> {
+interface PermissionRequester :
+    RequestCodeBasedEventStream<RequestPermissionsEvent> {
 
     fun checkPermissions(client: Identifiable, permissions: Array<String>) : CheckPermissionsResult
 

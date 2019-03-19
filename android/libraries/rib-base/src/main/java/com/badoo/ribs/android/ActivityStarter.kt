@@ -17,14 +17,16 @@ package com.badoo.ribs.android
 
 import android.content.Intent
 import com.badoo.ribs.android.ActivityStarter.ActivityResultEvent
-import com.badoo.ribs.android.RequestCodeBasedEventStream.RequestCodeBasedEvent
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStream
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStream.RequestCodeBasedEvent
 import com.badoo.ribs.core.Identifiable
 
 /**
  * Start activities. A much cleaner dependency than an entire activity or context, and easier to
  * inject and mock in tests.
  */
-interface ActivityStarter : RequestCodeBasedEventStream<ActivityResultEvent> {
+interface ActivityStarter :
+    RequestCodeBasedEventStream<ActivityResultEvent> {
 
     fun startActivity(createIntent: IntentCreator.() -> Intent)
 

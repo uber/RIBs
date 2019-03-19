@@ -1,8 +1,7 @@
-package com.badoo.ribs.android
+package com.badoo.ribs.android.requestcode
 
-import com.badoo.ribs.android.RequestCodeBasedEventStream.RequestCodeBasedEvent
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStream.RequestCodeBasedEvent
 import com.badoo.ribs.core.Identifiable
-import com.badoo.ribs.core.requestcode.RequestCodeRegistry
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
 import io.reactivex.Observable

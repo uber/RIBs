@@ -10,8 +10,9 @@ import com.badoo.ribs.android.PermissionRequester.CheckPermissionsResult
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.Cancelled
 import com.badoo.ribs.android.PermissionRequester.RequestPermissionsEvent.RequestPermissionsResult
+import com.badoo.ribs.android.requestcode.RequestCodeBasedEventStreamImpl
 import com.badoo.ribs.core.Identifiable
-import com.badoo.ribs.core.requestcode.RequestCodeRegistry
+import com.badoo.ribs.android.requestcode.RequestCodeRegistry
 
 class PermissionRequesterImpl(
     private val activity: AppCompatActivity,

@@ -1,4 +1,4 @@
-package com.badoo.ribs.core.requestcode
+package com.badoo.ribs.android.requestcode
 
 import android.os.Bundle
 import java.util.HashMap
