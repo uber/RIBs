@@ -55,7 +55,8 @@ def build = [
         android: 'com.android.tools.build:gradle:3.3.1',
         kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
         gradleKotlinDsl: 'org.gradle.kotlin:plugins:1.2.2',
-        mavenPublish: 'com.vanniktech:gradle-maven-publish-plugin:0.8.0'
+        mavenPublish: 'com.vanniktech:gradle-maven-publish-plugin:0.8.0',
+        detekt: 'io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.0.0-RC14',
     ]
 ]
 

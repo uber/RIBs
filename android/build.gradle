@@ -30,6 +30,7 @@ buildscript {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.kotlin
         classpath deps.build.gradlePlugins.mavenPublish
+        classpath deps.build.gradlePlugins.detekt
     }
 }
 
@@ -53,6 +54,8 @@ subprojects {
         maven { url "https://jitpack.io" }
     }
 }
+
+configureDetektForAllSubprojects(project)
 
 task clean(type: Delete) {
     delete rootProject.buildDir
