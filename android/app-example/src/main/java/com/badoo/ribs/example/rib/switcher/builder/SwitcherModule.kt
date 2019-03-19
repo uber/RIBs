@@ -1,7 +1,8 @@
 package com.badoo.ribs.example.rib.switcher.builder
 
 import com.badoo.ribs.android.ActivityStarter
-import com.badoo.ribs.android.PermissionRequester
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.example.rib.foo_bar.FooBar
 import com.badoo.ribs.example.rib.foo_bar.builder.FooBarBuilder
 import com.badoo.ribs.example.rib.hello_world.HelloWorld
@@ -13,8 +14,6 @@ import com.badoo.ribs.example.rib.switcher.SwitcherInteractor
 import com.badoo.ribs.example.rib.switcher.SwitcherRouter
 import com.badoo.ribs.example.rib.switcher.SwitcherView
 import com.badoo.ribs.example.rib.switcher.feature.SwitcherFeature
-import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.view.ViewFactory
 import dagger.Provides
 import io.reactivex.Observable
 import io.reactivex.ObservableSource

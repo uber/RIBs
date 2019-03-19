@@ -1,13 +1,11 @@
 package com.badoo.ribs.example.rib.hello_world
 
-import android.Manifest
 import android.app.Activity
 import android.arch.lifecycle.Lifecycle
 import android.content.Intent
 import android.os.Bundle
 import com.badoo.mvicore.android.lifecycle.createDestroy
 import com.badoo.mvicore.binder.using
-import com.badoo.ribs.android.PermissionRequester
 import com.badoo.ribs.core.Interactor
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router

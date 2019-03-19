@@ -2,18 +2,14 @@ package com.badoo.ribs.example.rib.foo_bar.builder
 
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.PermissionRequester
+import com.badoo.ribs.core.Node
+import com.badoo.ribs.core.view.ViewFactory
 import com.badoo.ribs.example.rib.foo_bar.FooBar
-import com.badoo.ribs.example.rib.foo_bar.FooBar.Input
-import com.badoo.ribs.example.rib.foo_bar.FooBar.Output
 import com.badoo.ribs.example.rib.foo_bar.FooBarInteractor
 import com.badoo.ribs.example.rib.foo_bar.FooBarRouter
 import com.badoo.ribs.example.rib.foo_bar.FooBarView
 import com.badoo.ribs.example.rib.foo_bar.feature.FooBarFeature
-import com.badoo.ribs.core.Node
-import com.badoo.ribs.core.view.ViewFactory
 import dagger.Provides
-import io.reactivex.ObservableSource
-import io.reactivex.functions.Consumer
 
 @dagger.Module
 internal object FooBarModule {
