@@ -9,7 +9,7 @@ import com.badoo.ribs.core.directory.Directory
 import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.switcher.Switcher
 import com.badoo.ribs.example.rib.switcher.builder.SwitcherBuilder
-import com.uber.rib.core.RibActivity
+import com.badoo.ribs.android.RibActivity
 import io.reactivex.Observable
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer

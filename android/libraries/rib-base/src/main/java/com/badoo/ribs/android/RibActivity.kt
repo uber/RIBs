@@ -1,39 +1,41 @@
-package com.uber.rib.core
+package com.badoo.ribs.android
 
 import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.ViewGroup
-import com.badoo.ribs.android.ActivityStarterImpl
-import com.badoo.ribs.android.IntentCreator
-import com.badoo.ribs.android.PermissionRequesterImpl
 import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.requestcode.RequestCodeRegistry
+import java.util.HashMap
 
 abstract class RibActivity : AppCompatActivity(), IntentCreator {
 
-    private val requestCodeRegistry =
-        RequestCodeRegistry()
+    private lateinit var requestCodeRegistry: RequestCodeRegistry
 
-    protected val activityStarter =
+    protected val activityStarter: ActivityStarterImpl by lazy {
         ActivityStarterImpl(
             activity = this,
             intentCreator = this,
             requestCodeRegistry = requestCodeRegistry
         )
-    protected  val permissionRequester =
+    }
+
+    protected  val permissionRequester: PermissionRequesterImpl by lazy {
         PermissionRequesterImpl(
             activity = this,
             requestCodeRegistry = requestCodeRegistry
         )
+    }
 
     private lateinit var rootNode: Node<*>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestCodeRegistry = RequestCodeRegistry(savedInstanceState)
+
         rootNode = createRib().apply {
-            onAttach(savedInstanceState)
-            attachToView(rootViewGroup)
+                onAttach(savedInstanceState)
+                attachToView(rootViewGroup)
         }
     }
 
@@ -64,6 +66,7 @@ abstract class RibActivity : AppCompatActivity(), IntentCreator {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         rootNode.onSaveInstanceState(outState)
+        requestCodeRegistry.onSaveInstanceState(outState)
     }
 
     override fun onLowMemory() {
