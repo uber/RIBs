@@ -423,27 +423,6 @@ class NodeTest {
     }
 
     @Test
-    fun `Tag is generated automatically`() {
-        node.onAttach(null)
-        assertNotNull(node.tag)
-    }
-
-    @Test
-    fun `Tag is saved to bundle`() {
-        val outState = mock<Bundle>()
-        node.onSaveInstanceState(outState)
-        verify(outState).putString(KEY_TAG, node.tag)
-    }
-
-    @Test
-    fun `Tag is restored from bundle`() {
-        val savedInstanceState = mock<Bundle>()
-        whenever(savedInstanceState.getString(KEY_TAG)).thenReturn("abcdef")
-        node.onAttach(savedInstanceState)
-        assertEquals("abcdef", node.tag)
-    }
-
-    @Test
     fun `View state saved to bundle`() {
         val outState = mock<Bundle>()
         node.savedViewState = mock()

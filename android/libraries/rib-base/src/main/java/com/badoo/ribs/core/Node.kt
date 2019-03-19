@@ -21,7 +21,6 @@ import android.support.annotation.CallSuper
 import android.support.annotation.MainThread
 import android.util.SparseArray
 import android.view.ViewGroup
-import com.badoo.ribs.core.requestcode.RequestCodeRegistry
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.core.view.ViewFactory
 import com.uber.rib.util.RibRefWatcher
@@ -44,15 +43,13 @@ open class Node<V : RibView>(
         internal const val KEY_ROUTER = "node.router"
         internal const val KEY_INTERACTOR = "node.interactor"
         internal const val KEY_VIEW_STATE = "view.state"
-        private val requestCodeRegistry = RequestCodeRegistry()
     }
 
     init {
         router.node = this
     }
 
-    var tag: String = "${this::class.java.name}.${UUID.randomUUID()}"
-        private set
+    val tag: String = this::class.java.name
     internal open var ribId: Int? = null
     internal val children = CopyOnWriteArrayList<Node<*>>()
     internal open var view: V? = null
@@ -64,12 +61,6 @@ open class Node<V : RibView>(
 
     fun getChildren(): List<Node<*>> =
         children.toList()
-
-    private fun generateRibId(): Int =
-        requestCodeRegistry.generateGroupId(tag)
-
-    private fun generateRequestCode(code: Int): Int =
-        requestCodeRegistry.generateRequestCode(tag, code)
 
     private fun updateRibId(value: Int) {
         ribId = value
@@ -195,8 +186,6 @@ open class Node<V : RibView>(
     open fun onAttach(savedInstanceState: Bundle?) {
         this.savedInstanceState = savedInstanceState
 
-        tag = savedInstanceState?.getString(KEY_TAG) ?: tag
-        updateRibId(savedInstanceState?.getInt(KEY_RIB_ID, generateRibId()) ?: generateRibId())
         savedViewState = savedInstanceState?.getSparseParcelableArray<Parcelable>(KEY_VIEW_STATE) ?: SparseArray()
 
         router.onAttach(savedInstanceState?.getBundle(KEY_ROUTER))
@@ -217,8 +206,6 @@ open class Node<V : RibView>(
         saveInteractorState(outState)
         saveViewState()
         outState.putSparseParcelableArray(KEY_VIEW_STATE, savedViewState)
-        outState.putString(KEY_TAG, tag)
-        outState.putInt(KEY_RIB_ID, ribId ?: generateRibId().also { updateRibId(it) })
     }
 
     fun onLowMemory() {
