@@ -50,7 +50,6 @@ open class Node<V : RibView>(
     }
 
     val tag: String = this::class.java.name
-    internal open var ribId: Int? = null
     internal val children = CopyOnWriteArrayList<Node<*>>()
     internal open var view: V? = null
     protected var parentViewGroup: ViewGroup? = null
@@ -61,10 +60,6 @@ open class Node<V : RibView>(
 
     fun getChildren(): List<Node<*>> =
         children.toList()
-
-    private fun updateRibId(value: Int) {
-        ribId = value
-    }
 
     fun attachToView(parentViewGroup: ViewGroup) {
         this.parentViewGroup = parentViewGroup

@@ -414,27 +414,6 @@ class NodeTest {
     }
 
     @Test
-    fun `Rib id is generated automatically`() {
-        node.onAttach(null)
-        assertNotNull(node.ribId)
-    }
-
-    @Test
-    fun `Rib id is saved to bundle`() {
-        val outState = mock<Bundle>()
-        node.onSaveInstanceState(outState)
-        verify(outState).putInt(KEY_RIB_ID, node.ribId!!)
-    }
-
-    @Test
-    fun `Rib id is restored from bundle`() {
-        val savedInstanceState = mock<Bundle>()
-        whenever(savedInstanceState.getInt(eq(KEY_RIB_ID), any())).thenReturn(999)
-        node.onAttach(savedInstanceState)
-        assertEquals(999, node.ribId)
-    }
-
-    @Test
     fun `View state saved to bundle`() {
         val outState = mock<Bundle>()
         node.savedViewState = mock()
