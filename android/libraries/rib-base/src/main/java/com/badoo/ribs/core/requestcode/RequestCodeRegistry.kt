@@ -1,14 +1,18 @@
 package com.badoo.ribs.core.requestcode
 
-import java.lang.IllegalArgumentException
+import android.os.Bundle
+import java.util.HashMap
 
-class RequestCodeRegistry(
+class RequestCodeRegistry constructor(
+    initialState: Bundle?,
     nbLowerBitsForIds: Int = 4
 ) {
+    private val requestCodes: HashMap<Int, String> =
+        (initialState?.getSerializable(KEY_REQUEST_CODE_REGISTRY) as? HashMap<Int, String>) ?: hashMapOf()
+
     private val lowerBitsShift: Int = nbLowerBitsForIds - 0
     private val maskLowerBits = (1 shl lowerBitsShift) - 1
     private val maskHigherBits = 0x0000FFFF - maskLowerBits
-    private val requestCodes = mutableMapOf<Int, String>()
 
     init {
         if (nbLowerBitsForIds < 1) throw IllegalArgumentException("nbLowerBitsForIds can't be less than 1")
@@ -46,4 +50,11 @@ class RequestCodeRegistry(
     fun resolveRequestCode(code: Int): Int =
         code and maskLowerBits
 
+    fun onSaveInstanceState(outState: Bundle) {
+        outState.putSerializable(KEY_REQUEST_CODE_REGISTRY, HashMap(requestCodes))
+    }
+
+    companion object {
+        private const val KEY_REQUEST_CODE_REGISTRY = "requestCodeRegistry"
+    }
 }
