@@ -7,7 +7,7 @@ class RequestCodeRegistry constructor(
     initialState: Bundle?,
     nbLowerBitsForIds: Int = 4
 ) {
-    private val requestCodes: HashMap<Int, String> =
+    internal val requestCodes: HashMap<Int, String> =
         (initialState?.getSerializable(KEY_REQUEST_CODE_REGISTRY) as? HashMap<Int, String>) ?: hashMapOf()
 
     private val lowerBitsShift: Int = nbLowerBitsForIds - 0
@@ -20,9 +20,9 @@ class RequestCodeRegistry constructor(
     }
 
     fun generateGroupId(groupName: String): Int {
-        var code = (groupName.hashCode() shl lowerBitsShift) and 0x0000FFFF
+        var code = generateInitialCode(groupName)
 
-        while (requestCodes.containsKey(code) && requestCodes[code] != groupName) {
+        while (codeCollisionWithAnotherGroup(code, groupName)) {
             code += (1 shl lowerBitsShift) and 0x0000FFFF
         }
 
@@ -30,6 +30,12 @@ class RequestCodeRegistry constructor(
 
         return code
     }
+
+    internal fun generateInitialCode(groupName: String) =
+        (groupName.hashCode() shl lowerBitsShift) and 0x0000FFFF
+
+    private fun codeCollisionWithAnotherGroup(code: Int, groupName: String) =
+        requestCodes.containsKey(code) && requestCodes[code] != groupName
 
     fun generateRequestCode(groupName: String, code: Int): Int {
         ensureCodeIsCorrect(code)
@@ -39,7 +45,7 @@ class RequestCodeRegistry constructor(
     private fun ensureCodeIsCorrect(code: Int) {
         if (code < 1 || code != code and maskLowerBits) {
             throw RequestCodeDoesntFitInMask(
-                "Requestcode '$code' does not fit requirements. Try 0 < code < $maskLowerBits"
+                "Requestcode '$code' does not fit requirements. Try 0 < code < ${Math.pow(2.0, maskLowerBits.toDouble())}"
             )
         }
     }
@@ -55,6 +61,6 @@ class RequestCodeRegistry constructor(
     }
 
     companion object {
-        private const val KEY_REQUEST_CODE_REGISTRY = "requestCodeRegistry"
+        internal const val KEY_REQUEST_CODE_REGISTRY = "requestCodeRegistry"
     }
 }
