@@ -26,3 +26,27 @@ private def configureAndroidModule(Project project) {
         testOptions.unitTests.includeAndroidResources = true
     }
 }
+
+ext.configureDetektForAllSubprojects = { Project project ->
+    project.task('detektBaseline')
+    project.subprojects {
+        afterEvaluate { subProject ->
+            if (subProject.plugins.hasPlugin("kotlin") || subProject.plugins.hasPlugin("kotlin-android")) {
+                subProject.apply plugin: "io.gitlab.arturbosch.detekt"
+
+                subProject.detekt {
+                    parallel = true
+                    input = files("${subProject.projectDir}/src/")
+                    config = files("${project.rootDir}/detekt.yml")
+                    filters = ".*test.*, .*/resources/.*"
+                    def baselineFile = file("${subProject.projectDir}/detekt-baseline.xml")
+                    if (baselineFile.exists()) {
+                        baseline = baselineFile
+                    }
+                }
+
+                project.tasks.detektBaseline.dependsOn(detektBaseline)
+            }
+        }
+    }
+}

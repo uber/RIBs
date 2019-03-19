@@ -8,7 +8,6 @@ import com.badoo.mvicore.binder.using
 import com.badoo.ribs.android.ActivityStarter
 import com.badoo.ribs.android.ActivityStarter.ActivityResultEvent
 import com.badoo.ribs.core.Interactor
-import com.badoo.ribs.core.Node
 import com.badoo.ribs.core.Router
 import com.badoo.ribs.example.app.OtherActivity
 import com.badoo.ribs.example.rib.hello_world.HelloWorldView.ViewModel

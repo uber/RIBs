@@ -4,7 +4,13 @@ import com.badoo.ribs.plugin.template.Template
 import com.badoo.ribs.plugin.template.Token
 import com.intellij.openapi.ui.DialogWrapper
 import com.intellij.uiDesigner.core.GridConstraints
-import com.intellij.uiDesigner.core.GridConstraints.*
+import com.intellij.uiDesigner.core.GridConstraints.FILL_HORIZONTAL
+import com.intellij.uiDesigner.core.GridConstraints.FILL_NONE
+import com.intellij.uiDesigner.core.GridConstraints.FILL_VERTICAL
+import com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_GROW
+import com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_CAN_SHRINK
+import com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_FIXED
+import com.intellij.uiDesigner.core.GridConstraints.SIZEPOLICY_WANT_GROW
 import com.intellij.uiDesigner.core.GridLayoutManager
 import com.intellij.uiDesigner.core.Spacer
 import java.awt.Dimension

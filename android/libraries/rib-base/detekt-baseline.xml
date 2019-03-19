@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <Blacklist timestamp="1553003760756"></Blacklist>
+  <Whitelist timestamp="1553006439211">
+    <ID>LargeClass:Node.kt$Node&lt;V : RibView&gt;</ID>
+    <ID>LongMethod:BackStackManager.kt$BackStackManager.ActorImpl$override fun invoke(state: State&lt;C&gt;, action: Action&lt;C&gt;): Observable&lt;out Effect&lt;C&gt;&gt;</ID>
+    <ID>LongMethod:BackStackRibConnector.kt$BackStackRibConnector$fun goTo(backStackElement: BackStackElement&lt;C&gt;): BackStackElement&lt;C&gt;</ID>
+    <ID>LongMethod:PermissionRequesterImpl.kt$PermissionRequesterImpl$override fun onRequestPermissionsResult( requestCode: Int, permissions: Array&lt;out String&gt;, grantResults: IntArray )</ID>
+    <ID>LongMethod:PermissionRequesterImpl.kt$PermissionRequesterImpl$private fun onPermissionRequestFinished( id: Int, requestCode: Int, permissions: Array&lt;out String&gt;, grantResults: IntArray )</ID>
+    <ID>MagicNumber:RequestCodeRegistry.kt$RequestCodeRegistry$0x0000FFFF</ID>
+    <ID>MagicNumber:RequestCodeRegistry.kt$RequestCodeRegistry$4</ID>
+    <ID>MaxLineLength:BackStackManager.kt$BackStackManager.ActorImpl$private fun switchToNew(backStack: List&lt;BackStackElement&lt;C&gt;&gt;, newConfiguration: C, detachStrategy: BackStackRibConnector.DetachStrategy): Pair&lt;BackStackElement&lt;C&gt;?, BackStackElement&lt;C&gt;&gt;</ID>
+  </Whitelist>
+</SmellBaseline>

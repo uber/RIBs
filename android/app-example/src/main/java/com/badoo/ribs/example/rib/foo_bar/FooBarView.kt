@@ -3,15 +3,15 @@ package com.badoo.ribs.example.rib.foo_bar
 import android.content.Context
 import android.support.constraint.ConstraintLayout
 import android.util.AttributeSet
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
-import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event
-import com.badoo.ribs.example.rib.foo_bar.FooBarView.ViewModel
-import com.jakewharton.rxrelay2.PublishRelay
 import com.badoo.ribs.core.view.RibView
 import com.badoo.ribs.example.R
-import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.*
+import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event
+import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.CheckPermissionsButtonClicked
+import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.RequestPermissionsButtonClicked
+import com.badoo.ribs.example.rib.foo_bar.FooBarView.ViewModel
+import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.ObservableSource
 import io.reactivex.functions.Consumer
 
