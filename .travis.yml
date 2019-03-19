@@ -12,6 +12,7 @@ jdk: oraclejdk8
 script:
   - cd android
   - ./gradlew build --console=plain
+  - ./gradlew detekt --console=plain
 
 env:
   # IDEA_PLUGIN_PUBLICATION_TOKEN environment variable

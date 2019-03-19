@@ -1,0 +1,21 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <Blacklist timestamp="1553003766188"></Blacklist>
+  <Whitelist timestamp="1553003766188">
+    <ID>ExpressionBodySyntax:StringUtils.kt${ return StringUtils.replaceEach(this, replacements.fromArray, replacements.toArray) }</ID>
+    <ID>LongMethod:GenerateRibDialog.kt$GenerateRibDialog$private fun createConstraints( row: Int, column: Int, fill: Int = FILL_NONE, horizontalSizePolicy: Int = SIZEPOLICY_FIXED, verticalSizePolicy: Int = SIZEPOLICY_FIXED, preferredSize: Dimension? = null )</ID>
+    <ID>LongMethod:GenerateRibDialog.kt$GenerateRibDialog$private fun populateTokenInputs(tokens: List&lt;Token&gt;)</ID>
+    <ID>LongMethod:GenerateTemplateAction.kt$GenerateTemplateAction$override fun onGenerateClicked(tokenValues: Map&lt;String, String&gt;, templateId: String)</ID>
+    <ID>LongMethod:ResourceUtils.kt$ fun KClass&lt;*&gt;.getResourceListing(path: String): Array&lt;String&gt;</ID>
+    <ID>LongMethod:TemplateFilesProvider.kt$TemplateFilesProvider$private fun load(): Map&lt;String, Map&lt;SourceSet, List&lt;ResourceTemplateFile&gt;&gt;&gt;</ID>
+    <ID>LongParameterList:CreateTemplateReplacements.kt$(templatePackage: String, targetPackage: String, templateModulePackage: String, targetModulePackage: String, tokens: Map&lt;String, Token&gt;, tokenValues: Map&lt;String, String&gt;)</ID>
+    <ID>LongParameterList:GenerateRibDialog.kt$GenerateRibDialog$( row: Int, column: Int, fill: Int = FILL_NONE, horizontalSizePolicy: Int = SIZEPOLICY_FIXED, verticalSizePolicy: Int = SIZEPOLICY_FIXED, preferredSize: Dimension? = null )</ID>
+    <ID>MagicNumber:GenerateRibDialog.kt$GenerateRibDialog$150</ID>
+    <ID>MagicNumber:GenerateRibDialog.kt$GenerateRibDialog$30</ID>
+    <ID>MagicNumber:GenerateRibDialog.kt$GenerateRibDialog$50</ID>
+    <ID>MagicNumber:ResourceUtils.kt$5</ID>
+    <ID>NewLineAtEndOfFile:ResourceUtils.kt$com.badoo.ribs.plugin.util.ResourceUtils.kt</ID>
+    <ID>ReturnCount:GenerateTemplateAction.kt$GenerateTemplateAction$private fun isAvailable(dataContext: DataContext): Boolean</ID>
+    <ID>WildcardImport:GenerateRibDialog.kt$import javax.swing.*</ID>
+  </Whitelist>
+</SmellBaseline>
