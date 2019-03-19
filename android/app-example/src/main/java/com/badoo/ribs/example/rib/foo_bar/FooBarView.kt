@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.Button
 import android.widget.TextView
 import com.badoo.ribs.core.view.RibView
+import com.badoo.ribs.example.R
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.CheckPermissionsButtonClicked
 import com.badoo.ribs.example.rib.foo_bar.FooBarView.Event.RequestPermissionsButtonClicked
