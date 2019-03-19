@@ -18,6 +18,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.anyOrNull
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.inOrder
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -399,6 +400,17 @@ class NodeTest {
         node.attachToView(parentViewGroup)
         node.attachChild(child, null)
         verify(child).attachToView(parentViewGroup)
+    }
+
+    @Test
+    fun `attachChild() calls logical attach and view attach in correct order`() {
+        val child = mock<Node<*>>()
+        node.attachToView(parentViewGroup)
+        node.attachChild(child, null)
+        inOrder(child) {
+            verify(child).onAttach(null)
+            verify(child).attachToView(parentViewGroup)
+        }
     }
 
     @Test

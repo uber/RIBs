@@ -85,8 +85,8 @@ open class Node<V : RibView>(
         viewFactory?.invoke(parentViewGroup)
 
     internal fun attachChild(child: Node<*>, bundle: Bundle? = null) {
-        attachChildView(child)
         attachChildNode(child, bundle)
+        attachChildView(child)
     }
 
     internal fun attachChildView(child: Node<*>) {
