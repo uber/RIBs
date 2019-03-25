@@ -30,3 +30,5 @@ dependencies {
 
     api deps.support.rules
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
