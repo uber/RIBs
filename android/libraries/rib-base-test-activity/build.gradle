@@ -26,3 +26,5 @@ dependencies {
     implementation deps.support.appCompat
     implementation deps.external.kotlinStdlib
 }
+
+apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
