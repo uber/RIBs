@@ -47,10 +47,24 @@ open class Component<DependencyType>: Dependency {
             lock.unlock()
         }
 
+        #if swift(>=5.0)
+
         if let instance = sharedInstances[__function] as? T {
             return instance
         }
 
+        #else
+
+        // Additional nil coalescing is needed to mitigate a Swift bug appearing in Xcode 10.
+        // see https://bugs.swift.org/browse/SR-8704.
+        // Without this measure, calling `shared` from a function that returns an optional type
+        // will always pass the check below and return nil if the instance is not initialized.
+        if let instance = (sharedInstances[__function] as? T?) ?? nil {
+            return instance
+        }
+
+        #endif
+        
         let instance = factory()
         sharedInstances[__function] = instance
 
