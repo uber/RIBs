@@ -75,6 +75,7 @@ github "uber/RIBs" ~> 0.9
 
 If you like RIBs, check out other related open source projects from our team:
 - [Needle](https://github.com/uber/needle): a compile-time safe Swift dependency injection framework.
+- [Motif](https://github.com/uber/motif): An abstract on top of Dagger offering simpler APIs for nested scopes.
 - [Swift Concurrency](https://github.com/uber/swift-concurrency): a set of concurrency utility classes used by Uber, inspired by the equivalent [java.util.concurrent](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html) package classes.
 - [Swift Abstract Class](https://github.com/uber/swift-abstract-class): a light-weight library along with an executable that enables compile-time safe abstract class development for Swift projects.
 - [Swift Common](https://github.com/uber/swift-common): common libraries used by this set of Swift open source projects.
