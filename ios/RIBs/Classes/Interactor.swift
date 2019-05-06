@@ -163,7 +163,7 @@ public extension ObservableType {
     /// - parameter interactorScope: The interactor scope whose activeness this observable is confined to.
     /// - returns: The `Observable` confined to this interactor's activeness lifecycle.
 
-    func confineTo(_ interactorScope: InteractorScope) -> Observable<E> {
+    func confineTo(_ interactorScope: InteractorScope) -> Observable<Element> {
         return Observable
             .combineLatest(interactorScope.isActiveStream, self) { isActive, value in
                 (isActive, value)
