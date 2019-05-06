@@ -176,10 +176,10 @@ public class LeakDetector {
 fileprivate class LeakDetectionHandleImpl: LeakDetectionHandle {
 
     var cancelled: Bool {
-        return cancelledVariable.value
+        return cancelledRelay.value
     }
 
-    let cancelledVariable = BehaviorRelay<Bool>(value: false)
+    let cancelledRelay = BehaviorRelay<Bool>(value: false)
     let cancelClosure: (() -> ())?
 
     init(cancelClosure: (() -> ())? = nil) {
@@ -187,7 +187,7 @@ fileprivate class LeakDetectionHandleImpl: LeakDetectionHandle {
     }
 
     func cancel() {
-        cancelledVariable.accept(true)
+        cancelledRelay.accept(true)
         cancelClosure?()
     }
 }
