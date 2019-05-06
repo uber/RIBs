@@ -81,8 +81,7 @@ class InteractableMock: Interactable {
     var deactivateHandler: (() -> ())?
     var deactivateCallCount: Int = 0
 
-    init() {
-    }
+    init() {}
 
     func activate() {
         activateCallCount += 1

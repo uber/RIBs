@@ -37,7 +37,7 @@ public class Executor {
         _ = Observable<Int>
             .timer(DispatchTimeInterval.milliseconds(0), period: period, scheduler: MainScheduler.instance)
             .takeWhile { _ in
-                return !didExecute
+                !didExecute
             }
             .subscribe(onNext: { _ in
                 let currentTime = Date().timeIntervalSinceReferenceDate
