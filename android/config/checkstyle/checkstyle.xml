@@ -64,9 +64,7 @@
             <property name="tokens" value="LITERAL_WHILE,LITERAL_TRY,LITERAL_FINALLY,LITERAL_DO,LITERAL_IF,LITERAL_ELSE,LITERAL_FOR,INSTANCE_INIT,STATIC_INIT,LITERAL_SWITCH"/>
         </module>
         <!--module name="EmptyCatchBlock"/-->
-        <module name="LeftCurly">
-            <property name="maxLineLength" value="120"/>
-        </module>
+        <module name="LeftCurly"/>
         <module name="NeedBraces"/>
         <module name="RightCurly"/>
         <module name="AvoidNestedBlocks"/>

@@ -23,7 +23,7 @@ dependencies {
     testCompile(project(":libraries:rib-base")) {
         transitive = false
     }
-    compileOnly(project(":libraries:rib-android")) {
+    compileOnly(project(path: ":libraries:rib-android", configuration: 'default')) {
         transitive = false
     }
 

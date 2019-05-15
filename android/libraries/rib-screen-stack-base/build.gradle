@@ -32,16 +32,16 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility deps.build.javaVersion
+        targetCompatibility deps.build.javaVersion
     }
 }
 
 dependencies {
-    compile deps.external.rxjava2
-    compile deps.external.rxrelay2
-    compile deps.external.rxbinding
-    compile deps.support.annotations
+    api deps.external.rxjava2
+    api deps.external.rxrelay2
+    api deps.external.rxbinding
+    implementation deps.support.annotations
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

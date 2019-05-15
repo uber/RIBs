@@ -38,7 +38,6 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
 
-import static com.google.errorprone.BugPattern.Category.JDK;
 import static com.google.errorprone.BugPattern.SeverityLevel.ERROR;
 import static com.google.errorprone.matchers.Matchers.instanceMethod;
 
@@ -50,7 +49,6 @@ import static com.google.errorprone.matchers.Matchers.instanceMethod;
 @BugPattern(
     name = "RxJavaMissingAutodisposeErrorChecker",
     summary = "Always apply an Autodispose scope before subscribing",
-    category = JDK,
     severity = ERROR
 )
 public class RxJavaMissingAutodisposeErrorChecker extends BugChecker

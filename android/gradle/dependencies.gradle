@@ -15,67 +15,72 @@
  */
 
 def versions = [
-    dagger: "2.12",
+    dagger: "2.22.1",
     support: '25.1.1',
-    autodispose: '0.2.0',
-    robolectric: "3.4.2",
+    autodispose: '0.6.0',
+    robolectric: "4.2.1",
     intellij: "2017.2",
     rave: "2.0.0",
-    errorProne: '2.2.0',
+    errorProne: '2.3.3'
 ]
 
 def apt = [
     androidApi: "com.google.android:android:2.2.1",
     autoCommon: "com.google.auto:auto-common:0.8",
-    autoService: "com.google.auto.service:auto-service:1.0-rc3",
-    nullAway: 'com.uber.nullaway:nullaway:0.3.2',
+    autoService: "com.google.auto.service:auto-service:1.0-rc4",
+    nullAway: 'com.uber.nullaway:nullaway:0.7.2',
     daggerCompiler: "com.google.dagger:dagger-compiler:${versions.dagger}",
-    javapoet: "com.squareup:javapoet:1.9.0",
+    javapoet: "com.squareup:javapoet:1.11.1",
     javax: "javax.annotation:jsr250-api:1.0",
     javaxInject: "javax.inject:javax.inject:1",
-    autoValue: "com.google.auto.value:auto-value:1.5",
+    autoValue: "com.google.auto.value:auto-value:1.6.5",
     autoValueAnnotations: "com.jakewharton.auto.value:auto-value-annotations:1.5",
     raveCompiler: "com.uber:rave-compiler:${versions.rave}",
     errorProneAnnotations: "com.google.errorprone:error_prone_annotations:${versions.errorProne}",
 ]
 
 def build = [
-    buildToolsVersion: '25.0.2',
+    buildToolsVersion: '28.0.3',
     compileSdkVersion: 25,
     gradlePluginsUrl : "https://plugins.gradle.org/m2/",
     ci: 'true' == System.getenv('CI'),
     minSdkVersion: 16,
     targetSdkVersion: 25,
-    guava: "com.google.guava:guava:20.0",
+    javaVersion: JavaVersion.VERSION_1_8,
+    guava: "com.google.guava:guava:27.1-android",
     commonsLang: "commons-lang:commons-lang:2.6",
-    intellijPlugin: "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.2.13",
+    intellijPlugin: "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.4.8",
     errorProne: "com.google.errorprone:error_prone_core:${versions.errorProne}",
+    errorProneJavac: "com.google.errorprone:javac:9+181-r4173-1",
     errorProneCore: "com.google.errorprone:error_prone_core:${versions.errorProne}",
     errorProneTestHelpers: "com.google.errorprone:error_prone_test_helpers:${versions.errorProne}",
+    nullAway: 'com.uber.nullaway:nullaway:0.7.0',
     gradlePlugins: [
-        android: 'com.android.tools.build:gradle:2.3.1',
-        errorprone: 'net.ltgt.gradle:gradle-errorprone-plugin:0.0.11'
+        android: 'com.android.tools.build:gradle:3.4.1',
+        errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:0.8",
+        nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:0.2",
+        apt: "net.ltgt.gradle:gradle-apt-plugin:0.21"
     ]
 ]
 
 def support = [
     appcompat: "com.android.support:appcompat-v7:${versions.support}",
     annotations: "com.android.support:support-annotations:${versions.support}",
-    appCompat: "com.android.support:appcompat-v7:${versions.support}",
+    percent: "com.android.support:percent:${versions.support}"
 ]
 
 def test = [
     junit: "junit:junit:4.12",
     mockito: "org.mockito:mockito-core:2.0.42-beta",
     assertj: "org.assertj:assertj-core:2.6.0",
-    compileTesting: "com.google.testing.compile:compile-testing:0.11",
+    compileTesting: "com.google.testing.compile:compile-testing:0.17",
 ]
 
 def external = [
     dagger: "com.google.dagger:dagger:${versions.dagger}",
-    rxjava2: "io.reactivex.rxjava2:rxjava:2.1.4",
-    rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.0.0",
-    rxandroid2: "io.reactivex.rxjava2:rxandroid:2.0.1",
+    rxjava2: "io.reactivex.rxjava2:rxjava:2.2.8",
+    rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.1.0",
+    rxandroid2: "io.reactivex.rxjava2:rxandroid:2.1.1",
     reactiveStreams: "org.reactivestreams:reactive-streams:1.0.0",
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
     rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.0.0',

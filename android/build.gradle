@@ -13,22 +13,51 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import net.ltgt.gradle.errorprone.CheckSeverity
 
 apply from: 'gradle/dependencies.gradle'
+
+buildscript {
+    apply from: rootProject.file('gradle/dependencies.gradle')
+    repositories {
+        google()
+        mavenCentral()
+        maven { url deps.build.gradlePluginsUrl }
+        jcenter()
+    }
+    dependencies {
+        classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.errorprone
+    }
+}
+
+Set<String> androidLibraryProjects = [
+        "rib-android",
+        "rib-android-test",
+        "rib-screen-stack-base",
+        "rib-workflow",
+        "rib-workflow-test-utils"
+]
+Set<String> useErrorProneProjects = [
+        "memory-leaks",
+        "tutorial1",
+        "tutorial2",
+        "autodispose-error-prone-checker"
+]
 
 subprojects {
     buildscript {
         repositories {
+            google()
             jcenter()
             maven { url deps.build.gradlePluginsUrl }
-            maven { url "https://maven.google.com" }
         }
     }
 
     repositories {
+        google()
         jcenter()
         maven { url deps.build.gradlePluginsUrl }
-        maven { url "https://maven.google.com" }
     }
 
     apply plugin: 'checkstyle'
@@ -36,13 +65,65 @@ subprojects {
     checkstyle { -> rootProject
         configFile rootProject.file('config/checkstyle/checkstyle.xml')
     }
-}
 
-task wrapper(type: Wrapper) {
-    gradleVersion = '4.2.1'
-    distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+    boolean isAndroidLibrary = project.name in androidLibraryProjects
+    boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
+    boolean usesErrorProne = project.name in useErrorProneProjects
+
+    afterEvaluate {
+        if ((isAndroidLibrary || isSample) && usesErrorProne) {
+            def configurer = { variant ->
+                variant.getJavaCompileProvider().configure {
+                    options.errorprone.nullaway {
+                        severity = CheckSeverity.ERROR
+                        annotatedPackages.add("com.uber")
+                    }
+                    options.errorprone.excludedPaths = ".*/build/generated/.*"
+                }
+            }
+            if (isAndroidLibrary) {
+                project.android.libraryVariants.configureEach(configurer)
+            }
+            if (isSample) {
+                project.android.applicationVariants.configureEach(configurer)
+            }
+            project.android.testVariants.configureEach(configurer)
+            project.android.unitTestVariants.configureEach(configurer)
+        }
+        if (isAndroidLibrary || isSample) {
+            // TODO replace with https://issuetracker.google.com/issues/72050365 once released.
+            project.android {
+                if (isAndroidLibrary) {
+                    libraryVariants.all {
+                        it.generateBuildConfigProvider.configure {
+                            it.enabled = false
+                        }
+                    }
+                    variantFilter { variant ->
+                        if (variant.buildType.name == 'debug') {
+                            variant.setIgnore(true)
+                        }
+                    }
+                }
+                if (isSample) {
+                    buildTypes {
+                        debug {
+                            matchingFallbacks = ['release']
+                        }
+                    }
+                    variantFilter { variant ->
+                        if (variant.buildType.name == "release") {
+                            variant.setIgnore(true)
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+apply from: 'gradle/dependencies.gradle'

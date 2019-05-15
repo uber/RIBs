@@ -1,5 +1,22 @@
+/*
+ * Copyright (C) 2017. Uber Technologies
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 buildscript {
     repositories {
+        google()
         jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
@@ -8,33 +25,28 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.errorprone
+        classpath deps.build.gradlePlugins.apt
     }
 }
 
-plugins {
-    id "net.ltgt.apt" version "0.11"
-}
+apply plugin: 'net.ltgt.apt'
 apply plugin: 'java'
 apply plugin: 'net.ltgt.errorprone'
 
-// we use this config to get the path of the JDK 9 javac jar, to
-// stick it in the bootclasspath when running tests
-configurations.maybeCreate("epJavac")
-
-sourceCompatibility = "1.8"
-targetCompatibility = "1.8"
+sourceCompatibility = deps.build.javaVersion.toString()
+targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
     compile deps.build.errorProneCore
     compile deps.external.rxjava2
     compile deps.uber.autodispose
     compile project(':libraries:rib-base')
-    errorprone "com.google.errorprone:error_prone_core:2.1.1"
+    errorprone deps.build.errorProne
+    errorproneJavac deps.build.errorProneJavac
 
+    annotationProcessor deps.apt.autoService
     compileOnly deps.apt.autoService
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
-
-    epJavac deps.build.errorProneCore
 
     testCompile deps.test.junit
     testCompile(deps.build.errorProneTestHelpers) {
@@ -43,5 +55,5 @@ dependencies {
 }
 
 test {
-  jvmArgs "-Xbootclasspath/p:${configurations.epJavac.asPath}"
+    jvmArgs "-Xbootclasspath/p:${configurations.errorproneJavac.asPath}"
 }

@@ -44,11 +44,12 @@ android {
 dependencies {
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-test")
-    compile project(":libraries:rib-android")
-    compile deps.external.dagger
-    compile deps.external.rxbinding
-    compile 'com.android.support:percent:25.0.1'
-    compile 'com.google.guava:guava:11.0.2'
-    provided deps.apt.javax
-    testCompile project(":libraries:rib-test-utils")
+    implementation project(":libraries:rib-android")
+    implementation deps.support.appcompat
+    implementation deps.external.dagger
+    implementation deps.external.rxbinding
+    implementation deps.support.percent
+    implementation deps.build.guava
+    compileOnly deps.apt.javax
+    testImplementation project(":libraries:rib-test-utils")
 }

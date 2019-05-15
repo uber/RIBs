@@ -39,7 +39,8 @@ public class RxJavaMissingAutodisposeErrorCheckerTest {
   public void setup() {
     compilationHelper =
         CompilationTestHelper.newInstance(RxJavaMissingAutodisposeErrorChecker.class, getClass());
-    compilationHelper.setArgs(Arrays.asList("-d", temporaryFolder.getRoot().getAbsolutePath()));
+    compilationHelper =
+            compilationHelper.setArgs(Arrays.asList("-d", temporaryFolder.getRoot().getAbsolutePath()));
   }
 
   @Test

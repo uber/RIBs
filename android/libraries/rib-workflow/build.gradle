@@ -32,20 +32,20 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility deps.build.javaVersion
+        targetCompatibility deps.build.javaVersion
     }
 }
 
 dependencies {
-    compile deps.support.annotations
-    compile deps.external.rxjava2
-    compile deps.external.rxandroid2
-    compile project(':libraries:rib-uava')
-    compile project(":libraries:rib-android")
-    testCompile deps.test.junit
-    testCompile deps.test.assertj
-    testCompile deps.test.mockito
+    implementation deps.support.annotations
+    implementation deps.external.rxandroid2
+    api deps.external.rxjava2
+    api project(':libraries:rib-uava')
+    api project(":libraries:rib-android")
+    testImplementation deps.test.junit
+    testImplementation deps.test.assertj
+    testImplementation deps.test.mockito
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
