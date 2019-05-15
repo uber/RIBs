@@ -95,17 +95,22 @@ subprojects {
                             it.enabled = false
                         }
                     }
-                }
-                if (isSample) {
-                    applicationVariants.all {
-                        it.generateBuildConfigProvider.configure {
-                            it.enabled = false
+                    variantFilter { variant ->
+                        if (variant.buildType.name == 'debug') {
+                            variant.setIgnore(true)
                         }
                     }
                 }
-                variantFilter { variant ->
-                    if (variant.buildType.name == 'debug') {
-                        variant.setIgnore(true)
+                if (isSample) {
+                    buildTypes {
+                        debug {
+                            matchingFallbacks = ['release']
+                        }
+                    }
+                    variantFilter { variant ->
+                        if (variant.buildType.name == "release") {
+                            variant.setIgnore(true)
+                        }
                     }
                 }
             }
