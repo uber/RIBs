@@ -16,8 +16,8 @@
 
 apply plugin: "java-library"
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+sourceCompatibility = deps.build.javaVersion.toString()
+targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
     compile project(":libraries:rib-base")
