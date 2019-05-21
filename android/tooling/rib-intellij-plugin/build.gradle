@@ -20,33 +20,29 @@ dependencies {
     compile deps.build.guava
     compile deps.support.annotations
 
-    if (!buildIntellijPlugin()) {
-        testCompile(project(":libraries:rib-base")) {
-            transitive = false
-        }
-        compileOnly(project(":libraries:rib-android")) {
-            transitive = false
-        }
-
-        testCompile(project(":libraries:rib-test-utils")) {
-            transitive = false
-        }
-        testCompile(project(":libraries:rib-compiler-app")) {
-            transitive = false
-        }
-        testCompile(project(":libraries:rib-compiler-test")) {
-            transitive = false
-        }
-        testCompile deps.apt.daggerCompiler
-        testCompile deps.apt.javaxInject
-        testCompile deps.external.dagger
-        testCompile deps.uber.autodispose
-        testCompile deps.test.assertj
-        testCompile deps.test.compileTesting
-        testCompile deps.test.mockito
-    } else {
-        sourceSets.test.java.srcDirs = []
+    testCompile(project(":libraries:rib-base")) {
+        transitive = false
     }
+    compileOnly(project(":libraries:rib-android")) {
+        transitive = false
+    }
+
+    testCompile(project(":libraries:rib-test-utils")) {
+        transitive = false
+    }
+    testCompile(project(":libraries:rib-compiler-app")) {
+        transitive = false
+    }
+    testCompile(project(":libraries:rib-compiler-test")) {
+        transitive = false
+    }
+    testCompile deps.apt.daggerCompiler
+    testCompile deps.apt.javaxInject
+    testCompile deps.external.dagger
+    testCompile deps.uber.autodispose
+    testCompile deps.test.assertj
+    testCompile deps.test.compileTesting
+    testCompile deps.test.mockito
 }
 
 // Determines if the machine has Maven credentials.
@@ -59,51 +55,40 @@ def isReleaseBuild() {
     return System.env.ENABLE_RELEASE_BUILD.equals("true")
 }
 
-def buildIntellijPlugin() {
-    // Important to check this property in order to minimize the number of dependencies during various build types.
-    // Fetching dependencies for this project is quite slow. Originally when this code was written we only applied the
-    // `apply plugin: "org.jetbrains.intellij"` if this part of the intellij build was being done.
-    return System.getProperty("build.intellijplugin", "false") == "true"
+ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
+version = pluginXml.version
+
+intellij {
+    plugins = ['checkstyle-idea:5.5.0']
+    version deps.versions.intellij
+    pluginName "UberRIBPresidioPlugin"
+    updateSinceUntilBuild false
+    sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
+    downloadSources false
 }
 
-if (buildIntellijPlugin()) {
-    apply plugin: "org.jetbrains.intellij"
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = "sources"
+    from sourceSets.main.allSource
+}
 
-    ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
-    version = pluginXml.version
-
-    intellij {
-        plugins = ['checkstyle-idea:5.5.0']
-        version deps.versions.intellij
-        pluginName "UberRIBPresidioPlugin"
-        updateSinceUntilBuild false
-        sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
-        downloadSources false
+afterEvaluate {
+    artifacts {
+        archives sourcesJar
+        archives project.tasks.getByName("buildPlugin")
     }
+}
 
-    task sourcesJar(type: Jar, dependsOn: classes) {
-        classifier = "sources"
-        from sourceSets.main.allSource
-    }
-
-    afterEvaluate {
-        artifacts {
-            archives sourcesJar
-            archives project.tasks.getByName("buildPlugin")
-        }
-    }
-
-    uploadArchives {
-        repositories {
-            mavenDeployer {
-                repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
-                if (isReleaseBuild() && hasMavenCredentials()) {
-                    repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
-                        authentication(userName: mavenUser, password: mavenPassword)
-                    }
+uploadArchives {
+    repositories {
+        mavenDeployer {
+            repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
+            if (isReleaseBuild() && hasMavenCredentials()) {
+                repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
+                    authentication(userName: mavenUser, password: mavenPassword)
                 }
             }
         }
     }
-    build.dependsOn uploadArchives
 }
+build.dependsOn uploadArchives
