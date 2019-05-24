@@ -46,7 +46,7 @@ public class Executor {
 
                 // If we did drop frame, we under-count the frame duration, which is fine. It
                 // just means the logic is performed slightly later.
-                let boundedElapsedTime = min(trueElapsedTime, Double(maxFrameDuration / 1000))
+                let boundedElapsedTime = min(trueElapsedTime, Double(maxFrameDuration) / 1000)
                 properFrameTime += boundedElapsedTime
                 if properFrameTime > delay {
                     didExecute = true
