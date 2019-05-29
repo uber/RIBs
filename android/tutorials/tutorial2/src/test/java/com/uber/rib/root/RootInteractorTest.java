@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@SuppressWarnings("NullAway")
 public class RootInteractorTest {
 
   @Mock RootInteractor.RootPresenter presenter;

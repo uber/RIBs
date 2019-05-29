@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@SuppressWarnings("NullAway")
 public class LoggedOutInteractorTest extends RibTestBasePlaceholder {
 
     @Mock LoggedOutInteractor.LoggedOutPresenter presenter;

@@ -4,6 +4,7 @@ import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+@SuppressWarnings("NullAway")
 public class RootRouterTest {
 
   @Mock RootBuilder.Component component;

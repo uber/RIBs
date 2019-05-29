@@ -18,11 +18,13 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.errorprone
+        classpath deps.build.gradlePlugins.nullaway
     }
 }
 
 apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'com.android.application'
+apply plugin: 'net.ltgt.nullaway'
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -47,25 +49,23 @@ dependencies {
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-test")
     annotationProcessor deps.apt.nullAway
-    compile project(":libraries:rib-android")
-    compile 'com.android.support:percent:25.0.1'
-    compile deps.external.dagger
-    compile deps.external.rxbinding
-    provided deps.apt.androidApi
-    provided deps.apt.javax
-    testCompile project(":libraries:rib-test-utils")
+    implementation project(":libraries:rib-android")
+    implementation deps.support.appcompat
+    implementation deps.support.percent
+    implementation deps.external.dagger
+    implementation deps.external.rxbinding
+    compileOnly deps.apt.androidApi
+    compileOnly deps.apt.javax
+    testImplementation project(":libraries:rib-test-utils")
+
+    errorproneJavac deps.build.errorProneJavac
+    errorprone deps.build.nullAway
     errorprone deps.build.errorProne
 }
 
 tasks.withType(JavaCompile) {
-    options.compilerArgs += ["-Xep:CheckReturnValue:OFF"]
-    // NullAway configuration
-    if (!name.toLowerCase().contains("test")) {
-        options.compilerArgs += [
-                "-Xep:NullAway:ERROR",
-                "-XepOpt:NullAway:AnnotatedPackages=com.uber",
-                // Dagger doesn't pass the NullAway checks. So we
-                // use the following flag to disable Error Prone on generated code.
-                "-XepExcludedPaths:.*/build/generated/.*"]
+    // Disable error prone checks I don't want.
+    options.errorprone {
+        disable("CheckReturnValue")
     }
 }

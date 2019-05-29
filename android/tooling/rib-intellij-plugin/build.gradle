@@ -23,7 +23,7 @@ dependencies {
     testCompile(project(":libraries:rib-base")) {
         transitive = false
     }
-    compileOnly(project(":libraries:rib-android")) {
+    compileOnly(project(path: ":libraries:rib-android", configuration: 'default')) {
         transitive = false
     }
 
@@ -59,7 +59,7 @@ ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.
 version = pluginXml.version
 
 intellij {
-    plugins = ['checkstyle-idea:5.5.0']
+    plugins = ['CheckStyle-IDEA:5.5.0']
     version deps.versions.intellij
     pluginName "UberRIBPresidioPlugin"
     updateSinceUntilBuild false

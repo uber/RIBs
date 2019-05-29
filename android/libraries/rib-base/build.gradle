@@ -14,18 +14,22 @@
  * limitations under the License.
  */
 
-plugins {
-    id "net.ltgt.apt" version "0.10"
-    id "java-library"
+buildscript {
+    dependencies {
+        classpath deps.build.gradlePlugins.apt
+    }
 }
 
-sourceCompatibility = "1.7"
-targetCompatibility = "1.7"
+apply plugin: 'net.ltgt.apt'
+apply plugin: 'java-library'
+
+sourceCompatibility = deps.build.javaVersion.toString()
+targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
     // in order to invert a dependency. With a bit of work this could be removed.
-    apt deps.apt.daggerCompiler
+    annotationProcessor deps.apt.daggerCompiler
 
     compile project(':libraries:rib-uava')
     compile deps.external.reactiveStreams

@@ -32,14 +32,21 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility deps.build.javaVersion
+        targetCompatibility deps.build.javaVersion
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
     }
 }
 
 dependencies {
-    compile project(":libraries:rib-android")
-    testCompile deps.external.roboelectricBase
-    testCompile deps.support.appCompat
-    testCompile project(":libraries:rib-test-utils")
+    implementation deps.support.appcompat
+    api project(":libraries:rib-android")
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.support.appcompat
+    testImplementation project(":libraries:rib-test-utils")
 }
