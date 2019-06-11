@@ -36,6 +36,7 @@ dependencies {
     compile deps.external.rxrelay2
     compile deps.external.rxjava2
     compile deps.uber.autodispose
+    api deps.uber.autodisposeLifecycle
     compile deps.apt.javaxInject
 
     compileOnly deps.apt.daggerCompiler

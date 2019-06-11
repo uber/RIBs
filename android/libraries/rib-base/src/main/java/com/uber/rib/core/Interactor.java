@@ -21,12 +21,15 @@ import android.support.annotation.VisibleForTesting;
 
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;
-import com.uber.autodispose.LifecycleEndedException;
-import com.uber.autodispose.LifecycleScopeProvider;
+import com.uber.autodispose.lifecycle.CorrespondingEventsFunction;
+import com.uber.autodispose.lifecycle.LifecycleEndedException;
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
+import com.uber.autodispose.lifecycle.LifecycleScopes;
 import com.uber.rib.core.lifecycle.InteractorEvent;
 
 import javax.inject.Inject;
 
+import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
@@ -42,16 +45,13 @@ import static com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE;
 public abstract class Interactor<P, R extends Router>
     implements LifecycleScopeProvider<InteractorEvent> {
 
-  private static final Function<InteractorEvent, InteractorEvent> LIFECYCLE_MAP_FUNCTION =
-      new Function<InteractorEvent, InteractorEvent>() {
-        @Override
-        public InteractorEvent apply(InteractorEvent interactorEvent) {
-          switch (interactorEvent) {
-            case ACTIVE:
-              return INACTIVE;
-            default:
-              throw new LifecycleEndedException();
-          }
+  private static final CorrespondingEventsFunction<InteractorEvent> LIFECYCLE_MAP_FUNCTION =
+      interactorEvent -> {
+        switch (interactorEvent) {
+          case ACTIVE:
+            return INACTIVE;
+          default:
+            throw new LifecycleEndedException();
         }
       };
 
@@ -153,12 +153,17 @@ public abstract class Interactor<P, R extends Router>
   }
 
   @Override
-  public Function<InteractorEvent, InteractorEvent> correspondingEvents() {
+  public CorrespondingEventsFunction<InteractorEvent> correspondingEvents() {
     return LIFECYCLE_MAP_FUNCTION;
   }
 
   @Override
   public InteractorEvent peekLifecycle() {
     return behaviorRelay.getValue();
+  }
+
+  @Override
+  public final CompletableSource requestScope() {
+    return LifecycleScopes.resolveScopeFromLifecycle(this);
   }
 }

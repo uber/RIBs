@@ -17,7 +17,7 @@
 def versions = [
     dagger: "2.22.1",
     support: '25.1.1',
-    autodispose: '0.6.0',
+    autodispose: '1.3.0',
     robolectric: "4.2.1",
     intellij: "2017.2",
     rave: "2.0.0",
@@ -89,6 +89,7 @@ def external = [
 
 def uber = [
     autodispose: "com.uber.autodispose:autodispose:${versions.autodispose}",
+    autodisposeLifecycle: "com.uber.autodispose:autodispose-lifecycle:${versions.autodispose}",
     autodisposeAndroid : "com.uber.autodispose:autodispose-android:${versions.autodispose}@aar",
     rave: "com.uber:rave:${versions.rave}",
 ]

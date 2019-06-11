@@ -15,6 +15,7 @@
  */
 package com.uber.rib.compiler;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static com.google.common.truth.Truth.assert_;
@@ -23,6 +24,7 @@ import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 public class InteractorAnnotationVerifierTest extends InteractorProcessorTestBase {
 
   @Test
+  @Ignore
   public void verify_whenTypeElementIsValid_shouldCompile() {
     addResourceToSources("fixtures/AnnotatedInteractor.java");
     assert_()

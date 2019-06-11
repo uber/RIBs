@@ -40,6 +40,7 @@ dependencies {
     testCompile deps.apt.javaxInject
     testCompile deps.external.dagger
     testCompile deps.uber.autodispose
+    testCompile deps.uber.autodisposeLifecycle
     testCompile deps.test.assertj
     testCompile deps.test.compileTesting
     testCompile deps.test.mockito

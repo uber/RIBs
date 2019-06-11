@@ -18,7 +18,7 @@ package com.uber.rib.root.logged_in.off_game;
 
 import android.support.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
-import com.uber.autodispose.ObservableScoper;
+import com.uber.autodispose.AutoDispose;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
@@ -60,7 +60,7 @@ public class OffGameInteractor
         });
 
     scoreStream.scores()
-        .to(new ObservableScoper<ImmutableMap<UserName, Integer>>(this))
+        .as(AutoDispose.<ImmutableMap<UserName, Integer>>autoDisposable(this))
         .subscribe(new Consumer<ImmutableMap<UserName,Integer>>() {
           @Override
           public void accept(ImmutableMap<UserName, Integer> scores)

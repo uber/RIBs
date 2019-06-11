@@ -18,7 +18,7 @@ package com.uber.rib.core;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-import com.uber.autodispose.LifecycleEndedException;
+import com.uber.autodispose.lifecycle.LifecycleEndedException;
 import com.uber.rib.core.lifecycle.InteractorEvent;
 
 import org.junit.Before;

@@ -1,10 +1,6 @@
 package com.uber.errorprone.checker.rx.testdata;
 
-import com.uber.autodispose.CompletableScoper;
-import com.uber.autodispose.FlowableScoper;
-import com.uber.autodispose.MaybeScoper;
-import com.uber.autodispose.ObservableScoper;
-import com.uber.autodispose.SingleScoper;
+import com.uber.autodispose.AutoDispose;
 import com.uber.rib.core.Interactor;
 
 import io.reactivex.Completable;
@@ -19,22 +15,22 @@ import io.reactivex.Single;
 public class MissingAutodisposeErrorNegativeCases extends Interactor {
 
     public void observable_subscribeWithoutAutodispose() {
-        Observable.empty().to(new ObservableScoper<>(this)).subscribe();
+        Observable.empty().as(AutoDispose.autoDisposable(this)).subscribe();
     }
 
     public void single_subscribeWithoutAutodispose() {
-        Single.just(true).to(new SingleScoper<Boolean>(this)).subscribe();
+        Single.just(true).as(AutoDispose.autoDisposable(this)).subscribe();
     }
 
     public void completable_subscribeWithoutAutodispose() {
-        Completable.complete().to(new CompletableScoper(this)).subscribe();
+        Completable.complete().as(AutoDispose.autoDisposable(this)).subscribe();
     }
 
     public void maybe_subscribeWithoutAutodispose() {
-        Maybe.empty().to(new MaybeScoper<>(this)).subscribe();
+        Maybe.empty().as(AutoDispose.autoDisposable(this)).subscribe();
     }
 
     public void flowable_subscribeWithoutAutodispose() {
-        Flowable.empty().to(new FlowableScoper<>(this)).subscribe();
+        Flowable.empty().as(AutoDispose.autoDisposable(this)).subscribe();
     }
 }

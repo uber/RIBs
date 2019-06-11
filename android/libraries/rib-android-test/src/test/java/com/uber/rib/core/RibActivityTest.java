@@ -23,8 +23,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.uber.autodispose.LifecycleEndedException;
-import com.uber.autodispose.ObservableScoper;
+import com.uber.autodispose.AutoDispose;
+import com.uber.autodispose.lifecycle.LifecycleEndedException;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
 
@@ -202,7 +202,7 @@ public class RibActivityTest {
         Robolectric.buildActivity(EmptyActivity.class);
     EmptyActivity activity = activityController.setup().pause().stop().destroy().get();
     AndroidRecordingRx2Observer<Object> o = new AndroidRecordingRx2Observer<>();
-    Observable.just(new Object()).to(new ObservableScoper<>(activity)).subscribe(o);
+    Observable.just(new Object()).as(AutoDispose.autoDisposable(activity)).subscribe(o);
 
     assertThat(o.takeError()).isInstanceOf(LifecycleEndedException.class);
   }
