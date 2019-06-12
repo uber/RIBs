@@ -21,7 +21,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.ViewGroup;
 
-import com.uber.autodispose.SingleScoper;
+import com.uber.autodispose.AutoDispose;
 import com.uber.rave.Rave;
 import com.uber.rave.RaveException;
 import com.uber.rib.core.Optional;
@@ -31,6 +31,7 @@ import com.uber.rib.root.RootBuilder;
 import com.uber.rib.root.RootInteractor;
 import com.uber.rib.root.RootRouter;
 import com.uber.rib.root.RootWorkflow;
+import com.uber.rib.root.RootWorkflowModel;
 import com.uber.rib.root.WorkflowFactory;
 
 import javax.annotation.Nullable;
@@ -60,14 +61,14 @@ public class RootActivity extends RibActivity {
   }
 
   private void handleDeepLink(Intent intent) {
-    RootWorkflow<?, ?> rootWorkflow = new WorkflowFactory().getWorkflow(intent);
+    RootWorkflow<RootReturnValue, ?> rootWorkflow = new WorkflowFactory().getWorkflow(intent);
     if (rootWorkflow != null) {
       try {
         Rave.getInstance().validate(rootWorkflow.getDeepLinkModel());
 
         rootWorkflow
             .createSingle(rootInteractor)
-            .to(new SingleScoper<Optional<?>>(this))
+            .as(AutoDispose.<Optional<RootReturnValue>>autoDisposable(this))
             .subscribe(
                 new Consumer<Optional<?>>() {
                   @Override
@@ -77,5 +78,9 @@ public class RootActivity extends RibActivity {
         Log.e("RootActivity", "Invalid deep link model received.", exception);
       }
     }
+  }
+
+  private class RootReturnValue {
+
   }
 }

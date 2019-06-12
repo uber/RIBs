@@ -39,6 +39,11 @@ android {
         abortOnError false
         quiet true
     }
+
+    compileOptions {
+        sourceCompatibility deps.build.javaVersion
+        targetCompatibility deps.build.javaVersion
+    }
 }
 
 dependencies {

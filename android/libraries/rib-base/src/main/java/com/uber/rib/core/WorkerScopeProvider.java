@@ -18,6 +18,7 @@ package com.uber.rib.core;
 import com.uber.autodispose.ScopeProvider;
 import com.uber.rib.core.lifecycle.WorkerEvent;
 
+import io.reactivex.CompletableSource;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 
@@ -31,7 +32,7 @@ public class WorkerScopeProvider implements ScopeProvider {
   }
 
   @Override
-  public Maybe<?> requestScope() {
-    return workerLifecycleObservable.skip(1).firstElement();
+  public CompletableSource requestScope() {
+    return workerLifecycleObservable.skip(1).firstElement().ignoreElement();
   }
 }

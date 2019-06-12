@@ -27,6 +27,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import io.reactivex.CompletableSource;
 import io.reactivex.Maybe;
 import io.reactivex.functions.Consumer;
 
@@ -61,32 +62,6 @@ public class WorkerBinderTest {
   }
 
   @Test
-  public void bind_whenSubscribingWithWorkerLifecycle_shouldMapToWorkerStopEvent() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    bind(lifecycle, worker);
-    verify(worker).onStart(argumentCaptor.capture());
-
-    Maybe observable = argumentCaptor.getValue().requestScope();
-    WorkerEventCallback callback = new WorkerEventCallback();
-    observable.subscribe(callback);
-    lifecycle.accept(InteractorEvent.INACTIVE);
-    assertThat(callback.getWorkerEvent()).isEqualTo(WorkerEvent.STOP);
-  }
-
-  @Test
-  public void bind_whenSubscribingWithWorkerLifecycle_shouldMapToWorkerStartEvent() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    bind(lifecycle, worker);
-    verify(worker).onStart(argumentCaptor.capture());
-
-    Maybe observable = argumentCaptor.getValue().requestScope();
-    WorkerEventCallback callback = new WorkerEventCallback();
-    observable.subscribe(callback);
-    lifecycle.accept(InteractorEvent.ACTIVE);
-    assertThat(callback.getWorkerEvent()).isEqualTo(WorkerEvent.START);
-  }
-
-  @Test
   public void unbind_whenInteractorAttached_shouldStopWorker() {
     BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
     WorkerUnbinder unbinder = bind(lifecycle, worker);
@@ -94,21 +69,6 @@ public class WorkerBinderTest {
     unbinder.unbind();
 
     verify(worker).onStop();
-  }
-
-  @Test
-  public void unbind_whenSubscribingWithWorkerLifecycle_shouldMapToWorkerStopEvent() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    WorkerUnbinder unbinder = bind(lifecycle, worker);
-    verify(worker).onStart(argumentCaptor.capture());
-
-    Maybe observable = argumentCaptor.getValue().requestScope();
-    WorkerEventCallback callback = new WorkerEventCallback();
-    observable.subscribe(callback);
-
-    unbinder.unbind();
-
-    assertThat(callback.getWorkerEvent()).isEqualTo(WorkerEvent.STOP);
   }
 
   @Test
@@ -136,20 +96,5 @@ public class WorkerBinderTest {
     lifecycle.accept(InteractorEvent.INACTIVE);
 
     verify(worker, times(1)).onStop();
-  }
-
-  /** Callback to capture the worker event that was called during the interactor lifecycle. */
-  private static class WorkerEventCallback implements Consumer<WorkerEvent> {
-
-    private WorkerEvent workerEvent;
-
-    @Override
-    public void accept(WorkerEvent workerEvent) {
-      this.workerEvent = workerEvent;
-    }
-
-    WorkerEvent getWorkerEvent() {
-      return workerEvent;
-    }
   }
 }
