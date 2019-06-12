@@ -8,6 +8,7 @@ import io.reactivex.Flowable;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Single;
+import static com.uber.autodispose.AutoDispose.autoDisposable;
 
 /**
  * Cases that use autodispose and should not fail the MissingAutodisposeError check.
@@ -15,22 +16,22 @@ import io.reactivex.Single;
 public class MissingAutodisposeErrorNegativeCases extends Interactor {
 
     public void observable_subscribeWithoutAutodispose() {
-        Observable.empty().as(AutoDispose.autoDisposable(this)).subscribe();
+        Observable.empty().as(autoDisposable(this)).subscribe();
     }
 
     public void single_subscribeWithoutAutodispose() {
-        Single.just(true).as(AutoDispose.autoDisposable(this)).subscribe();
+        Single.just(true).as(autoDisposable(this)).subscribe();
     }
 
     public void completable_subscribeWithoutAutodispose() {
-        Completable.complete().as(AutoDispose.autoDisposable(this)).subscribe();
+        Completable.complete().as(autoDisposable(this)).subscribe();
     }
 
     public void maybe_subscribeWithoutAutodispose() {
-        Maybe.empty().as(AutoDispose.autoDisposable(this)).subscribe();
+        Maybe.empty().as(autoDisposable(this)).subscribe();
     }
 
     public void flowable_subscribeWithoutAutodispose() {
-        Flowable.empty().as(AutoDispose.autoDisposable(this)).subscribe();
+        Flowable.empty().as(autoDisposable(this)).subscribe();
     }
 }

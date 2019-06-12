@@ -40,6 +40,7 @@ import io.reactivex.functions.Predicate;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.PublishSubject;
 
+import static com.uber.autodispose.AutoDispose.autoDisposable;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -202,7 +203,7 @@ public class RibActivityTest {
         Robolectric.buildActivity(EmptyActivity.class);
     EmptyActivity activity = activityController.setup().pause().stop().destroy().get();
     AndroidRecordingRx2Observer<Object> o = new AndroidRecordingRx2Observer<>();
-    Observable.just(new Object()).as(AutoDispose.autoDisposable(activity)).subscribe(o);
+    Observable.just(new Object()).as(autoDisposable(activity)).subscribe(o);
 
     assertThat(o.takeError()).isInstanceOf(LifecycleEndedException.class);
   }
