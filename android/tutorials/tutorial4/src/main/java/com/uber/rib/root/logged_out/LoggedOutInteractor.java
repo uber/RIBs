@@ -16,7 +16,7 @@
 
 package com.uber.rib.root.logged_out;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.Pair;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;

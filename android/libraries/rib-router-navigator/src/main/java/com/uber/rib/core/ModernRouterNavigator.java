@@ -15,8 +15,8 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.IntRange;
-import android.support.annotation.Nullable;
+import androidx.annotation.IntRange;
+import androidx.annotation.Nullable;
 
 import java.util.ArrayDeque;
 import java.util.Locale;

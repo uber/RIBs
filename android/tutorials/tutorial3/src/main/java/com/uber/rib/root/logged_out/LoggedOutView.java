@@ -1,8 +1,8 @@
 package com.uber.rib.root.logged_out;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.v4.util.Pair;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.EditText;

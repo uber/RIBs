@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.Matchers.isA;

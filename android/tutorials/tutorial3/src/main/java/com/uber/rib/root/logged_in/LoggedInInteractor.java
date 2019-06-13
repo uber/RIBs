@@ -16,7 +16,7 @@
 
 package com.uber.rib.root.logged_in;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.EmptyPresenter;
 import com.uber.rib.core.Interactor;

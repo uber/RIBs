@@ -17,7 +17,7 @@
 package com.uber.rib.root.logged_in.off_game;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.Button;

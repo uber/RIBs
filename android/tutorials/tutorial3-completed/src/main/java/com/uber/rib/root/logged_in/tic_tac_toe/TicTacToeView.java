@@ -17,8 +17,8 @@
 package com.uber.rib.root.logged_in.tic_tac_toe;
 
 import android.content.Context;
-import android.support.annotation.Nullable;
-import android.support.percent.PercentRelativeLayout;
+import androidx.annotation.Nullable;
+import androidx.percentlayout.widget.PercentRelativeLayout;
 import android.util.AttributeSet;
 import android.widget.TextView;
 

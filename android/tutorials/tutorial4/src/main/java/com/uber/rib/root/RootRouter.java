@@ -16,7 +16,7 @@
 
 package com.uber.rib.root;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.uber.rib.core.Optional;

@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;

@@ -1,6 +1,6 @@
 package com.uber.rib.root.logged_in.random_winner;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;

@@ -16,7 +16,7 @@
 package com.uber.rib.core;
 
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies. */
 public class Bundle {
