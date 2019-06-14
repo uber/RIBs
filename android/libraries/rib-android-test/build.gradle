@@ -44,9 +44,9 @@ android {
 }
 
 dependencies {
-    implementation deps.support.appcompat
+    implementation deps.androidx.appcompat
     api project(":libraries:rib-android")
     testImplementation deps.external.roboelectricBase
-    testImplementation deps.support.appcompat
+    testImplementation deps.androidx.appcompat
     testImplementation project(":libraries:rib-test-utils")
 }

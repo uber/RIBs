@@ -50,11 +50,11 @@ dependencies {
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-test")
     implementation project(":libraries:rib-android")
-    implementation deps.support.appcompat
+    implementation deps.androidx.appcompat
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     implementation deps.build.guava
-    implementation deps.support.percent
+    implementation deps.androidx.percent
     compileOnly deps.apt.javax
     testImplementation project(":libraries:rib-test-utils")
 }

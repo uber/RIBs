@@ -21,7 +21,7 @@ targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
     compile project(':libraries:rib-base')
-    compileOnly deps.support.annotations
+    compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
 
     testCompile deps.test.junit

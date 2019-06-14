@@ -20,7 +20,7 @@ sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    compileOnly deps.support.annotations
+    compileOnly deps.androidx.annotations
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

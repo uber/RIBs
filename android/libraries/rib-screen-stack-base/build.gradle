@@ -41,7 +41,7 @@ dependencies {
     api deps.external.rxjava2
     api deps.external.rxrelay2
     api deps.external.rxbinding
-    implementation deps.support.annotations
+    implementation deps.androidx.annotations
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
