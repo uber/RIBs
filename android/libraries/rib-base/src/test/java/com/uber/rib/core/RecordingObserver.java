@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingDeque;

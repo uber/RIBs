@@ -16,8 +16,8 @@
 
 package com.uber.rib.workflow.core;
 
-import android.support.annotation.RestrictTo;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.RestrictTo;
+import androidx.annotation.VisibleForTesting;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
@@ -25,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.support.annotation.RestrictTo.Scope.GROUP_ID;
+import static androidx.annotation.RestrictTo.Scope.GROUP_ID;
 
 @RestrictTo(GROUP_ID)
 class DelegatingScheduler extends Scheduler {

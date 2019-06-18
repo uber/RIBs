@@ -16,7 +16,7 @@
 
 package com.uber.rib.workflow.core;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.uber.rib.core.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
