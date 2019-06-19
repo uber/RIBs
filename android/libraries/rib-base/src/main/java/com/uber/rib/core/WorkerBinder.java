@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.uber.rib.core.lifecycle.InteractorEvent;

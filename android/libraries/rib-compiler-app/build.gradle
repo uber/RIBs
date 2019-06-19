@@ -26,7 +26,7 @@ dependencies {
     compile deps.external.dagger
     compile deps.apt.javapoet
 
-    compileOnly deps.support.annotations
+    compileOnly deps.androidx.annotations
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
 

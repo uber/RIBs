@@ -15,7 +15,7 @@
  */
  package com.uber.presidio.intellij_plugin.action.rib;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.google.testing.compile.JavaFileObjects;
 import com.uber.presidio.intellij_plugin.generator.Generator;

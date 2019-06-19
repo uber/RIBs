@@ -18,7 +18,7 @@ dependencies {
     compile deps.apt.androidApi
     compile deps.build.commonsLang
     compile deps.build.guava
-    compile deps.support.annotations
+    compile deps.androidx.annotations
 
     testCompile(project(":libraries:rib-base")) {
         transitive = false

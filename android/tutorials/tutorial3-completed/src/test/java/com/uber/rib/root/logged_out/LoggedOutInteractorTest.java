@@ -1,6 +1,6 @@
 package com.uber.rib.root.logged_out;
 
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;

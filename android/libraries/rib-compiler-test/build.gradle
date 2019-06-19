@@ -19,12 +19,12 @@ apply plugin: "java-library"
 dependencies {
     compile project(":libraries:rib-compiler-app")
 
-    compileOnly deps.support.annotations
+    compileOnly deps.androidx.annotations
     annotationProcessor deps.apt.autoService
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
 
-    testCompile deps.support.annotations
+    testCompile deps.androidx.annotations
     testCompile deps.test.compileTesting
 }
 

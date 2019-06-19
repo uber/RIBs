@@ -6,7 +6,7 @@ matrix:
           - tools                             # Tools
           - platform-tools                    # Platform tools
           - build-tools-28.0.3                # Build tools version
-          - android-25                        # Target SDK version
+          - android-28                        # Target SDK version
           - extra-android-m2repository        # Support repo
           - sys-img-armeabi-v7a-android-18    # Emulator
 

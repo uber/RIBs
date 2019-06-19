@@ -17,7 +17,7 @@ package com.uber.rib.core.lifecycle;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import java.util.Locale;
 

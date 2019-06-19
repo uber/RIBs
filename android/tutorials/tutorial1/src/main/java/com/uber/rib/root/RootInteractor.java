@@ -16,7 +16,7 @@
 
 package com.uber.rib.root;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;

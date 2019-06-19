@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 /** Factory for the creation of {@link RouterNavigator}s. */
 public final class RouterNavigatorFactory {

@@ -15,9 +15,9 @@
  */
 package com.uber.rib.core;
 
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
 
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;

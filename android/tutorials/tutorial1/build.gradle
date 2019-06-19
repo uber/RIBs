@@ -53,7 +53,7 @@ dependencies {
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor deps.apt.nullAway
     implementation project(":libraries:rib-android")
-    implementation deps.support.appcompat
+    implementation deps.androidx.appcompat
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     compileOnly deps.apt.javax

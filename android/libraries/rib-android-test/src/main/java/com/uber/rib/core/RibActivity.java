@@ -16,8 +16,8 @@
 package com.uber.rib.core;
 
 import android.content.Intent;
-import android.support.annotation.CallSuper;
-import android.support.annotation.Nullable;
+import androidx.annotation.CallSuper;
+import androidx.annotation.Nullable;
 import android.view.ViewGroup;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -30,7 +30,7 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 import io.reactivex.functions.Predicate;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 /** Base implementation for all VIP {@link android.app.Activity}s. */
 public abstract class RibActivity extends AppCompatActivity

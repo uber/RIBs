@@ -40,10 +40,10 @@ dependencies {
     compile deps.apt.javaxInject
 
     compileOnly deps.apt.daggerCompiler
-    compileOnly deps.support.annotations
+    compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
 
-    testCompile deps.support.annotations
+    testCompile deps.androidx.annotations
     testCompile deps.apt.androidApi
     testCompile deps.test.junit
     testCompile deps.test.mockito

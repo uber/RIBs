@@ -16,7 +16,7 @@
 
 package com.uber.rib.root.logged_in.off_game;
 
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import com.google.common.collect.ImmutableMap;
 import com.uber.autodispose.AutoDispose;
 import com.uber.rib.core.Bundle;

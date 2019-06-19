@@ -67,8 +67,8 @@ dependencies {
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     implementation deps.external.leakcanaryDebug
-    implementation deps.support.percent
-    implementation deps.support.appcompat
+    implementation deps.androidx.percent
+    implementation deps.androidx.appcompat
     compileOnly deps.apt.javax
     testImplementation project(":libraries:rib-test-utils")
     errorprone deps.build.errorProne

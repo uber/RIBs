@@ -16,7 +16,7 @@
 
 package com.uber.rib.core.screenstack;
 
-import android.support.annotation.IntRange;
+import androidx.annotation.IntRange;
 
 /** Implementation of a view based screen stack. */
 public interface ScreenStackBase {

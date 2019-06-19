@@ -16,7 +16,7 @@
 
 package com.uber.rib.core.screenstack;
 
-import android.support.annotation.CallSuper;
+import androidx.annotation.CallSuper;
 import android.view.View;
 import android.view.ViewGroup;
 
