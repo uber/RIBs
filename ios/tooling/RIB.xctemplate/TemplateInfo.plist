@@ -41,6 +41,27 @@
 		</dict>
 		<dict>
 			<key>Identifier</key>
+			<string>ownsPresenter</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Owns presenter</string>
+			<key>Description</key>
+			<string>Whether this RIB owns a presenter</string>
+			<key>Type</key>
+			<string>checkbox</string>
+			<key>Default</key>
+			<string>false</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+			<key>RequiredOptions</key>
+			<dict>
+				<key>ownsView</key>
+				<string>false</string>
+			</dict>
+		</dict>
+		<dict>
+			<key>Identifier</key>
 			<string>ownsView</string>
 			<key>Required</key>
 			<string>true</string>
