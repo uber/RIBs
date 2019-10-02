@@ -65,6 +65,7 @@
 		8B9882E61F86E1CF00ABE009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8B9882EB1F86E1CF00ABE009 /* RIBsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RIBsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9882F21F86E1CF00ABE009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A0EC8F3A2344A77B00646574 /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Package.swift; sourceTree = "<group>"; };
 		AF82F6731FC81B5F006DF7BC /* Foundation+ExtensionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+ExtensionsTests.swift"; sourceTree = "<group>"; };
 		AF90B4091FBA14DB00920384 /* RouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RouterTests.swift; sourceTree = "<group>"; };
 		AF90B40B1FBA157700920384 /* Mocks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mocks.swift; sourceTree = "<group>"; };
@@ -160,6 +161,7 @@
 		8B9882D81F86E1CF00ABE009 = {
 			isa = PBXGroup;
 			children = (
+				A0EC8F3A2344A77B00646574 /* Package.swift */,
 				8B9882E41F86E1CF00ABE009 /* RIBs */,
 				8B9882EF1F86E1CF00ABE009 /* RIBsTests */,
 				8B9882E31F86E1CF00ABE009 /* Products */,
