@@ -29,15 +29,15 @@ public class Executor {
     ///   pauses.
     /// - parameter maxFrameDuration: The maximum duration a single frame should take. Defaults to 33ms.
     /// - parameter logic: The closure logic to perform.
-    public static func execute(withDelay delay: TimeInterval, maxFrameDuration: TimeInterval = 0.033, logic: @escaping () -> ()) {
-        let period = maxFrameDuration / 3.0
+    public static func execute(withDelay delay: TimeInterval, maxFrameDuration: Int = 33, logic: @escaping () -> ()) {
+        let period = DispatchTimeInterval.milliseconds(maxFrameDuration / 3)
         var lastRunLoopTime = Date().timeIntervalSinceReferenceDate
         var properFrameTime = 0.0
         var didExecute = false
         _ = Observable<Int>
-            .timer(0, period: period, scheduler: MainScheduler.instance)
+            .timer(DispatchTimeInterval.milliseconds(0), period: period, scheduler: MainScheduler.instance)
             .takeWhile { _ in
-                return !didExecute
+                !didExecute
             }
             .subscribe(onNext: { _ in
                 let currentTime = Date().timeIntervalSinceReferenceDate
@@ -46,7 +46,7 @@ public class Executor {
 
                 // If we did drop frame, we under-count the frame duration, which is fine. It
                 // just means the logic is performed slightly later.
-                let boundedElapsedTime = min(trueElapsedTime, maxFrameDuration)
+                let boundedElapsedTime = min(trueElapsedTime, Double(maxFrameDuration) / 1000)
                 properFrameTime += boundedElapsedTime
                 if properFrameTime > delay {
                     didExecute = true

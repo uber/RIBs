@@ -32,6 +32,7 @@
 		AF9966B21FC40D7E00CAEAA2 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */; };
 		AFB7D4031FC81C8F00045D2B /* Foundation+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82F6731FC81B5F006DF7BC /* Foundation+ExtensionsTests.swift */; };
 		AFB7D4051FC81D6100045D2B /* LaunchRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */; };
+		BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5FC0F022808377004235F1 /* RxRelay.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -73,6 +74,7 @@
 		AF90B4181FBA1F8400920384 /* WorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowTests.swift; sourceTree = "<group>"; };
 		AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchRouterTests.swift; sourceTree = "<group>"; };
+		BF5FC0F022808377004235F1 /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = ../Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */,
 				AF9966B21FC40D7E00CAEAA2 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -204,6 +207,7 @@
 		AF5101421FBBA64A009C0DB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BF5FC0F022808377004235F1 /* RxRelay.framework */,
 				AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */,
 			);
 			name = Frameworks;
@@ -358,14 +362,16 @@
 			);
 			inputPaths = (
 				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
+				"$(SRCROOT)/../Carthage/Build/iOS/RxRelay.framework",
 			);
 			name = Carthage;
 			outputPaths = (
 				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
+				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxRelay.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks";
+			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
