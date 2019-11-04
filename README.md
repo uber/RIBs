@@ -71,6 +71,16 @@ To integrate RIBs into your project using Carthage add the following to your `Ca
 github "uber/RIBs" ~> 0.9
 ```
 
+#### Swift Package Manager
+
+To integrate RIBs into your project using Swift Package Manager add the following to your `Package.swift`:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/uber/RIBs.git", from: "0.9.3"),
+]
+```
+
 ## Related projects
 
 If you like RIBs, check out other related open source projects from our team:
