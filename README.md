@@ -48,9 +48,9 @@ To integrate the recommended minimum setup for RIBs add the following to your `b
 
 ```gradle
 dependencies {
-  annotationProcessor 'com.uber.rib:rib-compiler-test:0.9.1'
-  compile 'com.uber.rib:rib-android:0.9.1'
-  testCompile 'com.uber.rib:rib-test-utils:0.9.1'
+  annotationProcessor 'com.uber.rib:rib-compiler-test:0.9.2'
+  compile 'com.uber.rib:rib-android:0.9.2'
+  testCompile 'com.uber.rib:rib-test-utils:0.9.2'
 }
 ```
 
