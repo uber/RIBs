@@ -17,6 +17,7 @@
 import RIBs
 import RxRelay
 import RxSwift
+import UIKit
 
 class WindowMock: UIWindow {
     

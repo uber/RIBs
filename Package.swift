@@ -16,7 +16,7 @@ let package = Package(
         .target(
             name: "RIBs",
             dependencies: ["RxSwift", "RxRelay"],
-            path: "ios/RIBs/Classes"
+            path: "ios/RIBs"
         ),
         .testTarget(
             name: "RIBsTests",
