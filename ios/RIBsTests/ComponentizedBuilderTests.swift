@@ -30,11 +30,9 @@ class ComponentizedBuilderTests: XCTestCase {
 
         let _: MockSimpleRouter = sameInstanceBuilder.build(withDynamicBuildDependency: (), dynamicComponentDependency: ())
 
-        /*
         expectAssertionFailure {
             let _: MockSimpleRouter = sameInstanceBuilder.build(withDynamicBuildDependency: (), dynamicComponentDependency: ())
         }
-         */
     }
 
     func test_componentForCurrentPass_builderReturnsNewInstance_verifyNoAssertion() {
