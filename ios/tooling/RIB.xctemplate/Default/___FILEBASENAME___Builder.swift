@@ -2,6 +2,8 @@
 
 import RIBs
 
+// MARK: - Dependency
+
 protocol ___VARIABLE_productName___Dependency: Dependency {
     // TODO: Make sure to convert the variable into lower-camelcase.
     var ___VARIABLE_productName___ViewController: ___VARIABLE_productName___ViewControllable { get }
@@ -10,7 +12,6 @@ protocol ___VARIABLE_productName___Dependency: Dependency {
 }
 
 final class ___VARIABLE_productName___Component: Component<___VARIABLE_productName___Dependency> {
-
     // TODO: Make sure to convert the variable into lower-camelcase.
     fileprivate var ___VARIABLE_productName___ViewController: ___VARIABLE_productName___ViewControllable {
         return dependency.___VARIABLE_productName___ViewController
@@ -22,19 +23,27 @@ final class ___VARIABLE_productName___Component: Component<___VARIABLE_productNa
 // MARK: - Builder
 
 protocol ___VARIABLE_productName___Buildable: Buildable {
-    func build(withListener listener: ___VARIABLE_productName___Listener) -> ___VARIABLE_productName___Routing
+    func build(with listener: ___VARIABLE_productName___Listener) -> ___VARIABLE_productName___Routing
 }
 
-final class ___VARIABLE_productName___Builder: Builder<___VARIABLE_productName___Dependency>, ___VARIABLE_productName___Buildable {
+final class ___VARIABLE_productName___Builder: Builder<___VARIABLE_productName___Dependency> {}
 
-    override init(dependency: ___VARIABLE_productName___Dependency) {
-        super.init(dependency: dependency)
-    }
+// MARK: - ___VARIABLE_productName___Buildable
 
-    func build(withListener listener: ___VARIABLE_productName___Listener) -> ___VARIABLE_productName___Routing {
+extension ___VARIABLE_productName___Builder: ___VARIABLE_productName___Buildable {
+    func build(with listener: ___VARIABLE_productName___Listener) -> ___VARIABLE_productName___Routing {
         let component = ___VARIABLE_productName___Component(dependency: dependency)
+
         let interactor = ___VARIABLE_productName___Interactor()
         interactor.listener = listener
-        return ___VARIABLE_productName___Router(interactor: interactor, viewController: component.___VARIABLE_productName___ViewController)
+
+        return ___VARIABLE_productName___Router(
+            interactor: interactor,
+            viewController: component.___VARIABLE_productName___ViewController
+        )
     }
 }
+
+// MARK: - Private
+
+private extension ___VARIABLE_productName___Builder {}

@@ -16,10 +16,14 @@ protocol ___VARIABLE_productName___Listener: class {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
-final class ___VARIABLE_productName___Interactor: PresentableInteractor<___VARIABLE_productName___Presentable>, ___VARIABLE_productName___Interactable, ___VARIABLE_productName___PresentableListener {
+final class ___VARIABLE_productName___Interactor: PresentableInteractor<___VARIABLE_productName___Presentable> {
+
+    // MARK: - ___VARIABLE_productName___Interactable
 
     weak var router: ___VARIABLE_productName___Routing?
     weak var listener: ___VARIABLE_productName___Listener?
+
+    // MARK: - Lifecycle
 
     // TODO: Add additional dependencies to constructor. Do not perform any logic
     // in constructor.
@@ -38,3 +42,15 @@ final class ___VARIABLE_productName___Interactor: PresentableInteractor<___VARIA
         // TODO: Pause any business logic.
     }
 }
+
+// MARK: - ___VARIABLE_productName___Interactable
+
+extension ___VARIABLE_productName___Interactor: ___VARIABLE_productName___Interactable {}
+
+// MARK: - ___VARIABLE_productName___PresentableListener
+
+extension ___VARIABLE_productName___Interactor: ___VARIABLE_productName___PresentableListener {}
+
+// MARK: - Private
+
+private extension ___VARIABLE_productName___Interactor {}

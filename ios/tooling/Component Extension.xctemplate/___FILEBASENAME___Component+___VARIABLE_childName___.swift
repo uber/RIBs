@@ -10,6 +10,5 @@ protocol ___VARIABLE_productName___Dependency___VARIABLE_childName___: Dependenc
 }
 
 extension ___VARIABLE_productName___Component: ___VARIABLE_childName___Dependency {
-
     // TODO: Implement properties to provide for ___VARIABLE_childName___ scope.
 }

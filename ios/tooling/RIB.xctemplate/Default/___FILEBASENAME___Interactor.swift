@@ -8,14 +8,18 @@ protocol ___VARIABLE_productName___Routing: Routing {
     // TODO: Declare methods the interactor can invoke to manage sub-tree via the router.
 }
 
-protocol ___VARIABLE_productName___Listener: class {
+protocol ___VARIABLE_productName___Listener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
-final class ___VARIABLE_productName___Interactor: Interactor, ___VARIABLE_productName___Interactable {
+final class ___VARIABLE_productName___Interactor: Interactor {
+
+    // MARK: - ___VARIABLE_productName___Interactable
 
     weak var router: ___VARIABLE_productName___Routing?
     weak var listener: ___VARIABLE_productName___Listener?
+
+    // MARK: - Lifecycle
 
     // TODO: Add additional dependencies to constructor. Do not perform any logic
     // in constructor.
@@ -33,3 +37,9 @@ final class ___VARIABLE_productName___Interactor: Interactor, ___VARIABLE_produc
         // TODO: Pause any business logic.
     }
 }
+
+extension ___VARIABLE_productName___Interactor: ___VARIABLE_productName___Interactable {}
+
+// MARK: - Private
+
+private extension ___VARIABLE_productName___Interactor {}

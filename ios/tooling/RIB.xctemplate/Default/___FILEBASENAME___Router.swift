@@ -13,7 +13,7 @@ protocol ___VARIABLE_productName___ViewControllable: ViewControllable {
     // RIB's ancestor RIBs' view.
 }
 
-final class ___VARIABLE_productName___Router: Router<___VARIABLE_productName___Interactable>, ___VARIABLE_productName___Routing {
+final class ___VARIABLE_productName___Router: Router<___VARIABLE_productName___Interactable> {
 
     // TODO: Constructor inject child builder protocols to allow building children.
     init(interactor: ___VARIABLE_productName___Interactable, viewController: ___VARIABLE_productName___ViewControllable) {
@@ -31,3 +31,11 @@ final class ___VARIABLE_productName___Router: Router<___VARIABLE_productName___I
 
     private let viewController: ___VARIABLE_productName___ViewControllable
 }
+
+// MARK: - ___VARIABLE_productName___Routing
+
+extension ___VARIABLE_productName___Router: ___VARIABLE_productName___Routing {}
+
+// MARK: - Private
+
+private extension ___VARIABLE_productName___Router {}
