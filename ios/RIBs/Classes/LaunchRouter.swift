@@ -40,7 +40,7 @@ open class LaunchRouter<InteractorType, ViewControllerType>: ViewableRouter<Inte
     ///
     /// - parameter window: The window to launch the router tree in.
     public final func launch(from window: UIWindow) {
-        window.rootViewController = viewControllable.uiviewController
+        window.rootViewController = viewControllable.uiViewController
         window.makeKeyAndVisible()
 
         interactable.activate()

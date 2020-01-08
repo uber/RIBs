@@ -73,7 +73,7 @@ final class RootViewController: UIViewController, RootPresentable, RootViewContr
     private func presentTargetViewController() {
         if let targetViewController = targetViewController {
             animationInProgress = true
-            present(targetViewController.uiviewController, animated: true) { [weak self] in
+            present(targetViewController.uiViewController, animated: true) { [weak self] in
                 self?.animationInProgress = false
             }
         }

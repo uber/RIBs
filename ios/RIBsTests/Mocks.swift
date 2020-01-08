@@ -40,7 +40,7 @@ class WindowMock: UIWindow {
 }
 
 class ViewControllableMock: ViewControllable {
-    let uiviewController = UIViewController(nibName: nil, bundle: nil)
+    let uiViewController = UIViewController(nibName: nil, bundle: nil)
 }
 
 class InteractorMock: Interactable {

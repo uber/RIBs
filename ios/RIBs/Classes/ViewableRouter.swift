@@ -82,7 +82,7 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
                 strongSelf.viewControllerDisappearExpectation = nil
 
                 if !isActive {
-                    let viewController = strongSelf.viewControllable.uiviewController
+                    let viewController = strongSelf.viewControllable.uiViewController
                     strongSelf.viewControllerDisappearExpectation = LeakDetector.instance.expectViewControllerDisappear(viewController: viewController)
                 }
             })
@@ -90,6 +90,6 @@ open class ViewableRouter<InteractorType, ViewControllerType>: Router<Interactor
     }
 
     deinit {
-        LeakDetector.instance.expectDeallocate(object: viewControllable.uiviewController, inTime: LeakDefaultExpectationTime.viewDisappear)
+        LeakDetector.instance.expectDeallocate(object: viewControllable.uiViewController, inTime: LeakDefaultExpectationTime.viewDisappear)
     }
 }

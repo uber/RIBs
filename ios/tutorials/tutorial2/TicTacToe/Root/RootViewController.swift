@@ -45,6 +45,6 @@ final class RootViewController: UIViewController, RootPresentable, RootViewContr
     // MARK: - RootViewControllable
 
     func present(viewController: ViewControllable) {
-        present(viewController.uiviewController, animated: true, completion: nil)
+        present(viewController.uiViewController, animated: true, completion: nil)
     }
 }
