@@ -45,9 +45,9 @@ final class OffGameViewController: UIViewController, OffGamePresentable, OffGame
     }
 
     func show(scoreBoardView: ViewControllable) {
-        addChildViewController(scoreBoardView.uiviewController)
-        view.addSubview(scoreBoardView.uiviewController.view)
-        scoreBoardView.uiviewController.view.snp.makeConstraints { (maker: ConstraintMaker) in
+        addChildViewController(scoreBoardView.uiViewController)
+        view.addSubview(scoreBoardView.uiViewController.view)
+        scoreBoardView.uiViewController.view.snp.makeConstraints { (maker: ConstraintMaker) in
             maker.top.equalTo(self.view).offset(70)
             maker.leading.trailing.equalTo(self.view).inset(20)
             maker.height.equalTo(120)
