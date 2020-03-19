@@ -14,8 +14,10 @@
 //  limitations under the License.
 //
 
+import Foundation
 import RxSwift
 import RxRelay
+import UIKit
 
 /// Leak detection status.
 public enum LeakDetectionStatus {
