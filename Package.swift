@@ -21,8 +21,7 @@ let package = Package(
         .testTarget(
             name: "RIBsTests",
             dependencies: ["RIBs"],
-            path: "ios/RIBsTests",
-            exclude: ["ComponentizedBuilderTests.swift", "MultiStageComponentizedBuilderTests.swift"]
+            path: "ios/RIBsTests"
         ),
     ]
 )
