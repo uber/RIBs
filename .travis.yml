@@ -1,6 +1,7 @@
-matrix:
+jobs:
   include:
     - language: android
+      os: linux
       android:
         components:
           - tools                             # Tools
@@ -17,23 +18,26 @@ matrix:
         - ./gradlew build
 
       env:
-        global:
-          - secure: "X1BegtP1L5RJwLKsb198RanMxXjHz0q9ta5GGqmRSuROI3sunp2tJFzQHxiYKbHNJ6t98a5tEGgX+rboQKvRA6zWZWXnGRiVZ2fBW/uIxI55yNPo5tRssjbzVUhllo9ffd/NONtFRJ7pS4csDqQtW/AvLTIl5JXj3K3ciBSc1ErLgnh7T0ycmivwoIgGVj3rI8/KVrD9QJ95p2T39UR3DdMseAUymrCeHpYxZqPhEHxWfPWWw2YVTd7tDoywALy2KFo2zGjsltqkRl4AICJE+c9DBGl4K4zrhDUGEfbqbtL1I+jnfhCjiB4AhqW2ysQNdSLRldpRVgi8hn3tWyIfuLOFD7kk99cHRCZEI1H3hqH+GveEC05y6N2JpI/UFBJ7bl4Vcz3P1xKIMxLauS+tg6yXIebia3ca7f8Kih5B8pyuFW2D3sUsmU6nFIT203WDZzYs/QOpplWUYXd6QqJqUPQk8Yi3WVxYlyIuY3M6aat0Uj1TMMWmrtFSe/SFXC7foZLKJNtgJ/FE+g6kt4IJSMW5M7Ecbgqds/d803k9A7/Qjf94bTgqFhb6E5mIEszI5mtb03GYc6rPJsNGiojvhil9szn3DDqlKZAmgyV2/RBFXwUcOK61KIU5/B+KS8dEAD3CWPaFvkIwcUrjd+JiYWhNFzxTbuqWqCMt1aG+wrI="
-          - secure: "hmpySjNrJo8F+jlRoigY0fEEnem2/0UQAo2LhTHZ9sj+S+gazx+72qocilnaUwvM5j9N/owht7Vlrj5qw5msY9K32z7YGBKu9a6oFWRq5mVre4/H1q44Mp/yjdFTnToisH66yr4gFk027Lkm3dFLSIracjJl7SExN38ErTPFKNbXpI7J4WVYssDZqGnm8ixjDMhbW4Rj7Z8IompGofc4k85MsMY1kOb1tL00k8q/ffi1WLuLdM5DSCp8sBgpoNz6D2YLKMw3kJmbovFi3Oy9zF4lnje6y5cQRtDxPtaagj/+uHgi3lq4XX9A612zqPCccJcOCi0Bir2PYmYoB9T2WCTQEMOO+EXlx5ITblIQIwwRDgzRUWL/j07V33L/qmhzaq9kynOH5cMjRabk4sJe6UGt8LQF6IIeQEg0pRphMxLCFpZ3GmQsDLWhr033CLdbX8Lskq4jQhh4Lvc9eEDVxAl9vFuQR1fa+Wb+f5cCL2VXdGZupwoNC/KQlNS3xxezh/GwZccIjTCDT42tx26yJ2oCzVIrjUkEg94l9VUVUumgJNQ3Vs2T/fvsuhQS2qeczXgaAlTFg+ezRV7xvz9ClhxLkv8vZP5Ma8rMjPpDdgiOMmxo/bgYtaLfk1JMpw6PcdgBttYf8mr1dRpYiDESqSOz5USU+QDcJnkwBqggyEc="
+        - secure: "X1BegtP1L5RJwLKsb198RanMxXjHz0q9ta5GGqmRSuROI3sunp2tJFzQHxiYKbHNJ6t98a5tEGgX+rboQKvRA6zWZWXnGRiVZ2fBW/uIxI55yNPo5tRssjbzVUhllo9ffd/NONtFRJ7pS4csDqQtW/AvLTIl5JXj3K3ciBSc1ErLgnh7T0ycmivwoIgGVj3rI8/KVrD9QJ95p2T39UR3DdMseAUymrCeHpYxZqPhEHxWfPWWw2YVTd7tDoywALy2KFo2zGjsltqkRl4AICJE+c9DBGl4K4zrhDUGEfbqbtL1I+jnfhCjiB4AhqW2ysQNdSLRldpRVgi8hn3tWyIfuLOFD7kk99cHRCZEI1H3hqH+GveEC05y6N2JpI/UFBJ7bl4Vcz3P1xKIMxLauS+tg6yXIebia3ca7f8Kih5B8pyuFW2D3sUsmU6nFIT203WDZzYs/QOpplWUYXd6QqJqUPQk8Yi3WVxYlyIuY3M6aat0Uj1TMMWmrtFSe/SFXC7foZLKJNtgJ/FE+g6kt4IJSMW5M7Ecbgqds/d803k9A7/Qjf94bTgqFhb6E5mIEszI5mtb03GYc6rPJsNGiojvhil9szn3DDqlKZAmgyV2/RBFXwUcOK61KIU5/B+KS8dEAD3CWPaFvkIwcUrjd+JiYWhNFzxTbuqWqCMt1aG+wrI="
+        - secure: "hmpySjNrJo8F+jlRoigY0fEEnem2/0UQAo2LhTHZ9sj+S+gazx+72qocilnaUwvM5j9N/owht7Vlrj5qw5msY9K32z7YGBKu9a6oFWRq5mVre4/H1q44Mp/yjdFTnToisH66yr4gFk027Lkm3dFLSIracjJl7SExN38ErTPFKNbXpI7J4WVYssDZqGnm8ixjDMhbW4Rj7Z8IompGofc4k85MsMY1kOb1tL00k8q/ffi1WLuLdM5DSCp8sBgpoNz6D2YLKMw3kJmbovFi3Oy9zF4lnje6y5cQRtDxPtaagj/+uHgi3lq4XX9A612zqPCccJcOCi0Bir2PYmYoB9T2WCTQEMOO+EXlx5ITblIQIwwRDgzRUWL/j07V33L/qmhzaq9kynOH5cMjRabk4sJe6UGt8LQF6IIeQEg0pRphMxLCFpZ3GmQsDLWhr033CLdbX8Lskq4jQhh4Lvc9eEDVxAl9vFuQR1fa+Wb+f5cCL2VXdGZupwoNC/KQlNS3xxezh/GwZccIjTCDT42tx26yJ2oCzVIrjUkEg94l9VUVUumgJNQ3Vs2T/fvsuhQS2qeczXgaAlTFg+ezRV7xvz9ClhxLkv8vZP5Ma8rMjPpDdgiOMmxo/bgYtaLfk1JMpw6PcdgBttYf8mr1dRpYiDESqSOz5USU+QDcJnkwBqggyEc="
 
       cache:
         directories:
           - $HOME/.gradle
 
-
     - language: objective-c
-      osx_image: xcode10.2
+      os: osx
+      osx_image: xcode11.2
       env:
-        global:
         - LC_CTYPE=en_US.UTF-8
         - LANG=en_US.UTF-8
-        - IOS_SDK=iphonesimulator12.2
-        - IOS_VER=12.2 # Tests must run at the same OS version as $IOS_SDK
+        - IOS_VER=13.2.2
+        - IOS_SDK=iphonesimulator13.2
+        - SIMULATOR_NAME="iPhone 8"
+
+      cache:
+        directories:
+          - $HOME/Carthage
 
       script:
         - set -o pipefail
@@ -43,9 +47,8 @@ matrix:
         - xcodebuild -version
         - xcodebuild -showsdks
         - instruments -s devices
-        - xcodebuild -destination "OS=11.0,name=iPhone X" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
-        - xcodebuild -scheme "RIBs" -destination "OS=9.0,name=iPhone 4S" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c
-        - xcodebuild -scheme "RIBs" -destination "OS=$IOS_VER,platform=iOS Simulator,name=iPhone X" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
+        - xcodebuild -scheme "RIBs" -destination "OS=$IOS_VER,name=$SIMULATOR_NAME" -sdk "$IOS_SDK" -configuration Release clean build | xcpretty -c;
+        - xcodebuild -scheme "RIBs" -destination "OS=$IOS_VER,platform=iOS Simulator,name=$SIMULATOR_NAME" -sdk "$IOS_SDK" -configuration Debug clean build test | xcpretty -c;
 
 branches:
   except:
