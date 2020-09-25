@@ -15,6 +15,7 @@
 //
 
 import RIBs
+import UIKit
 
 protocol LoggedOutDependency {}
 

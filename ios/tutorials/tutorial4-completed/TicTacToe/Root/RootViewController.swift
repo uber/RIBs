@@ -45,6 +45,7 @@ final class RootViewController: UIViewController, RootPresentable, RootViewContr
     // MARK: - RootViewControllable
 
     func replaceModal(viewController: ViewControllable?) {
+        viewController?.uiviewController.modalPresentationStyle = .fullScreen
         targetViewController = viewController
 
         guard !animationInProgress else {

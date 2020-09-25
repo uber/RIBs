@@ -78,6 +78,7 @@ final class LoggedInRouter: Router<LoggedInInteractable>, LoggedInRouting {
         let offGame = offGameBuilder.build(withListener: interactor)
         self.currentChild = offGame
         attachChild(offGame)
+        offGame.viewControllable.uiviewController.modalPresentationStyle = .fullScreen
         viewController.present(viewController: offGame.viewControllable)
     }
 
