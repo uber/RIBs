@@ -44,6 +44,7 @@ dependencies {
     implementation deps.apt.javaxInject
     implementation deps.androidx.annotations
     implementation deps.androidx.appcompat
+    implementation deps.external.guavaAndroid
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

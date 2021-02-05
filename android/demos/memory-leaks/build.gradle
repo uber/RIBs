@@ -72,6 +72,7 @@ dependencies {
     compileOnly deps.apt.javax
     testImplementation project(":libraries:rib-test-utils")
     errorprone deps.build.errorProne
+    errorprone deps.build.guavaJre
     errorproneJavac deps.build.errorProneJavac
     errorprone deps.build.nullAway
 }

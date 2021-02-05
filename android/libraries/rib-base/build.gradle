@@ -31,7 +31,7 @@ dependencies {
     // in order to invert a dependency. With a bit of work this could be removed.
     annotationProcessor deps.apt.daggerCompiler
 
-    compile project(':libraries:rib-uava')
+    compile deps.external.guavaAndroid
     compile deps.external.reactiveStreams
     compile deps.external.rxrelay2
     compile deps.external.rxjava2

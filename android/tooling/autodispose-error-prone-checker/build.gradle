@@ -42,12 +42,15 @@ dependencies {
     compile deps.uber.autodispose
     compile project(':libraries:rib-base')
     errorprone deps.build.errorProne
+    errorprone deps.build.guavaJre
     errorproneJavac deps.build.errorProneJavac
 
     annotationProcessor deps.apt.autoService
     compileOnly deps.apt.autoService
     compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 
+    testCompile deps.androidx.annotations
+    testCompile deps.build.guavaJre
     testCompile deps.test.junit
     testCompile(deps.build.errorProneTestHelpers) {
         exclude group: "junit", module: "junit"

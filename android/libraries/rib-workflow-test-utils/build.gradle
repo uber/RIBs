@@ -45,9 +45,9 @@ android {
 }
 
 dependencies {
-    compileOnly deps.androidx.annotations
+    implementation deps.androidx.annotations
     api project(":libraries:rib-workflow")
-    api project(":libraries:rib-uava")
+    api deps.external.guavaAndroid
     api deps.external.rxjava2
     implementation deps.test.assertj
 }

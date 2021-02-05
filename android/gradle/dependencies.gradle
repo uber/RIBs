@@ -51,7 +51,7 @@ def build = [
     minSdkVersion: 16,
     targetSdkVersion: 28,
     javaVersion: JavaVersion.VERSION_1_8,
-    guava: "com.google.guava:guava:27.1-android",
+    guavaJre: "com.google.guava:guava:27.1-jre",
     commonsLang: "commons-lang:commons-lang:2.6",
     intellijPlugin: "gradle.plugin.org.jetbrains.intellij.plugins:gradle-intellij-plugin:0.4.8",
     errorProne: "com.google.errorprone:error_prone_core:${versions.errorProne}",
@@ -82,6 +82,7 @@ def test = [
 
 def external = [
     dagger: "com.google.dagger:dagger:${versions.dagger}",
+    guavaAndroid: "com.google.guava:guava:27.1-android",
     rxjava2: "io.reactivex.rxjava2:rxjava:2.2.8",
     rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.1.0",
     rxandroid2: "io.reactivex.rxjava2:rxandroid:2.1.1",
