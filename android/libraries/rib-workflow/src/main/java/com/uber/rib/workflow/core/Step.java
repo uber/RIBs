@@ -16,7 +16,7 @@
 
 package com.uber.rib.workflow.core;
 
-import com.uber.rib.core.Optional;
+import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
 
 import io.reactivex.Observable;

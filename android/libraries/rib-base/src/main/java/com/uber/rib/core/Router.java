@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.uber.rib.core.Preconditions.*;
+import static com.google.common.base.Preconditions.*;
 
 /**
  * Responsible for handling the addition and removal of children routers.

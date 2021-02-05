@@ -24,7 +24,7 @@ import android.view.ViewGroup;
 import com.uber.autodispose.AutoDispose;
 import com.uber.rave.Rave;
 import com.uber.rave.RaveException;
-import com.uber.rib.core.Optional;
+import com.google.common.base.Optional;
 import com.uber.rib.core.RibActivity;
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.RootBuilder;
@@ -34,7 +34,7 @@ import com.uber.rib.root.RootWorkflow;
 import com.uber.rib.root.RootWorkflowModel;
 import com.uber.rib.root.WorkflowFactory;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import io.reactivex.functions.Consumer;
 
