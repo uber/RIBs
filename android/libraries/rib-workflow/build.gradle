@@ -40,8 +40,8 @@ android {
 dependencies {
     implementation deps.androidx.annotations
     implementation deps.external.rxandroid2
+    api deps.external.guavaAndroid
     api deps.external.rxjava2
-    api project(':libraries:rib-uava')
     api project(":libraries:rib-android")
     testImplementation deps.test.junit
     testImplementation deps.test.assertj

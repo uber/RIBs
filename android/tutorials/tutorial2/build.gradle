@@ -66,6 +66,7 @@ dependencies {
     errorproneJavac deps.build.errorProneJavac
     errorprone deps.build.nullAway
     errorprone deps.build.errorProne
+    errorprone deps.build.guavaJre
 }
 
 tasks.withType(JavaCompile) {

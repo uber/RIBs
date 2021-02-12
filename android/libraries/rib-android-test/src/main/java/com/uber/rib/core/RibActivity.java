@@ -19,6 +19,8 @@ import android.content.Intent;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 import android.view.ViewGroup;
+
+import com.google.common.base.Preconditions;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.PublishRelay;
 import com.jakewharton.rxrelay2.Relay;

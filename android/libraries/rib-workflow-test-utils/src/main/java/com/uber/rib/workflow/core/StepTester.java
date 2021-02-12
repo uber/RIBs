@@ -18,7 +18,7 @@ package com.uber.rib.workflow.core;
 
 import androidx.annotation.Nullable;
 
-import com.uber.rib.core.Optional;
+import com.google.common.base.Optional;
 
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;

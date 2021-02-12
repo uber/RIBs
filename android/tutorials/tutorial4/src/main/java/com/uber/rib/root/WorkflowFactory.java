@@ -2,7 +2,7 @@ package com.uber.rib.root;
 
 import android.content.Intent;
 
-import javax.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 public class WorkflowFactory {
   @Nullable

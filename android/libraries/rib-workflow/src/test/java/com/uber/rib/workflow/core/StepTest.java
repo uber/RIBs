@@ -18,7 +18,7 @@ package com.uber.rib.workflow.core;
 
 import androidx.annotation.NonNull;
 
-import com.uber.rib.core.Optional;
+import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
 
 import org.junit.Before;
