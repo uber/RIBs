@@ -13,30 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
 
 import androidx.annotation.NonNull;
-
 import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
-
+import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.observers.TestObserver;
+import io.reactivex.schedulers.Schedulers;
+import io.reactivex.subjects.BehaviorSubject;
+import io.reactivex.subjects.PublishSubject;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-import java.util.concurrent.Callable;
-
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.plugins.RxAndroidPlugins;
-import io.reactivex.functions.Function;
-import io.reactivex.observers.TestObserver;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
-
+import static io.reactivex.android.plugins.RxAndroidPlugins.setInitMainThreadSchedulerHandler;
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class WorkflowTest {
@@ -49,13 +41,7 @@ public class WorkflowTest {
 
   @Before
   public void setup() {
-    RxAndroidPlugins.setInitMainThreadSchedulerHandler(
-          new Function<Callable<Scheduler>, Scheduler>() {
-              @Override
-              public Scheduler apply(Callable<Scheduler> schedulerCallable) throws Exception {
-                  return Schedulers.trampoline();
-              }
-          });
+    setInitMainThreadSchedulerHandler(schedulerCallable -> Schedulers.trampoline());
   }
 
   @After
@@ -65,14 +51,7 @@ public class WorkflowTest {
 
   @Test
   public void createSingle_shouldReturnASingleThatRunsTheWorkflow() {
-    ActionableItem actionableItem =
-        new ActionableItem() {
-          @NonNull
-          @Override
-          public Observable<InteractorEvent> lifecycle() {
-            return interactorLifecycleSubject;
-          }
-        };
+    ActionableItem actionableItem = () -> interactorLifecycleSubject;
 
     Workflow<Object, ActionableItem> workflow =
         new Workflow<Object, ActionableItem>() {

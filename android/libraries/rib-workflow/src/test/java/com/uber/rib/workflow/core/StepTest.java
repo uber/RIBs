@@ -13,23 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
-
-import androidx.annotation.NonNull;
 
 import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
-
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
-
 import io.reactivex.Observable;
-import io.reactivex.functions.BiFunction;
 import io.reactivex.observers.TestObserver;
 import io.reactivex.subjects.BehaviorSubject;
 import io.reactivex.subjects.PublishSubject;
+import org.junit.Before;
+import org.junit.Rule;
+import org.junit.Test;
 
 import static org.assertj.core.api.Java6Assertions.assertThat;
 
@@ -51,7 +45,8 @@ public class StepTest {
   @Test
   public void asObservable_withInactiveLifecycle_shouldWaitForActiveLifecycleBeforeEmitting() {
     Object returnValue = new Object();
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
+        new TestObserver<>();
 
     step.asObservable().subscribe(testSubscriber);
 
@@ -60,16 +55,7 @@ public class StepTest {
     testSubscriber.assertNotComplete();
 
     returnValueSubject.onNext(
-        Optional.of(
-            new Step.Data<Object, ActionableItem>(
-                returnValue,
-                new ActionableItem() {
-                  @NonNull
-                  @Override
-                  public Observable<InteractorEvent> lifecycle() {
-                    return interactorLifecycleSubject;
-                  }
-                })));
+        Optional.of(new Step.Data<>(returnValue, () -> interactorLifecycleSubject)));
     returnValueSubject.onComplete();
 
     testSubscriber.assertNoValues();
@@ -87,7 +73,8 @@ public class StepTest {
   @Test
   public void asObservable_withActiveLifecycle_shouldEmitWithoutWaiting() {
     Object returnValue = new Object();
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
+        new TestObserver<>();
 
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
 
@@ -98,16 +85,7 @@ public class StepTest {
     testSubscriber.assertNotComplete();
 
     returnValueSubject.onNext(
-        Optional.of(
-            new Step.Data<Object, ActionableItem>(
-                returnValue,
-                new ActionableItem() {
-                  @NonNull
-                  @Override
-                  public Observable<InteractorEvent> lifecycle() {
-                    return interactorLifecycleSubject;
-                  }
-                })));
+        Optional.of(new Step.Data<>(returnValue, () -> interactorLifecycleSubject)));
     returnValueSubject.onComplete();
 
     testSubscriber.assertValueCount(1);
@@ -119,34 +97,22 @@ public class StepTest {
   @Test
   public void onStep_withASuccessFullFirstAction_shouldProperlyChainTheNextStep() {
     Object returnValue = new Object();
-    final Object secondReturnValue = new Object();
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
+    Object secondReturnValue = new Object();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
+        new TestObserver<>();
 
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
 
     step.onStep(
-            new BiFunction<Object, ActionableItem, Step<Object, ActionableItem>>() {
-              @Override
-              public Step<Object, ActionableItem> apply(Object o, ActionableItem actionableItem) {
-                return Step.from(
+            (o, actionableItem) ->
+                Step.from(
                     Observable.just(new Step.Data<>(secondReturnValue, actionableItem))
-                        .singleOrError());
-              }
-            })
+                        .singleOrError()))
         .asObservable()
         .subscribe(testSubscriber);
 
     returnValueSubject.onNext(
-        Optional.of(
-            new Step.Data<Object, ActionableItem>(
-                returnValue,
-                new ActionableItem() {
-                  @NonNull
-                  @Override
-                  public Observable<InteractorEvent> lifecycle() {
-                    return interactorLifecycleSubject;
-                  }
-                })));
+        Optional.of(new Step.Data<>(returnValue, () -> interactorLifecycleSubject)));
     returnValueSubject.onComplete();
 
     testSubscriber.assertValueCount(1);
@@ -157,24 +123,20 @@ public class StepTest {
 
   @Test
   public void onStep_withAnUnsuccessfulFirstAction_shouldTerminateTheWholeChain() {
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
-    final Object secondReturnValue = new Object();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
+        new TestObserver<>();
+    Object secondReturnValue = new Object();
 
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
 
     step.onStep(
-            new BiFunction<Object, ActionableItem, Step<Object, ActionableItem>>() {
-              @Override
-              public Step<Object, ActionableItem> apply(Object o, ActionableItem actionableItem) {
-                return Step.from(
-                    Observable.just(new Step.Data<>(secondReturnValue, actionableItem))
-                        .singleOrError());
-              }
-            })
+            (o, actionableItem) ->
+                Step.from(Observable.just(new Step.Data<>(secondReturnValue, actionableItem))
+                        .singleOrError()))
         .asObservable()
         .subscribe(testSubscriber);
 
-    returnValueSubject.onNext(Optional.<Step.Data<Object, ActionableItem>>absent());
+    returnValueSubject.onNext(Optional.absent());
     returnValueSubject.onComplete();
 
     testSubscriber.assertValueCount(1);

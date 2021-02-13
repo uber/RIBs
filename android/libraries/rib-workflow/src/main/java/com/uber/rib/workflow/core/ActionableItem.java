@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
 
 import com.uber.rib.core.lifecycle.InteractorEvent;
-
 import io.reactivex.Observable;
 
 /** Represents an item that {@link Step} operations can be performed on. */

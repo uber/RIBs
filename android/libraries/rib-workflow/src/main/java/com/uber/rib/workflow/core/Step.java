@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
 
 import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.BiFunction;
 import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 
 /**
  * Represents a unit of work for workflows.
@@ -55,14 +52,7 @@ public class Step<T, A extends ActionableItem> {
    * @return a new {@link Step}.
    */
   public static <T, A extends ActionableItem> Step<T, A> from(Single<Data<T, A>> stepDataSingle) {
-    return new Step<>(
-        stepDataSingle.map(
-            new Function<Data<T, A>, Optional<Data<T, A>>>() {
-              @Override
-              public Optional<Data<T, A>> apply(Data<T, A> data) throws Exception {
-                return Optional.of(data);
-              }
-            }));
+    return new Step<>(stepDataSingle.map(Optional::of));
   }
 
   /**
@@ -88,31 +78,20 @@ public class Step<T, A extends ActionableItem> {
    *
    * @param func to return the next step when this current step completes. This function will
    *     receive the result of the previous step and the next actionable item to take an action on.
-   * @param <TNewValueType> the value type returned by the next step.
-   * @param <TNewActionableItem> the actionable item type returned by the next step.
+   * @param <T2> the value type returned by the next step.
+   * @param <A2> the actionable item type returned by the next step.
    * @return a {@link Step} to chain more calls to.
    */
-  public <TNewValueType, TNewActionableItem extends ActionableItem>
-      Step<TNewValueType, TNewActionableItem> onStep(
-          final BiFunction<T, A, Step<TNewValueType, TNewActionableItem>> func) {
+  @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
+  public <T2, A2 extends ActionableItem> Step<T2, A2> onStep(Step<T, A> this, final BiFunction<T, A, Step<T2, A2>> func) {
     return new Step<>(
         asObservable()
             .flatMap(
-                new Function<
-                    Optional<Data<T, A>>,
-                    Observable<Optional<Data<TNewValueType, TNewActionableItem>>>>() {
-                  @Override
-                  public Observable<Optional<Data<TNewValueType, TNewActionableItem>>> apply(
-                      Optional<Data<T, A>> dataOptional) throws Exception {
-                    if (dataOptional.isPresent()) {
-                      Data<T, A> data = dataOptional.get();
-                      return func.apply(data.value, data.actionableItem).asObservable();
-                    } else {
-                      return Observable.just(
-                          Optional.<Data<TNewValueType, TNewActionableItem>>absent());
-                    }
-                  }
-                })
+                (Function<Optional<Data<T, A>>, Observable<Optional<Data<T2, A2>>>>)
+                    data ->
+                        data.isPresent()
+                            ? func.apply(data.get().value, data.get().actionableItem).asObservable()
+                            : Observable.just(Optional.absent()))
             .singleOrError());
   }
 
@@ -121,52 +100,23 @@ public class Step<T, A extends ActionableItem> {
         stepDataSingle.toObservable().observeOn(AndroidSchedulers.mainThread()).cache();
 
     return cachedObservable.flatMap(
-        new Function<Optional<Data<T, A>>, ObservableSource<Optional<Data<T, A>>>>() {
-          @Override
-          public ObservableSource<Optional<Data<T, A>>> apply(Optional<Data<T, A>> dataOptional)
-              throws Exception {
-            if (dataOptional.isPresent()) {
-              A actionableItem = dataOptional.get().actionableItem;
-              return actionableItem
-                  .lifecycle()
-                  .filter(
-                      new Predicate<InteractorEvent>() {
-                        @Override
-                        public boolean test(InteractorEvent interactorEvent) throws Exception {
-                          return interactorEvent == InteractorEvent.ACTIVE;
-                        }
-                      })
-                  .zipWith(
-                      cachedObservable,
-                      new BiFunction<
-                          InteractorEvent, Optional<Data<T, A>>, Optional<Data<T, A>>>() {
-                        @Override
-                        public Optional<Data<T, A>> apply(
-                            InteractorEvent interactorEvent, Optional<Data<T, A>> dataOptional)
-                            throws Exception {
-                          return dataOptional;
-                        }
-                      });
-            } else {
-              return Observable.just(Optional.<Data<T, A>>absent());
-            }
-          }
-        });
+        (Function<Optional<Data<T, A>>, ObservableSource<Optional<Data<T, A>>>>)
+            dataOptional -> {
+              if (dataOptional.isPresent()) {
+                A actionableItem = dataOptional.get().actionableItem;
+                return actionableItem
+                    .lifecycle()
+                    .filter(interactorEvent -> interactorEvent == InteractorEvent.ACTIVE)
+                    .zipWith(cachedObservable, (interactorEvent, data) -> data);
+              } else {
+                return Observable.just(Optional.absent());
+              }
+            });
   }
 
   protected Observable<Optional<T>> asResultObservable() {
     return asObservable()
-        .map(
-            new Function<Optional<Data<T, A>>, Optional<T>>() {
-              @Override
-              public Optional<T> apply(Optional<Data<T, A>> dataOptional) {
-                if (dataOptional.isPresent()) {
-                  return Optional.of(dataOptional.get().getValue());
-                } else {
-                  return Optional.absent();
-                }
-              }
-            });
+        .map(data -> data.isPresent() ? Optional.of(data.get().getValue()) : Optional.absent());
   }
 
   /**
