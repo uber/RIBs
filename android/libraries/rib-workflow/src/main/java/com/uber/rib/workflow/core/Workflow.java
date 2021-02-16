@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
 
 import com.google.common.base.Optional;
-
 import io.reactivex.Single;
 
 /**
@@ -34,8 +32,8 @@ public abstract class Workflow<TReturnValue, TRootActionableItem extends Actiona
    * @param rootActionableItem actionable item to start the workflow with.
    * @return an Rx {@link Single} that will return the workflow when subscribed to.
    */
-  public io.reactivex.Single<Optional<TReturnValue>> createSingle(
-      TRootActionableItem rootActionableItem) {
+  @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
+  public Single<Optional<TReturnValue>> createSingle(TRootActionableItem rootActionableItem) {
     return getSteps(rootActionableItem).asResultObservable().singleOrError();
   }
 

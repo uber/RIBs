@@ -36,7 +36,7 @@ Set<String> androidLibraryProjects = [
         "rib-android-test",
         "rib-screen-stack-base",
         "rib-workflow",
-        "rib-workflow-test-utils"
+        "rib-workflow-test"
 ]
 Set<String> useErrorProneProjects = [
         "memory-leaks",
