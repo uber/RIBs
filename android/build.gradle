@@ -41,8 +41,7 @@ Set<String> androidLibraryProjects = [
 Set<String> useErrorProneProjects = [
         "memory-leaks",
         "tutorial1",
-        "tutorial2",
-        "autodispose-error-prone-checker"
+        "tutorial2"
 ]
 
 subprojects {

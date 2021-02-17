@@ -58,7 +58,7 @@ android {
 }
 
 dependencies {
-    annotationProcessor project(":tooling:autodispose-error-prone-checker")
+    annotationProcessor deps.uber.autodisposeErrorProne
     annotationProcessor deps.apt.daggerCompiler
     annotationProcessor project(":libraries:rib-compiler-app")
     annotationProcessor project(":libraries:rib-compiler-test")
