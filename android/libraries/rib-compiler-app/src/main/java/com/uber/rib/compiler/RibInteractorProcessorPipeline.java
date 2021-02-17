@@ -16,14 +16,11 @@
 package com.uber.rib.compiler;
 
 import androidx.annotation.Nullable;
-
 import com.uber.rib.core.RibInteractor;
-
 import java.io.IOException;
 import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.lang.model.element.TypeElement;
 
 /** The processor pipeline for {@link RibInteractor} */

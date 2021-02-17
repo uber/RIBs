@@ -18,4 +18,6 @@ package test;
 import com.uber.rib.core.RibInteractor;
 
 @RibInteractor
-public class AnnotatedNonInteractor { }
+public class AnnotatedNonInteractor {
+
+}

@@ -17,7 +17,6 @@ package com.uber.rib.compiler;
 
 import java.lang.annotation.Annotation;
 import java.util.Set;
-
 import javax.annotation.processing.RoundEnvironment;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;

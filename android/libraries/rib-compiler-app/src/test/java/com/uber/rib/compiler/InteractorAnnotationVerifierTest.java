@@ -15,24 +15,17 @@
  */
 package com.uber.rib.compiler;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
 import static com.google.common.truth.Truth.assert_;
 import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
+
+import org.junit.Test;
 
 public class InteractorAnnotationVerifierTest extends InteractorProcessorTestBase {
 
   @Test
-  @Ignore
   public void verify_whenTypeElementIsValid_shouldCompile() {
     addResourceToSources("fixtures/AnnotatedInteractor.java");
-    assert_()
-        .about(javaSources())
-        .that(getSources())
-        .withCompilerOptions("-source", "1.7", "-target", "1.7")
-        .processedWith(getRibProcessor())
-        .compilesWithoutError();
+    assertCompiles();
   }
 
   @Test
@@ -42,13 +35,13 @@ public class InteractorAnnotationVerifierTest extends InteractorProcessorTestBas
   }
 
   @Test
-  public void verify_whenBuilderHasAConstructor_shouldWriteErrorMessage() {
+  public void verify_whenInteractorHasAConstructor_shouldCompile() {
     addResourceToSources("fixtures/CustomConstructorInteractor.java");
-    assertFailsWithError("");
+    assertCompiles();
   }
 
   @Test
-  public void verify_whenTypeElementIsNotBuilder_shouldWriteErrorMessage() {
+  public void verify_whenTypeElementIsNotInteractor_shouldWriteErrorMessage() {
     addResourceToSources("fixtures/AnnotatedNonInteractor.java");
     assertFailsWithError(
         "test.AnnotatedNonInteractor is annotated with @RibInteractor but is not an Interactor subclass");
@@ -62,5 +55,14 @@ public class InteractorAnnotationVerifierTest extends InteractorProcessorTestBas
         .processedWith(getRibProcessor())
         .failsToCompile()
         .withErrorContaining(expectedErrorMessage);
+  }
+
+  private void assertCompiles() {
+    assert_()
+        .about(javaSources())
+        .that(getSources())
+        .withCompilerOptions("-source", "1.7", "-target", "1.7")
+        .processedWith(getRibProcessor())
+        .compilesWithoutError();
   }
 }

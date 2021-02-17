@@ -16,7 +16,6 @@
 package com.uber.rib.compiler;
 
 import java.io.IOException;
-
 import javax.annotation.processing.ProcessingEnvironment;
 
 /**

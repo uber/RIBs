@@ -16,30 +16,36 @@
 package com.uber.rib.compiler;
 
 import com.uber.rib.core.RibBuilder;
-
 import java.util.List;
-
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
 /** Extension point for adding more information to a class annotated with {@link RibBuilder}. */
 public class InteractorAnnotatedClass extends AnnotatedClass {
 
-  private final List<VariableElement> injectFields;
+  private final List<? extends VariableElement> dependencies;
+  private final boolean isBasic;
 
-  public InteractorAnnotatedClass(TypeElement typeElement, List<VariableElement> injectFields) {
+  public InteractorAnnotatedClass(
+      TypeElement typeElement, List<? extends VariableElement> dependencies, boolean isBasic) {
     super(typeElement);
-    this.injectFields = injectFields;
+    this.dependencies = dependencies;
+    this.isBasic = isBasic;
   }
 
-  /** @return the list of injected fields */
-  public List<VariableElement> getInjectFields() {
-    return injectFields;
+  /** @return the list of dependencies. */
+  public List<? extends VariableElement> getDependencies() {
+    return dependencies;
   }
 
   /** {@inheritDoc} */
   @Override
   public String getNameSuffix() {
     return Constants.INTERACTOR_SUFFIX;
+  }
+
+  /** @return Whether this interactor extends BasicInteractor. */
+  public boolean isBasic() {
+    return isBasic;
   }
 }

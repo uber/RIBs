@@ -17,12 +17,9 @@ package com.uber.rib.compiler;
 
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
-
 import java.util.ArrayList;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Locale;
-
 import javax.inject.Inject;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
@@ -58,43 +55,30 @@ public class InteractorAnnotationVerifier extends AnnotationVerifier<InteractorA
    */
   @Override
   public InteractorAnnotatedClass verify(TypeElement type) throws VerificationFailedException {
+    boolean hasConstructor = hasConstructor(type);
     boolean result = validateInteractorSubclass(type);
     result = result && validateInteractorSuffix(type);
-    result = result && validateNoConstructors(type);
     if (!result) {
       throw new VerificationFailedException();
     } else {
-      return new InteractorAnnotatedClass(type, getInjectFields(type));
+      List<? extends VariableElement> fields;
+      if (hasConstructor) {
+        fields = getConstructorParameters(type);
+      } else {
+        fields = getInjectFields(type);
+      }
+      return new InteractorAnnotatedClass(type, fields, hasConstructor);
     }
   }
 
-  /**
-   * Validates the constructor. Requirements:
-   *
-   * <ul>
-   *   <li>There should only be one or zero constructors (to avoid making multiple creators).
-   * </ul>
-   *
-   * @param type Interactor type to validate.
-   * @return {@code true} when valid, {@code false} when invalid.
-   */
-  private boolean validateNoConstructors(TypeElement type) {
-    List<ExecutableElement> constructors = new LinkedList<>();
+  private boolean hasConstructor(TypeElement type) {
+    List<ExecutableElement> constructors = new ArrayList<>();
     for (Element element : elementUtils.getAllMembers(type)) {
       if (element.getKind().equals(ElementKind.CONSTRUCTOR)) {
         constructors.add((ExecutableElement) element);
       }
     }
-
-    if (constructors.size() != 1 || !constructors.get(0).getParameters().isEmpty()) {
-      errorReporter.reportError(
-          "Interactor cannot have custom constructors - all dependencies and setup should happen in "
-              + "the builder of ",
-          type);
-      return false;
-    } else {
-      return true;
-    }
+    return constructors.size() != 1 || !constructors.get(0).getParameters().isEmpty();
   }
 
   /**
@@ -146,7 +130,7 @@ public class InteractorAnnotationVerifier extends AnnotationVerifier<InteractorA
    * @param type the type to get fields.
    * @return the list of all inject fields.
    */
-  private List<VariableElement> getInjectFields(TypeElement type) {
+  private List<? extends VariableElement> getInjectFields(TypeElement type) {
 
     List<VariableElement> fields = ElementFilter.fieldsIn(type.getEnclosedElements());
     ArrayList<VariableElement> injectFields = new ArrayList<>();
@@ -156,5 +140,10 @@ public class InteractorAnnotationVerifier extends AnnotationVerifier<InteractorA
       }
     }
     return injectFields;
+  }
+
+  private List<? extends VariableElement> getConstructorParameters(TypeElement type) {
+    List<ExecutableElement> constructors = ElementFilter.constructorsIn(type.getEnclosedElements());
+    return constructors.get(0).getParameters();
   }
 }

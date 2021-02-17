@@ -15,22 +15,38 @@
  */
 package com.uber.rib.compiler;
 
-import org.junit.Ignore;
-import org.junit.Test;
-
-import javax.tools.JavaFileObject;
-
 import static com.google.common.truth.Truth.assert_;
 import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 
+import javax.tools.JavaFileObject;
+
+import org.junit.Ignore;
+import org.junit.Test;
+
 public class InteractorTestGeneratorTest extends InteractorTestGeneratorProcessorTestBase {
 
-  @Ignore("The maven coordinate com.sun:tools no longer appears to work. So this test won't pass.")
   @Test
-  public void processor_withAnInteractor_shouldCreateANewScopeAnnotation() {
+  public void processor_withAnInteractor_shouldGenerateTestHelper() {
     JavaFileObject expectedTestCreator = getResourceFile("fixtures/TestAnnotatedInteractor.java");
 
     addResourceToSources("fixtures/AnnotatedInteractor.java");
+    assert_()
+        .about(javaSources())
+        .that(getSources())
+        .withCompilerOptions("-source", "1.7", "-target", "1.7")
+        .processedWith(getRibInteractorProcessor())
+        .compilesWithoutError()
+        .and()
+        .generatesSources(expectedTestCreator);
+  }
+
+  @Ignore("Unignore once BasicInteractor is added to rib-base")
+  @Test
+  public void processor_withABasicInteractor_shouldGenerateTestHelper() {
+    JavaFileObject expectedTestCreator =
+        getResourceFile("fixtures/TestAnnotatedBasicInteractor.java");
+
+    addResourceToSources("fixtures/AnnotatedBasicInteractor.java");
     assert_()
         .about(javaSources())
         .that(getSources())

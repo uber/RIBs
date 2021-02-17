@@ -15,15 +15,14 @@
  */
 package com.uber.rib.compiler;
 
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
 import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.ParameterSpec;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
-
 import java.io.IOException;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.VariableElement;
@@ -84,23 +83,28 @@ public class InteractorTestGenerator extends Generator<InteractorAnnotatedClass>
             .returns(TypeName.get(interactor.getTypeElement().asType()))
             .addModifiers(ImmutableList.of(Modifier.PUBLIC, Modifier.STATIC));
 
-    for (VariableElement injectField : interactor.getInjectFields()) {
+    for (VariableElement dependency : interactor.getDependencies()) {
       ParameterSpec paramSpect =
           ParameterSpec.builder(
-                  TypeName.get(injectField.asType()),
-                  injectField.getSimpleName().toString(),
+                  TypeName.get(dependency.asType()),
+                  dependency.getSimpleName().toString(),
                   Modifier.FINAL)
               .build();
       builder.addParameter(paramSpect);
     }
     String interactorName = interactor.getTypeElement().getSimpleName().toString();
-    builder.addStatement("$L interactor = new $L()", interactorName, interactorName);
-    for (VariableElement injectField : interactor.getInjectFields()) {
-      builder.addStatement(
-          "interactor.$L = $L",
-          injectField.getSimpleName().toString(),
-          injectField.getSimpleName().toString());
+    if (interactor.isBasic()) {
+      String params = Joiner.on(", ").join(interactor.getDependencies());
+      return builder.addStatement("return new $L($L)", interactorName, params).build();
+    } else {
+      builder.addStatement("$L interactor = new $L()", interactorName, interactorName);
+      for (VariableElement dependencies : interactor.getDependencies()) {
+        builder.addStatement(
+            "interactor.$L = $L",
+            dependencies.getSimpleName().toString(),
+            dependencies.getSimpleName().toString());
+      }
+      return builder.addStatement("return interactor").build();
     }
-    return builder.addStatement("return interactor").build();
   }
 }

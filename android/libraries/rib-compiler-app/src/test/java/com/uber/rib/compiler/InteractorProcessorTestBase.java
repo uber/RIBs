@@ -17,15 +17,12 @@ package com.uber.rib.compiler;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.testing.compile.JavaFileObjects;
-
-import org.junit.Before;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.tools.JavaFileObject;
+import org.junit.Before;
 
 public abstract class InteractorProcessorTestBase {
 
@@ -38,7 +35,7 @@ public abstract class InteractorProcessorTestBase {
         new RibProcessor() {
           @Override
           protected List<ProcessorPipeline> getProcessorPipelines(ProcessContext processContext) {
-            return Collections.<ProcessorPipeline>singletonList(
+            return Collections.singletonList(
                 new RibInteractorProcessorPipeline(processContext, null));
           }
 
