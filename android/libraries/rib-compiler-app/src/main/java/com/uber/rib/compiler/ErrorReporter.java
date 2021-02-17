@@ -16,7 +16,6 @@
 package com.uber.rib.compiler;
 
 import androidx.annotation.Nullable;
-
 import javax.annotation.processing.Messager;
 import javax.lang.model.element.Element;
 import javax.tools.Diagnostic;

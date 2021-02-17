@@ -16,19 +16,15 @@
 package com.uber.rib.compiler;
 
 import androidx.annotation.NonNull;
-
 import com.google.common.collect.ImmutableSet;
 import com.google.testing.compile.JavaFileObjects;
-
-import org.junit.Before;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.tools.JavaFileObject;
+import org.junit.Before;
 
 public abstract class InteractorTestGeneratorProcessorTestBase {
 
