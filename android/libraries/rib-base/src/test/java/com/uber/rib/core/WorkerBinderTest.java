@@ -32,7 +32,7 @@ import io.reactivex.Maybe;
 import io.reactivex.functions.Consumer;
 
 import static com.uber.rib.core.WorkerBinder.bind;
-import static org.assertj.core.api.Java6Assertions.assertThat;
+import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 

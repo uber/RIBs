@@ -15,12 +15,12 @@
  */
 package com.uber.rib.workflow.core;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import androidx.annotation.Nullable;
 import com.google.common.base.Optional;
 import io.reactivex.Observable;
 import io.reactivex.observers.TestObserver;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 /** Utility to expose {@link Observable} instances on a {@link Step} for unit testing purposes. */
 public final class StepTester {

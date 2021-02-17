@@ -15,6 +15,9 @@
  */
 package com.uber.rib.workflow.core;
 
+import static com.google.common.truth.Truth.assertThat;
+import static io.reactivex.android.plugins.RxAndroidPlugins.setInitMainThreadSchedulerHandler;
+
 import androidx.annotation.NonNull;
 import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
@@ -27,9 +30,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static io.reactivex.android.plugins.RxAndroidPlugins.setInitMainThreadSchedulerHandler;
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class WorkflowTest {
   @Rule public final AndroidSchedulersRule androidSchedulersRuleRx2 = new AndroidSchedulersRule();

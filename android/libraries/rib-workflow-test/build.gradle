@@ -49,7 +49,7 @@ dependencies {
     api project(":libraries:rib-workflow")
     api deps.external.guavaAndroid
     api deps.external.rxjava2
-    implementation deps.test.assertj
+    implementation deps.test.truth
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
