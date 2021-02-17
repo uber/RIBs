@@ -39,7 +39,6 @@ public class LoggedOutInteractor
   @Inject Listener listener;
   @Inject LoggedOutPresenter presenter;
 
-  @SuppressWarnings("RxJavaMissingAutodisposeErrorChecker")
   @Override
   protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
     super.didBecomeActive(savedInstanceState);
