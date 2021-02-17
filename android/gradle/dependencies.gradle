@@ -21,7 +21,7 @@ def versions = [
         appcompat: '1.0.2',
         percent: '1.0.0'
     ],
-    autodispose: '1.3.0',
+    autodispose: '1.4.0',
     robolectric: "4.2.1",
     intellij: "2017.2",
     rave: "2.0.0",
@@ -96,6 +96,7 @@ def uber = [
     autodispose: "com.uber.autodispose:autodispose:${versions.autodispose}",
     autodisposeLifecycle: "com.uber.autodispose:autodispose-lifecycle:${versions.autodispose}",
     autodisposeAndroid : "com.uber.autodispose:autodispose-android:${versions.autodispose}@aar",
+    autodisposeErrorProne: "com.uber.autodispose:autodispose-error-prone:${versions.autodispose}",
     rave: "com.uber:rave:${versions.rave}",
 ]
 
