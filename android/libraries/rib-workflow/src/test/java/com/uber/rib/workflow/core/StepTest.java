@@ -15,6 +15,8 @@
  */
 package com.uber.rib.workflow.core;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import com.google.common.base.Optional;
 import com.uber.rib.core.lifecycle.InteractorEvent;
 import io.reactivex.Observable;
@@ -24,8 +26,6 @@ import io.reactivex.subjects.PublishSubject;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
-
-import static org.assertj.core.api.Java6Assertions.assertThat;
 
 public class StepTest {
   @Rule public final AndroidSchedulersRule androidSchedulersRuleRx2 = new AndroidSchedulersRule();
@@ -45,8 +45,7 @@ public class StepTest {
   @Test
   public void asObservable_withInactiveLifecycle_shouldWaitForActiveLifecycleBeforeEmitting() {
     Object returnValue = new Object();
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
-        new TestObserver<>();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
 
     step.asObservable().subscribe(testSubscriber);
 
@@ -73,8 +72,7 @@ public class StepTest {
   @Test
   public void asObservable_withActiveLifecycle_shouldEmitWithoutWaiting() {
     Object returnValue = new Object();
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
-        new TestObserver<>();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
 
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
 
@@ -98,8 +96,7 @@ public class StepTest {
   public void onStep_withASuccessFullFirstAction_shouldProperlyChainTheNextStep() {
     Object returnValue = new Object();
     Object secondReturnValue = new Object();
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
-        new TestObserver<>();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
 
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
 
@@ -123,15 +120,15 @@ public class StepTest {
 
   @Test
   public void onStep_withAnUnsuccessfulFirstAction_shouldTerminateTheWholeChain() {
-    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber =
-        new TestObserver<>();
+    TestObserver<Optional<Step.Data<Object, ActionableItem>>> testSubscriber = new TestObserver<>();
     Object secondReturnValue = new Object();
 
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
 
     step.onStep(
             (o, actionableItem) ->
-                Step.from(Observable.just(new Step.Data<>(secondReturnValue, actionableItem))
+                Step.from(
+                    Observable.just(new Step.Data<>(secondReturnValue, actionableItem))
                         .singleOrError()))
         .asObservable()
         .subscribe(testSubscriber);

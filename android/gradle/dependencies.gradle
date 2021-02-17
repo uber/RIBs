@@ -76,8 +76,8 @@ def androidx = [
 def test = [
     junit: "junit:junit:4.12",
     mockito: "org.mockito:mockito-core:2.0.42-beta",
-    assertj: "org.assertj:assertj-core:2.6.0",
     compileTesting: "com.google.testing.compile:compile-testing:0.17",
+    truth: "com.google.truth:truth:0.43",
 ]
 
 def external = [

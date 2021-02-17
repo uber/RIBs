@@ -83,7 +83,8 @@ public class Step<T, A extends ActionableItem> {
    * @return a {@link Step} to chain more calls to.
    */
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
-  public <T2, A2 extends ActionableItem> Step<T2, A2> onStep(Step<T, A> this, final BiFunction<T, A, Step<T2, A2>> func) {
+  public <T2, A2 extends ActionableItem> Step<T2, A2> onStep(
+      Step<T, A> this, final BiFunction<T, A, Step<T2, A2>> func) {
     return new Step<>(
         asObservable()
             .flatMap(

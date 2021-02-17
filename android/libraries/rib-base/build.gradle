@@ -47,7 +47,7 @@ dependencies {
     testCompile deps.apt.androidApi
     testCompile deps.test.junit
     testCompile deps.test.mockito
-    testCompile deps.test.assertj
+    testCompile deps.test.truth
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

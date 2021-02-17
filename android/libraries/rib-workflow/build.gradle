@@ -44,7 +44,7 @@ dependencies {
     api deps.external.rxjava2
     api project(":libraries:rib-android")
     testImplementation deps.test.junit
-    testImplementation deps.test.assertj
+    testImplementation deps.test.truth
     testImplementation deps.test.mockito
 }
 

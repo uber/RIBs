@@ -24,7 +24,7 @@ dependencies {
     compileOnly deps.androidx.annotations
     compile deps.external.rxjava2
     compile deps.test.junit
-    compile deps.test.assertj
+    compile deps.test.truth
     compile deps.test.mockito
 }
 
