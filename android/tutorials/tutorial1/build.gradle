@@ -57,7 +57,7 @@ dependencies {
     implementation deps.external.dagger
     implementation deps.external.rxbinding
     compileOnly deps.apt.javax
-    testImplementation project(":libraries:rib-test-utils")
+    testImplementation project(":libraries:rib-test")
 
     errorproneJavac deps.build.errorProneJavac
     errorprone deps.build.nullAway

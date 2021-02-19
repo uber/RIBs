@@ -62,5 +62,5 @@ dependencies {
     implementation deps.external.guavaAndroid
     compileOnly deps.apt.javax
     compileOnly deps.apt.autoValueAnnotations
-    testImplementation project(":libraries:rib-test-utils")
+    testImplementation project(":libraries:rib-test")
 }
