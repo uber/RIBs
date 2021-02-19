@@ -27,9 +27,9 @@ public final class RouterNavigatorFactory {
    * flagging, and other tactics to select a different implementation of the {@link
    * RouterNavigator}.
    *
-   * @param strategy {@link Strategy}
+   * @param strategy {@link Strategy} {@code null} for the default strategy.
    */
-  public RouterNavigatorFactory(final Strategy strategy) {
+  public RouterNavigatorFactory(@Nullable final Strategy strategy) {
     creationStrategy = strategy;
   }
 
@@ -45,7 +45,7 @@ public final class RouterNavigatorFactory {
     if (creationStrategy != null) {
       return creationStrategy.create(hostRouter);
     } else {
-      return new ModernRouterNavigator<>(hostRouter);
+      return new StackRouterNavigator<>(hostRouter);
     }
   }
 
