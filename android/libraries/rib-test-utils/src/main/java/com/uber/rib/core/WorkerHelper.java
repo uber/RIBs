@@ -16,7 +16,6 @@
 package com.uber.rib.core;
 
 import com.uber.rib.core.lifecycle.WorkerEvent;
-
 import io.reactivex.Observable;
 
 /** Helper to unit test {@link Worker} instances. */

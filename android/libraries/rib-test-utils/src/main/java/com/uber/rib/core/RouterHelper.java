@@ -15,16 +15,17 @@
  */
 package com.uber.rib.core;
 
-import org.mockito.InOrder;
-import org.mockito.verification.VerificationMode;
-
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+
+import org.mockito.InOrder;
+import org.mockito.verification.VerificationMode;
 
 /** The helper to test {@link Router}. */
 public final class RouterHelper {
@@ -58,7 +59,18 @@ public final class RouterHelper {
    */
   @SuppressWarnings("unchecked")
   public static void verifyAttached(Router router) {
-    verify(router).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+    verify(router).dispatchAttach(or(isNull(), isA(Bundle.class)), anyString());
+  }
+
+  /**
+   * Verifies that the {@link Router} was attached a certain number of times
+   *
+   * @param router the {@link Router}.
+   * @param times the number of times attached
+   */
+  @SuppressWarnings("unchecked")
+  public static void verifyAttached(Router router, int times) {
+    verify(router, times(times)).dispatchAttach(or(isNull(), isA(Bundle.class)), anyString());
   }
 
   /**
