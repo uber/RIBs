@@ -19,8 +19,6 @@ import static com.google.common.truth.Truth.assert_;
 import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
 
 import javax.tools.JavaFileObject;
-
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class InteractorTestGeneratorTest extends InteractorTestGeneratorProcessorTestBase {
@@ -40,7 +38,6 @@ public class InteractorTestGeneratorTest extends InteractorTestGeneratorProcesso
         .generatesSources(expectedTestCreator);
   }
 
-  @Ignore("Unignore once BasicInteractor is added to rib-base")
   @Test
   public void processor_withABasicInteractor_shouldGenerateTestHelper() {
     JavaFileObject expectedTestCreator =

@@ -49,17 +49,35 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
 
   private boolean isLoaded;
 
-  public Router(I interactor, C component) {
+  protected Router(I interactor, @Nullable C component) {
     this(component, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
   }
 
-  @SuppressWarnings("unchecked")
-  Router(
-      C component, I interactor, com.uber.rib.core.RibRefWatcher ribRefWatcher, Thread mainThread) {
+  protected Router(I interactor) {
+    this(null, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
+  }
+
+  protected Router(
+      @Nullable C component,
+      I interactor,
+      com.uber.rib.core.RibRefWatcher ribRefWatcher,
+      Thread mainThread) {
     this.interactor = interactor;
     this.ribRefWatcher = ribRefWatcher;
     this.mainThread = mainThread;
-    component.inject(interactor);
+    inject(component);
+    attachToInteractor();
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void inject(@Nullable C component) {
+    if (component != null) {
+      component.inject(interactor);
+    }
+  }
+
+  @SuppressWarnings("unchecked")
+  protected void attachToInteractor() {
     interactor.setRouter(this);
   }
 
@@ -241,7 +259,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
     }
   }
 
-  private static Thread getMainThread() {
+  static Thread getMainThread() {
     try {
       return Looper.getMainLooper().getThread();
     } catch (Exception e) {

@@ -15,10 +15,12 @@
  */
 package com.uber.rib.core;
 
+import static com.uber.rib.core.lifecycle.InteractorEvent.ACTIVE;
+import static com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE;
+
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
-
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction;
@@ -26,15 +28,9 @@ import com.uber.autodispose.lifecycle.LifecycleEndedException;
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
 import com.uber.autodispose.lifecycle.LifecycleScopes;
 import com.uber.rib.core.lifecycle.InteractorEvent;
-
-import javax.inject.Inject;
-
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-
-import static com.uber.rib.core.lifecycle.InteractorEvent.ACTIVE;
-import static com.uber.rib.core.lifecycle.InteractorEvent.INACTIVE;
+import javax.inject.Inject;
 
 /**
  * The base implementation for all {@link Interactor}s.
@@ -61,6 +57,12 @@ public abstract class Interactor<P, R extends Router>
   private final Relay<InteractorEvent> lifecycleRelay = behaviorRelay.toSerialized();
 
   @Nullable private R router;
+
+  public Interactor() {}
+
+  protected Interactor(P presenter) {
+    this.presenter = presenter;
+  }
 
   /** @return the router for this interactor. */
   public R getRouter() {
@@ -115,7 +117,6 @@ public abstract class Interactor<P, R extends Router>
     lifecycleRelay.accept(ACTIVE);
 
     if (getPresenter() instanceof Presenter) {
-      // Legacy support for lifecycled presenters.
       Presenter presenter = (Presenter) getPresenter();
       presenter.dispatchLoad();
     }
@@ -124,7 +125,6 @@ public abstract class Interactor<P, R extends Router>
 
   protected P dispatchDetach() {
     if (getPresenter() instanceof Presenter) {
-      // Legacy support for lifecycled presenters.
       Presenter presenter = (Presenter) getPresenter();
       presenter.dispatchUnload();
     }
@@ -157,6 +157,7 @@ public abstract class Interactor<P, R extends Router>
     return LIFECYCLE_MAP_FUNCTION;
   }
 
+  @SuppressWarnings("NullAway")
   @Override
   public InteractorEvent peekLifecycle() {
     return behaviorRelay.getValue();
