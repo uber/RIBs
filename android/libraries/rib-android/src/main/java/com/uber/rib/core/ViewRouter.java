@@ -35,6 +35,11 @@ public abstract class ViewRouter<
     this.view = view;
   }
 
+  protected ViewRouter(V view, I interactor) {
+    super(null, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
+    this.view = view;
+  }
+
   /** @return the router's view. */
   public V getView() {
     return view;
