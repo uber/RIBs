@@ -55,5 +55,5 @@ dependencies {
     implementation deps.external.rxbinding
     implementation deps.androidx.percent
     compileOnly deps.apt.javax
-    testImplementation project(":libraries:rib-test-utils")
+    testImplementation project(":libraries:rib-test")
 }

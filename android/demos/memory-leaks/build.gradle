@@ -70,7 +70,7 @@ dependencies {
     implementation deps.androidx.percent
     implementation deps.androidx.appcompat
     compileOnly deps.apt.javax
-    testImplementation project(":libraries:rib-test-utils")
+    testImplementation project(":libraries:rib-test")
     errorprone deps.build.errorProne
     errorprone deps.build.guavaJre
     errorproneJavac deps.build.errorProneJavac

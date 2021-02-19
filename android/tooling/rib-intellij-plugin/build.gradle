@@ -27,7 +27,7 @@ dependencies {
         transitive = false
     }
 
-    testCompile(project(":libraries:rib-test-utils")) {
+    testCompile(project(":libraries:rib-test")) {
         transitive = false
     }
     testCompile(project(":libraries:rib-compiler-app")) {

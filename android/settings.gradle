@@ -1,4 +1,4 @@
-include ':libraries:rib-test-utils'
+include ':libraries:rib-test'
 include ':libraries:rib-android'
 include ':libraries:rib-android-test'
 include ':libraries:rib-base'

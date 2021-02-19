@@ -15,12 +15,12 @@
  */
 package com.uber.rib.core;
 
-import androidx.annotation.Nullable;
-
 import static org.mockito.AdditionalMatchers.or;
 import static org.mockito.Matchers.isA;
 import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.verify;
+
+import androidx.annotation.Nullable;
 
 /** The helper to test {@link Interactor}. */
 public final class InteractorHelper {
@@ -28,7 +28,7 @@ public final class InteractorHelper {
   private InteractorHelper() {}
 
   /**
-   * Attaches the {@link Interactor} inside a given root ViewGroup using a mock router.
+   * Attaches the {@link Interactor} using a mock router.
    *
    * @param <P> the type of presenter.
    * @param <R> the type of router.
@@ -42,6 +42,16 @@ public final class InteractorHelper {
       Interactor<P, R> interactor, P presenter, R router, @Nullable Bundle savedInstanceState) {
     interactor.presenter = presenter;
     interactor.setRouter(router);
+    interactor.dispatchAttach(savedInstanceState);
+  }
+
+  /**
+   * Reattaches the {@link Interactor} without trying to set the router.
+   *
+   * @param interactor the {@link Interactor}.
+   * @param savedInstanceState the saved {@link Bundle}.
+   */
+  public static void reattach(Interactor interactor, @Nullable Bundle savedInstanceState) {
     interactor.dispatchAttach(savedInstanceState);
   }
 
