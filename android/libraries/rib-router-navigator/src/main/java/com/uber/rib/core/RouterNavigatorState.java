@@ -16,11 +16,11 @@
 package com.uber.rib.core;
 
 /**
- * Represents states for {@link ModernRouterNavigator}. Most often, this should be implemented using
+ * Represents states for {@link StackRouterNavigator}. Most often, this should be implemented using
  * an enum.
  */
 public interface RouterNavigatorState {
 
-  /** @return identifier for a {@link ModernRouterNavigator} state. */
+  /** @return identifier for a {@link StackRouterNavigator} state. */
   String name();
 }

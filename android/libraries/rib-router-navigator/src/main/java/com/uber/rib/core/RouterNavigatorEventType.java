@@ -13,21 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.uber.rib.core;
 
-apply plugin: "java-library"
-
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
-
-dependencies {
-    compile deps.external.checkerQual
-    compile project(':libraries:rib-base')
-    compileOnly deps.androidx.annotations
-    compileOnly deps.apt.androidApi
-
-    testCompile deps.test.junit
-    testCompile deps.test.mockito
-    testCompile deps.test.truth
+/**
+ * Enum consisting of event types that occur when {@link RouterNavigator} is used for transition.
+ */
+public enum RouterNavigatorEventType {
+  WILL_ATTACH_TO_HOST
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

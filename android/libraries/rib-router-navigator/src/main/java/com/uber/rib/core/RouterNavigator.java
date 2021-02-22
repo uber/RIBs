@@ -17,6 +17,9 @@ package com.uber.rib.core;
 
 import androidx.annotation.IntRange;
 import androidx.annotation.Nullable;
+import org.checkerframework.checker.guieffect.qual.PolyUIEffect;
+import org.checkerframework.checker.guieffect.qual.PolyUIType;
+import org.checkerframework.checker.guieffect.qual.UIEffect;
 
 /**
  * Simple utility for switching a child router based on a state.
@@ -25,68 +28,149 @@ import androidx.annotation.Nullable;
  */
 public interface RouterNavigator<StateT extends RouterNavigatorState> {
 
+  /** Determine how pushes will affect the stack */
+  enum Flag {
+    /** Push a new state to the top of the stack. */
+    DEFAULT,
+
+    /** Push a state that will not be retained when the next state is pushed. */
+    TRANSIENT,
+
+    /**
+     * Start looking at the stack from the top until we see the state that is being pushed. If it is
+     * found, remove all states that we traversed and transition the app to the found state. If the
+     * state is not found in the stack, create a new instance and transition to it pushing it on top
+     * of the stack.
+     */
+    CLEAR_TOP,
+
+    /**
+     * First create a new instance of the state and push it to the top of the stack. Then traverse
+     * down the stack and and delete any instances of the state being pushed.
+     */
+    SINGLE_TOP,
+
+    /**
+     * Search through the stack for the state and if found, move the state to the top but don’t
+     * change the stack otherwise. If the state doesn’t exist in the stack, create a new instance
+     * and push to the top.
+     */
+    REORDER_TO_TOP,
+
+    /** Clears the previous stack (no back stack) and pushes the state on to the top of the stack */
+    NEW_TASK
+  }
+
   /** Pop the current state and rewind to the previous state (if there is a previous state). */
   void popState();
 
   /**
-   * Switch to a new state - this will switch out children if the state if not the current active
+   * Switch to a new state - this will switch out children if the state is not the current active
    * state already.
    *
-   * <p>NOTE: This will retain the Riblet in memory until it is popped. To push transient, riblets,
-   * use {@link RouterNavigator#pushTransientState(RouterNavigatorState, AttachTransition,
-   * DetachTransition)}
+   * <p>NOTE: This will retain the Riblet in memory until it is popped or detached by a push with
+   * certain flags.
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param detachTransition method to clean up child router when removed.
    * @param <R> router type to detach.
    */
+  <R extends Router> void pushState(
+      StateT newState,
+      AttachTransition<R, StateT> attachTransition,
+      @Nullable DetachTransition<R, StateT> detachTransition);
+
+  /**
+   * Switch to a new state - this will switch out children if the state is not the current active
+   * state already. The transition will be controlled by the {@link StackRouterNavigator.Flag}
+   * provided.
+   *
+   * <p>NOTE: This will retain the Riblet in memory until it is popped or detached by a push with
+   * certain flags.
+   *
+   * @param newState to switch to.
+   * @param attachTransition method to attach child router.
+   * @param detachTransition method to clean up child router when removed.
+   * @param <R> router type to detach.
+   */
+  <R extends Router> void pushState(
+      StateT newState,
+      StackRouterNavigator.Flag flag,
+      AttachTransition<R, StateT> attachTransition,
+      @Nullable DetachTransition<R, StateT> detachTransition);
+
+  /**
+   * Switch to a new state - this will switch out children if the state is not the current active
+   * state already.
+   *
+   * <p>NOTE: This will retain the Riblet in memory until it is popped. To push transient, riblets,
+   * use {@link RouterNavigator#pushTransientState(RouterNavigatorState, AttachTransition,
+   * DetachTransition)}
+   *
+   * <p>Deprecated: Use pushState(newState, attachTransition, detachTransition)
+   *
+   * @param newState to switch to.
+   * @param attachTransition method to attach child router.
+   * @param detachTransition method to clean up child router when removed.
+   * @param <R> router type to detach.
+   */
+  @Deprecated
   <R extends Router> void pushRetainedState(
       final StateT newState,
       final AttachTransition<R, StateT> attachTransition,
       @Nullable final DetachTransition<R, StateT> detachTransition);
 
   /**
-   * Switch to a new state - this will switch out children if the state if not the current active
+   * Switch to a new state - this will switch out children if the state is not the current active
    * state already.
    *
    * <p>NOTE: This will retain the Riblet in memory until it is popped. To push transient, riblets,
    * use {@link RouterNavigator#pushTransientState(RouterNavigatorState, AttachTransition,
    * DetachTransition)}
    *
+   * <p>Deprecated: Use pushState(newState, attachTransition, null)
+   *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param <R> {@link Router} type.
    */
+  @Deprecated
   <R extends Router> void pushRetainedState(
       StateT newState, AttachTransition<R, StateT> attachTransition);
 
   /**
-   * Switch to a new transient state - this will switch out children if the state if not the current
+   * Switch to a new transient state - this will switch out children if the state is not the current
    * active state already.
    *
    * <p>NOTE: Transient states do not live in the back navigation stack.
+   *
+   * <p>Deprecated: Use pushState(newState, Flag.TRANSIENT, attachTransition, detachTransition)
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param detachTransition method to clean up child router when removed.
    * @param <R> router type to detach.
    */
+  @Deprecated
   <R extends Router> void pushTransientState(
       final StateT newState,
       final AttachTransition<R, StateT> attachTransition,
       @Nullable final DetachTransition<R, StateT> detachTransition);
 
   /**
-   * Switch to a new transient state - this will switch out children if the state if not the current
+   * Switch to a new transient state - this will switch out children if the state is not the current
    * active state already.
    *
    * <p>NOTE: Transient states do not live in the back navigation stack.
+   *
+   * <p>Deprecated: Use pushState(newState, Flag.TRANSIENT, attachTransition, null)
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param <R> {@link Router} type.
    */
+  @Deprecated
   <R extends Router> void pushTransientState(
       StateT newState, AttachTransition<R, StateT> attachTransition);
 
@@ -135,13 +219,14 @@ public interface RouterNavigator<StateT extends RouterNavigatorState> {
     RouterT buildRouter();
 
     /**
-     * Prepares the router for a state transition. {@link ModernRouterNavigator} will handling
+     * Prepares the router for a state transition. {@link StackRouterNavigator} will handling
      * attaching the router, but consumers of this should handle adding any views.
      *
      * @param router {@link RouterT} that is being attached.
      * @param previousState state the navigator is transition from (if any).
      * @param newState state the navigator is transitioning to.
      */
+    @UIEffect
     void willAttachToHost(
         final RouterT router, @Nullable StateT previousState, StateT newState, boolean isPush);
   }
@@ -160,7 +245,7 @@ public interface RouterNavigator<StateT extends RouterNavigatorState> {
         RouterT router, StateT previousState, @Nullable StateT newState, boolean isPush) {}
 
     /**
-     * Notifies the consumer that the {@link ModernRouterNavigator} has detached the supplied {@link
+     * Notifies the consumer that the {@link StackRouterNavigator} has detached the supplied {@link
      * Router}. Consumers can complete any post detachment behavior here.
      *
      * @param router {@link Router}
@@ -175,16 +260,18 @@ public interface RouterNavigator<StateT extends RouterNavigatorState> {
    * @param <RouterT> router type to detach.
    * @param <StateT> state type.
    */
+  @PolyUIType
   interface DetachTransition<RouterT extends Router, StateT extends RouterNavigatorState> {
 
     /**
-     * Notifies consumer that {@link ModernRouterNavigator} is going to detach this router.
-     * Consumers should remove any views and perform any required cleanup.
+     * Notifies consumer that {@link StackRouterNavigator} is going to detach this router. Consumers
+     * should remove any views and perform any required cleanup.
      *
      * @param router being removed.
      * @param previousState state the navigator is transitioning out of.
      * @param newState state the navigator is transition in to (if any).
      */
+    @PolyUIEffect
     void willDetachFromHost(
         RouterT router, StateT previousState, @Nullable StateT newState, boolean isPush);
   }

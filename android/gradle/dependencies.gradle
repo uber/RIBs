@@ -81,6 +81,7 @@ def test = [
 ]
 
 def external = [
+    checkerQual: "org.checkerframework:checker-qual:2.5.1",
     dagger: "com.google.dagger:dagger:${versions.dagger}",
     guavaAndroid: "com.google.guava:guava:27.1-android",
     rxjava2: "io.reactivex.rxjava2:rxjava:2.2.8",
