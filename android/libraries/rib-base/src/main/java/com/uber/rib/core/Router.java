@@ -31,9 +31,8 @@ import static com.google.common.base.Preconditions.*;
  * Responsible for handling the addition and removal of children routers.
  *
  * @param <I> type of interactor this router routes.
- * @param <C> type of dependency held by this router.
  */
-public class Router<I extends com.uber.rib.core.Interactor, C extends InteractorBaseComponent> {
+public class Router<I extends Interactor> {
 
   @VisibleForTesting static final String KEY_CHILD_ROUTERS = "Router.childRouters";
   @VisibleForTesting static final String KEY_INTERACTOR = "Router.interactor";
@@ -49,7 +48,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
 
   private boolean isLoaded;
 
-  protected Router(I interactor, @Nullable C component) {
+  protected Router(I interactor, @Nullable InteractorBaseComponent component) {
     this(component, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
   }
 
@@ -58,7 +57,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
   }
 
   protected Router(
-      @Nullable C component,
+      @Nullable InteractorBaseComponent component,
       I interactor,
       com.uber.rib.core.RibRefWatcher ribRefWatcher,
       Thread mainThread) {
@@ -70,7 +69,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
   }
 
   @SuppressWarnings("unchecked")
-  protected void inject(@Nullable C component) {
+  protected void inject(@Nullable InteractorBaseComponent component) {
     if (component != null) {
       component.inject(interactor);
     }
@@ -123,7 +122,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    * @param childRouter the {@link Router} to be attached.
    */
   @MainThread
-  protected void attachChild(Router<?, ?> childRouter) {
+  protected void attachChild(Router<?> childRouter) {
     attachChild(childRouter, childRouter.getClass().getName());
   }
 
@@ -134,7 +133,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    * @param tag an identifier to namespace saved instance state {@link Bundle} objects.
    */
   @MainThread
-  protected void attachChild(Router<?, ?> childRouter, String tag) {
+  protected void attachChild(Router<?> childRouter, String tag) {
     for (Router child : children) {
       if (tag.equals(child.tag)) {
         Rib.getConfiguration()

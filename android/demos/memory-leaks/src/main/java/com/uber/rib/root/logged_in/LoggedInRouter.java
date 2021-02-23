@@ -21,7 +21,7 @@ import com.uber.rib.core.Router;
 /**
  * Adds and removes children of {@link LoggedInBuilder.LoggedInScope}.
  */
-public class LoggedInRouter extends Router<LoggedInInteractor, LoggedInBuilder.Component> {
+public class LoggedInRouter extends Router<LoggedInInteractor> {
   LoggedInRouter(
       LoggedInInteractor interactor,
       LoggedInBuilder.Component component) {

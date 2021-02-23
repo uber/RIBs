@@ -28,7 +28,7 @@ public class RouterTest {
   public void didLoad_shouldBeCalledAfterInstantiation() {
     final AtomicBoolean didLoad = new AtomicBoolean(false);
     Router router =
-        new Router<Interactor, InteractorComponent>(
+        new Router<Interactor>(
             mock(InteractorComponent.class),
             mock(Interactor.class),
             mock(RibRefWatcher.class),

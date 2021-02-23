@@ -20,7 +20,7 @@ package com.uber.rib.core;
  *
  * @param <I> type of interactor.
  */
-public abstract class BasicRouter<I extends Interactor> extends Router<I, InteractorBaseComponent> {
+public abstract class BasicRouter<I extends Interactor> extends Router<I> {
 
   public BasicRouter(I interactor) {
     super(interactor);

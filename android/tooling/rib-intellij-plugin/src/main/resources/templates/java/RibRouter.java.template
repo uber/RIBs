@@ -11,7 +11,7 @@ import com.uber.rib.core.Router;
  * TODO describe the possible child configurations of this scope.
  */
 public class ${rib_name}Router
-    extends Router<${rib_name}Interactor, ${rib_name}Builder.Component> {
+    extends Router<${rib_name}Interactor> {
 
   public ${rib_name}Router(
       ${rib_name}Interactor interactor,

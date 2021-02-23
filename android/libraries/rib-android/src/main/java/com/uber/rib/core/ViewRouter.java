@@ -26,7 +26,7 @@ import android.view.View;
  */
 public abstract class ViewRouter<
         V extends View, I extends Interactor, C extends InteractorBaseComponent>
-    extends Router<I, C> {
+    extends Router<I> {
 
   private final V view;
 

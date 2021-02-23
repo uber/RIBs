@@ -31,7 +31,7 @@ public class StackRouterNavigator<StateT extends RouterNavigatorState>
 
   private final ArrayDeque<RouterAndState<StateT>> navigationStack = new ArrayDeque<>();
 
-  private final Router<?, ?> hostRouter;
+  private final Router<?> hostRouter;
   private final String hostRouterName;
 
   @Nullable private RouterAndState<StateT> currentTransientRouterAndState;
@@ -41,7 +41,7 @@ public class StackRouterNavigator<StateT extends RouterNavigatorState>
    *
    * @param hostRouter to add and remove children to.
    */
-  public StackRouterNavigator(Router<?, ?> hostRouter) {
+  public StackRouterNavigator(Router<?> hostRouter) {
     this.hostRouter = hostRouter;
     this.hostRouterName = hostRouter.getClass().getSimpleName();
     log(
