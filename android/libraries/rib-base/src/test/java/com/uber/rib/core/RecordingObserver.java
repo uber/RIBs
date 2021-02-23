@@ -15,17 +15,15 @@
  */
 package com.uber.rib.core;
 
-import androidx.annotation.NonNull;
+import static com.google.common.truth.Truth.assertThat;
 
+import androidx.annotation.NonNull;
+import io.reactivex.Observer;
+import io.reactivex.disposables.Disposable;
 import java.util.NoSuchElementException;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
-
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-
-import static com.google.common.truth.Truth.assertThat;
 
 /**
  * RecordingObserver implementation from RxBinding.
