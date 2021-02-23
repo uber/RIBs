@@ -23,4 +23,4 @@ import java.lang.annotation.Target;
 /** The annotation to mark that some object is an Builder. */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.CLASS)
-public @interface RibBuilder { }
+public @interface RibBuilder {}

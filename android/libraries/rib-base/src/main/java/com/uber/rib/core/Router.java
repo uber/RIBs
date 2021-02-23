@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.os.Looper;
 import androidx.annotation.CallSuper;
 import androidx.annotation.MainThread;
@@ -24,8 +26,6 @@ import androidx.annotation.VisibleForTesting;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.google.common.base.Preconditions.*;
 
 /**
  * Responsible for handling the addition and removal of children routers.
@@ -147,6 +147,7 @@ public class Router<I extends Interactor> {
     children.add(childRouter);
     ribRefWatcher.logBreadcrumb(
         "ATTACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
+    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, childRouter, this);
     Bundle childBundle = null;
     if (this.savedInstanceState != null) {
       Bundle previousChildren =
@@ -168,7 +169,7 @@ public class Router<I extends Interactor> {
    */
   @MainThread
   protected void detachChild(Router childRouter) {
-    children.remove(childRouter);
+    boolean isChildRemoved = children.remove(childRouter);
 
     Interactor interactor = childRouter.getInteractor();
     ribRefWatcher.watchDeletedObject(interactor);
@@ -181,6 +182,10 @@ public class Router<I extends Interactor> {
     }
 
     childRouter.dispatchDetach();
+
+    if (isChildRemoved) {
+      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, childRouter, this);
+    }
   }
 
   @CallSuper
@@ -189,6 +194,7 @@ public class Router<I extends Interactor> {
   }
 
   @CallSuper
+  @Initializer
   protected void dispatchAttach(@Nullable final Bundle savedInstanceState, String tag) {
     checkForMainThread();
 
