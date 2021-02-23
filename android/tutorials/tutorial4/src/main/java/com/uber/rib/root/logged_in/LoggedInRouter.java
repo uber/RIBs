@@ -27,7 +27,7 @@ import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeBuilder;
  * Adds and removes children of {@link LoggedInBuilder.LoggedInScope}.
  */
 public class LoggedInRouter
-    extends Router<LoggedInInteractor, LoggedInBuilder.Component> {
+    extends Router<LoggedInInteractor> {
 
   private final ViewGroup parentView;
   private final OffGameBuilder offGameBuilder;

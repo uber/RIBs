@@ -28,8 +28,8 @@ public interface Worker {
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
-  void onStart(WorkerScopeProvider lifecycle);
+  default void onStart(WorkerScopeProvider lifecycle) {}
 
   /** Called when the worker is stopped. */
-  void onStop();
+  default void onStop() {}
 }

@@ -30,7 +30,7 @@ public class Bundle {
   /**
    * Creates a new Uber bundle that wraps an Android bundle.
    *
-   * @param androidBundle Andorid bundle to convert.
+   * @param androidBundle Android bundle to convert.
    */
   public Bundle(@Nullable android.os.Bundle androidBundle) {
     if (androidBundle == null) {
@@ -140,6 +140,29 @@ public class Bundle {
    */
   public void putString(String key, @Nullable String value) {
     androidBundle.putString(key, value);
+  }
+
+  /**
+   * Inserts an Int value into the mapping of this Bundle, replacing any existing value for the
+   * given key.
+   *
+   * @param key to insert.
+   * @param value to insert.
+   */
+  public void putInt(String key, int value) {
+    androidBundle.putInt(key, value);
+  }
+
+  /**
+   * Returns the value associated with the given key, or defaultValue if no mapping of the desired
+   * type exists for the given key or if a null value is explicitly associated with the given key.
+   *
+   * @param key to fetch.
+   * @return the int value associated with the given key or defaultValue if there is no int value in
+   *     the bundle.
+   */
+  public int getInt(String key, int defaultValue) {
+    return androidBundle.getInt(key, defaultValue);
   }
 
   android.os.Bundle getWrappedBundle() {

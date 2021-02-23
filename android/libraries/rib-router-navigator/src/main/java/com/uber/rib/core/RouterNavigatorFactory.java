@@ -41,7 +41,7 @@ public final class RouterNavigatorFactory {
    * @return A new {@link RouterNavigator}
    */
   public <StateT extends RouterNavigatorState> RouterNavigator<StateT> create(
-      final Router<?, ?> hostRouter) {
+      final Router<?> hostRouter) {
     if (creationStrategy != null) {
       return creationStrategy.create(hostRouter);
     } else {
@@ -59,6 +59,6 @@ public final class RouterNavigatorFactory {
      * @return A new {@link RouterNavigator}
      */
     <StateT extends RouterNavigatorState> RouterNavigator<StateT> create(
-        final Router<?, ?> hostRouter);
+        final Router<?> hostRouter);
   }
 }

@@ -15,20 +15,7 @@
  */
 package com.uber.rib.core;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.uber.autodispose.lifecycle.LifecycleEndedException;
-import com.uber.rib.core.lifecycle.InteractorEvent;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
 import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
@@ -36,6 +23,15 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.uber.autodispose.lifecycle.LifecycleEndedException;
+import com.uber.rib.core.lifecycle.InteractorEvent;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 
 public class InteractorAndRouterTest {
 
@@ -80,41 +76,6 @@ public class InteractorAndRouterTest {
     verify(childInteractor).dispatchDetach();
   }
 
-  @Ignore
-  @Test
-  public void saveInstanceState_whenAttached_shouldSaveChildControllerState() {
-    // Given.
-    TestRouterA childRouter =
-        new TestRouterA(
-            new TestInteractorA(),
-            new InteractorComponent<TestPresenter, TestInteractorA>() {
-              @Override
-              public void inject(TestInteractorA interactor) {}
-
-              @Override
-              public TestPresenter presenter() {
-                return new TestPresenter();
-              }
-            });
-    router.dispatchAttach(null);
-    router.attachChild(childRouter);
-
-    // When.
-    Bundle outState = new Bundle();
-    router.saveInstanceState(outState);
-
-    // Then.
-    verify(childInteractor).onSaveInstanceState(any(Bundle.class));
-
-    Bundle childrenBundle = outState.getBundleExtra(Router.KEY_CHILD_ROUTERS);
-    assertThat(childrenBundle).isNotNull();
-    Bundle childBundle = childrenBundle.getBundleExtra(childRouter.getClass().getName());
-    assertThat(childBundle).isNotNull();
-
-    Bundle interactorBundle = outState.getBundleExtra(Router.KEY_INTERACTOR);
-    assertThat(interactorBundle.getString(TEST_KEY)).isEqualTo(TEST_VALUE);
-  }
-
   @Test
   public void correspondingEvents_whenActive_shouldReturnInactive() throws Exception {
     assertThat(interactor.correspondingEvents().apply(InteractorEvent.ACTIVE))
@@ -124,35 +85,6 @@ public class InteractorAndRouterTest {
   @Test(expected = LifecycleEndedException.class)
   public void correspondingEvents_whenInactive_shouldCrash() throws Exception {
     interactor.correspondingEvents().apply(InteractorEvent.INACTIVE);
-  }
-
-  @Ignore
-  @Test
-  public void childRouter_whenDetachedAfterReattached_shouldClearOutChildsSavedInstanceState() {
-    // Given.
-    TestRouterA childRouter =
-        new TestRouterA(
-            new TestInteractorA(),
-            new InteractorComponent<TestPresenter, TestInteractorA>() {
-              @Override
-              public void inject(TestInteractorA interactor) {}
-
-              @Override
-              public TestPresenter presenter() {
-                return new TestPresenter();
-              }
-            });
-    router.dispatchAttach(null);
-    router.attachChild(childRouter);
-
-    // When.
-    Bundle outState = new Bundle();
-    router.saveInstanceState(outState);
-    router.detachChild(childRouter);
-    router.attachChild(childRouter);
-
-    // Then.
-    assertThat(childRouter.savedInstanceState).isNull();
   }
 
   @Test
@@ -266,7 +198,7 @@ public class InteractorAndRouterTest {
 
     TestRouterB rootRouter = new TestRouterB(component, new TestInteractorB(), ribRefWatcher);
 
-    Router<TestInteractorB, ?> child = addTwoNestedChildInteractors();
+    Router<TestInteractorB> child = addTwoNestedChildInteractors();
     verify(ribRefWatcher, never()).watchDeletedObject(anyObject());
 
     // Action: Detach all child interactors.
@@ -276,7 +208,7 @@ public class InteractorAndRouterTest {
     verify(ribRefWatcher, times(2)).watchDeletedObject(anyObject());
   }
 
-  private Router<TestInteractorB, ?> addTwoNestedChildInteractors() {
+  private Router<TestInteractorB> addTwoNestedChildInteractors() {
     InteractorComponent<TestPresenter, TestInteractorB> component =
         new InteractorComponent<TestPresenter, TestInteractorB>() {
           @Override
@@ -299,10 +231,7 @@ public class InteractorAndRouterTest {
     return childRouter1;
   }
 
-  private static class TestInteractor
-      extends Interactor<
-          TestPresenter,
-          Router<TestInteractor, InteractorComponent<TestPresenter, TestInteractor>>> {
+  private static class TestInteractor extends Interactor<TestPresenter, Router<TestInteractor>> {
 
     @NonNull private final com.uber.rib.core.Interactor mChildInteractor;
 
@@ -330,8 +259,7 @@ public class InteractorAndRouterTest {
     }
   }
 
-  private static class TestRouter
-      extends Router<TestInteractor, InteractorComponent<TestPresenter, TestInteractor>> {
+  private static class TestRouter extends Router<TestInteractor> {
 
     TestRouter(
         @NonNull TestInteractor interactor,
@@ -343,8 +271,7 @@ public class InteractorAndRouterTest {
 
   private static class TestPresenter extends com.uber.rib.core.Presenter {}
 
-  private static class TestRouterA
-      extends Router<TestInteractorA, InteractorComponent<TestPresenter, TestInteractorA>> {
+  private static class TestRouterA extends Router<TestInteractorA> {
 
     @Nullable private Bundle savedInstanceState;
 
@@ -364,17 +291,11 @@ public class InteractorAndRouterTest {
 
   private static class TestInteractorA
       extends com.uber.rib.core.Interactor<
-          TestPresenter,
-          com.uber.rib.core.Router<
-              TestInteractorA, InteractorComponent<TestPresenter, TestInteractorA>>> {}
+          TestPresenter, com.uber.rib.core.Router<TestInteractorA>> {}
 
-  private static class TestInteractorB
-      extends Interactor<
-          TestPresenter,
-          Router<TestInteractorB, InteractorComponent<TestPresenter, TestInteractorB>>> {}
+  private static class TestInteractorB extends Interactor<TestPresenter, Router<TestInteractorB>> {}
 
-  private static class TestRouterB
-      extends Router<TestInteractorB, InteractorComponent<TestPresenter, TestInteractorB>> {
+  private static class TestRouterB extends Router<TestInteractorB> {
 
     TestRouterB(
         @NonNull TestInteractorB interactor,
@@ -393,12 +314,9 @@ public class InteractorAndRouterTest {
   }
 
   private static class TestChildInteractor
-      extends Interactor<
-          TestPresenter,
-          Router<TestChildInteractor, InteractorComponent<TestPresenter, TestChildInteractor>>> {}
+      extends Interactor<TestPresenter, Router<TestChildInteractor>> {}
 
-  private static class TestChildRouter
-      extends Router<TestChildInteractor, InteractorComponent<TestPresenter, TestChildInteractor>> {
+  private static class TestChildRouter extends Router<TestChildInteractor> {
 
     TestChildRouter(
         @NonNull TestChildInteractor interactor,

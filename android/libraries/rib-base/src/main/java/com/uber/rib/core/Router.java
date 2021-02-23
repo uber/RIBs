@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core;
 
+import static com.google.common.base.Preconditions.checkNotNull;
+
 import android.os.Looper;
 import androidx.annotation.CallSuper;
 import androidx.annotation.MainThread;
@@ -25,15 +27,12 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import static com.google.common.base.Preconditions.*;
-
 /**
  * Responsible for handling the addition and removal of children routers.
  *
  * @param <I> type of interactor this router routes.
- * @param <C> type of dependency held by this router.
  */
-public class Router<I extends com.uber.rib.core.Interactor, C extends InteractorBaseComponent> {
+public class Router<I extends Interactor> {
 
   @VisibleForTesting static final String KEY_CHILD_ROUTERS = "Router.childRouters";
   @VisibleForTesting static final String KEY_INTERACTOR = "Router.interactor";
@@ -49,7 +48,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
 
   private boolean isLoaded;
 
-  protected Router(I interactor, @Nullable C component) {
+  protected Router(I interactor, @Nullable InteractorBaseComponent component) {
     this(component, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
   }
 
@@ -58,7 +57,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
   }
 
   protected Router(
-      @Nullable C component,
+      @Nullable InteractorBaseComponent component,
       I interactor,
       com.uber.rib.core.RibRefWatcher ribRefWatcher,
       Thread mainThread) {
@@ -70,7 +69,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
   }
 
   @SuppressWarnings("unchecked")
-  protected void inject(@Nullable C component) {
+  protected void inject(@Nullable InteractorBaseComponent component) {
     if (component != null) {
       component.inject(interactor);
     }
@@ -123,7 +122,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    * @param childRouter the {@link Router} to be attached.
    */
   @MainThread
-  protected void attachChild(Router<?, ?> childRouter) {
+  protected void attachChild(Router<?> childRouter) {
     attachChild(childRouter, childRouter.getClass().getName());
   }
 
@@ -134,7 +133,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    * @param tag an identifier to namespace saved instance state {@link Bundle} objects.
    */
   @MainThread
-  protected void attachChild(Router<?, ?> childRouter, String tag) {
+  protected void attachChild(Router<?> childRouter, String tag) {
     for (Router child : children) {
       if (tag.equals(child.tag)) {
         Rib.getConfiguration()
@@ -148,6 +147,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
     children.add(childRouter);
     ribRefWatcher.logBreadcrumb(
         "ATTACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
+    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, childRouter, this);
     Bundle childBundle = null;
     if (this.savedInstanceState != null) {
       Bundle previousChildren =
@@ -169,7 +169,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
    */
   @MainThread
   protected void detachChild(Router childRouter) {
-    children.remove(childRouter);
+    boolean isChildRemoved = children.remove(childRouter);
 
     Interactor interactor = childRouter.getInteractor();
     ribRefWatcher.watchDeletedObject(interactor);
@@ -182,6 +182,10 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
     }
 
     childRouter.dispatchDetach();
+
+    if (isChildRemoved) {
+      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, childRouter, this);
+    }
   }
 
   @CallSuper
@@ -190,6 +194,7 @@ public class Router<I extends com.uber.rib.core.Interactor, C extends Interactor
   }
 
   @CallSuper
+  @Initializer
   protected void dispatchAttach(@Nullable final Bundle savedInstanceState, String tag) {
     checkForMainThread();
 

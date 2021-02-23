@@ -42,6 +42,7 @@ dependencies {
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
+    compileOnly deps.external.checkerQual
 
     testCompile deps.androidx.annotations
     testCompile deps.apt.androidApi

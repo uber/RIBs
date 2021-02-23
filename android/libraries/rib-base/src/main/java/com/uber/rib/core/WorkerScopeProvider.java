@@ -17,9 +17,7 @@ package com.uber.rib.core;
 
 import com.uber.autodispose.ScopeProvider;
 import com.uber.rib.core.lifecycle.WorkerEvent;
-
 import io.reactivex.CompletableSource;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
 
 /** {@link ScopeProvider} for {@link Worker} instances. */

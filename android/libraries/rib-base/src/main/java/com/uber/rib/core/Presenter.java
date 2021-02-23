@@ -15,20 +15,17 @@
  */
 package com.uber.rib.core;
 
-import androidx.annotation.CallSuper;
+import static com.uber.rib.core.lifecycle.PresenterEvent.LOADED;
+import static com.uber.rib.core.lifecycle.PresenterEvent.UNLOADED;
 
+import androidx.annotation.CallSuper;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;
 import com.uber.autodispose.ScopeProvider;
 import com.uber.rib.core.lifecycle.PresenterEvent;
-
-import io.reactivex.Completable;
 import io.reactivex.CompletableSource;
-import io.reactivex.Maybe;
 import io.reactivex.Observable;
-
-import static com.uber.rib.core.lifecycle.PresenterEvent.LOADED;
-import static com.uber.rib.core.lifecycle.PresenterEvent.UNLOADED;
+import org.checkerframework.checker.guieffect.qual.UIEffect;
 
 /** Contains presentation logic. This class exists mainly for legacy reasons. In the past
  * we believed it was useful to have a class between interactors and views to facilitate model
@@ -69,6 +66,7 @@ public abstract class Presenter implements ScopeProvider {
    * Tells the presenter that it will be destroyed. Presenter subclasses should perform any required
    * cleanup here.
    */
+  @UIEffect
   @CallSuper
   protected void willUnload() {}
 

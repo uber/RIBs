@@ -15,12 +15,11 @@
  */
 package com.uber.rib.core;
 
-import org.junit.Test;
-
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import static com.google.common.truth.Truth.assertThat;
 import static org.mockito.Mockito.mock;
+
+import java.util.concurrent.atomic.AtomicBoolean;
+import org.junit.Test;
 
 public class RouterTest {
 
@@ -28,7 +27,7 @@ public class RouterTest {
   public void didLoad_shouldBeCalledAfterInstantiation() {
     final AtomicBoolean didLoad = new AtomicBoolean(false);
     Router router =
-        new Router<Interactor, InteractorComponent>(
+        new Router<Interactor>(
             mock(InteractorComponent.class),
             mock(Interactor.class),
             mock(RibRefWatcher.class),
