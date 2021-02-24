@@ -49,6 +49,9 @@ dependencies {
     testCompile deps.test.junit
     testCompile deps.test.mockito
     testCompile deps.test.truth
+    testCompile(project(":libraries:rib-test")) {
+        transitive = false
+    }
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

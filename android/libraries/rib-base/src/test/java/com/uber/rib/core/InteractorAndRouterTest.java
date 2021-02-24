@@ -242,13 +242,8 @@ public class InteractorAndRouterTest {
     @Override
     protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
       super.didBecomeActive(savedInstanceState);
-
-      com.uber.rib.core.Router router =
-          new Router<>(
-              mock(InteractorComponent.class),
-              mChildInteractor,
-              RibRefWatcher.getInstance(),
-              Thread.currentThread());
+      Router router =
+          new FakeRouter<>(mChildInteractor, RibRefWatcher.getInstance(), Thread.currentThread());
       getRouter().attachChild(router);
     }
 
