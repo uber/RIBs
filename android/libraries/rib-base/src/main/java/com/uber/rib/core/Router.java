@@ -176,8 +176,7 @@ public abstract class Router<I extends Interactor> {
     ribRefWatcher.logBreadcrumb(
         "DETACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     if (savedInstanceState != null) {
-      Bundle childrenBundles =
-          checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
+      Bundle childrenBundles = checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
       childrenBundles.putBundleExtra(childRouter.tag, null);
     }
 
