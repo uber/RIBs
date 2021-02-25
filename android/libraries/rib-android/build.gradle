@@ -35,6 +35,12 @@ android {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
     }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
 }
 
 dependencies {
@@ -45,6 +51,9 @@ dependencies {
     implementation deps.androidx.annotations
     implementation deps.androidx.appcompat
     implementation deps.external.guavaAndroid
+    testImplementation deps.external.roboelectricBase
+    testImplementation deps.androidx.appcompat
+    testImplementation project(":libraries:rib-test")
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

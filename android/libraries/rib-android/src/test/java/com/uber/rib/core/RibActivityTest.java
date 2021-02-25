@@ -25,6 +25,7 @@ import android.widget.FrameLayout;
 
 import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.lifecycle.LifecycleEndedException;
+import com.uber.rib.android.R;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
 
@@ -220,6 +221,12 @@ public class RibActivityTest {
   }
 
   private static class EmptyActivity extends RibActivity {
+
+    @Override
+    protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
+      setTheme(R.style.Theme_AppCompat);
+      super.onCreate(savedInstanceState);
+    }
 
     @NonNull
     @Override
