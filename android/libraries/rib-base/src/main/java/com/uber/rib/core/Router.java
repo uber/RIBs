@@ -32,7 +32,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *
  * @param <I> type of interactor this router routes.
  */
-public class Router<I extends Interactor> {
+public abstract class Router<I extends Interactor> {
 
   @VisibleForTesting static final String KEY_CHILD_ROUTERS = "Router.childRouters";
   @VisibleForTesting static final String KEY_INTERACTOR = "Router.interactor";
@@ -176,8 +176,7 @@ public class Router<I extends Interactor> {
     ribRefWatcher.logBreadcrumb(
         "DETACHED", childRouter.getClass().getSimpleName(), this.getClass().getSimpleName());
     if (savedInstanceState != null) {
-      Bundle childrenBundles =
-          checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
+      Bundle childrenBundles = checkNotNull(savedInstanceState.getBundleExtra(KEY_CHILD_ROUTERS));
       childrenBundles.putBundleExtra(childRouter.tag, null);
     }
 
