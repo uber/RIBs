@@ -44,8 +44,8 @@ def apt = [
 ]
 
 def build = [
-    buildToolsVersion: '28.0.3',
-    compileSdkVersion: 28,
+    buildToolsVersion: '30.0.2',
+    compileSdkVersion: 30,
     gradlePluginsUrl : "https://plugins.gradle.org/m2/",
     ci: 'true' == System.getenv('CI'),
     minSdkVersion: 16,
