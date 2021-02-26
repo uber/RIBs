@@ -64,8 +64,7 @@ public abstract class RibActivity extends AppCompatActivity
         throw new UnsupportedOperationException("Binding to " + lastEvent + " not yet implemented");
       };
 
-  @SuppressWarnings("NullableProblems")
-  private ViewRouter<?, ?, ?> router;
+  private ViewRouter<?, ?> router;
 
   private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
       BehaviorRelay.create();

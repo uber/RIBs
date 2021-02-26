@@ -22,7 +22,7 @@ import com.uber.rib.core.ViewRouter;
  * Adds and removes children of {@link LoggedOutBuilder.LoggedOutScope}.
  */
 public class LoggedOutRouter extends
-    ViewRouter<LoggedOutView, LoggedOutInteractor, LoggedOutBuilder.Component> {
+    ViewRouter<LoggedOutView, LoggedOutInteractor> {
 
   public LoggedOutRouter(
       LoggedOutView view,

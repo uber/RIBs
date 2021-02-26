@@ -23,7 +23,7 @@ import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutRouter;
 
 /** Adds and removes children of {@link RootBuilder.RootScope}. */
-public class RootRouter extends ViewRouter<RootView, RootInteractor, RootBuilder.Component> {
+public class RootRouter extends ViewRouter<RootView, RootInteractor> {
 
   private final LoggedOutBuilder loggedOutBuilder;
 

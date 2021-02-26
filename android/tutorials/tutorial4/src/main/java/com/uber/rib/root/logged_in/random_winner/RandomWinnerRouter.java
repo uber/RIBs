@@ -8,7 +8,7 @@ import com.uber.rib.core.ViewRouter;
  * TODO describe the possible child configurations of this scope.
  */
 public class RandomWinnerRouter extends
-        ViewRouter<RandomWinnerView, RandomWinnerInteractor, RandomWinnerBuilder.Component> {
+        ViewRouter<RandomWinnerView, RandomWinnerInteractor> {
 
     public RandomWinnerRouter(
             RandomWinnerView view,
