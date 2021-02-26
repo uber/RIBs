@@ -6,12 +6,18 @@ jobs:
         components:
           - tools                             # Tools
           - platform-tools                    # Platform tools
-          - build-tools-28.0.3                # Build tools version
+          - build-tools-30.0.2                # Build tools version
           - android-28                        # Target SDK version
+          - android-30                        # Compile SDK version
           - extra-android-m2repository        # Support repo
           - sys-img-armeabi-v7a-android-18    # Emulator
 
       jdk: oraclejdk8
+
+      before_install:
+        - yes | sdkmanager "platforms;android-28"
+        - yes | sdkmanager "platforms;android-30"
+        - yes | sdkmanager "build-tools;30.0.2"
 
       script:
         - cd android
