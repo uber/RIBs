@@ -19,7 +19,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-
 import java.util.Locale;
 
 /** Callback events that can be emitted by Activities. */
@@ -75,6 +74,30 @@ public class ActivityCallbackEvent implements ActivityEvent {
     return new ActivityCallbackEvent.SaveInstanceState(outState);
   }
 
+  /**
+   * Creates an event for {@link Activity#onTrimMemory(int)}
+   *
+   * @param trimMemoryType that is passed by the activity callback
+   * @return the created {@link TrimMemory}
+   */
+  public static TrimMemory createTrimMemoryEvent(int trimMemoryType) {
+    return new TrimMemory(trimMemoryType);
+  }
+
+  public static PictureInPictureMode createPictureInPictureMode(boolean isInPictureInPictureMode) {
+    return new PictureInPictureMode(isInPictureInPictureMode);
+  }
+
+  /**
+   * Creates an event for onNewIntent.
+   *
+   * @param intent is the new intent received
+   * @return the created {@link NewIntent}.
+   */
+  public static NewIntent createNewIntent(Intent intent) {
+    return new NewIntent(intent);
+  }
+
   /** @return this event's type. */
   @Override
   public Type getType() {
@@ -89,7 +112,54 @@ public class ActivityCallbackEvent implements ActivityEvent {
   public enum Type implements BaseType {
     LOW_MEMORY,
     ACTIVITY_RESULT,
-    SAVE_INSTANCE_STATE
+    SAVE_INSTANCE_STATE,
+    TRIM_MEMORY,
+    PICTURE_IN_PICTURE_MODE,
+    NEW_INTENT
+  }
+
+  /** An {@link ActivityCallbackEvent} that represents {@link Activity#onNewIntent(Intent)} event */
+  public static class NewIntent extends ActivityCallbackEvent {
+
+    private final Intent intent;
+
+    private NewIntent(Intent intent) {
+      super(Type.NEW_INTENT);
+      this.intent = intent;
+    }
+
+    public Intent getIntent() {
+      return intent;
+    }
+  }
+
+  public static class PictureInPictureMode extends ActivityCallbackEvent {
+
+    private final boolean isInPictureInPictureMode;
+
+    private PictureInPictureMode(boolean isInPictureInPictureMode) {
+      super(Type.PICTURE_IN_PICTURE_MODE);
+      this.isInPictureInPictureMode = isInPictureInPictureMode;
+    }
+
+    public boolean isInPictureInPictureMode() {
+      return isInPictureInPictureMode;
+    }
+  }
+
+  /** An {@link ActivityCallbackEvent} that represents {@link Activity#onTrimMemory(int)} event */
+  public static class TrimMemory extends ActivityCallbackEvent {
+
+    private final int trimMemoryType;
+
+    TrimMemory(int trimMemoryType) {
+      super(Type.TRIM_MEMORY);
+      this.trimMemoryType = trimMemoryType;
+    }
+
+    public int getTrimMemoryType() {
+      return trimMemoryType;
+    }
   }
 
   /**

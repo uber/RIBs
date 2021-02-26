@@ -33,9 +33,11 @@ public interface ActivityStarter {
   /**
    * Start an activity with the given intent, to be notified when that activity finishes.
    *
+   * @deprecated use plain Activity instead
    * @param intent The intent to open a new activity.
    * @param requestCode The code unique to your current activity to know which activity result is
    *     from this request.
    */
+  @Deprecated
   void startActivityForResult(Intent intent, int requestCode);
 }
