@@ -30,11 +30,17 @@ public abstract class ViewRouter<V extends View, I extends Interactor> extends R
   public ViewRouter(V view, I interactor, InteractorBaseComponent component) {
     super(interactor, component);
     this.view = view;
+    if (XRay.isEnabled()) {
+      XRay.apply(this, view);
+    }
   }
 
   protected ViewRouter(V view, I interactor) {
     super(null, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
     this.view = view;
+    if (XRay.isEnabled()) {
+      XRay.apply(this, view);
+    }
   }
 
   /** @return the router's view. */

@@ -42,14 +42,8 @@ public abstract class ViewBuilder<ViewType extends View, RouterT extends Router,
    */
   protected final ViewType createView(ViewGroup parentViewGroup) {
     final Context context = parentViewGroup.getContext();
-    final ViewType view =
-        inflateView(LayoutInflater.from(onThemeContext(context)), parentViewGroup);
 
-    if (XRay.isEnabled()) {
-      XRay.apply(this, view);
-    }
-
-    return view;
+    return inflateView(LayoutInflater.from(onThemeContext(context)), parentViewGroup);
   }
 
   /**

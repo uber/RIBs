@@ -43,12 +43,12 @@ public class XRayTest {
 
   @Test
   public void apply_changesViewBackground() {
-    final ViewBuilder viewBuilder = mock(ViewBuilder.class);
+    final ViewRouter viewRouter = mock(ViewRouter.class);
     final View view = mock(View.class);
     when(view.getContext()).thenReturn(context);
 
-    XRay.apply(viewBuilder, view);
+    XRay.apply(viewRouter, view);
     verify(view).setBackground(any(Drawable.class));
-    verifyNoMoreInteractions(viewBuilder);
+    verifyNoMoreInteractions(viewRouter);
   }
 }
