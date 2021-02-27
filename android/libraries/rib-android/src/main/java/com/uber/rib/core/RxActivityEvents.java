@@ -18,6 +18,7 @@ package com.uber.rib.core;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
 import io.reactivex.Observable;
+import io.reactivex.functions.Predicate;
 
 /** Interface for reactive activities. */
 public interface RxActivityEvents {
@@ -27,4 +28,40 @@ public interface RxActivityEvents {
 
   /** @return an observable of this activity's lifecycle events. */
   Observable<ActivityCallbackEvent> callbacks();
+
+  /**
+   * @param <T> The type of {@link ActivityLifecycleEvent} subclass you want.
+   * @param clazz The {@link ActivityLifecycleEvent} subclass you want.
+   * @return an observable of this activity's lifecycle events.
+   */
+  default <T extends ActivityLifecycleEvent> Observable<T> lifecycle(final Class<T> clazz) {
+    return lifecycle()
+        // Lambdas within interfaces are not yet supported.
+        .filter(
+            new Predicate<ActivityLifecycleEvent>() {
+              @Override
+              public boolean test(final ActivityLifecycleEvent activityEvent) {
+                return clazz.isAssignableFrom(activityEvent.getClass());
+              }
+            })
+        .cast(clazz);
+  }
+
+  /**
+   * @param <T> The type of {@link ActivityCallbackEvent} subclass you want.
+   * @param clazz The {@link ActivityCallbackEvent} subclass you want.
+   * @return an observable of this activity's callbacks events.
+   */
+  default <T extends ActivityCallbackEvent> Observable<T> callbacks(final Class<T> clazz) {
+    return callbacks()
+        // Lambdas within interfaces are not yet supported.
+        .filter(
+            new Predicate<ActivityCallbackEvent>() {
+              @Override
+              public boolean test(final ActivityCallbackEvent activityEvent) {
+                return clazz.isAssignableFrom(activityEvent.getClass());
+              }
+            })
+        .cast(clazz);
+  }
 }

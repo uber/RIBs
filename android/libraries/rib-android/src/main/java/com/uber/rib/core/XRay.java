@@ -23,6 +23,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
+import androidx.annotation.Nullable;
 
 /** Utility class that shows riblets name in its background. */
 public final class XRay {
@@ -37,14 +38,10 @@ public final class XRay {
 
   private boolean isEnabled;
 
-  private final Paint textPaint;
+  @Nullable private Paint textPaint;
 
   private XRay() {
     isEnabled = false;
-
-    textPaint = new Paint();
-    textPaint.setTextSize(TEXT_SIZE);
-    textPaint.setColor(TEXT_COLOR);
   }
 
   /** Toggles state of XRay. */
@@ -60,10 +57,10 @@ public final class XRay {
   /**
    * Puts {@link ViewBuilder}s riblet name in the background of the {@link View}
    *
-   * @param viewBuilder a {@link ViewBuilder} which riblets name should be written.
+   * @param viewRouter a {@link ViewRouter} which riblets name should be written.
    * @param view a {@link View} to put the name behind.
    */
-  static void apply(final ViewBuilder viewBuilder, final View view) {
+  static void apply(final ViewRouter viewRouter, final View view) {
     final Drawable oldBackground = view.getBackground();
 
     final Bitmap bitmap;
@@ -74,7 +71,7 @@ public final class XRay {
       bitmap = Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888);
     }
 
-    INSTANCE.writeOnBitmap(bitmap, getRibletName(viewBuilder));
+    INSTANCE.writeOnBitmap(bitmap, getRibletName(viewRouter));
 
     final BitmapDrawable newBackground =
         new BitmapDrawable(view.getContext().getResources(), bitmap);
@@ -106,16 +103,26 @@ public final class XRay {
     return bitmap;
   }
 
-  private static String getRibletName(final ViewBuilder viewBuilder) {
-    return viewBuilder.getClass().getSimpleName().replace("Builder", "");
+  private static String getRibletName(final ViewRouter viewRouter) {
+    return viewRouter.getClass().getSimpleName().replace("Router", "");
   }
 
   private void writeOnBitmap(final Bitmap bitmap, final String text) {
     final Canvas canvas = new Canvas(bitmap);
+    final Paint textPaint = getTextPaint();
 
     final float xStartPoint = (bitmap.getWidth() - textPaint.measureText(text)) / 2f;
     final float yStartPoint = bitmap.getHeight() / 2f;
 
     canvas.drawText(text, xStartPoint, yStartPoint, textPaint);
+  }
+
+  private Paint getTextPaint() {
+    if (textPaint == null) {
+      textPaint = new Paint();
+      textPaint.setTextSize(TEXT_SIZE);
+      textPaint.setColor(TEXT_COLOR);
+    }
+    return textPaint;
   }
 }

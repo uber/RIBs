@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.uber.autodispose.AutoDispose;
 import com.uber.autodispose.lifecycle.LifecycleEndedException;
 import com.uber.rib.android.R;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
@@ -230,7 +229,7 @@ public class RibActivityTest {
 
     @NonNull
     @Override
-    protected ViewRouter<?, ?, ?> createRouter(@NonNull ViewGroup parentViewGroup) {
+    protected ViewRouter<?, ?> createRouter(@NonNull ViewGroup parentViewGroup) {
       FrameLayout view = new FrameLayout(RuntimeEnvironment.application);
 
       InteractorComponent component = mock(InteractorComponent.class);
@@ -246,7 +245,7 @@ public class RibActivityTest {
   }
 
   private static class EmptyRouter
-      extends ViewRouter<FrameLayout, Interactor<ViewPresenter, ?>, InteractorComponent> {
+      extends ViewRouter<FrameLayout, Interactor<ViewPresenter, ?>> {
 
     EmptyRouter(
         @NonNull FrameLayout view,

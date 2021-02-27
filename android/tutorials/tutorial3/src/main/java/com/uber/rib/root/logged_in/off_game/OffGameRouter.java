@@ -22,7 +22,7 @@ import com.uber.rib.core.ViewRouter;
  * Adds and removes children of {@link OffGameBuilder.OffGameScope}.
  */
 public class OffGameRouter extends
-    ViewRouter<OffGameView, OffGameInteractor, OffGameBuilder.Component> {
+    ViewRouter<OffGameView, OffGameInteractor> {
 
   public OffGameRouter(
       OffGameView view,

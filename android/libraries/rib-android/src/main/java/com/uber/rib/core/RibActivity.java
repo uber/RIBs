@@ -16,10 +16,11 @@
 package com.uber.rib.core;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.os.Build;
+import android.view.ViewGroup;
 import androidx.annotation.CallSuper;
 import androidx.annotation.Nullable;
-import android.view.ViewGroup;
-
 import com.google.common.base.Preconditions;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.PublishRelay;
@@ -33,8 +34,6 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
 
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-import io.reactivex.functions.Predicate;
 import androidx.appcompat.app.AppCompatActivity;
 
 /** Base implementation for all VIP {@link android.app.Activity}s. */
@@ -53,6 +52,8 @@ public abstract class RibActivity extends AppCompatActivity
             return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
           case RESUME:
             return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE);
+          case USER_LEAVING:
+            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
           case PAUSE:
             return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
           case STOP:
@@ -64,8 +65,7 @@ public abstract class RibActivity extends AppCompatActivity
         throw new UnsupportedOperationException("Binding to " + lastEvent + " not yet implemented");
       };
 
-  @SuppressWarnings("NullableProblems")
-  private ViewRouter<?, ?, ?> router;
+  private ViewRouter<?, ?> router;
 
   private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
       BehaviorRelay.create();
@@ -80,44 +80,10 @@ public abstract class RibActivity extends AppCompatActivity
     return lifecycleRelay.hide();
   }
 
-  /**
-   * @param <T> The type of {@link ActivityLifecycleEvent} subclass you want.
-   * @param clazz The {@link ActivityLifecycleEvent} subclass you want.
-   * @return an observable of this activity's lifecycle events.
-   */
-  public <T extends ActivityLifecycleEvent> Observable<T> lifecycle(final Class<T> clazz) {
-    return lifecycle()
-        .filter(
-            new Predicate<ActivityLifecycleEvent>() {
-              @Override
-              public boolean test(ActivityLifecycleEvent activityEvent) throws Exception {
-                return clazz.isAssignableFrom(activityEvent.getClass());
-              }
-            })
-        .cast(clazz);
-  }
-
   /** @return an observable of this activity's lifecycle events. */
   @Override
   public Observable<ActivityCallbackEvent> callbacks() {
     return callbacksRelay.hide();
-  }
-
-  /**
-   * @param <T> The type of {@link ActivityCallbackEvent} subclass you want.
-   * @param clazz The {@link ActivityCallbackEvent} subclass you want.
-   * @return an observable of this activity's callbacks events.
-   */
-  public <T extends ActivityCallbackEvent> Observable<T> callbacks(final Class<T> clazz) {
-    return callbacks()
-        .filter(
-            new Predicate<ActivityCallbackEvent>() {
-              @Override
-              public boolean test(ActivityCallbackEvent activityCallbackEvent) throws Exception {
-                return clazz.isAssignableFrom(activityCallbackEvent.getClass());
-              }
-            })
-        .cast(clazz);
   }
 
   @Override
@@ -143,7 +109,7 @@ public abstract class RibActivity extends AppCompatActivity
   protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    ViewGroup rootViewGroup = ((ViewGroup) findViewById(android.R.id.content));
+    ViewGroup rootViewGroup = findViewById(android.R.id.content);
 
     lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
     router = createRouter(rootViewGroup);
@@ -155,6 +121,7 @@ public abstract class RibActivity extends AppCompatActivity
     router.dispatchAttach(wrappedBundle);
 
     rootViewGroup.addView(router.getView());
+    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, router, null);
   }
 
   @Override
@@ -182,7 +149,15 @@ public abstract class RibActivity extends AppCompatActivity
 
   @Override
   @CallSuper
-  protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+  protected void onNewIntent(Intent intent) {
+    super.onNewIntent(intent);
+
+    callbacksRelay.accept(ActivityCallbackEvent.createNewIntent(intent));
+  }
+
+  @Override
+  @CallSuper
+  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
     super.onActivityResult(requestCode, resultCode, data);
 
     callbacksRelay.accept(
@@ -213,6 +188,7 @@ public abstract class RibActivity extends AppCompatActivity
     }
     if (router != null) {
       router.dispatchDetach();
+      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, router, null);
     }
     router = null;
     super.onDestroy();
@@ -226,11 +202,46 @@ public abstract class RibActivity extends AppCompatActivity
   }
 
   @Override
+  @CallSuper
+  public void onTrimMemory(int level) {
+    super.onTrimMemory(level);
+    callbacksRelay.accept(ActivityCallbackEvent.createTrimMemoryEvent(level));
+  }
+
+  @Override
+  public void onPictureInPictureModeChanged(
+      boolean isInPictureInPictureMode, Configuration newConfig) {
+    callbacksRelay.accept(
+        ActivityCallbackEvent.createPictureInPictureMode(isInPictureInPictureMode));
+  }
+
+  @Override
   public void onBackPressed() {
     if (router != null && !router.handleBackPress()) {
-      super.onBackPressed();
+      onUnhandledBackPressed();
+
+      // https://issuetracker.google.com/issues/139738913
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+          && isTaskRoot()
+          && getSupportFragmentManager().getBackStackEntryCount() == 0) {
+        super.finishAfterTransition();
+      } else {
+        super.onBackPressed();
+      }
     }
   }
+
+  @Override
+  protected void onUserLeaveHint() {
+    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.USER_LEAVING));
+    super.onUserLeaveHint();
+  }
+
+  /**
+   * Invoked when none of the ribs handle back press. In this case, default activity back press
+   * behavior occurs.
+   */
+  protected void onUnhandledBackPressed() {}
 
   /**
    * @return the {@link Interactor} when the activity has alive.
@@ -250,5 +261,5 @@ public abstract class RibActivity extends AppCompatActivity
    *
    * @return the {@link Interactor}.
    */
-  protected abstract ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup);
+  protected abstract ViewRouter<?, ?> createRouter(ViewGroup parentViewGroup);
 }

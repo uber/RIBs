@@ -15,20 +15,22 @@
  */
 package com.uber.rib.core.lifecycle;
 
-import android.app.Activity;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
-
 import java.util.Locale;
 
 /** Lifecycle events that can be emitted by Activities. */
 public class ActivityLifecycleEvent implements ActivityEvent {
 
   private static final ActivityLifecycleEvent START_EVENT = new ActivityLifecycleEvent(Type.START);
-  private static final ActivityLifecycleEvent RESUME_EVENT = new ActivityLifecycleEvent(Type.RESUME);
+  private static final ActivityLifecycleEvent RESUME_EVENT =
+      new ActivityLifecycleEvent(Type.RESUME);
+  private static final ActivityLifecycleEvent USER_LEAVING_EVENT =
+      new ActivityLifecycleEvent(Type.USER_LEAVING);
   private static final ActivityLifecycleEvent PAUSE_EVENT = new ActivityLifecycleEvent(Type.PAUSE);
   private static final ActivityLifecycleEvent STOP_EVENT = new ActivityLifecycleEvent(Type.STOP);
-  private static final ActivityLifecycleEvent DESTROY_EVENT = new ActivityLifecycleEvent(Type.DESTROY);
+  private static final ActivityLifecycleEvent DESTROY_EVENT =
+      new ActivityLifecycleEvent(Type.DESTROY);
 
   private final Type type;
 
@@ -58,6 +60,8 @@ public class ActivityLifecycleEvent implements ActivityEvent {
         return START_EVENT;
       case RESUME:
         return RESUME_EVENT;
+      case USER_LEAVING:
+        return USER_LEAVING_EVENT;
       case PAUSE:
         return PAUSE_EVENT;
       case STOP:
@@ -87,6 +91,7 @@ public class ActivityLifecycleEvent implements ActivityEvent {
     CREATE,
     START,
     RESUME,
+    USER_LEAVING,
     PAUSE,
     STOP,
     DESTROY,

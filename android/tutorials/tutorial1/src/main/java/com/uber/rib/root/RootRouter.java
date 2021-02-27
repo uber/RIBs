@@ -19,7 +19,7 @@ package com.uber.rib.root;
 import com.uber.rib.core.ViewRouter;
 
 /** Adds and removes children of {@link RootBuilder.RootScope}. */
-public class RootRouter extends ViewRouter<RootView, RootInteractor, RootBuilder.Component> {
+public class RootRouter extends ViewRouter<RootView, RootInteractor> {
 
   RootRouter(RootView view, RootInteractor interactor, RootBuilder.Component component) {
     super(view, interactor, component);

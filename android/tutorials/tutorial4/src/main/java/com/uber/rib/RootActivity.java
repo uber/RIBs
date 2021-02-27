@@ -31,7 +31,6 @@ import com.uber.rib.root.RootBuilder;
 import com.uber.rib.root.RootInteractor;
 import com.uber.rib.root.RootRouter;
 import com.uber.rib.root.RootWorkflow;
-import com.uber.rib.root.RootWorkflowModel;
 import com.uber.rib.root.WorkflowFactory;
 
 import androidx.annotation.Nullable;
@@ -45,7 +44,7 @@ public class RootActivity extends RibActivity {
 
   @SuppressWarnings("unchecked")
   @Override
-  protected ViewRouter<?, ?, ?> createRouter(ViewGroup parentViewGroup) {
+  protected ViewRouter<?, ?> createRouter(ViewGroup parentViewGroup) {
     RootBuilder rootBuilder = new RootBuilder(new RootBuilder.ParentComponent() {});
     RootRouter router = rootBuilder.build(parentViewGroup);
     rootInteractor = router.getInteractor();

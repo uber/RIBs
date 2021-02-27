@@ -22,7 +22,7 @@ import com.uber.rib.core.ViewRouter;
  * Adds and removes children of {@link TicTacToeBuilder.TicTacToeScope}.
  */
 public class TicTacToeRouter extends
-    ViewRouter<TicTacToeView, TicTacToeInteractor, TicTacToeBuilder.Component> {
+    ViewRouter<TicTacToeView, TicTacToeInteractor> {
 
   public TicTacToeRouter(
       TicTacToeView view,

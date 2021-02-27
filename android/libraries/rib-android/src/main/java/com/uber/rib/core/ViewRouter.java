@@ -22,22 +22,25 @@ import android.view.View;
  *
  * @param <V> type of view owned by the router.
  * @param <I> type of interactor owned by the router.
- * @param <C> type of dependency owned by the router.
  */
-public abstract class ViewRouter<
-        V extends View, I extends Interactor, C extends InteractorBaseComponent>
-    extends Router<I> {
+public abstract class ViewRouter<V extends View, I extends Interactor> extends Router<I> {
 
   private final V view;
 
-  public ViewRouter(V view, I interactor, C component) {
+  public ViewRouter(V view, I interactor, InteractorBaseComponent component) {
     super(interactor, component);
     this.view = view;
+    if (XRay.isEnabled()) {
+      XRay.apply(this, view);
+    }
   }
 
   protected ViewRouter(V view, I interactor) {
     super(null, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
     this.view = view;
+    if (XRay.isEnabled()) {
+      XRay.apply(this, view);
+    }
   }
 
   /** @return the router's view. */
