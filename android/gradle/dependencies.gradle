@@ -18,11 +18,11 @@ def versions = [
     dagger: "2.22.1",
     androidx: [
         annotations: '1.1.0',
-        appcompat: '1.0.2',
+        appcompat: '1.2.0',
         percent: '1.0.0'
     ],
     autodispose: '1.4.0',
-    robolectric: "4.2.1",
+    robolectric: "4.4",
     intellij: "2017.2",
     rave: "2.0.0",
     errorProne: '2.3.3'
@@ -32,13 +32,13 @@ def apt = [
     androidApi: "com.google.android:android:2.2.1",
     autoCommon: "com.google.auto:auto-common:0.8",
     autoService: "com.google.auto.service:auto-service:1.0-rc4",
-    nullAway: 'com.uber.nullaway:nullaway:0.7.2',
+    nullAway: 'com.uber.nullaway:nullaway:0.9.0',
     daggerCompiler: "com.google.dagger:dagger-compiler:${versions.dagger}",
     javapoet: "com.squareup:javapoet:1.11.1",
     javax: "javax.annotation:jsr250-api:1.0",
     javaxInject: "javax.inject:javax.inject:1",
-    autoValue: "com.google.auto.value:auto-value:1.6.5",
-    autoValueAnnotations: "com.jakewharton.auto.value:auto-value-annotations:1.5",
+    autoValue: "com.google.auto.value:auto-value:1.7",
+    autoValueAnnotations: "com.google.auto.value:auto-value-annotations:1.7",
     raveCompiler: "com.uber:rave-compiler:${versions.rave}",
     errorProneAnnotations: "com.google.errorprone:error_prone_annotations:${versions.errorProne}",
 ]
@@ -58,11 +58,11 @@ def build = [
     errorProneJavac: "com.google.errorprone:javac:9+181-r4173-1",
     errorProneCore: "com.google.errorprone:error_prone_core:${versions.errorProne}",
     errorProneTestHelpers: "com.google.errorprone:error_prone_test_helpers:${versions.errorProne}",
-    nullAway: 'com.uber.nullaway:nullaway:0.7.0',
+    nullAway: 'com.uber.nullaway:nullaway:0.9.0',
     gradlePlugins: [
-        android: 'com.android.tools.build:gradle:3.4.1',
-        errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:0.8",
-        nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:0.2",
+        android: 'com.android.tools.build:gradle:3.6.2',
+        errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
+        nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:1.0.2",
         apt: "net.ltgt.gradle:gradle-apt-plugin:0.21"
     ]
 ]
