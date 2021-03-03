@@ -1,5 +1,6 @@
 include ':libraries:rib-test'
 include ':libraries:rib-android'
+include ':libraries:rib-android-core'
 include ':libraries:rib-base'
 include ':libraries:rib-compiler-app'
 include ':libraries:rib-compiler-test'
