@@ -31,13 +31,11 @@ import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
 import com.uber.autodispose.lifecycle.LifecycleScopes;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
-
 import io.reactivex.CompletableSource;
 import io.reactivex.Observable;
-import androidx.appcompat.app.AppCompatActivity;
 
 /** Base implementation for all VIP {@link android.app.Activity}s. */
-public abstract class RibActivity extends AppCompatActivity
+public abstract class RibActivity extends CoreAppCompatActivity
     implements ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {
 
   /**

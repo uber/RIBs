@@ -44,17 +44,11 @@ android {
 }
 
 dependencies {
-    api project(":libraries:rib-android-core")
-    api project(":libraries:rib-base")
-    api deps.external.rxrelay2
-    api deps.external.rxjava2
     implementation deps.apt.javaxInject
     implementation deps.androidx.annotations
     implementation deps.androidx.appcompat
-    implementation deps.external.guavaAndroid
     testImplementation deps.external.roboelectricBase
     testImplementation deps.androidx.appcompat
-    testImplementation project(":libraries:rib-test")
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
