@@ -58,7 +58,13 @@ public interface RouterNavigator<StateT extends RouterNavigatorState> {
     REORDER_TO_TOP,
 
     /** Clears the previous stack (no back stack) and pushes the state on to the top of the stack */
-    NEW_TASK
+    NEW_TASK,
+
+    /**
+     * Remove the top state in the stack if it is not empty and then push a new state to the top of
+     * the stack.
+     */
+    REPLACE_TOP
   }
 
   /** Pop the current state and rewind to the previous state (if there is a previous state). */
