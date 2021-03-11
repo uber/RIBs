@@ -11,3 +11,7 @@
 ### Version 0.9.3
 
 * Upgraded iOS library to Swift 5
+
+### Version 0.10.0
+
+* Updates from the internal fork of RIBs

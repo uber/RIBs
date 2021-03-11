@@ -28,7 +28,7 @@ To read about the backstory on why we created RIBs, see [this blog post](https:/
 MVC, MVP, MVI, MVVM and VIPER are architecture patterns. RIBs is a framework. What differentiates RIBs from frameworks based on MV*/VIPER is:
 
 - **Business logic drives the app, not the view tree**. Unlike with MV*/VIPER, a RIB does not have to have a view. This means that the app hierarchy is driven by the business logic, not the view tree.
-- **Independent business logic and view trees**. RIBs decouple how the business logic scopes are structured from view hierarchies. This allows the application to have a deep business logic tree, isolating business logic nodes, while maintaining a shallow view hierarchy making layouts, animations and transitions easy. 
+- **Independent business logic and view trees**. RIBs decouple how the business logic scopes are structured from view hierarchies. This allows the application to have a deep business logic tree, isolating business logic nodes, while maintaining a shallow view hierarchy making layouts, animations and transitions easy.
 
 There are some other novel things about RIBs. However, these could also be implemented with other MV*/VIPER frameworks. These are:
 - **Cross-platform approach**, allowing iOS and Android architecture to stay in sync.
@@ -48,9 +48,9 @@ To integrate the recommended minimum setup for RIBs add the following to your `b
 
 ```gradle
 dependencies {
-  annotationProcessor 'com.uber.rib:rib-compiler-test:0.9.2'
-  compile 'com.uber.rib:rib-android:0.9.2'
-  testCompile 'com.uber.rib:rib-test-utils:0.9.2'
+  annotationProcessor 'com.uber.rib:rib-compiler-test:0.10.0'
+  compile 'com.uber.rib:rib-android:0.10.0'
+  testCompile 'com.uber.rib:rib-test-utils:0.10.0'
 }
 ```
 
