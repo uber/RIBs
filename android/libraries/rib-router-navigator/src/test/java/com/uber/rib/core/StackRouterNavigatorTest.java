@@ -553,6 +553,36 @@ public class StackRouterNavigatorTest {
   }
 
   @Test
+  public void pushReplaceTop_removeExistingTopOfStack_andShouldPushNewStateToTopOfStack() {
+    routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1);
+    routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2);
+
+    routerNavigator.pushState(
+            TestState.STATE_3,
+            StackRouterNavigator.Flag.REPLACE_TOP,
+            attachTransition3,
+            detachTransition3);
+
+    assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_3);
+    assertThat(routerNavigator.size()).isEqualTo(2);
+    routerNavigator.popState();
+    assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_1);
+    assertThat(routerNavigator.size()).isEqualTo(1);
+  }
+
+  @Test
+  public void pushReplaceTop_whenStackIsEmpty_shouldPushNewStateToTopOfStack() {
+    routerNavigator.pushState(
+            TestState.STATE_1,
+            StackRouterNavigator.Flag.REPLACE_TOP,
+            attachTransition3,
+            detachTransition3);
+
+    assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_1);
+    assertThat(routerNavigator.size()).isEqualTo(1);
+  }
+
+  @Test
   public void
       pop_whenThereIsSomethingToPopTo_shouldRemoveCurrentItemAndReaddPreviousItemWithCorrectState() {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, null);

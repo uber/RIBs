@@ -175,6 +175,14 @@ public class StackRouterNavigator<StateT extends RouterNavigatorState>
         }
 
         break;
+      case REPLACE_TOP:
+        if (!navigationStack.isEmpty()) {
+          navigationStack.pop();
+        }
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition);
+        navigationStack.push(newRouterAndState);
+        attachInternal(currentRouterAndState, newRouterAndState, true);
+        break;
     }
   }
 
