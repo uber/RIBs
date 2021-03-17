@@ -14,4 +14,8 @@
 
 ### Version 0.10.0
 
-* Updates from the internal fork of RIBs
+* Updates from the internal fork of RIBs (see Releases section)
+
+### Version 0.10.1
+
+* Added REPLACE_TOP `RouterNavigator` flag
