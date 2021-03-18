@@ -66,7 +66,7 @@ final class TicTacToeViewController: UIViewController, TicTacToePresentable, Tic
             }
         }()
         let alert = UIAlertController(title: winnerString, message: nil, preferredStyle: .alert)
-        let closeAction = UIAlertAction(title: "Close Game", style: UIAlertActionStyle.default) { _ in
+        let closeAction = UIAlertAction(title: "Close Game", style: UIAlertAction.Style.default) { _ in
             handler()
         }
         alert.addAction(closeAction)

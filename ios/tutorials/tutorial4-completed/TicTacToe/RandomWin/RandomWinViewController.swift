@@ -58,7 +58,7 @@ final class RandomWinViewController: UIViewController, RandomWinPresentable, Ran
             }
         }()
         let alert = UIAlertController(title: winnerString, message: nil, preferredStyle: .alert)
-        let closeAction = UIAlertAction(title: "That was random...", style: UIAlertActionStyle.default) { _ in
+        let closeAction = UIAlertAction(title: "That was random...", style: UIAlertAction.Style.default) { _ in
             handler()
         }
         alert.addAction(closeAction)

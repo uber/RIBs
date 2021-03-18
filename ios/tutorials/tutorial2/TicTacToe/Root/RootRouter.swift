@@ -51,6 +51,7 @@ final class RootRouter: LaunchRouter<RootInteractable, RootViewControllable>, Ro
         let loggedOut = loggedOutBuilder.build(withListener: interactor)
         self.loggedOut = loggedOut
         attachChild(loggedOut)
+        loggedOut.viewControllable.uiviewController.modalPresentationStyle = .fullScreen
         viewController.present(viewController: loggedOut.viewControllable)
     }
 }
