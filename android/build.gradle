@@ -65,7 +65,6 @@ subprojects {
         format 'misc', {
             target '**/*.md', '**/.gitignore'
 
-            indentWithTabs()
             trimTrailingWhitespace()
             endWithNewline()
         }
@@ -78,7 +77,7 @@ subprojects {
             endWithNewline()
         }
         java {
-            target "**/*.java"
+            target "src/*/java/**/*.java"
             googleJavaFormat(deps.versions.gjf)
             licenseHeaderFile rootProject.file('config/spotless/copyright.java')
             removeUnusedImports()
