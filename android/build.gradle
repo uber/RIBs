@@ -91,12 +91,6 @@ subprojects {
         }
     }
 
-    apply plugin: 'checkstyle'
-
-    checkstyle { -> rootProject
-        configFile rootProject.file('config/checkstyle/checkstyle.xml')
-    }
-
     boolean isAndroidLibrary = project.name in androidLibraryProjects
     boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
     boolean usesErrorProne = project.name in useErrorProneProjects
