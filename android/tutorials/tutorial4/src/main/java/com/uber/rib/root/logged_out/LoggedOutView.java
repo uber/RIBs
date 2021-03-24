@@ -1,12 +1,3 @@
-package com.uber.rib.root.logged_out;
-
-import android.content.Context;
-import androidx.annotation.Nullable;
-import android.util.AttributeSet;
-import android.util.Pair;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 /*
  * Copyright (C) 2017. Uber Technologies
  *
@@ -22,7 +13,15 @@ import android.widget.LinearLayout;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.uber.rib.root.logged_out;
 
+import android.content.Context;
+import androidx.annotation.Nullable;
+import android.util.AttributeSet;
+import android.util.Pair;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
