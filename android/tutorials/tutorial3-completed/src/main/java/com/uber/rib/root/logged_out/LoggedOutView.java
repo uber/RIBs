@@ -16,19 +16,17 @@
 package com.uber.rib.root.logged_out;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.tutorial1.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
-/**
- * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.
- */
+/** Top level view for {@link LoggedOutBuilder.LoggedOutScope}. */
 public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
 
   public LoggedOutView(Context context) {
@@ -46,13 +44,15 @@ public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.L
   @Override
   public Observable<Pair<String, String>> loginName() {
     return RxView.clicks(findViewById(R.id.login_button))
-        .map(new Function<Object, Pair<String, String>>() {
-          @Override
-          public Pair<String, String> apply(Object o) throws Exception {
-            TextView playerNameOne = (TextView) findViewById(R.id.player_name_1);
-            TextView playerNameTwo = (TextView) findViewById(R.id.player_name_2);
-            return Pair.create(playerNameOne.getText().toString(), playerNameTwo.getText().toString());
-          }
-        });
+        .map(
+            new Function<Object, Pair<String, String>>() {
+              @Override
+              public Pair<String, String> apply(Object o) throws Exception {
+                TextView playerNameOne = (TextView) findViewById(R.id.player_name_1);
+                TextView playerNameTwo = (TextView) findViewById(R.id.player_name_2);
+                return Pair.create(
+                    playerNameOne.getText().toString(), playerNameTwo.getText().toString());
+              }
+            });
   }
 }

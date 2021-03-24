@@ -15,22 +15,20 @@
  */
 package com.uber.rib.core;
 
+import static com.google.common.truth.Truth.assertThat;
+
 import android.content.Context;
-import androidx.annotation.NonNull;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
+import androidx.annotation.NonNull;
 import com.uber.rib.android.R;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-
-import static com.google.common.truth.Truth.assertThat;
 
 @RunWith(RobolectricTestRunner.class)
 public class ViewBuilderTest {

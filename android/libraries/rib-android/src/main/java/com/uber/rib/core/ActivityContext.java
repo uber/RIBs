@@ -15,10 +15,10 @@
  */
 package com.uber.rib.core;
 
-import javax.inject.Qualifier;
-import java.lang.annotation.Retention;
-
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
+
+import java.lang.annotation.Retention;
+import javax.inject.Qualifier;
 
 /** Injection qualifier for an Activity Context. */
 @Qualifier

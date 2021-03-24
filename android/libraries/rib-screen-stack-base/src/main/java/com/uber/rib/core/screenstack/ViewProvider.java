@@ -13,17 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.core.screenstack;
 
-import androidx.annotation.CallSuper;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.annotation.CallSuper;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.jakewharton.rxrelay2.Relay;
 import com.uber.rib.core.screenstack.lifecycle.ScreenStackEvent;
-
 import io.reactivex.Observable;
 
 /** Interface to provide {@link View} instances to {@link ScreenStackBase}. */

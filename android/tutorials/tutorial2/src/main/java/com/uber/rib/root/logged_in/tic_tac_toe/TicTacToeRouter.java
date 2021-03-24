@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.tic_tac_toe;
 
 import com.uber.rib.core.ViewRouter;
 
-/**
- * Adds and removes children of {@link TicTacToeBuilder.TicTacToeScope}.
- */
-public class TicTacToeRouter extends
-    ViewRouter<TicTacToeView, TicTacToeInteractor> {
+/** Adds and removes children of {@link TicTacToeBuilder.TicTacToeScope}. */
+public class TicTacToeRouter extends ViewRouter<TicTacToeView, TicTacToeInteractor> {
 
   public TicTacToeRouter(
-      TicTacToeView view,
-      TicTacToeInteractor interactor,
-      TicTacToeBuilder.Component component) {
+      TicTacToeView view, TicTacToeInteractor interactor, TicTacToeBuilder.Component component) {
     super(view, interactor, component);
   }
 }

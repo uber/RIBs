@@ -21,7 +21,8 @@ public class InteractorWithEmptyPresenterGenerator extends Generator {
 
   private static final String TEMPLATE_NAME = "RibInteractorWithEmptyPresenter";
 
-  public InteractorWithEmptyPresenterGenerator(String packageName, String ribName, boolean isKotlinSelected) {
+  public InteractorWithEmptyPresenterGenerator(
+      String packageName, String ribName, boolean isKotlinSelected) {
     super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
   }
 

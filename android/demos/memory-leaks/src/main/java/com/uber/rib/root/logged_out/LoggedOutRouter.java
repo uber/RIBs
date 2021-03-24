@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_out;
 
 import com.uber.rib.core.ViewRouter;
 
-/**
- * Adds and removes children of {@link LoggedOutBuilder.LoggedOutScope}.
- */
-public class LoggedOutRouter extends
-    ViewRouter<LoggedOutView, LoggedOutInteractor> {
+/** Adds and removes children of {@link LoggedOutBuilder.LoggedOutScope}. */
+public class LoggedOutRouter extends ViewRouter<LoggedOutView, LoggedOutInteractor> {
 
   public LoggedOutRouter(
-      LoggedOutView view,
-      LoggedOutInteractor interactor,
-      LoggedOutBuilder.Component component) {
+      LoggedOutView view, LoggedOutInteractor interactor, LoggedOutBuilder.Component component) {
     super(view, interactor, component);
   }
 }

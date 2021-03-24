@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib;
 
 import android.view.ViewGroup;
-
 import com.uber.rib.core.RibActivity;
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.RootBuilder;
@@ -25,7 +23,7 @@ import com.uber.rib.root.RootBuilder;
 /** The sample app's single activity. */
 public class RootActivity extends RibActivity {
 
-  //public Object object;
+  // public Object object;
 
   @SuppressWarnings("unchecked")
   @Override

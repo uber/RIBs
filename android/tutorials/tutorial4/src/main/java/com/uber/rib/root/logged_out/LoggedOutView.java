@@ -16,22 +16,19 @@
 package com.uber.rib.root.logged_out;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.util.Pair;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.TextView;
+import androidx.annotation.Nullable;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial4.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
-/**
- * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.
- */
+/** Top level view for {@link LoggedOutBuilder.LoggedOutScope}. */
 public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
 
   private Button loginButton;

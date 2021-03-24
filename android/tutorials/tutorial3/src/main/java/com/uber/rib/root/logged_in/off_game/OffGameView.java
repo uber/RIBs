@@ -13,24 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.off_game;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
 import io.reactivex.Observable;
 import java.util.Locale;
 
-/**
- * Top level view for {@link OffGameBuilder.OffGameScope}.
- */
+/** Top level view for {@link OffGameBuilder.OffGameScope}. */
 public class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
 
   private Button button;

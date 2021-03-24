@@ -16,18 +16,16 @@
 package com.uber.rib.root.logged_out;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.memory_leak.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
-/**
- * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.
- */
+/** Top level view for {@link LoggedOutBuilder.LoggedOutScope}. */
 public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
 
   public LoggedOutView(Context context) {
@@ -45,12 +43,13 @@ public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.L
   @Override
   public Observable<String> loginName() {
     return RxView.clicks(findViewById(R.id.login_button))
-        .map(new Function<Object, String>() {
-          @Override
-          public String apply(Object o) throws Exception {
-            TextView textView = (TextView) findViewById(R.id.edit_text);
-            return textView.getText().toString();
-          }
-        });
+        .map(
+            new Function<Object, String>() {
+              @Override
+              public String apply(Object o) throws Exception {
+                TextView textView = (TextView) findViewById(R.id.edit_text);
+                return textView.getText().toString();
+              }
+            });
   }
 }

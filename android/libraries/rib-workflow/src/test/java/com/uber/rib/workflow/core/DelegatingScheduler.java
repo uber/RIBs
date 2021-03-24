@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
+
+import static androidx.annotation.RestrictTo.Scope.GROUP_ID;
 
 import androidx.annotation.RestrictTo;
 import androidx.annotation.VisibleForTesting;
-
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
-
 import io.reactivex.Scheduler;
 import io.reactivex.schedulers.Schedulers;
-
-import static androidx.annotation.RestrictTo.Scope.GROUP_ID;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 
 @RestrictTo(GROUP_ID)
 class DelegatingScheduler extends Scheduler {

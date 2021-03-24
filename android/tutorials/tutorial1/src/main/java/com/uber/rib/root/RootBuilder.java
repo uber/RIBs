@@ -13,25 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root;
+
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
-
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.core.ViewBuilder;
 import com.uber.rib.tutorial1.R;
-
-import java.lang.annotation.Retention;
-
-import javax.inject.Scope;
-
 import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
-
-import static java.lang.annotation.RetentionPolicy.CLASS;
+import java.lang.annotation.Retention;
+import javax.inject.Scope;
 
 /** Builder for the {@link RootScope}. */
 public class RootBuilder extends ViewBuilder<RootView, RootRouter, RootBuilder.ParentComponent> {
@@ -49,7 +44,8 @@ public class RootBuilder extends ViewBuilder<RootView, RootRouter, RootBuilder.P
   public RootRouter build(ViewGroup parentViewGroup) {
     RootView view = createView(parentViewGroup);
     RootInteractor interactor = new RootInteractor();
-    Component component = DaggerRootBuilder_Component.builder()
+    Component component =
+        DaggerRootBuilder_Component.builder()
             .parentComponent(getDependency())
             .view(view)
             .interactor(interactor)
@@ -81,10 +77,7 @@ public class RootBuilder extends ViewBuilder<RootView, RootRouter, RootBuilder.P
   }
 
   @RootScope
-  @dagger.Component(
-    modules = Module.class,
-    dependencies = ParentComponent.class
-  )
+  @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
   interface Component extends InteractorBaseComponent<RootInteractor>, BuilderComponent {
 
     @dagger.Component.Builder

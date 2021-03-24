@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root;
 
 import androidx.annotation.Nullable;
-
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.logged_in.LoggedInBuilder;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutRouter;
 
-/**
- * Adds and removes children of {@link RootBuilder.RootScope}.
- */
+/** Adds and removes children of {@link RootBuilder.RootScope}. */
 public class RootRouter extends ViewRouter<RootView, RootInteractor> {
 
   private final LoggedOutBuilder loggedOutBuilder;

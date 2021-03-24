@@ -13,12 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
 
 import com.google.common.collect.ImmutableMap;
 import com.uber.rib.root.UserName;
-
 import io.reactivex.Observable;
 
 public interface ScoreStream {

@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.workflow.core;
 
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
-
-import java.util.concurrent.Callable;
+import static com.uber.rib.workflow.core.DelegatingScheduler.SchedulerType.MAIN_THREAD;
 
 import io.reactivex.Scheduler;
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.functions.Function;
+import java.util.concurrent.Callable;
+import org.junit.rules.TestWatcher;
+import org.junit.runner.Description;
 
-import static com.uber.rib.workflow.core.DelegatingScheduler.SchedulerType.MAIN_THREAD;
-
-/** JUnit rule to set AndroidSchedulers for tests. Inlined into this
- * module to facilitate testing. */
+/**
+ * JUnit rule to set AndroidSchedulers for tests. Inlined into this module to facilitate testing.
+ */
 class AndroidSchedulersRule extends TestWatcher {
 
   private DelegatingScheduler delegatingMainThreadScheduler =

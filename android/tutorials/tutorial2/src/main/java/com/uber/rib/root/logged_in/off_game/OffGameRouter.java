@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.off_game;
 
 import com.uber.rib.core.ViewRouter;
 
-/**
- * Adds and removes children of {@link OffGameBuilder.OffGameScope}.
- */
-public class OffGameRouter extends
-    ViewRouter<OffGameView, OffGameInteractor> {
+/** Adds and removes children of {@link OffGameBuilder.OffGameScope}. */
+public class OffGameRouter extends ViewRouter<OffGameView, OffGameInteractor> {
 
   public OffGameRouter(
-      OffGameView view,
-      OffGameInteractor interactor,
-      OffGameBuilder.Component component) {
+      OffGameView view, OffGameInteractor interactor, OffGameBuilder.Component component) {
     super(view, interactor, component);
   }
 }

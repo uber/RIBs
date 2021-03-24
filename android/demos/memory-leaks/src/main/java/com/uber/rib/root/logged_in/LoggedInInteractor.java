@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
 
 import com.uber.rib.core.EmptyPresenter;
@@ -21,8 +20,6 @@ import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
 import com.uber.rib.root.logged_in.LoggedInBuilder.LoggedInScope;
 
-/**
- * Coordinates Business Logic for {@link LoggedInScope}.
- */
+/** Coordinates Business Logic for {@link LoggedInScope}. */
 @RibInteractor
-public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRouter> {  }
+public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRouter> {}

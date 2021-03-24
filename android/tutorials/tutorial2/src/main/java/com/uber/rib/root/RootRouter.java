@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root;
 
 import androidx.annotation.Nullable;
-
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutRouter;
@@ -44,11 +42,7 @@ public class RootRouter extends ViewRouter<RootView, RootInteractor> {
     getView().addView(loggedOutRouter.getView());
   }
 
-  public void attachLoggedIn() {
+  public void attachLoggedIn() {}
 
-  }
-
-  public void detachLoggedOut() {
-
-  }
+  public void detachLoggedOut() {}
 }

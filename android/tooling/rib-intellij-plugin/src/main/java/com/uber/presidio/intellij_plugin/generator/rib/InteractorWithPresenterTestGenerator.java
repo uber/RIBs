@@ -21,7 +21,8 @@ public class InteractorWithPresenterTestGenerator extends Generator {
 
   private static final String TEMPLATE_NAME = "RibInteractorWithPresenterTest";
 
-  public InteractorWithPresenterTestGenerator(String packageName, String ribName, boolean isKotlinSelected) {
+  public InteractorWithPresenterTestGenerator(
+      String packageName, String ribName, boolean isKotlinSelected) {
     super(packageName, ribName, isKotlinSelected, TEMPLATE_NAME);
   }
 

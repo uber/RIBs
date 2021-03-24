@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
+import androidx.annotation.Nullable;
 
 /** Top level view for {@link RootBuilder.RootScope}. */
 public class RootView extends FrameLayout implements RootInteractor.RootPresenter {

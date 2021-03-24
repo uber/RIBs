@@ -46,7 +46,7 @@ public class WorkflowTest {
 
   @After
   public void cleanup() {
-      RxAndroidPlugins.reset();
+    RxAndroidPlugins.reset();
   }
 
   @Test

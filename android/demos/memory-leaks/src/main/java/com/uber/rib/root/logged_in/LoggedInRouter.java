@@ -13,18 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
 
 import com.uber.rib.core.Router;
 
-/**
- * Adds and removes children of {@link LoggedInBuilder.LoggedInScope}.
- */
+/** Adds and removes children of {@link LoggedInBuilder.LoggedInScope}. */
 public class LoggedInRouter extends Router<LoggedInInteractor> {
-  LoggedInRouter(
-      LoggedInInteractor interactor,
-      LoggedInBuilder.Component component) {
+  LoggedInRouter(LoggedInInteractor interactor, LoggedInBuilder.Component component) {
     super(interactor, component);
   }
 }
