@@ -28,6 +28,7 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.errorprone
+        classpath deps.build.gradlePlugins.spotless
     }
 }
 
@@ -57,6 +58,38 @@ subprojects {
         google()
         jcenter()
         maven { url deps.build.gradlePluginsUrl }
+    }
+
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        format 'misc', {
+            target '**/*.md', '**/.gitignore'
+
+            indentWithTabs()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        kotlin {
+            target "**/*.kt"
+            ktlint(deps.versions.ktlint).userData(['indent_size': '2', 'continuation_indent_size' : '2'])
+            ktfmt(deps.versions.ktfmt)
+            licenseHeaderFile rootProject.file('config/spotless/copyright.kt')
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        java {
+            target "**/*.java"
+            googleJavaFormat(deps.versions.gjf)
+            licenseHeaderFile rootProject.file('config/spotless/copyright.java')
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        groovyGradle {
+            target '**/*.gradle'
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
     }
 
     apply plugin: 'checkstyle'

@@ -15,17 +15,21 @@
  */
 
 def versions = [
-    dagger: "2.22.1",
     androidx: [
         annotations: '1.1.0',
         appcompat: '1.2.0',
         percent: '1.0.0'
     ],
     autodispose: '1.4.0',
-    robolectric: "4.4",
+    dagger: "2.22.1",
+    errorProne: '2.3.3',
+    gjf: '1.7',
     intellij: "2017.2",
+    ktfmt: '0.23',
+    ktlint: '0.41.0',
     rave: "2.0.0",
-    errorProne: '2.3.3'
+    robolectric: "4.4",
+    spotless: '5.11.0'
 ]
 
 def apt = [
@@ -63,7 +67,8 @@ def build = [
         android: 'com.android.tools.build:gradle:3.6.2',
         errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
         nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:1.0.2",
-        apt: "net.ltgt.gradle:gradle-apt-plugin:0.21"
+        apt: "net.ltgt.gradle:gradle-apt-plugin:0.21",
+        spotless: "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
     ]
 ]
 
