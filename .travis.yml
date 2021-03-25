@@ -22,6 +22,7 @@ jobs:
       script:
         - cd android
         - ./gradlew spotlessCheck build
+        - ./gradlew japicmp
 
       env:
         - secure: "X1BegtP1L5RJwLKsb198RanMxXjHz0q9ta5GGqmRSuROI3sunp2tJFzQHxiYKbHNJ6t98a5tEGgX+rboQKvRA6zWZWXnGRiVZ2fBW/uIxI55yNPo5tRssjbzVUhllo9ffd/NONtFRJ7pS4csDqQtW/AvLTIl5JXj3K3ciBSc1ErLgnh7T0ycmivwoIgGVj3rI8/KVrD9QJ95p2T39UR3DdMseAUymrCeHpYxZqPhEHxWfPWWw2YVTd7tDoywALy2KFo2zGjsltqkRl4AICJE+c9DBGl4K4zrhDUGEfbqbtL1I+jnfhCjiB4AhqW2ysQNdSLRldpRVgi8hn3tWyIfuLOFD7kk99cHRCZEI1H3hqH+GveEC05y6N2JpI/UFBJ7bl4Vcz3P1xKIMxLauS+tg6yXIebia3ca7f8Kih5B8pyuFW2D3sUsmU6nFIT203WDZzYs/QOpplWUYXd6QqJqUPQk8Yi3WVxYlyIuY3M6aat0Uj1TMMWmrtFSe/SFXC7foZLKJNtgJ/FE+g6kt4IJSMW5M7Ecbgqds/d803k9A7/Qjf94bTgqFhb6E5mIEszI5mtb03GYc6rPJsNGiojvhil9szn3DDqlKZAmgyV2/RBFXwUcOK61KIU5/B+KS8dEAD3CWPaFvkIwcUrjd+JiYWhNFzxTbuqWqCMt1aG+wrI="

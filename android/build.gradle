@@ -29,6 +29,7 @@ buildscript {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.errorprone
         classpath deps.build.gradlePlugins.spotless
+        classpath deps.build.gradlePlugins.japicmp
     }
 }
 
@@ -94,6 +95,31 @@ subprojects {
     boolean isAndroidLibrary = project.name in androidLibraryProjects
     boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
     boolean usesErrorProne = project.name in useErrorProneProjects
+
+    if (isAndroidLibrary) {
+        apply plugin: 'me.champeau.gradle.japicmp'
+
+        configurations {
+            baseline
+        }
+
+        dependencies {
+            baseline("com.uber.rib:${project.name}:${LAST_VERSION_NAME}") {
+                transitive = false
+                force = true
+            }
+        }
+
+        task japicmp(type: me.champeau.gradle.japicmp.JapicmpTask, dependsOn: 'assemble') {
+            oldClasspath = configurations.baseline.collect { zipTree(it) }.first().filter { it == 'classes.jar'}
+            newClasspath = zipTree(file("$buildDir/outputs/aar/${project.name}-release.aar")).filter { it == 'classes.jar'}
+            onlyBinaryIncompatibleModified = true
+            failOnModification = true
+            txtOutputFile = file("$buildDir/reports/japi.txt")
+            ignoreMissingClasses = true
+            includeSynthetic = true
+        }
+    }
 
     afterEvaluate {
         if ((isAndroidLibrary || isSample) && usesErrorProne) {

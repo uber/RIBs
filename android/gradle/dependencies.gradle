@@ -25,6 +25,7 @@ def versions = [
     errorProne: '2.3.3',
     gjf: '1.7',
     intellij: "2017.2",
+    japicmp: '0.2.8',
     ktfmt: '0.23',
     ktlint: '0.41.0',
     rave: "2.0.0",
@@ -64,11 +65,12 @@ def build = [
     errorProneTestHelpers: "com.google.errorprone:error_prone_test_helpers:${versions.errorProne}",
     nullAway: 'com.uber.nullaway:nullaway:0.9.0',
     gradlePlugins: [
-        android: 'com.android.tools.build:gradle:3.6.2',
+        android: 'com.android.tools.build:gradle:4.1.3',
         errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
         nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:1.0.2",
         apt: "net.ltgt.gradle:gradle-apt-plugin:0.21",
-        spotless: "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
+        spotless: "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}",
+        japicmp: "me.champeau.gradle:japicmp-gradle-plugin:${versions.japicmp}",
     ]
 ]
 
