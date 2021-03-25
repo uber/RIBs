@@ -5,11 +5,12 @@ ext.javaBaselineVersion = "0.10.1"
 buildscript {
     repositories {
         maven {
-            url 'https://plugins.gradle.org/m2/'
+            url deps.build.gradlePluginsUrl
         }
     }
     dependencies {
         classpath deps.build.gradlePlugins.japicmp
+        classpath deps.build.guavaJre // https://github.com/melix/japicmp-gradle-plugin/issues/36
     }
 }
 
@@ -50,7 +51,7 @@ def outputJar(Project project) {
 }
 
 def createUnpackAarTask(Project project, String baselineArtifact) {
-    project.tasks.create(name: 'unpackBaselineAar', type: Copy) {
+    return project.tasks.create(name: 'unpackBaselineAar', type: Copy) {
         from zipTree(file(baselineArtifact))
         into file(unpackAarDir(project))
     }
