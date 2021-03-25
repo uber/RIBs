@@ -152,3 +152,4 @@ task clean(type: Delete) {
 }
 
 apply from: 'gradle/dependencies.gradle'
+apply from: rootProject.file('gradle/japicmp.gradle')
