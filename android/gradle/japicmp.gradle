@@ -61,6 +61,14 @@ def createJapicmpTask(Project project, String baselineJar, String outputJar) {
     return project.tasks.create(name: 'japicmp', type: JapicmpTask) {
         oldClasspath = files(baselineJar)
         newClasspath = files(outputJar)
+        classExcludes = [
+                'com.uber.assert.BuildConfig',
+                'com.uber.rib.android.BuildConfig',
+                'com.uber.rib.android.core.BuildConfig',
+                'com.uber.rib.workflow.BuildConfig',
+                'com.uber.rib.workflow.test.BuildConfig',
+                'com.ubercab.core.screenstack.base.BuildConfig'
+        ]
         onlyBinaryIncompatibleModified = true
         failOnModification = true
         txtOutputFile = file("$buildDir/reports/japi.txt")
