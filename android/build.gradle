@@ -32,13 +32,6 @@ buildscript {
     }
 }
 
-Set<String> androidLibraryProjects = [
-        "rib-android",
-        "rib-android-test",
-        "rib-screen-stack-base",
-        "rib-workflow",
-        "rib-workflow-test"
-]
 Set<String> useErrorProneProjects = [
         "memory-leaks",
         "tutorial1",
@@ -91,11 +84,11 @@ subprojects {
         }
     }
 
-    boolean isAndroidLibrary = project.name in androidLibraryProjects
-    boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
-    boolean usesErrorProne = project.name in useErrorProneProjects
-
     afterEvaluate {
+        boolean isAndroidLibrary = project.plugins.hasPlugin("com.android.library")
+        boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
+        boolean usesErrorProne = project.name in useErrorProneProjects
+
         if ((isAndroidLibrary || isSample) && usesErrorProne) {
             def configurer = { variant ->
                 variant.getJavaCompileProvider().configure {
@@ -151,4 +144,4 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-apply from: 'gradle/dependencies.gradle'
+apply from: rootProject.file('gradle/japicmp.gradle')
