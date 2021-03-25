@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root;
 
 import androidx.annotation.Nullable;
-
-import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.google.common.base.Optional;
+import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.uber.rib.core.ViewRouter;
 import com.uber.rib.root.logged_in.LoggedInActionableItem;
 import com.uber.rib.root.logged_in.LoggedInBuilder;
@@ -27,9 +25,7 @@ import com.uber.rib.root.logged_in.LoggedInRouter;
 import com.uber.rib.root.logged_out.LoggedOutBuilder;
 import com.uber.rib.root.logged_out.LoggedOutRouter;
 
-/**
- * Adds and removes children of {@link RootBuilder.RootScope}.
- */
+/** Adds and removes children of {@link RootBuilder.RootScope}. */
 public class RootRouter extends ViewRouter<RootView, RootInteractor> {
 
   private final LoggedOutBuilder loggedOutBuilder;

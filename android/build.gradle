@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,6 +28,7 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.errorprone
+        classpath deps.build.gradlePlugins.spotless
     }
 }
 
@@ -59,10 +60,35 @@ subprojects {
         maven { url deps.build.gradlePluginsUrl }
     }
 
-    apply plugin: 'checkstyle'
+    apply plugin: 'com.diffplug.spotless'
+    spotless {
+        format 'misc', {
+            target '**/*.md', '**/.gitignore'
 
-    checkstyle { -> rootProject
-        configFile rootProject.file('config/checkstyle/checkstyle.xml')
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        kotlin {
+            target "**/*.kt"
+            ktlint(deps.versions.ktlint).userData(['indent_size': '2', 'continuation_indent_size' : '2'])
+            ktfmt(deps.versions.ktfmt)
+            licenseHeaderFile rootProject.file('config/spotless/copyright.kt')
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        java {
+            target "src/*/java/**/*.java"
+            googleJavaFormat(deps.versions.gjf)
+            licenseHeaderFile rootProject.file('config/spotless/copyright.java')
+            removeUnusedImports()
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
+        groovyGradle {
+            target '**/*.gradle'
+            trimTrailingWhitespace()
+            endWithNewline()
+        }
     }
 
     boolean isAndroidLibrary = project.name in androidLibraryProjects

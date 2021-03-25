@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
 
 import androidx.annotation.Nullable;
@@ -25,9 +24,7 @@ import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeInteractor;
 import javax.inject.Inject;
 
-/**
- * Coordinates Business Logic for {@link LoggedInScope}.
- */
+/** Coordinates Business Logic for {@link LoggedInScope}. */
 @RibInteractor
 public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRouter> {
 
@@ -39,7 +36,6 @@ public class LoggedInInteractor extends Interactor<EmptyPresenter, LoggedInRoute
 
     // when first logging in we should be in the OffGame state
     getRouter().attachOffGame();
-
   }
 
   @Override

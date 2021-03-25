@@ -1,18 +1,3 @@
-package com.uber.rib.root.logged_out;
-
-import android.content.Context;
-import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
-import android.util.AttributeSet;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import com.jakewharton.rxbinding2.view.RxView;
-import com.uber.rib.core.Initializer;
-import com.uber.rib.tutorial1.R;
-import io.reactivex.Observable;
-import io.reactivex.functions.Function;
-
 /*
  * Copyright (C) 2017. Uber Technologies
  *
@@ -20,7 +5,7 @@ import io.reactivex.functions.Function;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +13,22 @@ import io.reactivex.functions.Function;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.uber.rib.root.logged_out;
 
-/**
- * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.
- */
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
+import com.jakewharton.rxbinding2.view.RxView;
+import com.uber.rib.core.Initializer;
+import com.uber.rib.tutorial1.R;
+import io.reactivex.Observable;
+import io.reactivex.functions.Function;
+
+/** Top level view for {@link LoggedOutBuilder.LoggedOutScope}. */
 public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
 
   private Button loginButton;

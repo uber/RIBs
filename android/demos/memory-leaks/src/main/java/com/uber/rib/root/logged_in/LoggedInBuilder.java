@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
+
+import static java.lang.annotation.RetentionPolicy.CLASS;
 
 import com.uber.rib.core.Builder;
 import com.uber.rib.core.EmptyPresenter;
 import com.uber.rib.core.InteractorBaseComponent;
 import com.uber.rib.root.RootView;
-
-import java.lang.annotation.Retention;
-
-import javax.inject.Qualifier;
-import javax.inject.Scope;
-
 import dagger.BindsInstance;
 import dagger.Provides;
-
-import static java.lang.annotation.RetentionPolicy.CLASS;
+import java.lang.annotation.Retention;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
 
 public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.ParentComponent> {
 
@@ -44,10 +40,11 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
    */
   public LoggedInRouter build() {
     LoggedInInteractor interactor = new LoggedInInteractor();
-    Component component = DaggerLoggedInBuilder_Component.builder()
-        .parentComponent(getDependency())
-        .interactor(interactor)
-        .build();
+    Component component =
+        DaggerLoggedInBuilder_Component.builder()
+            .parentComponent(getDependency())
+            .interactor(interactor)
+            .build();
 
     return component.loggedinRouter();
   }
@@ -74,9 +71,7 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
   @LoggedInScope
   @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
-  public interface Component
-      extends InteractorBaseComponent<LoggedInInteractor>,
-      BuilderComponent {
+  public interface Component extends InteractorBaseComponent<LoggedInInteractor>, BuilderComponent {
 
     @dagger.Component.Builder
     interface Builder {
@@ -88,7 +83,6 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
       Component build();
     }
-
   }
 
   interface BuilderComponent {
@@ -97,10 +91,9 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
   @Scope
   @Retention(CLASS)
-  @interface LoggedInScope { }
-
+  @interface LoggedInScope {}
 
   @Qualifier
   @Retention(CLASS)
-  @interface LoggedInInternal { }
+  @interface LoggedInInternal {}
 }

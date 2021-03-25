@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -18,9 +18,6 @@ package com.uber.presidio.intellij_plugin.generator;
 import com.google.common.base.Charsets;
 import com.google.common.base.Preconditions;
 import com.google.common.io.CharStreams;
-
-import org.apache.commons.lang.text.StrSubstitutor;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,10 +32,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import org.apache.commons.lang.text.StrSubstitutor;
 
 /**
  * Base class for generating rib classes.
+ *
  * <p>
+ *
  * <p>Templates are tokenized using a ${token_name} syntax. {@code package_name} and {@code
  * rib_name} token values are provided by the base generate - however subclasses can add custom
  * paramaters when needed using {@link Generator#getTemplateValuesMap()}.
@@ -56,8 +56,8 @@ public abstract class Generator {
   private final Map<String, String> templateValuesMap;
 
   /**
-   * @param packageName  rib package name.
-   * @param ribName      rib name.
+   * @param packageName rib package name.
+   * @param ribName rib name.
    * @param templateName template to be used by this generate.
    */
   public Generator(String packageName, String ribName, boolean isKotlin, String templateName) {
@@ -98,8 +98,7 @@ public abstract class Generator {
         resource = "/templates/kotlin/" + templateName + ".kt.template";
       }
 
-      InputStream resourceAsStream1 =
-          Generator.class.getResourceAsStream(resource);
+      InputStream resourceAsStream1 = Generator.class.getResourceAsStream(resource);
       templateString =
           Preconditions.checkNotNull(
               CharStreams.toString(new InputStreamReader(resourceAsStream1, Charsets.UTF_8)));
@@ -108,21 +107,15 @@ public abstract class Generator {
     }
   }
 
-  /**
-   * @return the class name for the generated file.
-   */
+  /** @return the class name for the generated file. */
   public abstract String getClassName();
 
-  /**
-   * @return the package name for the generated file.
-   */
+  /** @return the package name for the generated file. */
   public final String getPackageName() {
     return packageName;
   }
 
-  /**
-   * @return the rib name for the generator.
-   */
+  /** @return the rib name for the generator. */
   public final String getRibName() {
     return ribName;
   }
@@ -136,16 +129,12 @@ public abstract class Generator {
     return ".java";
   }
 
-  /**
-   * @return the template values map, to add more template paramters.
-   */
+  /** @return the template values map, to add more template paramters. */
   protected final Map<String, String> getTemplateValuesMap() {
     return templateValuesMap;
   }
 
-  /**
-   * @return the source for the generated file.
-   */
+  /** @return the source for the generated file. */
   public final String generate() {
     StrSubstitutor substitutor = new StrSubstitutor(templateValuesMap);
     String newFile = substitutor.replace(templateString);
@@ -159,7 +148,7 @@ public abstract class Generator {
    * http://stackoverflow.com/questions/6247144/how-to-load-a-folder-from-a-jar.
    *
    * @param clazz Any java class that lives in the same place as the resources you want.
-   * @param path  Should end with "/", but not start with one.
+   * @param path Should end with "/", but not start with one.
    * @return Just the name of each member item, not the full paths.
    * @throws URISyntaxException
    * @throws IOException

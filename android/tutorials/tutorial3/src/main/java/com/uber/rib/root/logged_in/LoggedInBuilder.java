@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
 
 import static java.lang.annotation.RetentionPolicy.CLASS;
@@ -47,16 +46,16 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
    */
   public LoggedInRouter build(String playerOne, String playerTwo) {
     LoggedInInteractor interactor = new LoggedInInteractor();
-    Component component = DaggerLoggedInBuilder_Component.builder()
-        .parentComponent(getDependency())
-        .interactor(interactor)
-        .playerOne(playerOne)
-        .playerTwo(playerTwo)
-        .build();
+    Component component =
+        DaggerLoggedInBuilder_Component.builder()
+            .parentComponent(getDependency())
+            .interactor(interactor)
+            .playerOne(playerOne)
+            .playerTwo(playerTwo)
+            .build();
 
     return component.loggedinRouter();
   }
-
 
   public interface ParentComponent {
 
@@ -74,8 +73,8 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
     @LoggedInScope
     @Provides
-    static LoggedInRouter router(Component component, LoggedInInteractor interactor,
-        RootView rootView) {
+    static LoggedInRouter router(
+        Component component, LoggedInInteractor interactor, RootView rootView) {
       return new LoggedInRouter(
           interactor,
           component,
@@ -88,8 +87,7 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
     @LoggedInInternal
     @Provides
     static MutableScoreStream mutableScoreStream(
-        @Named("player_one") String playerOne,
-        @Named("player_two") String playerTwo) {
+        @Named("player_one") String playerOne, @Named("player_two") String playerTwo) {
       return new MutableScoreStream(playerOne, playerTwo);
     }
 
@@ -114,9 +112,9 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
   @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
   public interface Component
       extends InteractorBaseComponent<LoggedInInteractor>,
-      BuilderComponent,
-      OffGameBuilder.ParentComponent,
-      TicTacToeBuilder.ParentComponent {
+          BuilderComponent,
+          OffGameBuilder.ParentComponent,
+          TicTacToeBuilder.ParentComponent {
 
     @dagger.Component.Builder
     interface Builder {
@@ -134,7 +132,6 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
       @BindsInstance
       Builder playerTwo(@Named("player_two") String playerTwo);
     }
-
   }
 
   interface BuilderComponent {
@@ -144,14 +141,9 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
   @Scope
   @Retention(CLASS)
-  @interface LoggedInScope {
-
-  }
-
+  @interface LoggedInScope {}
 
   @Qualifier
   @Retention(CLASS)
-  @interface LoggedInInternal {
-
-  }
+  @interface LoggedInInternal {}
 }

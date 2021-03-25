@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -15,37 +15,34 @@
  */
 package com.uber.rib.core;
 
+import static com.google.common.truth.Truth.assertThat;
+import static com.uber.autodispose.AutoDispose.autoDisposable;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.robolectric.Robolectric.buildActivity;
+import static org.robolectric.Robolectric.setupActivity;
+
 import android.app.Activity;
 import android.content.Intent;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.uber.autodispose.lifecycle.LifecycleEndedException;
 import com.uber.rib.android.R;
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
-
+import io.reactivex.Observable;
+import io.reactivex.functions.Predicate;
+import io.reactivex.observers.TestObserver;
+import io.reactivex.subjects.PublishSubject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.android.controller.ActivityController;
-
-import io.reactivex.Observable;
-import io.reactivex.functions.Predicate;
-import io.reactivex.observers.TestObserver;
-import io.reactivex.subjects.PublishSubject;
-
-import static com.uber.autodispose.AutoDispose.autoDisposable;
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.robolectric.Robolectric.buildActivity;
-import static org.robolectric.Robolectric.setupActivity;
 
 @RunWith(RobolectricTestRunner.class)
 public class RibActivityTest {
@@ -244,8 +241,7 @@ public class RibActivityTest {
     }
   }
 
-  private static class EmptyRouter
-      extends ViewRouter<FrameLayout, Interactor<ViewPresenter, ?>> {
+  private static class EmptyRouter extends ViewRouter<FrameLayout, Interactor<ViewPresenter, ?>> {
 
     EmptyRouter(
         @NonNull FrameLayout view,

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,30 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.off_game;
-
-import android.view.LayoutInflater;
-import android.view.ViewGroup;
-
-import com.uber.rib.core.InteractorBaseComponent;
-import com.uber.rib.core.ViewBuilder;
-import com.uber.rib.tutorial1.R;
-
-import java.lang.annotation.Retention;
-
-import javax.inject.Qualifier;
-import javax.inject.Scope;
-
-import dagger.Binds;
-import dagger.BindsInstance;
-import dagger.Provides;
 
 import static java.lang.annotation.RetentionPolicy.CLASS;
 
-/**
- * Builder for the {@link OffGameScope}.
- */
+import android.view.LayoutInflater;
+import android.view.ViewGroup;
+import com.uber.rib.core.InteractorBaseComponent;
+import com.uber.rib.core.ViewBuilder;
+import com.uber.rib.tutorial1.R;
+import dagger.Binds;
+import dagger.BindsInstance;
+import dagger.Provides;
+import java.lang.annotation.Retention;
+import javax.inject.Qualifier;
+import javax.inject.Scope;
+
+/** Builder for the {@link OffGameScope}. */
 public class OffGameBuilder
     extends ViewBuilder<OffGameView, OffGameRouter, OffGameBuilder.ParentComponent> {
 
@@ -53,11 +46,12 @@ public class OffGameBuilder
   public OffGameRouter build(ViewGroup parentViewGroup) {
     OffGameView view = createView(parentViewGroup);
     OffGameInteractor interactor = new OffGameInteractor();
-    Component component = DaggerOffGameBuilder_Component.builder()
-        .parentComponent(getDependency())
-        .view(view)
-        .interactor(interactor)
-        .build();
+    Component component =
+        DaggerOffGameBuilder_Component.builder()
+            .parentComponent(getDependency())
+            .view(view)
+            .interactor(interactor)
+            .build();
     return component.offgameRouter();
   }
 
@@ -81,16 +75,13 @@ public class OffGameBuilder
     @OffGameScope
     @Provides
     static OffGameRouter router(
-        Component component,
-        OffGameView view,
-        OffGameInteractor interactor) {
+        Component component, OffGameView view, OffGameInteractor interactor) {
       return new OffGameRouter(view, interactor, component);
     }
   }
 
   @OffGameScope
-  @dagger.Component(modules = Module.class,
-      dependencies = ParentComponent.class)
+  @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
   interface Component extends InteractorBaseComponent<OffGameInteractor>, BuilderComponent {
 
     @dagger.Component.Builder
@@ -115,13 +106,9 @@ public class OffGameBuilder
 
   @Scope
   @Retention(CLASS)
-  @interface OffGameScope {
-
-  }
+  @interface OffGameScope {}
 
   @Qualifier
   @Retention(CLASS)
-  @interface OffGameInternal {
-
-  }
+  @interface OffGameInternal {}
 }

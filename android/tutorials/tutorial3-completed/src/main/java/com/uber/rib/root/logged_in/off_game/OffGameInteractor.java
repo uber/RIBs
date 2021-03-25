@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.off_game;
 
 import androidx.annotation.Nullable;
@@ -24,9 +23,7 @@ import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import javax.inject.Inject;
 
-/**
- * Coordinates Business Logic for {@link OffGameScope}.
- */
+/** Coordinates Business Logic for {@link OffGameScope}. */
 @RibInteractor
 public class OffGameInteractor
     extends Interactor<OffGameInteractor.OffGamePresenter, OffGameRouter> {
@@ -40,12 +37,13 @@ public class OffGameInteractor
 
     presenter
         .startGameRequest()
-        .subscribe(new Consumer<Object>() {
-          @Override
-          public void accept(Object object) throws Exception {
-            listener.onStartGame();
-          }
-        });
+        .subscribe(
+            new Consumer<Object>() {
+              @Override
+              public void accept(Object object) throws Exception {
+                listener.onStartGame();
+              }
+            });
   }
 
   public interface Listener {
@@ -53,9 +51,7 @@ public class OffGameInteractor
     void onStartGame();
   }
 
-  /**
-   * Presenter interface implemented by this RIB's view.
-   */
+  /** Presenter interface implemented by this RIB's view. */
   interface OffGamePresenter {
 
     Observable<Object> startGameRequest();

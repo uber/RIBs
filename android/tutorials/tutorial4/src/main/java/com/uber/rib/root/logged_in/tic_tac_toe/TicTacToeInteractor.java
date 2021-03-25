@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.tic_tac_toe;
 
 import androidx.annotation.Nullable;
@@ -27,9 +26,7 @@ import io.reactivex.functions.Consumer;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-/**
- * Coordinates Business Logic for {@link TicTacToeScope}.
- */
+/** Coordinates Business Logic for {@link TicTacToeScope}. */
 @RibInteractor
 public class TicTacToeInteractor
     extends Interactor<TicTacToeInteractor.TicTacToePresenter, TicTacToeRouter> {
@@ -37,8 +34,14 @@ public class TicTacToeInteractor
   @Inject Board board;
   @Inject Listener listener;
   @Inject TicTacToePresenter presenter;
-  @Inject @Named("player_one") UserName playerOne;
-  @Inject @Named("player_two") UserName playerTwo;
+
+  @Inject
+  @Named("player_one")
+  UserName playerOne;
+
+  @Inject
+  @Named("player_two")
+  UserName playerTwo;
 
   private MarkerType currentPlayer = MarkerType.CROSS;
 
@@ -92,10 +95,7 @@ public class TicTacToeInteractor
     }
   }
 
-
-  /**
-   * Presenter interface implemented by this RIB's view.
-   */
+  /** Presenter interface implemented by this RIB's view. */
   interface TicTacToePresenter {
     Observable<BoardCoordinate> squareClicks();
 

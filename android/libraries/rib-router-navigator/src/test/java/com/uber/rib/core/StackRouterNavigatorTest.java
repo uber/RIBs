@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -558,10 +558,10 @@ public class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2);
 
     routerNavigator.pushState(
-            TestState.STATE_3,
-            StackRouterNavigator.Flag.REPLACE_TOP,
-            attachTransition3,
-            detachTransition3);
+        TestState.STATE_3,
+        StackRouterNavigator.Flag.REPLACE_TOP,
+        attachTransition3,
+        detachTransition3);
 
     assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_3);
     assertThat(routerNavigator.size()).isEqualTo(2);
@@ -573,10 +573,10 @@ public class StackRouterNavigatorTest {
   @Test
   public void pushReplaceTop_whenStackIsEmpty_shouldPushNewStateToTopOfStack() {
     routerNavigator.pushState(
-            TestState.STATE_1,
-            StackRouterNavigator.Flag.REPLACE_TOP,
-            attachTransition3,
-            detachTransition3);
+        TestState.STATE_1,
+        StackRouterNavigator.Flag.REPLACE_TOP,
+        attachTransition3,
+        detachTransition3);
 
     assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_1);
     assertThat(routerNavigator.size()).isEqualTo(1);
