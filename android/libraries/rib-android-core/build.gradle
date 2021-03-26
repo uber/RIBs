@@ -17,10 +17,12 @@
 buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.kotlin
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -47,8 +49,9 @@ dependencies {
     implementation deps.apt.javaxInject
     implementation deps.androidx.annotations
     implementation deps.androidx.appcompat
-    testImplementation deps.external.roboelectricBase
+    implementation deps.kotlin.stdlib
     testImplementation deps.androidx.appcompat
+    testImplementation deps.external.roboelectricBase
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

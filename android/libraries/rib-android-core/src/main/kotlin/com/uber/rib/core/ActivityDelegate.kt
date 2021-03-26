@@ -13,46 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.app.Activity;
-import android.content.Intent;
-import android.os.Bundle;
-import androidx.annotation.IntRange;
-import androidx.annotation.Nullable;
+import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
+import androidx.annotation.IntRange
 
 /**
- * This class represents a delegate which you can use to extend CoreAppCompatActivity's
- * functionality. This allows RibActivity and any other type of Activity that you need to support to
- * share CoreAppCompatActivity as a common parent.
+ * This class represents a delegate which you can use to extend [CoreAppCompatActivity]'s
+ * functionality. This allows [RibActivity] and any other type of [Activity] that you need to
+ * support to share [CoreAppCompatActivity] as a common parent.
  */
-public interface ActivityDelegate {
-  /** @see {@link Activity#onCreate(Bundle) } */
-  default void onCreate(@Nullable Bundle savedInstanceState) {}
+interface ActivityDelegate {
+  /** @see [Activity.onCreate] */
+  fun onCreate(savedInstanceState: Bundle?) {}
 
-  /** @see {@link Activity#onStart() } */
-  default void onStart() {}
+  /** @see [Activity.onStart] */
+  fun onStart() {}
 
-  /** @see {@link Activity#onResume() } */
-  default void onResume() {}
+  /** @see [Activity.onResume] */
+  fun onResume() {}
 
-  /** @see {@link Activity#onPause() } */
-  default void onPause() {}
+  /** @see [Activity.onPause] */
+  fun onPause() {}
 
-  /** @see {@link Activity#onStop() } */
-  default void onStop() {}
+  /** @see [Activity.onStop] */
+  fun onStop() {}
 
-  /** @see {@link Activity#onDestroy() } */
-  default void onDestroy() {}
+  /** @see [Activity.onDestroy] */
+  fun onDestroy() {}
 
-  /** @see {@link Activity#onActivityResult(Activity, int, int, Intent) } */
-  default void onActivityResult(
-      Activity activity, int requestCode, int resultCode, @Nullable Intent data) {}
+  /** @see [Activity.onActivityResult] */
+  fun onActivityResult(
+    activity: Activity,
+    requestCode: Int,
+    resultCode: Int,
+    data: Intent?
+  ) {}
 
-  /** @see {@link Activity#onRequestPermissionsResult(Activity, int, String[], int[]) } */
-  default void onRequestPermissionsResult(
-      Activity activity,
-      @IntRange(from = 0, to = 255) int requestCode,
-      String[] permissions,
-      int[] grantResults) {}
+  /** @see [Activity.onRequestPermissionsResult] */
+  fun onRequestPermissionsResult(
+    activity: Activity,
+    @IntRange(from = 0, to = 255) requestCode: Int,
+    permissions: Array<String>,
+    grantResults: IntArray
+  ) {}
 }

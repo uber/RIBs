@@ -13,15 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/** Interface to indicate an object has a CoreAppCompatActivity.Delegate. */
-public interface HasActivityDelegate {
-
+/** Interface to indicate an object has an [ActivityDelegate]. */
+interface HasActivityDelegate {
   /**
    * Get the delegate.
    *
    * @return The delegate.
    */
-  ActivityDelegate activityDelegate();
+  fun activityDelegate(): ActivityDelegate
 }

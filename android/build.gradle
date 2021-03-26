@@ -90,6 +90,7 @@ subprojects {
         boolean isAndroidLibrary = project.plugins.hasPlugin("com.android.library")
         boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
         boolean usesErrorProne = project.name in useErrorProneProjects
+        boolean isKotlinLibrary = project.plugins.hasPlugin("org.jetbrains.kotlin.jvm") || project.plugins.hasPlugin("org.jetbrains.kotlin.android")
 
         if ((isAndroidLibrary || isSample) && usesErrorProne) {
             def configurer = { variant ->
@@ -135,6 +136,36 @@ subprojects {
                         if (variant.buildType.name == "release") {
                             variant.setIgnore(true)
                         }
+                    }
+                }
+            }
+        }
+
+        if (isKotlinLibrary) {
+            if (isAndroidLibrary) {
+                tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+                    kotlinOptions {
+                        freeCompilerArgs = [
+                                "-Xjvm-default=all"
+                        ]
+                        jvmTarget = "1.8"
+                    }
+                }
+            } else {
+                project.compileKotlin {
+                    kotlinOptions {
+                        freeCompilerArgs = [
+                                "-Xjvm-default=all"
+                        ]
+                        jvmTarget = "1.8"
+                    }
+                }
+                project.compileTestKotlin {
+                    kotlinOptions {
+                        freeCompilerArgs = [
+                                "-Xjvm-default=all"
+                        ]
+                        jvmTarget = "1.8"
                     }
                 }
             }
