@@ -25,6 +25,7 @@ def versions = [
     errorProne: '2.3.3',
     gjf: '1.7',
     intellij: "2017.2",
+    kotlin: "1.4.21",
     ktfmt: '0.23',
     ktlint: '0.41.0',
     rave: "2.0.0",
@@ -68,6 +69,7 @@ def build = [
         apt: "net.ltgt.gradle:gradle-apt-plugin:0.21",
         errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
         japicmp: 'me.champeau.gradle:japicmp-gradle-plugin:0.2.8',
+        kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
         nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:1.0.2",
         spotless: "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
     ]
@@ -97,6 +99,10 @@ def external = [
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
     rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.0.0',
     leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+]
+
+def kotlin = [
+    stdlib: "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 ]
 
 def uber = [

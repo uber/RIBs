@@ -28,6 +28,7 @@ buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
         classpath deps.build.gradlePlugins.errorprone
+        classpath deps.build.gradlePlugins.kotlin
         classpath deps.build.gradlePlugins.spotless
     }
 }
@@ -63,8 +64,9 @@ subprojects {
         }
         kotlin {
             target "**/*.kt"
-            ktlint(deps.versions.ktlint).userData(['indent_size': '2', 'continuation_indent_size' : '2'])
-            ktfmt(deps.versions.ktfmt)
+            ktlint(deps.versions.ktlint).userData(['indent_size': '2', 'continuation_indent_size' : '4'])
+            // TODO: enable when ktfmt depends on google-java-format < v1.8
+            // ktfmt(deps.versions.ktfmt)
             licenseHeaderFile rootProject.file('config/spotless/copyright.kt')
             trimTrailingWhitespace()
             endWithNewline()
