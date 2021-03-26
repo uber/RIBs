@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+apply plugin: "org.jetbrains.kotlin.jvm"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

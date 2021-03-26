@@ -13,41 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import java.util.List;
-
-/** Debugging utilties when working with Routers. */
-public final class RouterDebugUtils {
-  private static final String ARM_RIGHT = "└── ";
-  private static final String INTERSECTION = "├── ";
-  private static final String LINE = "│   ";
-  private static final String SPACE = "    ";
-
-  private RouterDebugUtils() {}
+/** Debugging utilities when working with Routers.  */
+object RouterDebugUtils {
+  private const val ARM_RIGHT = "└── "
+  private const val INTERSECTION = "├── "
+  private const val LINE = "│   "
+  private const val SPACE = "    "
 
   /**
    * Prints out the tree of routers from this point.
    *
-   * @param router {@link Router}
+   * @param router [Router] root router of a RIB tree
+   * @param prefix [String] text to print before the tree
+   * @param isTail [Boolean] true if is tail node; otherwise, false
    */
-  public static void printRouterSubtree(final Router<?> router) {
-    printRouterSubtree(router, "", true);
-  }
-
-  private static void printRouterSubtree(
-      final Router<?> router, final String prefix, final boolean isTail) {
+  @JvmStatic
+  @JvmOverloads
+  fun printRouterSubtree(router: Router<*>, prefix: String = "", isTail: Boolean = true) {
     Rib.getConfiguration()
-        .handleDebugMessage(prefix + (isTail ? ARM_RIGHT : INTERSECTION) + router.getTag());
-
-    List<Router> children = router.getChildren();
-
-    for (int i = 0; i < children.size() - 1; i++) {
-      printRouterSubtree(children.get(i), prefix + (isTail ? SPACE : LINE), false);
+      .handleDebugMessage(prefix + (if (isTail) ARM_RIGHT else INTERSECTION) + router.tag)
+    val children = router.children
+    for (i in 0 until children.size - 1) {
+      printRouterSubtree(children[i], prefix + if (isTail) SPACE else LINE, false)
     }
-
-    if (children.size() > 0) {
-      printRouterSubtree(children.get(children.size() - 1), prefix + (isTail ? SPACE : LINE), true);
+    if (children.size > 0) {
+      printRouterSubtree(children[children.size - 1], prefix + if (isTail) SPACE else LINE, true)
     }
   }
 }
