@@ -114,11 +114,12 @@ def uber = [
 ]
 
 ext.deps = [
+    "androidx": androidx,
     "apt": apt,
     "build": build,
     "external": external,
-    "androidx": androidx,
+    "kotlin": kotlin,
     "test": test,
-    "versions": versions,
     "uber": uber,
+    "versions": versions
 ]
