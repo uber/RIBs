@@ -17,10 +17,12 @@
 buildscript {
     dependencies {
         classpath deps.build.gradlePlugins.android
+        classpath deps.build.gradlePlugins.kotlin
     }
 }
 
 apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -45,10 +47,11 @@ android {
 }
 
 dependencies {
-    implementation deps.androidx.annotations
     api project(":libraries:rib-workflow")
     api deps.external.guavaAndroid
     api deps.external.rxjava2
+    implementation deps.androidx.annotations
+    implementation deps.kotlin.stdlib
     implementation deps.test.truth
 }
 
