@@ -13,73 +13,74 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workflow.core;
+package com.uber.rib.workflow.core
 
-import static com.google.common.truth.Truth.assertThat;
+import com.google.common.base.Optional
+import com.google.common.truth.Truth.assertThat
+import io.reactivex.Observable
+import io.reactivex.observers.TestObserver
 
-import androidx.annotation.Nullable;
-import com.google.common.base.Optional;
-import io.reactivex.Observable;
-import io.reactivex.observers.TestObserver;
-
-/** Utility to expose {@link Observable} instances on a {@link Step} for unit testing purposes. */
-public final class StepTester {
-
-  private StepTester() {}
-
+/** Utility to expose [Observable] instances on a [Step] for unit testing purposes.  */
+object StepTester {
   /**
-   * Exposes a {@link Step} instances observable for testing purposes.
+   * Exposes a [Step] instances observable for testing purposes.
    *
    * @param step to expose observable for.
    * @param <T> type of return value for a step.
    * @param <A> type of next actionable item for a step.
-   * @return a {@link Observable} that runs the steps action.
-   */
-  public static <T, A extends ActionableItem>
-      Observable<Optional<Step.Data<T, A>>> exposeObservable(Step<T, A> step) {
-    return step.asObservable();
+   * @return a [Observable] that runs the steps action.
+   </A></T> */
+  @JvmStatic
+  fun <T, A : ActionableItem> exposeObservable(step: Step<T, A>): Observable<Optional<Step.Data<T, A>>> {
+    return step.asObservable()
   }
 
   /**
-   * Exposes the {@link com.uber.rib.workflow.core.Step.Data} of a {@link Step}
+   * Exposes the [com.uber.rib.workflow.core.Step.Data] of a [Step]
    *
    * @param step to expose data for.
    * @param <T> type of return value for a step.
    * @param <A> type of next actionable item for a step.
    * @return the data of the step
-   */
-  @Nullable
-  public static <T, A extends ActionableItem> T exposeStepData(Step.Data<T, A> step) {
-    return step.getValue();
+   </A></T> */
+  @JvmStatic
+  fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? {
+    return step.getValue()
   }
 
   /**
-   * Asserts that no {@link Step} has been emitted from the {@link TestObserver}
+   * Asserts that no [Step] has been emitted from the [TestObserver]
    *
    * @param testSubscriber the step subscriber to assert on.
    * @param <T> type of return value for a step.
    * @param <A> type of next actionable item for a step.
-   */
-  public static <T, A extends ActionableItem> void assertStepNotYetEmitted(
-      TestObserver<Optional<Step.Data<T, A>>> testSubscriber) {
-    testSubscriber.assertNoValues();
-    testSubscriber.assertNotComplete();
-    testSubscriber.assertNoErrors();
+   </A></T> */
+  @JvmStatic
+  fun <T, A : ActionableItem> assertStepNotYetEmitted(
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
+  ) {
+    testSubscriber.run {
+      assertNoValues()
+      assertNotComplete()
+      assertNoErrors()
+    }
   }
 
   /**
-   * Asserts that exactly one {@link Step} has been emitted from the {@link TestObserver}
+   * Asserts that exactly one [Step] has been emitted from the [TestObserver]
    *
    * @param testSubscriber the step subscriber to assert on.
    * @param <T> type of return value for a step.
    * @param <A> type of next actionable item for a step.
-   */
-  public static <T, A extends ActionableItem> void assertStepEmitted(
-      TestObserver<Optional<Step.Data<T, A>>> testSubscriber) {
-    testSubscriber.assertValueCount(1);
-    Optional<Step.Data<T, A>> stepData = testSubscriber.values().get(0);
-    assertThat(stepData.isPresent()).isTrue();
-    testSubscriber.assertComplete();
-    testSubscriber.assertNoErrors();
+   </A></T> */
+  @JvmStatic
+  fun <T, A : ActionableItem> assertStepEmitted(
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
+  ) {
+    testSubscriber.assertValueCount(1)
+    val stepData: Optional<Step.Data<T, A>> = testSubscriber.values().get(0)
+    assertThat(stepData.isPresent()).isTrue()
+    testSubscriber.assertComplete()
+    testSubscriber.assertNoErrors()
   }
 }
