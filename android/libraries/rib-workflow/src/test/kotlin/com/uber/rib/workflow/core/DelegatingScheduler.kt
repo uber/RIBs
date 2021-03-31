@@ -13,60 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workflow.core;
+package com.uber.rib.workflow.core
 
-import static androidx.annotation.RestrictTo.Scope.GROUP_ID;
+import androidx.annotation.VisibleForTesting
+import io.reactivex.Scheduler
+import io.reactivex.schedulers.Schedulers
+import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicReference
 
-import androidx.annotation.RestrictTo;
-import androidx.annotation.VisibleForTesting;
-import io.reactivex.Scheduler;
-import io.reactivex.schedulers.Schedulers;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+class DelegatingScheduler private constructor(
+  @get:VisibleForTesting val schedulerType: SchedulerType
+) : Scheduler() {
 
-@RestrictTo(GROUP_ID)
-class DelegatingScheduler extends Scheduler {
-
-  private final AtomicReference<Scheduler> activeScheduler =
-      new AtomicReference<>(Schedulers.trampoline());
-  private volatile SchedulerType schedulerType;
+  private val activeScheduler = AtomicReference(Schedulers.trampoline())
 
   @VisibleForTesting
-  enum SchedulerType {
+  enum class SchedulerType {
     MAIN_THREAD
   }
 
-  static DelegatingScheduler forType(SchedulerType schedulerType) {
-    return new DelegatingScheduler(schedulerType);
+  override fun createWorker(): Worker {
+    return activeScheduler().createWorker()
   }
 
-  private DelegatingScheduler(SchedulerType schedulerType) {
-    super();
-    this.schedulerType = schedulerType;
+  override fun now(unit: TimeUnit): Long {
+    return activeScheduler().now(unit)
   }
 
-  @Override
-  public Worker createWorker() {
-    return activeScheduler().createWorker();
-  }
-
-  @Override
-  public long now(TimeUnit unit) {
-    return activeScheduler().now(unit);
-  }
-
-  @SuppressWarnings("CheckNullabilityTypes")
   @VisibleForTesting
-  synchronized Scheduler activeScheduler() {
-    return activeScheduler.get();
+  @Synchronized
+  fun activeScheduler(): Scheduler {
+    return activeScheduler.get()
   }
 
-  synchronized void setActiveScheduler(final Scheduler activeScheduler) {
-    this.activeScheduler.set(activeScheduler);
+  @Synchronized
+  fun setActiveScheduler(activeScheduler: Scheduler) {
+    this.activeScheduler.set(activeScheduler)
   }
 
-  @VisibleForTesting()
-  SchedulerType getSchedulerType() {
-    return schedulerType;
+  companion object {
+    fun forType(schedulerType: SchedulerType) = DelegatingScheduler(schedulerType)
   }
 }

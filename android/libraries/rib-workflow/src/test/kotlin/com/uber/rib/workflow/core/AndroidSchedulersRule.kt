@@ -13,71 +13,43 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workflow.core;
+package com.uber.rib.workflow.core
 
-import static com.uber.rib.workflow.core.DelegatingScheduler.SchedulerType.MAIN_THREAD;
-
-import io.reactivex.Scheduler;
-import io.reactivex.android.plugins.RxAndroidPlugins;
-import io.reactivex.functions.Function;
-import java.util.concurrent.Callable;
-import org.junit.rules.TestWatcher;
-import org.junit.runner.Description;
+import io.reactivex.Scheduler
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.functions.Function
+import org.junit.rules.TestWatcher
+import org.junit.runner.Description
+import java.util.concurrent.Callable
 
 /**
  * JUnit rule to set AndroidSchedulers for tests. Inlined into this module to facilitate testing.
+ *
+ * @param restoreHandlers if true, the rule will save off the original schedulers and restore them
+ * after. Almost always want this to be false and is so by default.
  */
-class AndroidSchedulersRule extends TestWatcher {
+class AndroidSchedulersRule @JvmOverloads constructor(
+  private val restoreHandlers: Boolean = false
+) : TestWatcher() {
 
-  private DelegatingScheduler delegatingMainThreadScheduler =
-      DelegatingScheduler.forType(MAIN_THREAD);
+  private val delegatingMainThreadScheduler = DelegatingScheduler.forType(DelegatingScheduler.SchedulerType.MAIN_THREAD)
+  private val originalInitMainThreadInitHandler: Function<Callable<Scheduler>, Scheduler>? = null
+  private val originalMainThreadHandler: Function<Scheduler, Scheduler>? = null
 
-  private Function<Callable<Scheduler>, Scheduler> originalInitMainThreadInitHandler;
-  private Function<Scheduler, Scheduler> originalMainThreadHandler;
-
-  private final boolean restoreHandlers;
-
-  public AndroidSchedulersRule() {
-    this(false);
-  }
-
-  /**
-   * @param restoreHandlers if true, the rule will save off the original schedulers and restore them
-   *     after. Almost always want this to be false and is so by default.
-   */
-  @SuppressWarnings("CheckNullabilityTypes")
-  public AndroidSchedulersRule(boolean restoreHandlers) {
-    this.restoreHandlers = restoreHandlers;
-  }
-
-  @Override
-  protected void starting(Description description) {
+  override fun starting(description: Description) {
     if (restoreHandlers) {
       // https://github.com/ReactiveX/RxAndroid/pull/358
       //            originalInitMainThreadInitHandler =
       // RxAndroidPlugins.getInitMainThreadScheduler();
       //            originalMainThreadHandler = RxAndroidPlugins.getMainThreadScheduler();
     }
-    RxAndroidPlugins.reset();
-    RxAndroidPlugins.setInitMainThreadSchedulerHandler(
-        new Function<Callable<Scheduler>, Scheduler>() {
-          @Override
-          public Scheduler apply(Callable<Scheduler> schedulerCallable) throws Exception {
-            return delegatingMainThreadScheduler;
-          }
-        });
-    RxAndroidPlugins.setMainThreadSchedulerHandler(
-        new Function<Scheduler, Scheduler>() {
-          @Override
-          public Scheduler apply(Scheduler scheduler) throws Exception {
-            return delegatingMainThreadScheduler;
-          }
-        });
+    RxAndroidPlugins.reset()
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler { delegatingMainThreadScheduler }
+    RxAndroidPlugins.setMainThreadSchedulerHandler { delegatingMainThreadScheduler }
   }
 
-  @Override
-  protected void finished(Description description) {
-    RxAndroidPlugins.reset();
+  override fun finished(description: Description) {
+    RxAndroidPlugins.reset()
     if (restoreHandlers) {
       // https://github.com/ReactiveX/RxAndroid/pull/358
       //
@@ -91,7 +63,8 @@ class AndroidSchedulersRule extends TestWatcher {
    *
    * @param scheduler to replace the main thread scheduler with.
    */
-  public final synchronized void setMainThreadScheduler(Scheduler scheduler) {
-    delegatingMainThreadScheduler.setActiveScheduler(scheduler);
+  @Synchronized
+  fun setMainThreadScheduler(scheduler: Scheduler) {
+    delegatingMainThreadScheduler.setActiveScheduler(scheduler)
   }
 }

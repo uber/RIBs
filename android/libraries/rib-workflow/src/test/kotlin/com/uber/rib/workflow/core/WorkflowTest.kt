@@ -13,66 +13,60 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workflow.core;
+package com.uber.rib.workflow.core
 
-import static com.google.common.truth.Truth.assertThat;
-import static io.reactivex.android.plugins.RxAndroidPlugins.setInitMainThreadSchedulerHandler;
+import com.google.common.base.Optional
+import com.google.common.truth.Truth.assertThat
+import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.workflow.core.Step.Companion.from
+import com.uber.rib.workflow.core.Step.Data
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.observers.TestObserver
+import io.reactivex.schedulers.Schedulers
+import io.reactivex.subjects.BehaviorSubject
+import io.reactivex.subjects.PublishSubject
+import org.junit.After
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
-import androidx.annotation.NonNull;
-import com.google.common.base.Optional;
-import com.uber.rib.core.lifecycle.InteractorEvent;
-import io.reactivex.android.plugins.RxAndroidPlugins;
-import io.reactivex.observers.TestObserver;
-import io.reactivex.schedulers.Schedulers;
-import io.reactivex.subjects.BehaviorSubject;
-import io.reactivex.subjects.PublishSubject;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
-import org.junit.Test;
+class WorkflowTest {
+  @get:Rule var androidSchedulersRuleRx2 = AndroidSchedulersRule()
 
-public class WorkflowTest {
-  @Rule public final AndroidSchedulersRule androidSchedulersRuleRx2 = new AndroidSchedulersRule();
-
-  private final BehaviorSubject<InteractorEvent> interactorLifecycleSubject =
-      BehaviorSubject.create();
-  private final PublishSubject<Step.Data<Object, ActionableItem>> returnValueSubject =
-      PublishSubject.create();
+  private val interactorLifecycleSubject = BehaviorSubject.create<InteractorEvent>()
+  private val returnValueSubject: PublishSubject<Data<Any, ActionableItem>> = PublishSubject.create()
 
   @Before
-  public void setup() {
-    setInitMainThreadSchedulerHandler(schedulerCallable -> Schedulers.trampoline());
+  fun setup() {
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
   }
 
   @After
-  public void cleanup() {
-    RxAndroidPlugins.reset();
+  fun cleanup() {
+    RxAndroidPlugins.reset()
   }
 
   @Test
-  public void createSingle_shouldReturnASingleThatRunsTheWorkflow() {
-    ActionableItem actionableItem = () -> interactorLifecycleSubject;
+  fun createSingle_shouldReturnASingleThatRunsTheWorkflow() {
+    val actionableItem = ActionableItem { interactorLifecycleSubject }
 
-    Workflow<Object, ActionableItem> workflow =
-        new Workflow<Object, ActionableItem>() {
-          @NonNull
-          @Override
-          protected Step<Object, ActionableItem> getSteps(@NonNull ActionableItem actionableItem) {
-            return Step.from(returnValueSubject.singleOrError());
-          }
-        };
+    val workflow: Workflow<Any, ActionableItem> = object : Workflow<Any, ActionableItem>() {
+      override fun getSteps(rootActionableItem: ActionableItem): Step<Any, ActionableItem> {
+        return from(returnValueSubject.singleOrError())
+      }
+    }
 
-    TestObserver<Optional<Object>> testSubscriber = new TestObserver<>();
-    workflow.createSingle(actionableItem).subscribe(testSubscriber);
+    val testSubscriber = TestObserver<Optional<Any>>()
+    workflow.createSingle(actionableItem).subscribe(testSubscriber)
 
-    interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE);
-    Object returnValue = new Object();
-    returnValueSubject.onNext(new Step.Data<>(returnValue, actionableItem));
-    returnValueSubject.onComplete();
+    interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE)
+    val returnValue = Any()
+    returnValueSubject.onNext(Data(returnValue, actionableItem))
+    returnValueSubject.onComplete()
 
-    testSubscriber.assertValueCount(1);
-    assertThat(testSubscriber.values().get(0).get()).isEqualTo(returnValue);
-    testSubscriber.assertComplete();
-    testSubscriber.assertNoErrors();
+    testSubscriber.assertValueCount(1)
+    assertThat(testSubscriber.values()[0].get()).isEqualTo(returnValue)
+    testSubscriber.assertComplete()
+    testSubscriber.assertNoErrors()
   }
 }
