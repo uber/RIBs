@@ -62,7 +62,7 @@ open class Step<T, A : ActionableItem> private constructor(
     return asObservable().map { data -> Optional.fromNullable(data.orNull()?.getValue()) }
   }
 
-  open fun asObservable(): Observable<Optional<Data<T, A>>> {
+  internal open fun asObservable(): Observable<Optional<Data<T, A>>> {
     val cachedObservable: Observable<Optional<Data<T, A>>> = stepDataSingle.toObservable()
       .observeOn(AndroidSchedulers.mainThread())
       .cache()
@@ -89,7 +89,7 @@ open class Step<T, A : ActionableItem> private constructor(
    */
   open class Data<T, A : ActionableItem>(private val value: T, internal val actionableItem: A) {
 
-    open fun getValue() = value
+    internal open fun getValue() = value
 
     companion object {
       /**
