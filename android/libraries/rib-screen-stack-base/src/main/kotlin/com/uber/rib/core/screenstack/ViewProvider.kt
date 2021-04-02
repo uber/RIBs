@@ -25,7 +25,8 @@ import io.reactivex.Observable
 /** Interface to provide [View] instances to [ScreenStackBase].  */
 abstract class ViewProvider {
   private val lifecycleRelay = BehaviorRelay.create<ScreenStackEvent>().toSerialized()
-  fun buildViewInternal(parentView: ViewGroup): View {
+
+  open fun buildViewInternal(parentView: ViewGroup): View {
     lifecycleRelay.accept(ScreenStackEvent.BUILT)
     return buildView(parentView)
   }
@@ -40,7 +41,7 @@ abstract class ViewProvider {
 
   /** @return an observable that emits events for this view provider's lifecycle.
    */
-  fun lifecycle(): Observable<ScreenStackEvent> {
+  open fun lifecycle(): Observable<ScreenStackEvent> {
     return lifecycleRelay.hide()
   }
 
@@ -60,19 +61,19 @@ abstract class ViewProvider {
    *
    * @return TRUE if the provider handled the back press.
    */
-  fun onBackPress(): Boolean {
+  open fun onBackPress(): Boolean {
     return false
   }
 
   /** Notifies the view provider that view is at the top of the stack and visible.  */
   @CallSuper
-  fun onViewAppeared() {
+  open fun onViewAppeared() {
     lifecycleRelay.accept(ScreenStackEvent.APPEARED)
   }
 
   /** Notifies the view provider that the view is no longer at the top of the stack.  */
   @CallSuper
-  fun onViewHidden() {
+  open fun onViewHidden() {
     lifecycleRelay.accept(ScreenStackEvent.HIDDEN)
   }
 }
