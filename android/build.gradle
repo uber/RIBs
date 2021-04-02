@@ -155,6 +155,12 @@ subprojects {
                 extraCompilerArgs.add("-Xfriend-paths=${project.rootDir}/libraries/${moduleFriends[project.name]}/$outputJarPath")
             }
             if (isAndroidLibrary) {
+                project.android.sourceSets {
+                    main.java.srcDirs += 'src/main/kotlin'
+                    test.java.srcDirs += 'src/test/kotlin'
+                    androidTest.java.srcDirs += 'src/androidTest/kotlin'
+                }
+
                 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
                     kotlinOptions {
                         freeCompilerArgs = extraCompilerArgs
