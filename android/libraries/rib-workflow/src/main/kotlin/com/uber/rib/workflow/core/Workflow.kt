@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workflow.core;
+package com.uber.rib.workflow.core
 
-import com.google.common.base.Optional;
-import io.reactivex.Single;
+import com.google.common.base.Optional
+import io.reactivex.Single
 
 /**
- * Encapsulates a series of {@link Step} instances to be performed in a sequential sequence.
+ * Encapsulates a series of [Step] instances to be performed in a sequential sequence.
  *
  * @param <TReturnValue> expected return value for the entire workflow.
- * @param <TRootActionableItem> initial {@link ActionableItem} type for this workflow.
- */
-public abstract class Workflow<TReturnValue, TRootActionableItem extends ActionableItem> {
-
+ * @param <TRootActionableItem> initial [ActionableItem] type for this workflow.
+</TRootActionableItem></TReturnValue> */
+abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
   /**
    * Creates a single to execute a workflow.
    *
    * @param rootActionableItem actionable item to start the workflow with.
-   * @return an Rx {@link Single} that will return the workflow when subscribed to.
+   * @return an Rx [Single] that will return the workflow when subscribed to.
    */
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
-  public Single<Optional<TReturnValue>> createSingle(TRootActionableItem rootActionableItem) {
-    return getSteps(rootActionableItem).asResultObservable().singleOrError();
+  open fun createSingle(rootActionableItem: TRootActionableItem): Single<Optional<TReturnValue>> {
+    return getSteps(rootActionableItem).asResultObservable().singleOrError()
   }
 
   /**
    * @param rootActionableItem to create steps from.
    * @return steps to be performed for this workflow.
    */
-  protected abstract Step<TReturnValue, ? extends ActionableItem> getSteps(
-      TRootActionableItem rootActionableItem);
+  protected abstract fun getSteps(
+    rootActionableItem: TRootActionableItem
+  ): Step<TReturnValue, out ActionableItem>
 }

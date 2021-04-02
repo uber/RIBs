@@ -78,8 +78,8 @@ object StepTester {
     testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
   ) {
     testSubscriber.assertValueCount(1)
-    val stepData: Optional<Step.Data<T, A>> = testSubscriber.values().get(0)
-    assertThat(stepData.isPresent()).isTrue()
+    val stepData: Optional<Step.Data<T, A>> = testSubscriber.values()[0]
+    assertThat(stepData.isPresent).isTrue()
     testSubscriber.assertComplete()
     testSubscriber.assertNoErrors()
   }

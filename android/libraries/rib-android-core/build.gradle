@@ -14,13 +14,6 @@
  * limitations under the License.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-        classpath deps.build.gradlePlugins.kotlin
-    }
-}
-
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 
@@ -36,6 +29,12 @@ android {
     compileOptions {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
+    }
+
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
+        test.java.srcDirs += 'src/test/kotlin'
+        androidTest.java.srcDirs += 'src/androidTest/kotlin'
     }
 
     testOptions {
