@@ -31,12 +31,6 @@ android {
         targetCompatibility deps.build.javaVersion
     }
 
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
-    }
-
     // This module is only testing utilities. Given this code isn't intended to be run inside a production
     // android app this module confuses android lint. Let's just disable lint errors here.
     lintOptions {

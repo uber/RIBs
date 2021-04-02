@@ -30,12 +30,6 @@ android {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
     }
-
-    sourceSets {
-        main.java.srcDirs += 'src/main/kotlin'
-        test.java.srcDirs += 'src/test/kotlin'
-        androidTest.java.srcDirs += 'src/androidTest/kotlin'
-    }
 }
 
 dependencies {

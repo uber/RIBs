@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core.screenstack.lifecycle;
+package com.uber.rib.core.screenstack.lifecycle
 
-import com.uber.rib.core.screenstack.ScreenStackBase;
+import com.uber.rib.core.screenstack.ScreenStackBase
 
-/** Lifecycle events that can be emitted by {@link ScreenStackBase} view providers. */
-public enum ScreenStackEvent {
-  BUILT,
-  APPEARED,
-  HIDDEN,
-  REMOVED
+/** Lifecycle events that can be emitted by [ScreenStackBase] view providers.  */
+enum class ScreenStackEvent {
+  BUILT, APPEARED, HIDDEN, REMOVED
 }
