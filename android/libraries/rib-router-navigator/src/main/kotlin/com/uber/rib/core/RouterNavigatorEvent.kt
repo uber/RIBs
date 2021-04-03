@@ -13,38 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/**
- * Event which is triggered when {@link StackRouterNavigator} is used to navigate between routers.
- */
-public class RouterNavigatorEvent {
-  private final RouterNavigatorEventType eventType;
-  private final Router router;
-  private final Router parentRouter;
+/** Event which is triggered when [StackRouterNavigator] is used to navigate between routers. */
+open class RouterNavigatorEvent(
+  /** @return the [RouterNavigatorEventType] */
+  open val eventType: RouterNavigatorEventType,
 
-  public RouterNavigatorEvent(
-      RouterNavigatorEventType eventType, Router parentRouter, Router router) {
-    this.eventType = eventType;
-    this.parentRouter = parentRouter;
-    this.router = router;
-  }
+  /** @return the instance of Parent [Router] */
+  open val parentRouter: Router<*>,
 
-  /**
-   * @return the {@link RouterNavigatorEventType} for ex. {@link
-   *     RouterNavigatorEventType#WILL_ATTACH_TO_HOST}
-   */
-  public RouterNavigatorEventType getEventType() {
-    return eventType;
-  }
-
-  /** @return the instance of child {@link Router} */
-  public Router getRouter() {
-    return router;
-  }
-
-  /** @return the instance of Parent {@link Router} */
-  public Router getParentRouter() {
-    return parentRouter;
-  }
-}
+  /** @return the instance of child [Router] */
+  open val router: Router<*>
+)

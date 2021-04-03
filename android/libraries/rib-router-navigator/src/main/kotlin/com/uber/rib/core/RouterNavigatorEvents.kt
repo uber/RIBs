@@ -13,40 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import com.jakewharton.rxrelay2.PublishRelay;
-import io.reactivex.Observable;
+import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.Observable
 
-/** Class that provides its instance to emit or subscribe to {@link RouterNavigatorEvent} */
-public final class RouterNavigatorEvents {
+/** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent]  */
+class RouterNavigatorEvents private constructor() {
 
-  private static final RouterNavigatorEvents INSTANCE = new RouterNavigatorEvents();
+  private val events: PublishRelay<RouterNavigatorEvent> = PublishRelay.create()
 
-  private final PublishRelay<RouterNavigatorEvent> events;
-
-  private RouterNavigatorEvents() {
-    this.events = PublishRelay.create();
-  }
-
-  /** @return the singleton instance */
-  public static RouterNavigatorEvents getInstance() {
-    return INSTANCE;
-  }
-
-  /** @return the stream which can be subcribed to listen for {@link RouterNavigatorEvent} */
-  public Observable<RouterNavigatorEvent> getEvents() {
-    return events.hide();
+  /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
+  open fun getEvents(): Observable<RouterNavigatorEvent> {
+    return events.hide()
   }
 
   /**
-   * Emits a new {@link RouterNavigatorEvent} on the stream.
+   * Emits a new [RouterNavigatorEvent] on the stream.
    *
    * @param eventType type of the navigation event.
    * @param parent router instance to which child will attach to.
    * @param child router instance which getting attached.
    */
-  public void emitEvent(RouterNavigatorEventType eventType, Router parent, Router child) {
-    events.accept(new RouterNavigatorEvent(eventType, parent, child));
+  open fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
+    events.accept(RouterNavigatorEvent(eventType, parent, child))
+  }
+
+  companion object {
+    /** @return the singleton instance */
+    @JvmStatic
+    val instance = RouterNavigatorEvents()
   }
 }

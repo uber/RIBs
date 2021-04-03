@@ -13,29 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package os;
+package os
 
-import java.util.HashMap;
-import java.util.Map;
+/** Stub class to have pure Java unit tests.  */
+class Bundle : Parcelable {
+  private val testData: MutableMap<String, Any> = HashMap()
 
-/** Stub class to have pure Java unit tests. */
-public class Bundle implements Parcelable {
+  fun getString(key: String) = testData[key] as String?
 
-  private final Map<String, Object> testData = new HashMap<>();
+  fun <T : Parcelable?> getParcelable(key: String) = testData[key] as T?
 
-  public String getString(String key) {
-    return (String) testData.get(key);
+  fun putParcelable(key: String, value: Parcelable) {
+    testData[key] = value
   }
 
-  public <T extends Parcelable> T getParcelable(String key) {
-    return (T) testData.get(key);
-  }
-
-  public void putParcelable(String key, Parcelable value) {
-    testData.put(key, value);
-  }
-
-  public void putString(String key, String value) {
-    testData.put(key, value);
+  fun putString(key: String, value: String) {
+    testData[key] = value
   }
 }

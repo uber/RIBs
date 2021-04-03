@@ -13,52 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import androidx.annotation.Nullable;
-
-/** Factory for the creation of {@link RouterNavigator}s. */
-public final class RouterNavigatorFactory {
-  @Nullable private final Strategy creationStrategy;
-
+/**
+ * Factory for the creation of [RouterNavigator]s.
+ *
+ * Sets up the [RouterNavigatorFactory] to generate [RouterNavigator]s using the
+ * provided [Strategy]. This allows implementers to include migration strategies, feature
+ * flagging, and other tactics to select a different implementation of the [RouterNavigator].
+ *
+ * @param creationStrategy [Strategy] `null` for the default strategy.
+ */
+class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
   /**
-   * Sets up the {@link RouterNavigatorFactory} to generate {@link RouterNavigator}s using the
-   * provided {@link Strategy}. This allows implementers to include migration strategies, feature
-   * flagging, and other tactics to select a different implementation of the {@link
-   * RouterNavigator}.
+   * Generate a new [RouterNavigator].
    *
-   * @param strategy {@link Strategy} {@code null} for the default strategy.
+   * @param hostRouter Hosting [Router]
+   * @param <StateT> [StateT] type for the [RouterNavigator]
+   * @return A new [RouterNavigator]
    */
-  public RouterNavigatorFactory(@Nullable final Strategy strategy) {
-    creationStrategy = strategy;
+  open fun <StateT : RouterNavigatorState> create(hostRouter: Router<*>): RouterNavigator<StateT> {
+    return creationStrategy?.create(hostRouter) ?: StackRouterNavigator(hostRouter)
   }
 
-  /**
-   * Generate a new {@link RouterNavigator}.
-   *
-   * @param hostRouter Hosting {@link Router}
-   * @param <StateT> {@link StateT} type for the {@link RouterNavigator}
-   * @return A new {@link RouterNavigator}
-   */
-  public <StateT extends RouterNavigatorState> RouterNavigator<StateT> create(
-      final Router<?> hostRouter) {
-    if (creationStrategy != null) {
-      return creationStrategy.create(hostRouter);
-    } else {
-      return new StackRouterNavigator<>(hostRouter);
-    }
-  }
-
-  /** Strategy to employ when using this factory to generate new {@link RouterNavigator}s. */
-  public interface Strategy {
+  /** Strategy to employ when using this factory to generate new [RouterNavigator]s.  */
+  interface Strategy {
     /**
-     * Generate a new {@link RouterNavigator}.
+     * Generate a new [RouterNavigator].
      *
-     * @param hostRouter Hosting {@link Router}
-     * @param <StateT> {@link StateT} type for the {@link RouterNavigator}
-     * @return A new {@link RouterNavigator}
+     * @param hostRouter Hosting [Router]
+     * @param <StateT> [StateT] type for the [RouterNavigator]
+     * @return A new [RouterNavigator]
      */
-    <StateT extends RouterNavigatorState> RouterNavigator<StateT> create(
-        final Router<?> hostRouter);
+    fun <StateT : RouterNavigatorState> create(hostRouter: Router<*>): RouterNavigator<StateT>
   }
 }

@@ -65,6 +65,7 @@ def createJapicmpTask(Project project, String baselineJar, String outputJar) {
                 'com.uber.assert.BuildConfig',
                 'com.uber.rib.android.BuildConfig',
                 'com.uber.rib.android.core.BuildConfig',
+                'com.uber.rib.core.RouterNavigatorState',
                 'com.uber.rib.workflow.BuildConfig',
                 'com.uber.rib.workflow.test.BuildConfig',
                 'com.ubercab.core.screenstack.base.BuildConfig'

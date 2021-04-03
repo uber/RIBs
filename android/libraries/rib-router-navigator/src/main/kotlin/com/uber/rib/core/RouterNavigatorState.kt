@@ -13,14 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/**
- * Represents states for {@link StackRouterNavigator}. Most often, this should be implemented using
- * an enum.
- */
-public interface RouterNavigatorState {
+/** Represents states for [StackRouterNavigator]. Most often implemented with an enum. */
+interface RouterNavigatorState {
 
-  /** @return identifier for a {@link StackRouterNavigator} state. */
-  String name();
+  /** @return identifier for a [StackRouterNavigator] state. */
+  @JvmDefault
+  fun stateName(): String {
+    return if (this.javaClass.isEnum) {
+      (this as Enum<*>).name
+    } else {
+      throw java.lang.AssertionError("Must be implemented by enum or override experimentName()")
+    }
+  }
 }

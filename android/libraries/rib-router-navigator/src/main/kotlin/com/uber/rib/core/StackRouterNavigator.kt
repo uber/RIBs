@@ -13,228 +13,192 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import androidx.annotation.IntRange;
-import androidx.annotation.Nullable;
-import java.util.ArrayDeque;
-import java.util.Iterator;
-import java.util.Locale;
+import androidx.annotation.IntRange
+import com.uber.rib.core.RouterNavigatorEvents.Companion.instance
+import java.util.ArrayDeque
+import java.util.Locale
 
 /**
  * Simple utility for switching a child router based on a state.
  *
  * @param <StateT> type of state to switch on.
  */
-public class StackRouterNavigator<StateT extends RouterNavigatorState>
-    implements RouterNavigator<StateT> {
+open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostRouter: Router<*>) : RouterNavigator<StateT> {
 
-  private final ArrayDeque<RouterAndState<StateT>> navigationStack = new ArrayDeque<>();
+  private val navigationStack = ArrayDeque<RouterNavigator.RouterAndState<StateT>>()
+  private val hostRouterName: String = hostRouter.javaClass.simpleName
+  private var currentTransientRouterAndState: RouterNavigator.RouterAndState<StateT>? = null
 
-  private final Router<?> hostRouter;
-  private final String hostRouterName;
-
-  @Nullable private RouterAndState<StateT> currentTransientRouterAndState;
-
-  /**
-   * Constructor.
-   *
-   * @param hostRouter to add and remove children to.
-   */
-  public StackRouterNavigator(Router<?> hostRouter) {
-    this.hostRouter = hostRouter;
-    this.hostRouterName = hostRouter.getClass().getSimpleName();
-    log(
-        String.format(
-            Locale.getDefault(),
-            "Installed new RouterNavigator: Hosting Router -> %s",
-            hostRouterName));
-  }
-
-  @SuppressWarnings("unchecked")
-  @Override
-  public void popState() {
+  override fun popState() {
     // If we are in a transient state, go ahead and pop that state.
-    RouterAndState<StateT> fromState = null;
+    var fromState: RouterNavigator.RouterAndState<StateT>? = null
     if (currentTransientRouterAndState != null) {
-      fromState = currentTransientRouterAndState;
-      String fromRouterName = fromState.getRouter().getClass().getSimpleName();
-      currentTransientRouterAndState = null;
+      fromState = currentTransientRouterAndState
+      val fromRouterName = fromState?.router?.javaClass?.simpleName
+      currentTransientRouterAndState = null
       log(
-          String.format(
-              Locale.getDefault(),
-              "Preparing to pop existing transient state for router: %s",
-              fromRouterName));
+        String.format(
+          Locale.getDefault(),
+          "Preparing to pop existing transient state for router: %s",
+          fromRouterName
+        )
+      )
     } else {
       if (!navigationStack.isEmpty()) {
-        fromState = navigationStack.pop();
-        String fromRouterName = fromState.getRouter().getClass().getSimpleName();
+        fromState = navigationStack.pop()
+        val fromRouterName: String = fromState.router.javaClass.simpleName
         log(
-            String.format(
-                Locale.getDefault(),
-                "Preparing to pop existing state for router: %s",
-                fromRouterName));
+          String.format(
+            Locale.getDefault(),
+            "Preparing to pop existing state for router: %s",
+            fromRouterName
+          )
+        )
       }
     }
-
     if (fromState != null) {
       // Pull the incoming state (So we can restore it.)
-      RouterAndState<StateT> toState = null;
+      var toState: RouterNavigator.RouterAndState<StateT>? = null
       if (!navigationStack.isEmpty()) {
-        toState = navigationStack.peek();
+        toState = navigationStack.peek()
       }
-
-      detachInternal(fromState, toState, false);
-
+      detachInternal(fromState, toState, false)
       if (toState != null) {
-        attachInternal(fromState, toState, false);
+        attachInternal(fromState, toState, false)
       }
     } else {
-      log("No state to pop. No action will be taken.");
+      log("No state to pop. No action will be taken.")
     }
   }
 
-  @Override
-  public <R extends Router> void pushState(
-      StateT newState,
-      AttachTransition<R, StateT> attachTransition,
-      @Nullable DetachTransition<R, StateT> detachTransition) {
-    pushState(newState, Flag.DEFAULT, attachTransition, detachTransition);
+  override fun <R : Router<*>> pushState(
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+  ) {
+    pushState(newState, RouterNavigator.Flag.DEFAULT, attachTransition, detachTransition)
   }
 
-  @Override
-  public <R extends Router> void pushState(
-      StateT newState,
-      Flag flag,
-      AttachTransition<R, StateT> attachTransition,
-      @Nullable DetachTransition<R, StateT> detachTransition) {
-
-    StateT fromState = peekState();
-    RouterAndState<StateT> currentRouterAndState = peekCurrentRouterAndState();
-    if (fromState != null && !fromState.name().equals(newState.name())) {
-      if (currentRouterAndState != null && currentRouterAndState.getRouter() != null) {
-        detachInternal(currentRouterAndState, newState, true);
+  override fun <R : Router<*>> pushState(
+    newState: StateT,
+    flag: RouterNavigator.Flag,
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+  ) {
+    val fromState = peekState()
+    val currentRouterAndState = peekCurrentRouterAndState()
+    if (fromState != null && fromState.stateName() != newState.stateName()) {
+      if (currentRouterAndState != null && currentRouterAndState.router != null) {
+        detachInternal(currentRouterAndState, newState, true)
       }
     }
-
-    boolean newStateIsTop = fromState != null && fromState.name().equals(newState.name());
+    val newStateIsTop = fromState != null && fromState.stateName() == newState.stateName()
     if (currentTransientRouterAndState != null) {
-      if (!(newStateIsTop && flag == Flag.TRANSIENT)) {
-        currentTransientRouterAndState = null;
+      if (!(newStateIsTop && flag == RouterNavigator.Flag.TRANSIENT)) {
+        currentTransientRouterAndState = null
       }
     }
-
-    RouterAndState<StateT> newRouterAndState;
-    switch (flag) {
-      case DEFAULT:
-        if (fromState != null && fromState.name().equals(newState.name())) {
-          detachInternal(currentRouterAndState, newState, true);
+    val newRouterAndState: RouterNavigator.RouterAndState<StateT>
+    when (flag) {
+      RouterNavigator.Flag.DEFAULT -> {
+        if (fromState != null && fromState.stateName() == newState.stateName()) {
+          detachInternal(currentRouterAndState, newState, true)
         }
-        newRouterAndState = buildNewState(newState, attachTransition, detachTransition);
-        navigationStack.push(newRouterAndState);
-        attachInternal(currentRouterAndState, newRouterAndState, true);
-        break;
-      case TRANSIENT:
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+        navigationStack.push(newRouterAndState)
+        attachInternal(currentRouterAndState, newRouterAndState, true)
+      }
+      RouterNavigator.Flag.TRANSIENT -> {
         if (newStateIsTop) {
-          return;
+          return
         }
-        newRouterAndState = buildNewState(newState, attachTransition, detachTransition);
-        currentTransientRouterAndState = newRouterAndState;
-        attachInternal(currentRouterAndState, newRouterAndState, true);
-        break;
-      case CLEAR_TOP:
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+        currentTransientRouterAndState = newRouterAndState
+        attachInternal(currentRouterAndState, newRouterAndState, true)
+      }
+      RouterNavigator.Flag.CLEAR_TOP -> {
         if (newStateIsTop) {
-          return;
+          return
         }
-        clearTop(currentRouterAndState, newState, attachTransition, detachTransition);
-        break;
-      case SINGLE_TOP:
+        clearTop(currentRouterAndState, newState, attachTransition, detachTransition)
+      }
+      RouterNavigator.Flag.SINGLE_TOP -> {
         if (newStateIsTop) {
-          return;
+          return
         }
-        removeStateFromStack(newState);
-        newRouterAndState = buildNewState(newState, attachTransition, detachTransition);
-        navigationStack.push(newRouterAndState);
-        attachInternal(currentRouterAndState, newRouterAndState, true);
-        break;
-      case REORDER_TO_TOP:
+        removeStateFromStack(newState)
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+        navigationStack.push(newRouterAndState)
+        attachInternal(currentRouterAndState, newRouterAndState, true)
+      }
+      RouterNavigator.Flag.REORDER_TO_TOP -> {
         if (newStateIsTop) {
-          return;
+          return
         }
-        reorderTop(currentRouterAndState, newState, attachTransition, detachTransition);
-        break;
-      case NEW_TASK:
-        if (currentRouterAndState != null && newStateIsTop) {
-          navigationStack.clear();
-          navigationStack.push(currentRouterAndState);
-        } else {
-          detachAll();
-          newRouterAndState = buildNewState(newState, attachTransition, detachTransition);
-          attachInternal(currentRouterAndState, newRouterAndState, true);
-          navigationStack.push(newRouterAndState);
-        }
-
-        break;
-      case REPLACE_TOP:
+        reorderTop(currentRouterAndState, newState, attachTransition, detachTransition)
+      }
+      RouterNavigator.Flag.NEW_TASK -> if (currentRouterAndState != null && newStateIsTop) {
+        navigationStack.clear()
+        navigationStack.push(currentRouterAndState)
+      } else {
+        detachAll()
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+        attachInternal(currentRouterAndState, newRouterAndState, true)
+        navigationStack.push(newRouterAndState)
+      }
+      RouterNavigator.Flag.REPLACE_TOP -> {
         if (!navigationStack.isEmpty()) {
-          navigationStack.pop();
+          navigationStack.pop()
         }
-        newRouterAndState = buildNewState(newState, attachTransition, detachTransition);
-        navigationStack.push(newRouterAndState);
-        attachInternal(currentRouterAndState, newRouterAndState, true);
-        break;
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+        navigationStack.push(newRouterAndState)
+        attachInternal(currentRouterAndState, newRouterAndState, true)
+      }
     }
   }
 
-  @Nullable
-  @Override
-  public Router peekRouter() {
-    RouterAndState<StateT> top = peekCurrentRouterAndState();
-    if (top == null) {
-      return null;
-    }
-    return top.getRouter();
+  override fun peekRouter(): Router<*>? {
+    val top = peekCurrentRouterAndState() ?: return null
+    return top.router
   }
 
-  @Nullable
-  @Override
-  public StateT peekState() {
-    RouterAndState<StateT> top = peekCurrentRouterAndState();
-    if (top == null) {
-      return null;
-    }
-    return top.getState();
+  override fun peekState(): StateT? {
+    val top = peekCurrentRouterAndState() ?: return null
+    return top.state
   }
 
   @IntRange(from = 0)
-  @Override
-  public int size() {
-    return navigationStack.size();
+  override fun size(): Int {
+    return navigationStack.size
   }
 
   /**
    * This will pop the current active router and clear the entire stack.
    *
-   * <p>NOTE: This must be called when host interactor is going to detach.
+   *
+   * NOTE: This must be called when host interactor is going to detach.
    */
-  public void detachAll() {
+  open fun detachAll() {
     log(
-        String.format(
-            Locale.getDefault(), "Detaching RouterNavigator from host -> %s", hostRouterName));
-    RouterAndState<StateT> currentRouterAndState = peekCurrentRouterAndState();
-    detachInternal(currentRouterAndState, (StateT) null, false);
-    currentTransientRouterAndState = null;
-    navigationStack.clear();
+      String.format(
+        Locale.getDefault(), "Detaching RouterNavigator from host -> %s", hostRouterName
+      )
+    )
+    val currentRouterAndState = peekCurrentRouterAndState()
+    detachInternal(currentRouterAndState, null as StateT?, false)
+    currentTransientRouterAndState = null
+    navigationStack.clear()
   }
 
-  private RouterAndState<StateT> buildNewState(
-      StateT newState,
-      AttachTransition<? extends Router, StateT> attachTransition,
-      @Nullable DetachTransition<? extends Router, StateT> detachTransition) {
-    Router newRouter = attachTransition.buildRouter();
-    RouterAndState<StateT> newRouterAndState =
-        new RouterAndState<>(newRouter, newState, attachTransition, detachTransition);
-    return newRouterAndState;
+  private fun buildNewState(
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<out Router<*>, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<out Router<*>, StateT>?
+  ): RouterNavigator.RouterAndState<StateT> {
+    val newRouter = attachTransition.buildRouter()
+    return RouterNavigator.RouterAndState(newRouter, newState, attachTransition, detachTransition)
   }
 
   /**
@@ -244,27 +208,30 @@ public class StackRouterNavigator<StateT extends RouterNavigatorState>
    * @param toRouterState New state.
    * @param isPush True if this is from a push.
    */
-  @SuppressWarnings("unchecked")
-  private void attachInternal(
-      @Nullable final RouterAndState<StateT> fromRouterState,
-      final RouterAndState<StateT> toRouterState,
-      final boolean isPush) {
-    String toRouterName = toRouterState.getRouter().getClass().getSimpleName();
-    AttachTransition<Router, StateT> attachCallback = toRouterState.getAttachTransition();
-
-    log(String.format(Locale.getDefault(), "Calling willAttachToHost for %s", toRouterName));
-    RouterNavigatorEvents.getInstance()
-        .emitEvent(
-            RouterNavigatorEventType.WILL_ATTACH_TO_HOST, hostRouter, toRouterState.getRouter());
+  private fun attachInternal(
+    fromRouterState: RouterNavigator.RouterAndState<StateT>?,
+    toRouterState: RouterNavigator.RouterAndState<StateT>,
+    isPush: Boolean
+  ) {
+    val toRouterName: String = toRouterState.router.javaClass.simpleName
+    val attachCallback: RouterNavigator.AttachTransition<Router<*>, StateT> = toRouterState.attachTransition as RouterNavigator.AttachTransition<Router<*>, StateT>
+    log(String.format(Locale.getDefault(), "Calling willAttachToHost for %s", toRouterName))
+    instance
+      .emitEvent(
+        RouterNavigatorEventType.WILL_ATTACH_TO_HOST, hostRouter, toRouterState.router
+      )
     attachCallback.willAttachToHost(
-        toRouterState.getRouter(),
-        fromRouterState == null ? null : fromRouterState.getState(),
-        toRouterState.getState(),
-        isPush);
+      toRouterState.router,
+      fromRouterState?.state,
+      toRouterState.state,
+      isPush
+    )
     log(
-        String.format(
-            Locale.getDefault(), "Attaching %s as a child of %s", toRouterName, hostRouterName));
-    hostRouter.attachChild(toRouterState.getRouter());
+      String.format(
+        Locale.getDefault(), "Attaching %s as a child of %s", toRouterName, hostRouterName
+      )
+    )
+    hostRouter.attachChild(toRouterState.router)
   }
 
   /**
@@ -274,12 +241,14 @@ public class StackRouterNavigator<StateT extends RouterNavigatorState>
    * @param toRouterState New state
    * @param isPush True if this is caused by a push
    */
-  private void detachInternal(
-      @Nullable final RouterAndState<StateT> fromRouterState,
-      @Nullable final RouterAndState<StateT> toRouterState,
-      final boolean isPush) {
+  private fun detachInternal(
+    fromRouterState: RouterNavigator.RouterAndState<StateT>?,
+    toRouterState: RouterNavigator.RouterAndState<StateT>?,
+    isPush: Boolean
+  ) {
     detachInternal(
-        fromRouterState, toRouterState != null ? toRouterState.getState() : null, isPush);
+      fromRouterState, toRouterState?.state, isPush
+    )
   }
 
   /**
@@ -289,154 +258,170 @@ public class StackRouterNavigator<StateT extends RouterNavigatorState>
    * @param toState New state
    * @param isPush True if this is caused by a push
    */
-  @SuppressWarnings("unchecked")
-  private void detachInternal(
-      @Nullable final RouterAndState<StateT> fromRouterState,
-      @Nullable final StateT toState,
-      final boolean isPush) {
+  private fun detachInternal(
+    fromRouterState: RouterNavigator.RouterAndState<StateT>?,
+    toState: StateT?,
+    isPush: Boolean
+  ) {
     if (fromRouterState == null) {
-      log("No router to transition from. Call to detach will be dropped.");
-      return;
+      log("No router to transition from. Call to detach will be dropped.")
+      return
     }
-
-    DetachCallback<Router, StateT> callback = fromRouterState.getDetachCallback();
-    String fromRouterName = fromRouterState.getRouter().getClass().getSimpleName();
-
+    val callback: RouterNavigator.DetachCallback<Router<*>, StateT>? = fromRouterState.detachCallback as RouterNavigator.DetachCallback<Router<*>, StateT>?
+    val fromRouterName: String = fromRouterState.router.javaClass.simpleName
     if (callback != null) {
-      log(String.format(Locale.getDefault(), "Calling willDetachFromHost for %s", fromRouterName));
+      log(String.format(Locale.getDefault(), "Calling willDetachFromHost for %s", fromRouterName))
       callback.willDetachFromHost(
-          fromRouterState.getRouter(), fromRouterState.getState(), toState, isPush);
+        fromRouterState.router, fromRouterState.state, toState, isPush
+      )
     }
-    log(String.format(Locale.getDefault(), "Detaching %s from %s", fromRouterName, hostRouterName));
-    hostRouter.detachChild(fromRouterState.getRouter());
+    log(String.format(Locale.getDefault(), "Detaching %s from %s", fromRouterName, hostRouterName))
+    hostRouter.detachChild(fromRouterState.router)
     if (callback != null) {
       log(
-          String.format(
-              Locale.getDefault(), "Calling onPostDetachFromHost for %s", fromRouterName));
-      callback.onPostDetachFromHost(fromRouterState.getRouter(), toState, isPush);
+        String.format(
+          Locale.getDefault(), "Calling onPostDetachFromHost for %s", fromRouterName
+        )
+      )
+      callback.onPostDetachFromHost(fromRouterState.router, toState, isPush)
     }
   }
 
-  @Nullable
-  private RouterAndState<StateT> peekCurrentRouterAndState() {
-    if (currentTransientRouterAndState != null) {
-      return currentTransientRouterAndState;
+  private fun peekCurrentRouterAndState(): RouterNavigator.RouterAndState<StateT>? {
+    return if (currentTransientRouterAndState != null) {
+      currentTransientRouterAndState
     } else {
-      return navigationStack.peek();
+      navigationStack.peek()
     }
   }
 
-  private void clearTop(
-      @Nullable RouterAndState<StateT> currentRouterAndState,
-      StateT newState,
-      AttachTransition<? extends Router, StateT> attachTransition,
-      @Nullable DetachTransition<? extends Router, StateT> detachTransition) {
-    boolean found = false;
-    Iterator<RouterAndState<StateT>> navigationIterator = navigationStack.iterator();
+  private fun clearTop(
+    currentRouterAndState: RouterNavigator.RouterAndState<StateT>?,
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<out Router<*>, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<out Router<*>, StateT>?
+  ) {
+    var found = false
+    var navigationIterator = navigationStack.iterator()
     while (navigationIterator.hasNext()) {
-      if (navigationIterator.next().getState().equals(newState)) {
-        found = true;
-        break;
+      if (navigationIterator.next().state == newState) {
+        found = true
+        break
       }
     }
-
     if (found) {
-      navigationIterator = navigationStack.iterator();
+      navigationIterator = navigationStack.iterator()
       while (navigationIterator.hasNext()) {
-        RouterAndState<StateT> routerAndState = navigationIterator.next();
-        if (routerAndState.getState().equals(newState)) {
-          attachInternal(currentRouterAndState, routerAndState, true);
-          break;
+        val routerAndState = navigationIterator.next()
+        if (routerAndState.state == newState) {
+          attachInternal(currentRouterAndState, routerAndState, true)
+          break
         } else {
-          navigationIterator.remove();
+          navigationIterator.remove()
         }
       }
     } else {
-      RouterAndState<StateT> newRouterAndState =
-          buildNewState(newState, attachTransition, detachTransition);
-      navigationStack.push(newRouterAndState);
-      attachInternal(currentRouterAndState, newRouterAndState, true);
+      val newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+      navigationStack.push(newRouterAndState)
+      attachInternal(currentRouterAndState, newRouterAndState, true)
     }
   }
 
-  private void reorderTop(
-      @Nullable RouterAndState<StateT> currentRouterAndState,
-      StateT newState,
-      AttachTransition<? extends Router, StateT> attachTransition,
-      @Nullable DetachTransition<? extends Router, StateT> detachTransition) {
-    boolean found = false;
-    Iterator<RouterAndState<StateT>> navigationIterator = navigationStack.iterator();
+  private fun reorderTop(
+    currentRouterAndState: RouterNavigator.RouterAndState<StateT>?,
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<out Router<*>, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<out Router<*>, StateT>?
+  ) {
+    var found = false
+    val navigationIterator = navigationStack.iterator()
     while (navigationIterator.hasNext()) {
-      RouterAndState<StateT> routerAndState = navigationIterator.next();
-      if (routerAndState.getState().equals(newState)) {
-        navigationIterator.remove();
-        navigationStack.push(routerAndState);
-        attachInternal(currentRouterAndState, routerAndState, true);
-        found = true;
-        break;
+      val routerAndState = navigationIterator.next()
+      if (routerAndState.state == newState) {
+        navigationIterator.remove()
+        navigationStack.push(routerAndState)
+        attachInternal(currentRouterAndState, routerAndState, true)
+        found = true
+        break
       }
     }
-
     if (!found) {
-      RouterAndState<StateT> newRouterAndState =
-          buildNewState(newState, attachTransition, detachTransition);
-      navigationStack.push(newRouterAndState);
-      attachInternal(currentRouterAndState, newRouterAndState, true);
+      val newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+      navigationStack.push(newRouterAndState)
+      attachInternal(currentRouterAndState, newRouterAndState, true)
     }
   }
 
-  private void removeStateFromStack(StateT state) {
-    Iterator<RouterAndState<StateT>> navigationIterator = navigationStack.iterator();
+  private fun removeStateFromStack(state: StateT) {
+    val navigationIterator = navigationStack.iterator()
     while (navigationIterator.hasNext()) {
-      if (navigationIterator.next().getState().equals(state)) {
-        navigationIterator.remove();
+      if (navigationIterator.next().state == state) {
+        navigationIterator.remove()
       }
     }
-  }
-
-  /** Writes out to the debug log. */
-  private static void log(final String text) {
-    Rib.getConfiguration().handleDebugMessage("%s: " + text, "RouterNavigator");
   }
 
   /*
   Deprecated methods
    */
-  @Override
-  @Deprecated
-  public <R extends Router> void pushRetainedState(
-      final StateT newState,
-      final AttachTransition<R, StateT> attachTransition,
-      @Nullable final DetachTransition<R, StateT> detachTransition) {
-    pushState(newState, attachTransition, detachTransition);
+  @Deprecated("")
+  override fun <R : Router<*>> pushRetainedState(
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+  ) {
+    pushState(newState, attachTransition, detachTransition)
   }
 
-  @Override
-  @Deprecated
-  public <R extends Router> void pushRetainedState(
-      StateT newState, AttachTransition<R, StateT> attachTransition) {
-    pushState(newState, attachTransition, null);
+  @Deprecated("")
+  override fun <R : Router<*>> pushRetainedState(
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>
+  ) {
+    pushState(newState, attachTransition, null)
   }
 
-  @Override
-  @Deprecated
-  public <R extends Router> void pushTransientState(
-      final StateT newState,
-      final AttachTransition<R, StateT> attachTransition,
-      @Nullable final DetachTransition<R, StateT> detachTransition) {
-    pushState(newState, Flag.TRANSIENT, attachTransition, detachTransition);
+  @Deprecated("")
+  override fun <R : Router<*>> pushTransientState(
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+  ) {
+    pushState(newState, RouterNavigator.Flag.TRANSIENT, attachTransition, detachTransition)
   }
 
-  @Override
-  @Deprecated
-  public <R extends Router> void pushTransientState(
-      StateT newState, AttachTransition<R, StateT> attachTransition) {
-    pushState(newState, Flag.TRANSIENT, attachTransition, null);
+  @Deprecated("")
+  override fun <R : Router<*>> pushTransientState(
+    newState: StateT,
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>
+  ) {
+    pushState(newState, RouterNavigator.Flag.TRANSIENT, attachTransition, null)
   }
 
-  @Override
-  @Deprecated
-  public void hostWillDetach() {
-    detachAll();
+  @Deprecated("")
+  override fun hostWillDetach() {
+    detachAll()
+  }
+
+  companion object {
+    /** Writes out to the debug log.  */
+    private fun log(text: String) {
+      Rib.getConfiguration().handleDebugMessage("%s: $text", "RouterNavigator")
+    }
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param hostRouter to add and remove children to.
+   */
+  init {
+    log(
+      String.format(
+        Locale.getDefault(),
+        "Installed new RouterNavigator: Hosting Router -> %s",
+        hostRouterName
+      )
+    )
   }
 }

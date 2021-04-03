@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
- * Enum consisting of event types that occur when {@link RouterNavigator} is used for transition.
+ * Enum consisting of event types that occur when [RouterNavigator] is used for transition.
  */
-public enum RouterNavigatorEventType {
+enum class RouterNavigatorEventType {
   WILL_ATTACH_TO_HOST
 }
