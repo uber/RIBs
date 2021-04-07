@@ -28,6 +28,7 @@ RibRefWatcher.getInstance().setReferenceWatcher(new RibRefWatcher.ReferenceWatch
     // Ignore for now. Useful for collecting production analytics.
   }
 });
+RibRefWatcher.getInstance().enableLeakCanary();
 ```
 
 If you run the memory-leak demo app and enter a username you'll see the following message caused by the `LoggedOutInteractor` leak:
