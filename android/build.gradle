@@ -22,8 +22,7 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url deps.build.gradlePluginsUrl }
-        jcenter()
+        gradlePluginPortal()
     }
     dependencies {
         classpath deps.build.gradlePlugins.android
@@ -48,15 +47,14 @@ subprojects {
     buildscript {
         repositories {
             google()
-            jcenter()
-            maven { url deps.build.gradlePluginsUrl }
+            mavenCentral()
+            gradlePluginPortal()
         }
     }
 
     repositories {
         google()
-        jcenter()
-        maven { url deps.build.gradlePluginsUrl }
+        mavenCentral()
     }
 
     apply plugin: 'com.diffplug.spotless'
