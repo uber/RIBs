@@ -13,14 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
- * Represents states for {@link StackRouterNavigator}. Most often, this should be implemented using
- * an enum.
+ * Enum consisting of event types that occur when [RouterNavigator] is used for transition.
  */
-public interface RouterNavigatorState {
-
-  /** @return identifier for a {@link StackRouterNavigator} state. */
-  String name();
+enum class RouterNavigatorEventType {
+  WILL_ATTACH_TO_HOST
 }

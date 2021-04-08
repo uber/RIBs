@@ -13,11 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package os
 
-/**
- * Enum consisting of event types that occur when {@link RouterNavigator} is used for transition.
- */
-public enum RouterNavigatorEventType {
-  WILL_ATTACH_TO_HOST
+/** Stub class to have pure Java unit tests.  */
+class Bundle : Parcelable {
+  private val testData: MutableMap<String, Any> = HashMap()
+
+  fun getString(key: String) = testData[key] as String?
+
+  fun <T : Parcelable?> getParcelable(key: String) = testData[key] as T?
+
+  fun putParcelable(key: String, value: Parcelable) {
+    testData[key] = value
+  }
+
+  fun putString(key: String, value: String) {
+    testData[key] = value
+  }
 }

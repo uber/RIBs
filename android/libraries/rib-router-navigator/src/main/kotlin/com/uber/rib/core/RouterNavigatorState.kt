@@ -13,29 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package os;
+package com.uber.rib.core
 
-import java.util.HashMap;
-import java.util.Map;
+/** Represents states for [StackRouterNavigator]. Most often implemented with an enum. */
+interface RouterNavigatorState {
 
-/** Stub class to have pure Java unit tests. */
-public class Bundle implements Parcelable {
-
-  private final Map<String, Object> testData = new HashMap<>();
-
-  public String getString(String key) {
-    return (String) testData.get(key);
-  }
-
-  public <T extends Parcelable> T getParcelable(String key) {
-    return (T) testData.get(key);
-  }
-
-  public void putParcelable(String key, Parcelable value) {
-    testData.put(key, value);
-  }
-
-  public void putString(String key, String value) {
-    testData.put(key, value);
+  /** @return identifier for a [StackRouterNavigator] state. */
+  @JvmDefault
+  fun stateName(): String {
+    return if (this.javaClass.isEnum) {
+      (this as Enum<*>).name
+    } else {
+      throw java.lang.AssertionError("Must be implemented by enum or override experimentName()")
+    }
   }
 }

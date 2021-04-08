@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.uber.rib.core
 
-apply plugin: "org.jetbrains.kotlin.jvm"
+/** Event which is triggered when [StackRouterNavigator] is used to navigate between routers. */
+open class RouterNavigatorEvent(
+  /** @return the [RouterNavigatorEventType] */
+  open val eventType: RouterNavigatorEventType,
 
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+  /** @return the instance of Parent [Router] */
+  open val parentRouter: Router<*>,
 
-dependencies {
-    compile deps.external.checkerQual
-    compile project(':libraries:rib-base')
-    compileOnly deps.androidx.annotations
-    compileOnly deps.apt.androidApi
-
-    testCompile deps.test.junit
-    testCompile deps.test.mockitoKotlin
-    testCompile deps.test.truth
-}
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
+  /** @return the instance of child [Router] */
+  open val router: Router<*>
+)
