@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-public final class FakeComponent<P extends Presenter, T extends Interactor<P, ?>>
-    implements InteractorComponent<P, T> {
+class FakeComponent<P : Presenter, T : Interactor<P, *>> private constructor(
+  private val presenter: P
+) : InteractorComponent<P, T> {
 
-  public static <T extends Interactor<FakePresenter, ?>>
-      FakeComponent<FakePresenter, T> withFakePresenterFor(Class<T> interactorClass) {
-    return new FakeComponent<>(new FakePresenter());
+  override fun inject(interactor: T) { }
+
+  override fun presenter(): P {
+    return presenter
   }
 
-  private P presenter;
-
-  private FakeComponent(P presenter) {
-    this.presenter = presenter;
-  }
-
-  @Override
-  public void inject(T interactor) {}
-
-  @Override
-  public P presenter() {
-    return presenter;
+  companion object {
+    @JvmStatic
+    fun <T : Interactor<FakePresenter, *>> withFakePresenterFor(interactorClass: Class<T>): FakeComponent<FakePresenter, T> {
+      return FakeComponent(FakePresenter())
+    }
   }
 }

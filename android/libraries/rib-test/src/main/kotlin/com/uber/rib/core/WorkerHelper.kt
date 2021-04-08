@@ -13,23 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import com.uber.rib.core.lifecycle.WorkerEvent;
-import io.reactivex.Observable;
+import com.uber.rib.core.lifecycle.WorkerEvent
+import io.reactivex.Observable
 
-/** Helper to unit test {@link Worker} instances. */
-public final class WorkerHelper {
-
-  private WorkerHelper() {}
-
+/** Helper to unit test [Worker] instances.  */
+object WorkerHelper {
   /**
-   * Creates a {@link WorkerScopeProvider} that can be driven by a test observable.
+   * Creates a [WorkerScopeProvider] that can be driven by a test observable.
    *
    * @param lifecycle to wrap.
-   * @return a {@link WorkerScopeProvider}.
+   * @return a [WorkerScopeProvider].
    */
-  public static WorkerScopeProvider createScopeProvider(Observable<WorkerEvent> lifecycle) {
-    return new WorkerScopeProvider(lifecycle);
+  @JvmStatic
+  open fun createScopeProvider(lifecycle: Observable<WorkerEvent>): WorkerScopeProvider {
+    return WorkerScopeProvider(lifecycle)
   }
 }

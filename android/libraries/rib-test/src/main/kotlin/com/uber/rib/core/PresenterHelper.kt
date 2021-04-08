@@ -13,27 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/** The helper to test {@link Presenter}. */
-public final class PresenterHelper {
-  private PresenterHelper() {}
-
+/** The helper to test [Presenter].  */
+object PresenterHelper {
   /**
-   * Loads the given {@link Presenter}.
+   * Loads the given [Presenter].
    *
    * @param presenter the presenter.
    */
-  public static void load(Presenter presenter) {
-    presenter.dispatchLoad();
+  @JvmStatic
+  open fun load(presenter: Presenter) {
+    presenter.dispatchLoad()
   }
 
   /**
-   * Unloads the given {@link Presenter}.
+   * Unloads the given [Presenter].
    *
    * @param presenter the presenter.
    */
-  public static void unload(Presenter presenter) {
-    presenter.dispatchUnload();
+  @JvmStatic
+  open fun unload(presenter: Presenter) {
+    presenter.dispatchUnload()
   }
 }

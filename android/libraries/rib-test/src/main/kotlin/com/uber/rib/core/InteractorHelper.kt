@@ -13,73 +13,75 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static org.mockito.AdditionalMatchers.or;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.verify;
+import org.mockito.AdditionalMatchers.or
+import org.mockito.Matchers.isA
+import org.mockito.Matchers.isNull
+import org.mockito.Mockito.verify
 
-import androidx.annotation.Nullable;
-
-/** The helper to test {@link Interactor}. */
-public final class InteractorHelper {
-
-  private InteractorHelper() {}
-
+/** The helper to test [Interactor].  */
+object InteractorHelper {
   /**
-   * Attaches the {@link Interactor} using a mock router.
+   * Attaches the [Interactor] using a mock router.
    *
    * @param <P> the type of presenter.
    * @param <R> the type of router.
-   * @param interactor the {@link Interactor}.
-   * @param presenter the presenter for the {@link Interactor}.
-   * @param router the mock router for the {@link Interactor}.
-   * @param savedInstanceState the saved {@link Bundle}.
+   * @param interactor the [Interactor].
+   * @param presenter the presenter for the [Interactor].
+   * @param router the mock router for the [Interactor].
+   * @param savedInstanceState the saved [Bundle].
    */
-  @SuppressWarnings("unchecked")
-  public static <P, R extends Router> void attach(
-      Interactor<P, R> interactor, P presenter, R router, @Nullable Bundle savedInstanceState) {
-    interactor.presenter = presenter;
-    interactor.setRouter(router);
-    interactor.dispatchAttach(savedInstanceState);
+  @JvmStatic
+  open fun <P, R : Router<*>> attach(
+    interactor: Interactor<P, R>,
+    presenter: P,
+    router: R,
+    savedInstanceState: Bundle?
+  ) {
+    interactor.presenter = presenter
+    interactor.router = router
+    interactor.dispatchAttach(savedInstanceState)
   }
 
   /**
-   * Reattaches the {@link Interactor} without trying to set the router.
+   * Reattaches the [Interactor] without trying to set the router.
    *
-   * @param interactor the {@link Interactor}.
-   * @param savedInstanceState the saved {@link Bundle}.
+   * @param interactor the [Interactor].
+   * @param savedInstanceState the saved [Bundle].
    */
-  public static void reattach(Interactor interactor, @Nullable Bundle savedInstanceState) {
-    interactor.dispatchAttach(savedInstanceState);
+  @JvmStatic
+  open fun reattach(interactor: Interactor<*, *>, savedInstanceState: Bundle?) {
+    interactor.dispatchAttach(savedInstanceState)
   }
 
   /**
-   * Detaches the {@link Interactor}.
+   * Detaches the [Interactor].
    *
-   * @param controller the {@link Interactor}.
+   * @param controller the [Interactor].
    */
-  public static void detach(Interactor controller) {
-    controller.dispatchDetach();
+  @JvmStatic
+  open fun detach(controller: Interactor<*, *>) {
+    controller.dispatchDetach()
   }
 
   /**
-   * Verifies that the {@link Interactor} is attached.
+   * Verifies that the [Interactor] is attached.
    *
-   * @param interactor the {@link Interactor}.
+   * @param interactor the [Interactor].
    */
-  @SuppressWarnings("unchecked")
-  public static void verifyAttached(Interactor<?, ?> interactor) {
-    verify(interactor).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)));
+  @JvmStatic
+  open fun verifyAttached(interactor: Interactor<*, *>) {
+    verify(interactor).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)))
   }
 
   /**
-   * Verifies that the {@link Interactor} is detached.
+   * Verifies that the [Interactor] is detached.
    *
-   * @param interactor the {@link Interactor}.
+   * @param interactor the [Interactor].
    */
-  public static void verifyDetached(Interactor interactor) {
-    verify(interactor).dispatchDetach();
+  @JvmStatic
+  open fun verifyDetached(interactor: Interactor<*, *>) {
+    verify(interactor).dispatchDetach()
   }
 }

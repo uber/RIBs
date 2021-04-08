@@ -46,6 +46,7 @@ dependencies {
 
     testCompile deps.androidx.annotations
     testCompile deps.apt.androidApi
+    testCompile deps.kotlin.stdlib
     testCompile deps.test.junit
     testCompile deps.test.mockito
     testCompile deps.test.truth

@@ -13,144 +13,146 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static org.mockito.AdditionalMatchers.or;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Matchers.isA;
-import static org.mockito.Matchers.isNull;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import org.mockito.AdditionalMatchers.or
+import org.mockito.InOrder
+import org.mockito.Matchers.anyString
+import org.mockito.Matchers.eq
+import org.mockito.Matchers.isA
+import org.mockito.Matchers.isNull
+import org.mockito.Mockito.never
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
+import org.mockito.verification.VerificationMode
 
-import org.mockito.InOrder;
-import org.mockito.verification.VerificationMode;
-
-/** The helper to test {@link Router}. */
-public final class RouterHelper {
-
-  private RouterHelper() {}
-
+/** The helper to test [Router].  */
+object RouterHelper {
   /**
    * Dispatches attachment to a router.
    *
    * @param router to attach.
    * @param <R> type of router.
    */
-  @SuppressWarnings("unchecked")
-  public static <R extends Router> void attach(R router) {
-    router.dispatchAttach(null);
+  @JvmStatic
+  open fun <R : Router<*>> attach(router: R) {
+    router.dispatchAttach(null)
   }
 
   /**
-   * Detaches the {@link Router}.
+   * Detaches the [Router].
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    */
-  public static void detach(Router router) {
-    router.dispatchDetach();
+  @JvmStatic
+  open fun detach(router: Router<*>) {
+    router.dispatchDetach()
   }
 
   /**
-   * Verifies that the {@link Router} is attached.
+   * Verifies that the [Router] is attached.
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    */
-  @SuppressWarnings("unchecked")
-  public static void verifyAttached(Router router) {
-    verify(router).dispatchAttach(or(isNull(), isA(Bundle.class)), anyString());
+  @JvmStatic
+  open fun verifyAttached(router: Router<*>) {
+    verify(router).dispatchAttach(or(isNull(), isA(Bundle::class.java)), anyString())
   }
 
   /**
-   * Verifies that the {@link Router} was attached a certain number of times
+   * Verifies that the [Router] was attached a certain number of times
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    * @param times the number of times attached
    */
-  @SuppressWarnings("unchecked")
-  public static void verifyAttached(Router router, int times) {
-    verify(router, times(times)).dispatchAttach(or(isNull(), isA(Bundle.class)), anyString());
+  @JvmStatic
+  open fun verifyAttached(router: Router<*>, times: Int) {
+    verify(router, times(times)).dispatchAttach(or(isNull(), isA(Bundle::class.java)), anyString())
   }
 
   /**
-   * Verifies that the {@link Router} is attached.
+   * Verifies that the [Router] is attached.
    *
-   * @param order {@link InOrder} for ordered verification.
-   * @param router the {@link Router}.
+   * @param order [InOrder] for ordered verification.
+   * @param router the [Router].
    */
-  @SuppressWarnings("unchecked")
-  public static void verifyAttached(InOrder order, Router router) {
-    order.verify(router).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+  @JvmStatic
+  open fun verifyAttached(order: InOrder, router: Router<*>) {
+    order.verify(router).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
   }
 
   /**
-   * Verified that the {@link Router} is attached with a sepcific tag.
+   * Verified that the [Router] is attached with a sepcific tag.
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    * @param tag the expected tag.
    */
-  public static void verifyAttached(Router router, String tag) {
-    verify(router).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), eq(tag));
+  @JvmStatic
+  open fun verifyAttached(router: Router<*>, tag: String) {
+    verify(router).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), eq(tag))
   }
 
   /**
-   * Verifies that the {@link Router} is attached with an additional {@link VerificationMode}.
+   * Verifies that the [Router] is attached with an additional [VerificationMode].
    *
-   * @param router the {@link Router}.
-   * @param mode The mockito verification mode. ie. {@code times(1)}.
+   * @param router the [Router].
+   * @param mode The mockito verification mode. ie. `times(1)`.
    */
-  @SuppressWarnings("unchecked")
-  public static void verifyAttached(Router router, VerificationMode mode) {
-    verify(router, mode).dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+  @JvmStatic
+  open fun verifyAttached(router: Router<*>, mode: VerificationMode) {
+    verify(router, mode).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
   }
 
   /**
-   * Verifies that the {@link Router} is not attached.
+   * Verifies that the [Router] is not attached.
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    */
-  @SuppressWarnings("unchecked")
-  public static void verifyNotAttached(Router router) {
+  @JvmStatic
+  open fun verifyNotAttached(router: Router<*>) {
     verify(router, never())
-        .dispatchAttach(or(isNull(Bundle.class), isA(Bundle.class)), anyString());
+      .dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
   }
 
   /**
-   * Verifies that the {@link Router} is detached.
+   * Verifies that the [Router] is detached.
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    */
-  public static void verifyDetached(Router router) {
-    verify(router).dispatchDetach();
+  @JvmStatic
+  open fun verifyDetached(router: Router<*>) {
+    verify(router).dispatchDetach()
   }
 
   /**
-   * Verifies that the {@link Router} is detached.
+   * Verifies that the [Router] is detached.
    *
-   * @param order {@link InOrder} for ordered verification.
-   * @param router the {@link Router}.
+   * @param order [InOrder] for ordered verification.
+   * @param router the [Router].
    */
-  public static void verifyDetached(InOrder order, Router router) {
-    order.verify(router).dispatchDetach();
+  @JvmStatic
+  open fun verifyDetached(order: InOrder, router: Router<*>) {
+    order.verify(router).dispatchDetach()
   }
 
   /**
-   * Verifies that the {@link Router} is detached with an additional {@link VerificationMode}.
+   * Verifies that the [Router] is detached with an additional [VerificationMode].
    *
-   * @param router the {@link Router}.
-   * @param mode The mockito verification mode. ie. {@code times(1)}.
+   * @param router the [Router].
+   * @param mode The mockito verification mode. ie. `times(1)`.
    */
-  public static void verifyDetached(Router router, VerificationMode mode) {
-    verify(router, mode).dispatchDetach();
+  @JvmStatic
+  open fun verifyDetached(router: Router<*>, mode: VerificationMode) {
+    verify(router, mode).dispatchDetach()
   }
 
   /**
-   * Verifies that the {@link Router} is detached.
+   * Verifies that the [Router] is detached.
    *
-   * @param router the {@link Router}.
+   * @param router the [Router].
    */
-  public static void verifyNotDetached(Router router) {
-    verify(router, never()).dispatchDetach();
+  @JvmStatic
+  open fun verifyNotDetached(router: Router<*>) {
+    verify(router, never()).dispatchDetach()
   }
 }

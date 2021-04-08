@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 @SuppressWarnings("RibInteractorOnIteractor")
-public class FakeInteractor<P, R extends Router> extends Interactor<P, R> {
-
-  @SuppressWarnings("unchecked")
-  public void attach() {
-    this.presenter = (P) new FakePresenter();
-    setRouter((R) new FakeRouter(this));
-    dispatchAttach(null);
+open class FakeInteractor<P, R : Router<*>> : Interactor<P, R>() {
+  open fun attach() {
+    presenter = FakePresenter() as P
+    router = FakeRouter(this) as R
+    dispatchAttach(null)
   }
 
-  public void detach() {
-    dispatchDetach();
+  open fun detach() {
+    dispatchDetach()
   }
 }
