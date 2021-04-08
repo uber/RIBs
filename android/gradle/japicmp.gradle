@@ -4,9 +4,7 @@ ext.javaBaselineVersion = "0.10.1"
 
 buildscript {
     repositories {
-        maven {
-            url deps.build.gradlePluginsUrl
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath deps.build.gradlePlugins.japicmp

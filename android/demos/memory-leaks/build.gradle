@@ -18,10 +18,8 @@
 buildscript {
     repositories {
         google()
-        jcenter()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        mavenCentral()
+        gradlePluginPortal()
     }
     dependencies {
         classpath deps.build.gradlePlugins.android
