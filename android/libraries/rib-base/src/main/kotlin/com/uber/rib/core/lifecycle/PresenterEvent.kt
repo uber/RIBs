@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core.lifecycle;
+package com.uber.rib.core.lifecycle
 
-/** Presenter lifecycle events. */
-public enum PresenterEvent {
-  LOADED,
-  UNLOADED
+/** Presenter lifecycle events.  */
+enum class PresenterEvent {
+  LOADED, UNLOADED
 }

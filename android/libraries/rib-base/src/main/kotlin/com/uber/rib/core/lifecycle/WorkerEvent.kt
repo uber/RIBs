@@ -13,15 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core.lifecycle;
-
-import com.uber.rib.core.Worker;
+package com.uber.rib.core.lifecycle
 
 /**
- * Enum used represent when a {@link Worker} should stop and start in response to interactor
+ * Enum used represent when a [Worker] should stop and start in response to interactor
  * lifecycle events.
  */
-public enum WorkerEvent {
-  START,
-  STOP
+enum class WorkerEvent {
+  START, STOP
 }

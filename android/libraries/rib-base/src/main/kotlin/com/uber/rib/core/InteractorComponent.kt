@@ -13,31 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
- * Designates a component that can provide a specific interactor. This is identical to {@link
- * InteractorBaseComponent}. This exists soley for backwards compatibility with old versions of the
- * Presidio Intellij Plugin.
+ * Designates a component that can provide a specific interactor. This is identical to [ ]. This
+ * exists soley for backwards compatibility with old versions of the Presidio Intellij Plugin.
  *
  * @param <T> type of interactor that is injected.
  * @param <P> type of presenter.
  */
-public interface InteractorComponent<P extends Presenter, T extends Interactor<P, ?>>
-    extends InteractorBaseComponent<T> {
-
+interface InteractorComponent<P : Presenter, T : Interactor<P, *>> : InteractorBaseComponent<T> {
   /**
    * Inject the interactor.
    *
    * @param interactor to inject.
    */
-  @Override
-  void inject(T interactor);
+  override fun inject(interactor: T)
 
   /**
    * The presenter.
    *
    * @return the presenter.
    */
-  P presenter();
+  fun presenter(): P
 }

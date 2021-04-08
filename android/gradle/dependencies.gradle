@@ -21,7 +21,7 @@ def versions = [
         percent: '1.0.0'
     ],
     autodispose: '1.4.0',
-    dagger: "2.22.1",
+    dagger: "2.28",
     errorProne: '2.3.3',
     gjf: '1.7',
     intellij: "2017.2",

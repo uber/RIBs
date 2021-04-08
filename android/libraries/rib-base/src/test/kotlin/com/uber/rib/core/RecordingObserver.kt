@@ -13,100 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.google.common.truth.Truth.assertThat;
-
-import androidx.annotation.NonNull;
-import io.reactivex.Observer;
-import io.reactivex.disposables.Disposable;
-import java.util.NoSuchElementException;
-import java.util.concurrent.BlockingDeque;
-import java.util.concurrent.LinkedBlockingDeque;
-import java.util.concurrent.TimeUnit;
+import com.google.common.truth.Truth
+import io.reactivex.Observer
+import io.reactivex.disposables.Disposable
+import java.util.NoSuchElementException
+import java.util.concurrent.BlockingDeque
+import java.util.concurrent.LinkedBlockingDeque
+import java.util.concurrent.TimeUnit
 
 /**
  * RecordingObserver implementation from RxBinding.
  *
  * @param <T> Parametrized type.
  */
-final class RecordingObserver<T> implements Observer<T> {
+internal class RecordingObserver<T : Any> : Observer<T> {
+  private val events: BlockingDeque<Any> = LinkedBlockingDeque()
 
-  @NonNull private final BlockingDeque<Object> events = new LinkedBlockingDeque<>();
+  override fun onSubscribe(disposable: Disposable) {}
 
-  @Override
-  public void onSubscribe(Disposable disposable) {}
-
-  @Override
-  public void onComplete() {
-    events.addLast(new OnCompleted());
+  override fun onComplete() {
+    events.addLast(OnCompleted())
   }
 
-  @Override
-  public void onError(Throwable e) {
-    events.addLast(new OnError(e));
+  override fun onError(e: Throwable) {
+    events.addLast(OnError(e))
   }
 
-  @Override
-  public void onNext(T t) {
-    events.addLast(new OnNext(t));
+  override fun onNext(t: T) {
+    events.addLast(OnNext(t))
   }
 
-  @NonNull
-  T takeNext() {
-    OnNext event = takeEvent(OnNext.class);
-    return event.value;
+  fun takeNext(): T {
+    val event: OnNext = takeEvent(OnNext::class.java)
+    return event.value as T
   }
 
-  @NonNull
-  private <E> E takeEvent(Class<E> wanted) {
-    Object event;
-    try {
-      event = events.pollFirst(1, TimeUnit.SECONDS);
-    } catch (InterruptedException e) {
-      throw new RuntimeException(e);
+  private fun <E> takeEvent(wanted: Class<E>): E {
+    val event: Any? = try {
+      events.pollFirst(1, TimeUnit.SECONDS)
+    } catch (e: InterruptedException) {
+      throw RuntimeException(e)
     }
     if (event == null) {
-      throw new NoSuchElementException(
-          "No event found while waiting for " + wanted.getSimpleName());
+      throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
     }
-    assertThat(event).isInstanceOf(wanted);
-    return wanted.cast(event);
+    Truth.assertThat(event).isInstanceOf(wanted)
+    return event as E
   }
 
-  private final class OnNext {
-
-    @NonNull final T value;
-
-    private OnNext(@NonNull T value) {
-      this.value = value;
-    }
-
-    @Override
-    public String toString() {
-      return "OnNext[" + value + "]";
-    }
+  private class OnNext(val value: Any) {
+    override fun toString() = "OnNext[$value]"
   }
 
-  private final class OnCompleted {
-
-    @Override
-    public String toString() {
-      return "OnCompleted";
-    }
+  private class OnCompleted {
+    override fun toString() = "OnCompleted"
   }
 
-  private final class OnError {
-
-    @NonNull private final Throwable throwable;
-
-    private OnError(@NonNull Throwable throwable) {
-      this.throwable = throwable;
-    }
-
-    @Override
-    public String toString() {
-      return "OnError[" + throwable + "]";
-    }
+  private class OnError(private val throwable: Throwable) {
+    override fun toString() = "OnError[$throwable]"
   }
 }

@@ -13,21 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
- * {@link Interactor} that doesn't rely on field injection.
+ * [Interactor] that doesn't rely on field injection.
  *
- * @param <P> the type of {@link Presenter}.
- * @param <R> the type of {@link Router}.
+ * @param <P> the type of [Presenter].
+ * @param <R> the type of [Router].
  */
-public abstract class BasicInteractor<P, R extends Router> extends Interactor<P, R> {
-
-  @SuppressWarnings("HidingField")
-  protected P presenter;
-
-  protected BasicInteractor(P presenter) {
-    super(presenter);
-    this.presenter = presenter;
-  }
-}
+abstract class BasicInteractor<P : Any, R : Router<*>> protected constructor(
+  protected var presenter: P
+) : Interactor<P, R>(presenter)

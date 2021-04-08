@@ -40,4 +40,16 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
       XRay.apply(this, view)
     }
   }
+
+  fun dispatchAttachInternal(savedInstanceState: Bundle?) {
+    dispatchAttach(savedInstanceState)
+  }
+
+  fun dispatchDetachInternal() {
+    dispatchDetach()
+  }
+
+  fun saveInstanceStateInternal(outState: Bundle) {
+    saveInstanceStateProtected(outState)
+  }
 }

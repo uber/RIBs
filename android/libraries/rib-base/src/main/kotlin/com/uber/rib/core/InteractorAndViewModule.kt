@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.view.View;
+import android.view.View
 
 /**
  * A module that takes an interactor and a view as dependencies.
@@ -23,17 +23,7 @@ import android.view.View;
  * @param <I> type of interactor.
  * @param <V> type of view.
  */
-public abstract class InteractorAndViewModule<I extends Interactor, V extends View>
-    extends InteractorModule<I> {
-
-  private final V view;
-
-  public InteractorAndViewModule(I interactor, V view) {
-    super(interactor);
-    this.view = view;
-  }
-
-  protected V getView() {
-    return view;
-  }
-}
+abstract class InteractorAndViewModule<I : Interactor<*, *>, V : View>(
+  interactor: I,
+  protected val view: V
+) : InteractorModule<I>(interactor)

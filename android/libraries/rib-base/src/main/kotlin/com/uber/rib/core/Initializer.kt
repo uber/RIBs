@@ -13,20 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package com.uber.rib.core
 
 /**
  * Drop-in replacement for com.facebook.infer.annotation.Initializer.
  *
- * <p>Method, annotated as @Initializer, should be call before object is used externally. It can be
+ *
+ * Method, annotated as @Initializer, should be call before object is used externally. It can be
  * used as a marker for different late-init methods of Android lifecycle, methods called indirectly
  * by the constructor or builder methods necessary to complete before build.
  */
-@Retention(RetentionPolicy.CLASS)
-@Target({ElementType.TYPE, ElementType.FIELD, ElementType.CONSTRUCTOR, ElementType.METHOD})
-public @interface Initializer {}
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+annotation class Initializer

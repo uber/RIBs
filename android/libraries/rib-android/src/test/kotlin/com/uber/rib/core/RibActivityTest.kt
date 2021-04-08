@@ -192,24 +192,23 @@ class RibActivityTest {
       val component: InteractorComponent<ViewPresenter<*>, *> = mock {
         on { presenter() } doReturn(presenter)
       }
-      return EmptyRouter(view, TestInteractor(), component)
+      return EmptyRouter(view, TestInteractor(presenter), component)
+//      return FakeViewRouter<View, TestInteractor>(testInteractor, component)
     }
 
     val testInteractor: TestInteractor
       get() = interactor as TestInteractor
   }
 
-  private class EmptyRouter internal constructor(
+  private class EmptyRouter(
     view: FrameLayout,
     interactor: Interactor<ViewPresenter<*>, *>,
     component: InteractorComponent<ViewPresenter<*>, *>
-  ) : ViewRouter<FrameLayout, Interactor<ViewPresenter<*>, *>>(view, interactor, component) {
-    init {
-      interactor.presenter = component.presenter()
-    }
-  }
+  ) : ViewRouter<FrameLayout, Interactor<ViewPresenter<*>, *>>(view, interactor, component)
 
-  private class TestInteractor : Interactor<ViewPresenter<*>, EmptyRouter>() {
+  private class TestInteractor(
+    presenter: ViewPresenter<*>
+  ) : Interactor<ViewPresenter<*>, FakeRouter<*>>(presenter) {
     var savedInstanceState: Bundle? = null
       private set
 

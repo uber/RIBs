@@ -13,32 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.os.Parcelable;
-import androidx.annotation.Nullable;
+import android.os.Parcelable
 
-/** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies. */
-public class Bundle {
-
-  private final android.os.Bundle androidBundle;
-
-  public Bundle() {
-    this(null);
-  }
-
-  /**
-   * Creates a new Uber bundle that wraps an Android bundle.
-   *
-   * @param androidBundle Android bundle to convert.
-   */
-  public Bundle(@Nullable android.os.Bundle androidBundle) {
-    if (androidBundle == null) {
-      this.androidBundle = new android.os.Bundle();
-    } else {
-      this.androidBundle = androidBundle;
-    }
-  }
+/** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies.  */
+open class Bundle @JvmOverloads constructor(
+  private val androidBundle: android.os.Bundle = android.os.Bundle()
+) {
 
   /**
    * Returns the value associated with the given key, or defaultValue if no mapping of the desired
@@ -47,10 +29,10 @@ public class Bundle {
    * @param key to fetch.
    * @param defaultValue if no value is present.
    * @return the boolean value associated with the given key or null if there is no string value in
-   *     the bundle.
+   * the bundle.
    */
-  public boolean getBoolean(String key, boolean defaultValue) {
-    return androidBundle.getBoolean(key, defaultValue);
+  open fun getBoolean(key: String, defaultValue: Boolean): Boolean {
+    return androidBundle.getBoolean(key, defaultValue)
   }
 
   /**
@@ -60,23 +42,22 @@ public class Bundle {
    * @param key to insert.
    * @param value to insert.
    */
-  public void putBoolean(String key, boolean value) {
-    androidBundle.putBoolean(key, value);
+  open fun putBoolean(key: String, value: Boolean) {
+    androidBundle.putBoolean(key, value)
   }
 
   /**
-   * Returns a {@link Bundle} for a given key, or {@code null}.
+   * Returns a [Bundle] for a given key, or `null`.
    *
    * @param key to fetch.
-   * @return a {@link Bundle} or {@code null}
+   * @return a [Bundle] or `null`
    */
-  @Nullable
-  public Bundle getBundleExtra(String key) {
-    Parcelable value = androidBundle.getParcelable(key);
-    if (value != null) {
-      return new Bundle((android.os.Bundle) value);
+  open fun getBundleExtra(key: String): Bundle? {
+    val value = androidBundle.getParcelable<Parcelable>(key)
+    return if (value != null) {
+      Bundle(value as android.os.Bundle)
     } else {
-      return null;
+      null
     }
   }
 
@@ -87,11 +68,11 @@ public class Bundle {
    * @param key to insert.
    * @param bundle to insert.
    */
-  public void putBundleExtra(String key, @Nullable Bundle bundle) {
+  open fun putBundleExtra(key: String, bundle: Bundle?) {
     if (bundle != null) {
-      androidBundle.putParcelable(key, bundle.getWrappedBundle());
+      androidBundle.putParcelable(key, bundle.androidBundle)
     } else {
-      androidBundle.putParcelable(key, null);
+      androidBundle.putParcelable(key, null)
     }
   }
 
@@ -100,11 +81,10 @@ public class Bundle {
    * exists for the given key or a null value is explicitly associated with the key.
    *
    * @param key to get.
-   * @return the value, or {@code null}.
+   * @return the value, or `null`.
    */
-  @Nullable
-  public Parcelable getParcelable(String key) {
-    return androidBundle.getParcelable(key);
+  open fun getParcelable(key: String): Parcelable? {
+    return androidBundle.getParcelable(key)
   }
 
   /**
@@ -114,8 +94,8 @@ public class Bundle {
    * @param key to insert.
    * @param value to insert.
    */
-  public void putParcelable(String key, @Nullable Parcelable value) {
-    androidBundle.putParcelable(key, value);
+  open fun putParcelable(key: String, value: Parcelable?) {
+    androidBundle.putParcelable(key, value)
   }
 
   /**
@@ -124,11 +104,10 @@ public class Bundle {
    *
    * @param key to fetch.
    * @return the String value associated with the given key or null if there is no string value in
-   *     the bundle.
+   * the bundle.
    */
-  @Nullable
-  public String getString(String key) {
-    return androidBundle.getString(key);
+  open fun getString(key: String): String? {
+    return androidBundle.getString(key)
   }
 
   /**
@@ -138,8 +117,8 @@ public class Bundle {
    * @param key to insert.
    * @param value to insert.
    */
-  public void putString(String key, @Nullable String value) {
-    androidBundle.putString(key, value);
+  open fun putString(key: String, value: String?) {
+    androidBundle.putString(key, value)
   }
 
   /**
@@ -149,8 +128,8 @@ public class Bundle {
    * @param key to insert.
    * @param value to insert.
    */
-  public void putInt(String key, int value) {
-    androidBundle.putInt(key, value);
+  open fun putInt(key: String, value: Int) {
+    androidBundle.putInt(key, value)
   }
 
   /**
@@ -159,13 +138,9 @@ public class Bundle {
    *
    * @param key to fetch.
    * @return the int value associated with the given key or defaultValue if there is no int value in
-   *     the bundle.
+   * the bundle.
    */
-  public int getInt(String key, int defaultValue) {
-    return androidBundle.getInt(key, defaultValue);
-  }
-
-  android.os.Bundle getWrappedBundle() {
-    return androidBundle;
+  open fun getInt(key: String, defaultValue: Int): Int {
+    return androidBundle.getInt(key, defaultValue)
   }
 }

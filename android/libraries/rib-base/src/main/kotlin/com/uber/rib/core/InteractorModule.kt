@@ -13,22 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
  * A module that takes an interactor as a dependency.
  *
  * @param <I> type of interactor.
  */
-public abstract class InteractorModule<I extends Interactor> {
-
-  private final I interactor;
-
-  public InteractorModule(I interactor) {
-    this.interactor = interactor;
-  }
-
-  protected I getInteractor() {
-    return interactor;
-  }
-}
+abstract class InteractorModule<I : Interactor<*, *>>(protected val interactor: I)

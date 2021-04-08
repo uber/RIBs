@@ -13,19 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
  * Designates a component that can provide a specific interactor.
  *
  * @param <T> type of interactor that is injected.
  */
-public interface InteractorBaseComponent<T extends Interactor<?, ?>> {
-
+interface InteractorBaseComponent<T : Interactor<*, *>> {
   /**
    * Inject the interactor.
    *
    * @param interactor to inject.
    */
-  void inject(T interactor);
+  fun inject(interactor: T)
 }

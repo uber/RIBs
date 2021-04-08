@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/** No-op {@link Presenter} */
-public class EmptyPresenter extends Presenter {}
+/** No-op [Presenter]  */
+open class EmptyPresenter : Presenter()

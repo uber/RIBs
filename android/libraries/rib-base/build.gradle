@@ -20,8 +20,8 @@ buildscript {
     }
 }
 
-apply plugin: 'net.ltgt.apt'
-apply plugin: 'java-library'
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.kotlin.kapt"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
@@ -29,7 +29,8 @@ targetCompatibility = deps.build.javaVersion.toString()
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
     // in order to invert a dependency. With a bit of work this could be removed.
-    annotationProcessor deps.apt.daggerCompiler
+    kapt deps.apt.daggerCompiler
+    kapt deps.apt.androidApi
 
     compile deps.external.guavaAndroid
     compile deps.external.reactiveStreams
@@ -49,6 +50,7 @@ dependencies {
     testCompile deps.kotlin.stdlib
     testCompile deps.test.junit
     testCompile deps.test.mockito
+    testCompile deps.test.mockitoKotlin
     testCompile deps.test.truth
     testCompile(project(":libraries:rib-test")) {
         transitive = false

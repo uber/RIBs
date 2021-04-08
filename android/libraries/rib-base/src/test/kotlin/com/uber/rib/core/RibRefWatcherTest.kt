@@ -13,96 +13,86 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyZeroInteractions;
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import org.junit.After
+import org.junit.Test
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-
-public class RibRefWatcherTest {
-
-  @Mock private RibRefWatcher.ReferenceWatcher referenceWatcher;
-
-  private final RibRefWatcher ribRefWatcher = new com.uber.rib.core.RibRefWatcher();
-
-  @Before
-  public void setup() {
-    MockitoAnnotations.initMocks(this);
-  }
+class RibRefWatcherTest {
+  private val referenceWatcher: RibRefWatcher.ReferenceWatcher = mock()
+  private val ribRefWatcher = RibRefWatcher()
 
   @After
-  public void tearDown() {
-    ribRefWatcher.disableLeakCanary();
-    ribRefWatcher.disableULeakLifecycleTracking();
+  fun tearDown() {
+    ribRefWatcher.disableLeakCanary()
+    ribRefWatcher.disableULeakLifecycleTracking()
   }
 
   @Test
-  public void watchDeletedObject_whenObjectIsNull_shouldDoNothing() {
-    ribRefWatcher.enableLeakCanary();
-    ribRefWatcher.setReferenceWatcher(referenceWatcher);
-    ribRefWatcher.watchDeletedObject(null);
-    verifyZeroInteractions(referenceWatcher);
+  fun watchDeletedObject_whenObjectIsNull_shouldDoNothing() {
+    ribRefWatcher.enableLeakCanary()
+    ribRefWatcher.setReferenceWatcher(referenceWatcher)
+    ribRefWatcher.watchDeletedObject(null)
+    verifyZeroInteractions(referenceWatcher)
   }
 
   @Test
-  public void watchDeletedObject_whenReferenceWatcherIsNull_shouldDoNothing() {
-    ribRefWatcher.enableLeakCanary();
-    ribRefWatcher.watchDeletedObject(new Object());
-    verifyZeroInteractions(referenceWatcher);
+  fun watchDeletedObject_whenReferenceWatcherIsNull_shouldDoNothing() {
+    ribRefWatcher.enableLeakCanary()
+    ribRefWatcher.watchDeletedObject(Any())
+    verifyZeroInteractions(referenceWatcher)
   }
 
   @Test
-  public void watchDeletedObject_whenReferenceObjectIsNotNull_shouldTellReferenceWatcher() {
-    ribRefWatcher.enableLeakCanary();
-    Object object = new Object();
-    ribRefWatcher.setReferenceWatcher(referenceWatcher);
-    ribRefWatcher.watchDeletedObject(object);
-    verify(referenceWatcher).watch(object);
+  fun watchDeletedObject_whenReferenceObjectIsNotNull_shouldTellReferenceWatcher() {
+    ribRefWatcher.enableLeakCanary()
+    val obj = Any()
+    ribRefWatcher.setReferenceWatcher(referenceWatcher)
+    ribRefWatcher.watchDeletedObject(obj)
+    verify(referenceWatcher).watch(obj)
   }
 
   @Test
-  public void watchDeletedObject_whenNonNullRefWithDisabledLeakCanary_shouldDoNothing() {
-    Object object = new Object();
-    ribRefWatcher.setReferenceWatcher(referenceWatcher);
-    ribRefWatcher.watchDeletedObject(object);
-    verify(referenceWatcher, never()).watch(object);
+  fun watchDeletedObject_whenNonNullRefWithDisabledLeakCanary_shouldDoNothing() {
+    val obj = Any()
+    ribRefWatcher.setReferenceWatcher(referenceWatcher)
+    ribRefWatcher.watchDeletedObject(obj)
+    verify(referenceWatcher, never()).watch(obj)
   }
 
   @Test
-  public void watchDeletedObject_whenObjectIsNullWithULeak_shouldDoNothing() {
-    ribRefWatcher.enableULeakLifecycleTracking();
-    ribRefWatcher.setReferenceWatcher(referenceWatcher);
-    ribRefWatcher.watchDeletedObject(null);
-    verifyZeroInteractions(referenceWatcher);
+  fun watchDeletedObject_whenObjectIsNullWithULeak_shouldDoNothing() {
+    ribRefWatcher.enableULeakLifecycleTracking()
+    ribRefWatcher.setReferenceWatcher(referenceWatcher)
+    ribRefWatcher.watchDeletedObject(null)
+    verifyZeroInteractions(referenceWatcher)
   }
 
   @Test
-  public void watchDeletedObject_whenReferenceWatcherIsNullULeakEnabled_shouldDoNothing() {
-    ribRefWatcher.enableULeakLifecycleTracking();
-    ribRefWatcher.watchDeletedObject(new Object());
-    verifyZeroInteractions(referenceWatcher);
+  fun watchDeletedObject_whenReferenceWatcherIsNullULeakEnabled_shouldDoNothing() {
+    ribRefWatcher.enableULeakLifecycleTracking()
+    ribRefWatcher.watchDeletedObject(Any())
+    verifyZeroInteractions(referenceWatcher)
   }
 
   @Test
-  public void watchDeletedObject_whenReferenceObjectIsNotNullULeak_shouldTellReferenceWatcher() {
-    ribRefWatcher.enableULeakLifecycleTracking();
-    Object object = new Object();
-    ribRefWatcher.setReferenceWatcher(referenceWatcher);
-    ribRefWatcher.watchDeletedObject(object);
-    verify(referenceWatcher).watch(object);
+  fun watchDeletedObject_whenReferenceObjectIsNotNullULeak_shouldTellReferenceWatcher() {
+    ribRefWatcher.enableULeakLifecycleTracking()
+    val obj = Any()
+    ribRefWatcher.setReferenceWatcher(referenceWatcher)
+    ribRefWatcher.watchDeletedObject(obj)
+    verify(referenceWatcher).watch(obj)
   }
 
   @Test
-  public void watchDeletedObject_whenNonNullRefULeakDisabled_shouldDoNothing() {
-    Object object = new Object();
-    ribRefWatcher.setReferenceWatcher(referenceWatcher);
-    ribRefWatcher.watchDeletedObject(object);
-    verify(referenceWatcher, never()).watch(object);
+  fun watchDeletedObject_whenNonNullRefULeakDisabled_shouldDoNothing() {
+    val obj = Any()
+    ribRefWatcher.setReferenceWatcher(referenceWatcher)
+    ribRefWatcher.watchDeletedObject(obj)
+    verify(referenceWatcher, never()).watch(obj)
   }
 }

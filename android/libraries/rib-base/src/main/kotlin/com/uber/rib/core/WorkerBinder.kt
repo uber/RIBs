@@ -13,24 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import androidx.annotation.VisibleForTesting;
-import com.jakewharton.rxrelay2.PublishRelay;
-import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
-import com.uber.rib.core.lifecycle.InteractorEvent;
-import com.uber.rib.core.lifecycle.PresenterEvent;
-import com.uber.rib.core.lifecycle.WorkerEvent;
-import io.reactivex.Observable;
-import java.util.List;
+import androidx.annotation.VisibleForTesting
+import com.jakewharton.rxrelay2.PublishRelay
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider
+import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.core.lifecycle.PresenterEvent
+import com.uber.rib.core.lifecycle.WorkerEvent
+import io.reactivex.Observable
 
-/**
- * Helper class to bind to an interactor's lifecycle to translate it to a {@link Worker} lifecycle.
- */
-public final class WorkerBinder {
-
-  private WorkerBinder() {}
-
+/** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
+object WorkerBinder {
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events. Inject this class into your interactor and call this method on
@@ -38,10 +32,11 @@ public final class WorkerBinder {
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @return {@link WorkerUnbinder} to unbind {@link Worker Worker's} lifecycle.
+   * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
-  public static WorkerUnbinder bind(Interactor<?, ?> interactor, Worker worker) {
-    return bind(mapInteractorLifecycleToWorker(interactor.lifecycle()), worker);
+  @JvmStatic
+  open fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder {
+    return bind(mapInteractorLifecycleToWorker(interactor.lifecycle()), worker)
   }
 
   /**
@@ -52,9 +47,10 @@ public final class WorkerBinder {
    * @param interactor The interactor that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
-  public static void bind(Interactor interactor, List<? extends Worker> workers) {
-    for (Worker interactorWorker : workers) {
-      bind(interactor, interactorWorker);
+  @JvmStatic
+  open fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
+    for (interactorWorker in workers) {
+      bind(interactor, interactorWorker)
     }
   }
 
@@ -64,10 +60,11 @@ public final class WorkerBinder {
    *
    * @param presenter The presenter that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @return {@link WorkerUnbinder} to unbind {@link Worker Worker's} lifecycle.
+   * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
-  public static WorkerUnbinder bind(Presenter presenter, Worker worker) {
-    return bind(mapPresenterLifecycleToWorker(presenter.lifecycle()), worker);
+  @JvmStatic
+  open fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder {
+    return bind(mapPresenterLifecycleToWorker(presenter.lifecycle()), worker)
   }
 
   /**
@@ -78,86 +75,83 @@ public final class WorkerBinder {
    * @param presenter The presenter that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
-  public static void bind(Presenter presenter, List<? extends Worker> workers) {
-    for (Worker worker : workers) {
-      bind(presenter, worker);
+  @JvmStatic
+  open fun bind(presenter: Presenter, workers: List<Worker>) {
+    for (worker in workers) {
+      bind(presenter, worker)
     }
   }
 
+  @JvmStatic
   @VisibleForTesting
-  static WorkerUnbinder bind(Observable<WorkerEvent> mappedLifecycle, final Worker worker) {
-    final PublishRelay<WorkerEvent> unbindSubject = PublishRelay.create();
-
-    final Observable<WorkerEvent> workerLifecycle =
-        mappedLifecycle
-            .mergeWith(unbindSubject)
-            .takeUntil(workerEvent -> workerEvent == WorkerEvent.STOP);
-
-    bindToWorkerLifecycle(workerLifecycle, worker);
-
-    return () -> unbindSubject.accept(WorkerEvent.STOP);
+  open fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
+    val unbindSubject = PublishRelay.create<WorkerEvent>()
+    val workerLifecycle = mappedLifecycle
+      .mergeWith(unbindSubject)
+      .takeUntil { workerEvent: WorkerEvent -> workerEvent === WorkerEvent.STOP }
+    bindToWorkerLifecycle(workerLifecycle, worker)
+    return WorkerUnbinder { unbindSubject.accept(WorkerEvent.STOP) }
   }
 
-  static Observable<WorkerEvent> mapInteractorLifecycleToWorker(
-      Observable<InteractorEvent> interactorEventObservable) {
-    return interactorEventObservable.map(
-        interactorEvent -> {
-          switch (interactorEvent) {
-            case ACTIVE:
-              return WorkerEvent.START;
-            default:
-              return WorkerEvent.STOP;
-          }
-        });
+  @JvmStatic
+  fun mapInteractorLifecycleToWorker(
+    interactorEventObservable: Observable<InteractorEvent>
+  ): Observable<WorkerEvent> {
+    return interactorEventObservable.map { interactorEvent: InteractorEvent ->
+      when (interactorEvent) {
+        InteractorEvent.ACTIVE -> return@map WorkerEvent.START
+        else -> return@map WorkerEvent.STOP
+      }
+    }
   }
 
-  static Observable<WorkerEvent> mapPresenterLifecycleToWorker(
-      Observable<PresenterEvent> presenterEventObservable) {
-    return presenterEventObservable.map(
-        presenterEvent -> {
-          switch (presenterEvent) {
-            case LOADED:
-              return WorkerEvent.START;
-            default:
-              return WorkerEvent.STOP;
-          }
-        });
+  @JvmStatic
+  fun mapPresenterLifecycleToWorker(
+    presenterEventObservable: Observable<PresenterEvent>
+  ): Observable<WorkerEvent> {
+    return presenterEventObservable.map { presenterEvent: PresenterEvent ->
+      when (presenterEvent) {
+        PresenterEvent.LOADED -> return@map WorkerEvent.START
+        else -> return@map WorkerEvent.STOP
+      }
+    }
   }
 
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events.
    *
-   * @param lifecycle The interactor's {@link LifecycleScopeProvider}.
+   * @param lifecycle The interactor's [LifecycleScopeProvider].
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @deprecated this method uses {@code LifecycleScopeProvider} for purposes other than
-   *     AutoDispose. Usage is strongly discouraged as this method may be removed in the future.
    */
-  @Deprecated
-  public static void bindTo(
-      LifecycleScopeProvider<InteractorEvent> lifecycle, final Worker worker) {
-    bind(mapInteractorLifecycleToWorker(lifecycle.lifecycle()), worker);
+  @JvmStatic
+  @Deprecated(
+    """this method uses {@code LifecycleScopeProvider} for purposes other than
+        AutoDispose. Usage is strongly discouraged as this method may be removed in the future."""
+  )
+  open fun bindTo(
+    lifecycle: LifecycleScopeProvider<InteractorEvent>,
+    worker: Worker
+  ) {
+    bind(mapInteractorLifecycleToWorker(lifecycle.lifecycle()), worker)
   }
 
   /**
-   * Bind a worker to a {@link WorkerEvent} lifecycle provider.
+   * Bind a worker to a [WorkerEvent] lifecycle provider.
    *
    * @param workerLifecycle the worker lifecycle event provider
    * @param worker the class that wants to be informed when to start and stop doing work
    */
-  @SuppressWarnings("CheckReturnValue")
-  public static void bindToWorkerLifecycle(
-      Observable<WorkerEvent> workerLifecycle, final Worker worker) {
-    workerLifecycle.subscribe(
-        workerEvent -> {
-          switch (workerEvent) {
-            case START:
-              worker.onStart(new WorkerScopeProvider(workerLifecycle.hide()));
-              break;
-            default:
-              worker.onStop();
-              break;
-          }
-        });
+  @JvmStatic
+  fun bindToWorkerLifecycle(
+    workerLifecycle: Observable<WorkerEvent>,
+    worker: Worker
+  ) {
+    workerLifecycle.subscribe { workerEvent: WorkerEvent ->
+      when (workerEvent) {
+        WorkerEvent.START -> worker.onStart(WorkerScopeProvider(workerLifecycle.hide()))
+        else -> worker.onStop()
+      }
+    }
   }
 }

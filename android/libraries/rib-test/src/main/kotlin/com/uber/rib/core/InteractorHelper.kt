@@ -33,13 +33,13 @@ object InteractorHelper {
    * @param savedInstanceState the saved [Bundle].
    */
   @JvmStatic
-  open fun <P, R : Router<*>> attach(
+  open fun <P : Any, R : Router<*>> attach(
     interactor: Interactor<P, R>,
     presenter: P,
     router: R,
     savedInstanceState: Bundle?
   ) {
-    interactor.presenter = presenter
+    interactor.actualPresenter = presenter
     interactor.router = router
     interactor.dispatchAttach(savedInstanceState)
   }

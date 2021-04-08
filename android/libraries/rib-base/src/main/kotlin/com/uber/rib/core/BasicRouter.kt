@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
- * {@link Router} that does not require an {@link InteractorBaseComponent}.
+ * [Router] that does not require an [InteractorBaseComponent].
  *
  * @param <I> type of interactor.
  */
-public abstract class BasicRouter<I extends Interactor> extends Router<I> {
-
-  public BasicRouter(I interactor) {
-    super(interactor);
-  }
-}
+abstract class BasicRouter<I : Interactor<*, *>>(interactor: I) : Router<I>(interactor)

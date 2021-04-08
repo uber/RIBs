@@ -76,18 +76,20 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     super.onCreate(savedInstanceState)
     val rootViewGroup = findViewById<ViewGroup>(R.id.content)
     lifecycleRelay.accept(createOnCreateEvent(savedInstanceState))
-    router = createRouter(rootViewGroup)
     val wrappedBundle: Bundle? = if (savedInstanceState != null) Bundle(savedInstanceState) else null
-    router?.dispatchAttach(wrappedBundle)
-    rootViewGroup.addView(router?.view)
-    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, router, null)
+    router = createRouter(rootViewGroup)
+    router?.let {
+      it.dispatchAttachInternal(wrappedBundle)
+      rootViewGroup.addView(it.view)
+      RibEvents.instance.emitEvent(RibEventType.ATTACHED, it, null)
+    }
   }
 
   @CallSuper
   public override fun onSaveInstanceState(outState: android.os.Bundle) {
     super.onSaveInstanceState(outState)
     callbacksRelay.accept(createOnSaveInstanceStateEvent(outState))
-    router?.saveInstanceState(Bundle(outState)) ?: throw NullPointerException("Router should not be null")
+    router?.saveInstanceStateInternal(Bundle(outState)) ?: throw NullPointerException("Router should not be null")
   }
 
   @CallSuper
@@ -129,9 +131,9 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   @CallSuper
   override fun onDestroy() {
     lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.DESTROY))
-    if (router != null) {
-      router?.dispatchDetach()
-      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, router, null)
+    router?.let {
+      it.dispatchDetachInternal()
+      RibEvents.instance.emitEvent(RibEventType.DETACHED, it, null)
     }
     router = null
     super.onDestroy()
@@ -190,7 +192,7 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
    */
   open val interactor: Interactor<*, *>
     get() = if (router != null) {
-      router?.interactor as Interactor<*, *>
+      router?.getInteractor() as Interactor<*, *>
     } else {
       throw IllegalStateException(
         "Attempting to get a router when activity is not created or has been destroyed."

@@ -21,6 +21,6 @@ import com.uber.rib.core.RibInteractor;
 import com.uber.rib.core.Router;
 
 @RibInteractor
-public class AnnotatedInteractorNoSuffix extends Interactor<Presenter, Router> {
+public class AnnotatedInteractorNoSuffix extends Interactor<Presenter, Router<?>> {
 
 }

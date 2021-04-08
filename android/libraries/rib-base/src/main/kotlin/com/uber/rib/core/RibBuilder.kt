@@ -13,14 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/** The annotation to mark that some object is an Builder. */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.CLASS)
-public @interface RibBuilder {}
+/** The annotation to mark that some object is an Builder.  */
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
+@Retention(AnnotationRetention.BINARY)
+annotation class RibBuilder

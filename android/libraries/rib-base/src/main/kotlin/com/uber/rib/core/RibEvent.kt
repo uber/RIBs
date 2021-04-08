@@ -13,40 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import androidx.annotation.Nullable;
-
-public class RibEvent {
-
-  private final RibEventType eventType;
-  private final Router router;
-  /** Null for the root ribs that are directly attached to RibActivity/Fragment */
-  @Nullable private final Router parentRouter;
-
-  public RibEventType getEventType() {
-    return eventType;
-  }
-
-  public Router getRouter() {
-    return router;
-  }
-
-  /** @return null for the root ribs that are directly attached to RibActivity/Fragment */
-  @Nullable
-  public Router getParentRouter() {
-    return parentRouter;
-  }
-
-  /**
-   * @param eventType {@link RibEventType}
-   * @param router {@link Router}
-   * @param parentRouter {@link Router} and null for the root ribs that are directly attached to
-   *     RibActivity/Fragment
-   */
-  public RibEvent(RibEventType eventType, Router router, @Nullable Router parentRouter) {
-    this.eventType = eventType;
-    this.router = router;
-    this.parentRouter = parentRouter;
-  }
-}
+/**
+ * @param eventType [RibEventType]
+ * @param router [Router]
+ * @param parentRouter [Router] and null for the root ribs that are directly attached to
+ * RibActivity/Fragment
+ */
+open class RibEvent(
+  open val eventType: RibEventType,
+  open val router: Router<*>,
+  open val parentRouter: Router<*>?
+)

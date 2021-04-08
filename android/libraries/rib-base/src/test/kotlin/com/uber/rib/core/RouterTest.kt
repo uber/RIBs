@@ -13,34 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.google.common.truth.Truth.assertThat;
-import static org.mockito.Mockito.mock;
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
+import org.junit.Test
+import java.util.concurrent.atomic.AtomicBoolean
 
-import java.util.concurrent.atomic.AtomicBoolean;
-import org.junit.Test;
+class RouterTest {
 
-public class RouterTest {
+  private val component: InteractorComponent<*, *> = mock()
+  private val interactor: Interactor<*, *> = mock()
+  private val ribRefWatcher: RibRefWatcher = mock()
 
   @Test
-  public void didLoad_shouldBeCalledAfterInstantiation() {
-    final AtomicBoolean didLoad = new AtomicBoolean(false);
-    Router router =
-        new Router<Interactor>(
-            mock(InteractorComponent.class),
-            mock(Interactor.class),
-            mock(RibRefWatcher.class),
-            Thread.currentThread()) {
-          @Override
-          protected void didLoad() {
-            super.didLoad();
-            didLoad.set(true);
-          }
-        };
-
-    router.dispatchAttach(null);
-
-    assertThat(didLoad.get()).isTrue();
+  fun didLoad_shouldBeCalledAfterInstantiation() {
+    val didLoad = AtomicBoolean(false)
+    val router: Router<*> = object : Router<Interactor<*, *>>(
+      component,
+      interactor,
+      ribRefWatcher,
+      Thread.currentThread()
+    ) {
+      override fun didLoad() {
+        super.didLoad()
+        didLoad.set(true)
+      }
+    }
+    router.dispatchAttachInternal(null)
+    assertThat(didLoad.get()).isTrue()
   }
 }

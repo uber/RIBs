@@ -13,137 +13,111 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.uber.rib.core.WorkerBinder.bind;
-import static com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle;
-import static com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker;
-import static com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import com.jakewharton.rxrelay2.BehaviorRelay
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
+import com.uber.rib.core.WorkerBinder.bind
+import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
+import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
+import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
+import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.core.lifecycle.PresenterEvent
+import com.uber.rib.core.lifecycle.WorkerEvent
+import org.junit.Test
 
-import com.jakewharton.rxrelay2.BehaviorRelay;
-import com.uber.rib.core.lifecycle.InteractorEvent;
-import com.uber.rib.core.lifecycle.PresenterEvent;
-import com.uber.rib.core.lifecycle.WorkerEvent;
-import org.junit.Before;
-import org.junit.Test;
-import org.mockito.Matchers;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+class WorkerBinderTest {
+  private val worker: Worker = mock()
 
-public class WorkerBinderTest {
-
-  @Mock private Worker worker;
-
-  @SuppressWarnings("NullAway.Init")
-  @Before
-  public void setUp() {
-    MockitoAnnotations.initMocks(this);
+  @Test
+  fun bind_whenInteractorAttached_shouldStartWorker() {
+    val lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE)
+    bind(mapInteractorLifecycleToWorker(lifecycle), worker)
+    verify(worker).onStart(any())
   }
 
   @Test
-  public void bind_whenInteractorAttached_shouldStartWorker() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    bind(mapInteractorLifecycleToWorker(lifecycle), worker);
-    verify(worker).onStart(Matchers.<WorkerScopeProvider>any());
+  fun bind_whenInteractorDetached_shouldStopWorker() {
+    val lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE)
+    bind(mapInteractorLifecycleToWorker(lifecycle), worker)
+    lifecycle.accept(InteractorEvent.INACTIVE)
+    verify(worker).onStop()
   }
 
   @Test
-  public void bind_whenInteractorDetached_shouldStopWorker() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    bind(mapInteractorLifecycleToWorker(lifecycle), worker);
-    lifecycle.accept(InteractorEvent.INACTIVE);
-    verify(worker).onStop();
+  fun unbind_whenInteractorAttached_shouldStopWorker() {
+    val lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE)
+    val unbinder = bind(mapInteractorLifecycleToWorker(lifecycle), worker)
+    unbinder.unbind()
+    verify(worker).onStop()
   }
 
   @Test
-  public void unbind_whenInteractorAttached_shouldStopWorker() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    WorkerUnbinder unbinder = bind(mapInteractorLifecycleToWorker(lifecycle), worker);
-
-    unbinder.unbind();
-
-    verify(worker).onStop();
+  fun unbind_whenOutsideInteractorLifecycle_shouldNotCallStopAgain() {
+    val lifecycle = BehaviorRelay.createDefault(InteractorEvent.INACTIVE)
+    val unbinder = bind(mapInteractorLifecycleToWorker(lifecycle), worker)
+    verify(worker, times(1)).onStop()
+    unbinder.unbind()
+    verify(worker, times(1)).onStop()
   }
 
   @Test
-  public void unbind_whenOutsideInteractorLifecycle_shouldNotCallStopAgain() {
-    BehaviorRelay<InteractorEvent> lifecycle =
-        BehaviorRelay.createDefault(InteractorEvent.INACTIVE);
-    WorkerUnbinder unbinder = bind(mapInteractorLifecycleToWorker(lifecycle), worker);
-
-    verify(worker, times(1)).onStop();
-
-    unbinder.unbind();
-
-    verify(worker, times(1)).onStop();
+  fun onInactive_whenAfterUnbind_shouldNotCallStopAgain() {
+    val lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE)
+    val unbinder = bind(mapInteractorLifecycleToWorker(lifecycle), worker)
+    unbinder.unbind()
+    verify(worker, times(1)).onStop()
+    lifecycle.accept(InteractorEvent.INACTIVE)
+    verify(worker, times(1)).onStop()
   }
 
   @Test
-  public void onInactive_whenAfterUnbind_shouldNotCallStopAgain() {
-    BehaviorRelay<InteractorEvent> lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE);
-    WorkerUnbinder unbinder = bind(mapInteractorLifecycleToWorker(lifecycle), worker);
-
-    unbinder.unbind();
-
-    verify(worker, times(1)).onStop();
-
-    lifecycle.accept(InteractorEvent.INACTIVE);
-
-    verify(worker, times(1)).onStop();
+  fun bindToWorkerLifecycle_whenStartEventEmitted_shouldStartWorker() {
+    val lifecycle = BehaviorRelay.createDefault(WorkerEvent.START)
+    bindToWorkerLifecycle(lifecycle, worker)
+    verify(worker).onStart(any())
   }
 
   @Test
-  public void bindToWorkerLifecycle_whenStartEventEmitted_shouldStartWorker() {
-    BehaviorRelay<WorkerEvent> lifecycle = BehaviorRelay.createDefault(WorkerEvent.START);
-    bindToWorkerLifecycle(lifecycle, worker);
-    verify(worker).onStart(Matchers.any());
+  fun bindToWorkerLifecycle_whenStopEventEmitted_shouldStopWorker() {
+    val lifecycle = BehaviorRelay.createDefault(WorkerEvent.START)
+    bindToWorkerLifecycle(lifecycle, worker)
+    lifecycle.accept(WorkerEvent.STOP)
+    verify(worker).onStop()
   }
 
   @Test
-  public void bindToWorkerLifecycle_whenStopEventEmitted_shouldStopWorker() {
-    BehaviorRelay<WorkerEvent> lifecycle = BehaviorRelay.createDefault(WorkerEvent.START);
-    bindToWorkerLifecycle(lifecycle, worker);
-    lifecycle.accept(WorkerEvent.STOP);
-    verify(worker).onStop();
+  fun bind_whenPresenterAttached_shouldStartWorker() {
+    val lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED)
+    bind(mapPresenterLifecycleToWorker(lifecycle), worker)
+    verify(worker).onStart(any())
   }
 
   @Test
-  public void bind_whenPresenterAttached_shouldStartWorker() {
-    BehaviorRelay<PresenterEvent> lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED);
-    bind(mapPresenterLifecycleToWorker(lifecycle), worker);
-    verify(worker).onStart(any());
+  fun bind_whenPresenterDetached_shouldStopWorker() {
+    val lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED)
+    bind(mapPresenterLifecycleToWorker(lifecycle), worker)
+    lifecycle.accept(PresenterEvent.UNLOADED)
+    verify(worker).onStop()
   }
 
   @Test
-  public void bind_whenPresenterDetached_shouldStopWorker() {
-    BehaviorRelay<PresenterEvent> lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED);
-    bind(mapPresenterLifecycleToWorker(lifecycle), worker);
-    lifecycle.accept(PresenterEvent.UNLOADED);
-    verify(worker).onStop();
+  fun unbind_whenPresenterAttached_shouldStopWorker() {
+    val lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED)
+    val unbinder = bind(mapPresenterLifecycleToWorker(lifecycle), worker)
+    unbinder.unbind()
+    verify(worker).onStop()
   }
 
   @Test
-  public void unbind_whenPresenterAttached_shouldStopWorker() {
-    BehaviorRelay<PresenterEvent> lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED);
-    WorkerUnbinder unbinder = bind(mapPresenterLifecycleToWorker(lifecycle), worker);
-
-    unbinder.unbind();
-
-    verify(worker).onStop();
-  }
-
-  @Test
-  public void unbind_whenOutsidePresenterLifecycle_shouldNotCallStopAgain() {
-    BehaviorRelay<PresenterEvent> lifecycle = BehaviorRelay.createDefault(PresenterEvent.UNLOADED);
-    WorkerUnbinder unbinder = bind(mapPresenterLifecycleToWorker(lifecycle), worker);
-
-    verify(worker, times(1)).onStop();
-
-    unbinder.unbind();
-
-    verify(worker, times(1)).onStop();
+  fun unbind_whenOutsidePresenterLifecycle_shouldNotCallStopAgain() {
+    val lifecycle = BehaviorRelay.createDefault(PresenterEvent.UNLOADED)
+    val unbinder = bind(mapPresenterLifecycleToWorker(lifecycle), worker)
+    verify(worker, times(1)).onStop()
+    unbinder.unbind()
+    verify(worker, times(1)).onStop()
   }
 }

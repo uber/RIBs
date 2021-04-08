@@ -13,10 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core.lifecycle;
+package com.uber.rib.core.lifecycle
 
-/** Controller lifecycle events. */
-public enum InteractorEvent {
-  ACTIVE,
-  INACTIVE
+/** Controller lifecycle events.  */
+enum class InteractorEvent {
+  ACTIVE, INACTIVE
 }

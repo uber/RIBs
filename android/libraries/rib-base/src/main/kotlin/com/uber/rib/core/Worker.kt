@@ -13,23 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
 /**
  * Interface used when creating a manager or helper class that should be bound to an interactor's
- * lifecycle using a binder like {@link WorkerBinder}. The worker event is decoupled from the
+ * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the
  * interactor's actual lifecycle so that we're not stuck moving these classes around if there are
  * other lifecycles we're interested in.
  */
-public interface Worker {
-
+interface Worker {
   /**
    * Called when worker is started.
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
-  default void onStart(WorkerScopeProvider lifecycle) {}
+  fun onStart(lifecycle: WorkerScopeProvider) {}
 
-  /** Called when the worker is stopped. */
-  default void onStop() {}
+  /** Called when the worker is stopped.  */
+  fun onStop() {}
 }

@@ -13,56 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import androidx.annotation.MainThread;
-import androidx.annotation.Nullable;
+import androidx.annotation.MainThread
 
 /**
  * Used to watch objects in order to verify they have no inbound references. Used to find memory
  * leaks.
  */
 @MainThread
-public class RibRefWatcher {
-
-  @Nullable private static RibRefWatcher instance;
-  private static boolean leakCanaryEnabled = false;
-  private static boolean uLeakEnabled = false;
-  private static boolean breadcrumbsEnabled = false;
-  @Nullable private ReferenceWatcher referenceWatcher;
+open class RibRefWatcher {
+  private var referenceWatcher: ReferenceWatcher? = null
 
   /**
-   * Get an instance of the {@link RibRefWatcher}.
-   *
-   * @return the {@link RibRefWatcher} instance.
-   */
-  public static RibRefWatcher getInstance() {
-    if (instance == null) {
-      instance = new RibRefWatcher();
-    }
-    return instance;
-  }
-
-  /**
-   * Initialize Paper to use a {@link ReferenceWatcher} for observing deleted references.
+   * Initialize Paper to use a [ReferenceWatcher] for observing deleted references.
    *
    * @param watcher the watcher.
    */
-  public void setReferenceWatcher(@Nullable ReferenceWatcher watcher) {
-    referenceWatcher = watcher;
+  open fun setReferenceWatcher(watcher: ReferenceWatcher?) {
+    referenceWatcher = watcher
   }
 
   /**
    * Watch this object to verify it has no inbound references.
    *
-   * @param object the object to watch.
+   * @param objectToWatch the object to watch.
    */
-  public void watchDeletedObject(@Nullable Object object) {
-    if (object == null) {
-      return;
+  open fun watchDeletedObject(objectToWatch: Any?) {
+    if (objectToWatch == null) {
+      return
     }
-    if (referenceWatcher != null && (leakCanaryEnabled || uLeakEnabled)) {
-      referenceWatcher.watch(object);
+    if (isLeakCanaryEnabled || uLeakEnabled) {
+      referenceWatcher?.watch(objectToWatch)
     }
   }
 
@@ -73,59 +55,49 @@ public class RibRefWatcher {
    * @param data breadcrumb data
    * @param parent breadcrumb parent if any
    */
-  void logBreadcrumb(
-      final String eventType, @Nullable final String child, @Nullable final String parent) {
+  open fun logBreadcrumb(eventType: String, child: String?, parent: String?) {
     if (referenceWatcher != null && breadcrumbsEnabled) {
       if (child == null || parent == null) {
-        referenceWatcher.logBreadcrumb(eventType, eventType, eventType);
+        referenceWatcher?.logBreadcrumb(eventType, eventType, eventType)
       } else {
-        referenceWatcher.logBreadcrumb(eventType, child, parent);
+        referenceWatcher?.logBreadcrumb(eventType, child, parent)
       }
     }
   }
 
-  /** Enables Breadcrumb logging. */
-  public void enableBreadcrumbLogging() {
-    breadcrumbsEnabled = true;
+  /** Enables Breadcrumb logging.  */
+  open fun enableBreadcrumbLogging() {
+    breadcrumbsEnabled = true
   }
 
-  /** Enables LeakCanary. */
-  public void enableLeakCanary() {
-    leakCanaryEnabled = true;
+  /** Enables LeakCanary.  */
+  open fun enableLeakCanary() {
+    isLeakCanaryEnabled = true
   }
 
-  /** Disables LeakCanary. */
-  public void disableLeakCanary() {
-    leakCanaryEnabled = false;
+  /** Disables LeakCanary.  */
+  open fun disableLeakCanary() {
+    isLeakCanaryEnabled = false
   }
 
-  /**
-   * Returns whether or not LeakCanary is enabled.
-   *
-   * @return whether or not LeakCanary is enabled.
-   */
-  public static boolean isLeakCanaryEnabled() {
-    return leakCanaryEnabled;
+  /** Enables ULeak's Lifecycle tracking functionality. ULeak itself is behind a plugin.  */
+  open fun enableULeakLifecycleTracking() {
+    uLeakEnabled = true
   }
 
-  /** Enables ULeak's Lifecycle tracking functionality. ULeak itself is behind a plugin. */
-  public void enableULeakLifecycleTracking() {
-    uLeakEnabled = true;
+  /** Disables ULeak's Lifecycle Tracking.  */
+  open fun disableULeakLifecycleTracking() {
+    uLeakEnabled = false
   }
 
-  /** Disables ULeak's Lifecycle Tracking. */
-  public void disableULeakLifecycleTracking() {
-    uLeakEnabled = false;
-  }
-
-  /** Interface for classes that watch objects. */
-  public interface ReferenceWatcher {
+  /** Interface for classes that watch objects.  */
+  interface ReferenceWatcher {
     /**
      * Watch this object to verify it has no inbound references.
      *
      * @param object the object to watch.
      */
-    void watch(Object object);
+    fun watch(objectToWatch: Any)
 
     /**
      * Method to pipe breadcrumbs into the Breadcrumb logger.
@@ -134,6 +106,34 @@ public class RibRefWatcher {
      * @param data The breadcrumb data
      * @param parent The breadcrumb parent
      */
-    void logBreadcrumb(String eventType, String data, String parent);
+    fun logBreadcrumb(eventType: String, data: String, parent: String)
+  }
+
+  companion object {
+    private var ribRefWatcher: RibRefWatcher? = null
+
+    /**
+     * Get an instance of the [RibRefWatcher].
+     *
+     * @return the [RibRefWatcher] instance.
+     */
+    @JvmStatic
+    fun getInstance(): RibRefWatcher {
+      if (ribRefWatcher == null) {
+        ribRefWatcher = RibRefWatcher()
+      }
+      return ribRefWatcher!!
+    }
+
+    /**
+     * Returns whether or not LeakCanary is enabled.
+     *
+     * @return whether or not LeakCanary is enabled.
+     */
+    @JvmStatic
+    var isLeakCanaryEnabled = false
+      private set
+    private var uLeakEnabled = false
+    private var breadcrumbsEnabled = false
   }
 }

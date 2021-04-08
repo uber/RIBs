@@ -13,37 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import androidx.annotation.Nullable;
-import com.jakewharton.rxrelay2.PublishRelay;
-import io.reactivex.Observable;
+import com.jakewharton.rxrelay2.PublishRelay
+import io.reactivex.Observable
 
-public final class RibEvents {
+class RibEvents private constructor() {
 
-  private static final RibEvents INSTANCE = new RibEvents();
+  private val events: PublishRelay<RibEvent> = PublishRelay.create()
 
-  private final PublishRelay<RibEvent> events;
-
-  private RibEvents() {
-    this.events = PublishRelay.create();
-  }
-
-  public static RibEvents getInstance() {
-    return INSTANCE;
-  }
-
-  public Observable<RibEvent> getEvents() {
-    return events.hide();
+  open fun getEvents(): Observable<RibEvent> {
+    return events.hide()
   }
 
   /**
-   * @param eventType {@link RibEventType}
-   * @param child {@link Router}
-   * @param parent {@link Router} and null for the root ribs that are directly attached to
-   *     RibActivity/Fragment
+   * @param eventType [RibEventType]
+   * @param child [Router]
+   * @param parent [Router] and null for the root ribs that are directly attached to
+   * RibActivity/Fragment
    */
-  public void emitEvent(RibEventType eventType, Router child, @Nullable Router parent) {
-    events.accept(new RibEvent(eventType, child, parent));
+  open fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
+    events.accept(RibEvent(eventType, child, parent))
+  }
+
+  companion object {
+    @JvmStatic
+    val instance = RibEvents()
   }
 }

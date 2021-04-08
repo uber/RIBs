@@ -13,19 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.uber.rib.core.lifecycle.PresenterEvent.LOADED;
-import static com.uber.rib.core.lifecycle.PresenterEvent.UNLOADED;
-
-import androidx.annotation.CallSuper;
-import com.jakewharton.rxrelay2.BehaviorRelay;
-import com.jakewharton.rxrelay2.Relay;
-import com.uber.autodispose.ScopeProvider;
-import com.uber.rib.core.lifecycle.PresenterEvent;
-import io.reactivex.CompletableSource;
-import io.reactivex.Observable;
-import org.checkerframework.checker.guieffect.qual.UIEffect;
+import androidx.annotation.CallSuper
+import com.jakewharton.rxrelay2.BehaviorRelay
+import com.uber.autodispose.ScopeProvider
+import com.uber.rib.core.lifecycle.PresenterEvent
+import io.reactivex.CompletableSource
+import io.reactivex.Observable
+import org.checkerframework.checker.guieffect.qual.UIEffect
 
 /**
  * Contains presentation logic. This class exists mainly for legacy reasons. In the past we believed
@@ -34,35 +30,30 @@ import org.checkerframework.checker.guieffect.qual.UIEffect;
  * practice this caused confusion: if both a presenter and interactor can perform complex rx logic
  * it becomes unclear where you should write your bussiness logic.
  */
-public abstract class Presenter implements ScopeProvider {
+abstract class Presenter : ScopeProvider {
+  private val behaviorRelay = BehaviorRelay.create<PresenterEvent>()
+  private val lifecycleRelay = behaviorRelay.toSerialized()
 
-  private final BehaviorRelay<PresenterEvent> behaviorRelay = BehaviorRelay.create();
-  private final Relay<PresenterEvent> lifecycleRelay = behaviorRelay.toSerialized();
+  /** @return `true` if the presenter is loaded, `false` if not. */
+  protected var isLoaded = false
+    private set
 
-  private boolean isLoaded = false;
-
-  protected void dispatchLoad() {
-    isLoaded = true;
-    lifecycleRelay.accept(LOADED);
-
-    didLoad();
+  open fun dispatchLoad() {
+    isLoaded = true
+    lifecycleRelay.accept(PresenterEvent.LOADED)
+    didLoad()
   }
 
-  protected void dispatchUnload() {
-    isLoaded = false;
-    willUnload();
-
-    lifecycleRelay.accept(UNLOADED);
+  open fun dispatchUnload() {
+    isLoaded = false
+    willUnload()
+    lifecycleRelay.accept(PresenterEvent.UNLOADED)
   }
 
-  /** @return {@code true} if the presenter is loaded, {@code false} if not. */
-  protected boolean isLoaded() {
-    return isLoaded;
-  }
-
-  /** Tells the presenter that it has finished loading. */
+  /** Tells the presenter that it has finished loading.  */
   @CallSuper
-  protected void didLoad() {}
+  protected fun didLoad() {
+  }
 
   /**
    * Tells the presenter that it will be destroyed. Presenter subclasses should perform any required
@@ -70,15 +61,15 @@ public abstract class Presenter implements ScopeProvider {
    */
   @UIEffect
   @CallSuper
-  protected void willUnload() {}
-
-  /** @return an observable of this controller's lifecycle events. */
-  public Observable<PresenterEvent> lifecycle() {
-    return lifecycleRelay.hide();
+  protected fun willUnload() {
   }
 
-  @Override
-  public CompletableSource requestScope() {
-    return lifecycleRelay.skip(1).firstElement().ignoreElement();
+  /** @return an observable of this controller's lifecycle events. */
+  open fun lifecycle(): Observable<PresenterEvent> {
+    return lifecycleRelay.hide()
+  }
+
+  override fun requestScope(): CompletableSource {
+    return lifecycleRelay.skip(1).firstElement().ignoreElement()
   }
 }
