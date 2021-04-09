@@ -13,37 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import com.google.auto.service.AutoService;
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableSet;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.Processor;
+import com.google.auto.service.AutoService
+import com.google.common.collect.ImmutableList
+import com.google.common.collect.ImmutableSet
+import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.Processor
 
-/** Process the annotations for all added annotation processor pipelines. */
-@AutoService(Processor.class)
-public final class RibTestProcessor extends RibProcessor {
+/** Process the annotations for all added annotation processor pipelines.  */
+@AutoService(Processor::class)
+open class RibTestProcessor : RibProcessor() {
+  private var interactorTestGenerator: InteractorTestGenerator? = null
 
-  private InteractorTestGenerator interactorTestGenerator;
-
-  @Override
-  public synchronized void init(ProcessingEnvironment processingEnv) {
-    interactorTestGenerator = new InteractorTestGenerator(processingEnv, getErrorReporter());
-    super.init(processingEnv);
+  @Synchronized
+  override fun init(processingEnv: ProcessingEnvironment) {
+    interactorTestGenerator = InteractorTestGenerator(processingEnv, ErrorReporter(processingEnv.messager))
+    super.init(processingEnv)
   }
 
-  @Override
-  public Set<String> getSupportedAnnotationTypes() {
-    return ImmutableSet.of(
-        RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.getCanonicalName());
+  override fun getSupportedAnnotationTypes(): Set<String> {
+    return ImmutableSet.of(RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName)
   }
 
-  @Override
-  protected List<ProcessorPipeline> getProcessorPipelines(ProcessContext processContext) {
-    return ImmutableList.<ProcessorPipeline>of(
-        new RibInteractorProcessorPipeline(processContext, interactorTestGenerator));
+  override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
+    return ImmutableList.of<ProcessorPipeline>(
+      RibInteractorProcessorPipeline(processContext, interactorTestGenerator)
+    )
   }
 }

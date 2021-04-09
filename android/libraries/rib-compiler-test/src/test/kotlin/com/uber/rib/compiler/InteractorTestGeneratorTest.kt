@@ -13,44 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import static com.google.common.truth.Truth.assert_;
-import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
+import com.google.common.truth.Truth
+import com.google.testing.compile.JavaSourcesSubjectFactory
+import org.junit.Test
 
-import javax.tools.JavaFileObject;
-import org.junit.Test;
-
-public class InteractorTestGeneratorTest extends InteractorTestGeneratorProcessorTestBase {
-
+class InteractorTestGeneratorTest : InteractorTestGeneratorProcessorTestBase() {
   @Test
-  public void processor_withAnInteractor_shouldGenerateTestHelper() {
-    JavaFileObject expectedTestCreator = getResourceFile("fixtures/TestAnnotatedInteractor.java");
-
-    addResourceToSources("fixtures/AnnotatedInteractor.java");
-    assert_()
-        .about(javaSources())
-        .that(getSources())
-        .withCompilerOptions("-source", "1.7", "-target", "1.7")
-        .processedWith(getRibInteractorProcessor())
-        .compilesWithoutError()
-        .and()
-        .generatesSources(expectedTestCreator);
+  fun processor_withAnInteractor_shouldGenerateTestHelper() {
+    val expectedTestCreator = getResourceFile("fixtures/TestAnnotatedInteractor.java")
+    addResourceToSources("fixtures/AnnotatedInteractor.java")
+    Truth.assert_()
+      .about(JavaSourcesSubjectFactory.javaSources())
+      .that(sources)
+      .withCompilerOptions("-source", "1.7", "-target", "1.7")
+      .processedWith(ribInteractorProcessor)
+      .compilesWithoutError()
+      .and()
+      .generatesSources(expectedTestCreator)
   }
 
   @Test
-  public void processor_withABasicInteractor_shouldGenerateTestHelper() {
-    JavaFileObject expectedTestCreator =
-        getResourceFile("fixtures/TestAnnotatedBasicInteractor.java");
-
-    addResourceToSources("fixtures/AnnotatedBasicInteractor.java");
-    assert_()
-        .about(javaSources())
-        .that(getSources())
-        .withCompilerOptions("-source", "1.7", "-target", "1.7")
-        .processedWith(getRibInteractorProcessor())
-        .compilesWithoutError()
-        .and()
-        .generatesSources(expectedTestCreator);
+  fun processor_withABasicInteractor_shouldGenerateTestHelper() {
+    val expectedTestCreator = getResourceFile("fixtures/TestAnnotatedBasicInteractor.java")
+    addResourceToSources("fixtures/AnnotatedBasicInteractor.java")
+    Truth.assert_()
+      .about(JavaSourcesSubjectFactory.javaSources())
+      .that(sources)
+      .withCompilerOptions("-source", "1.7", "-target", "1.7")
+      .processedWith(ribInteractorProcessor)
+      .compilesWithoutError()
+      .and()
+      .generatesSources(expectedTestCreator)
   }
 }

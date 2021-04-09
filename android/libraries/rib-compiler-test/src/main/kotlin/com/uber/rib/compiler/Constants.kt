@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-/** Constant values used by the annotation processor. */
-public class Constants {
-
-  public static final String INTERACTOR_TEST_CREATOR_PREFIX = "Test";
-  public static final String INTERACTOR_TEST_CREATOR_SUFFIX = "Interactor";
-  public static final String INTERACTOR_TEST_CREATOR_METHOD_NAME = "create";
-
-  private Constants() {}
+/** Constant values used by the annotation processor.  */
+open class Constants {
+  companion object {
+    const val INTERACTOR_TEST_CREATOR_PREFIX = "Test"
+    const val INTERACTOR_TEST_CREATOR_SUFFIX = "Interactor"
+    const val INTERACTOR_TEST_CREATOR_METHOD_NAME = "create"
+  }
 }

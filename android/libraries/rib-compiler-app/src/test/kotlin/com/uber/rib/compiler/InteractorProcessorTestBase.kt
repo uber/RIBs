@@ -23,9 +23,7 @@ import javax.tools.JavaFileObject
 
 abstract class InteractorProcessorTestBase {
   protected lateinit var ribProcessor: RibProcessor
-    private set
   protected lateinit var sources: ArrayList<JavaFileObject>
-    private set
 
   @Before
   fun setup() {

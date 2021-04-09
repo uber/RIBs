@@ -23,10 +23,9 @@ import javax.lang.model.element.TypeElement
 /** The processor pipeline for [RibInteractor]  */
 open class RibInteractorProcessorPipeline(
   processContext: ProcessContext,
-  interactorGenerator: Generator<InteractorAnnotatedClass>?
+  private var interactorGenerator: Generator<InteractorAnnotatedClass>?
 ) : TypeProcessorPipeline(processContext) {
   private val annotationVerifier: AnnotationVerifier<InteractorAnnotatedClass>
-  private val interactorGenerator: Generator<InteractorAnnotatedClass>?
   private val builderAnnotatedClassesList: MutableList<InteractorAnnotatedClass?> = ArrayList()
 
   /** @return the annotation type this processor pipeline deals with.
@@ -53,7 +52,7 @@ open class RibInteractorProcessorPipeline(
       return
     }
     for (interactorAnnotatedClass in builderAnnotatedClassesList) {
-      interactorGenerator.generate(interactorAnnotatedClass!!)
+      interactorGenerator?.generate(interactorAnnotatedClass!!)
     }
   }
 

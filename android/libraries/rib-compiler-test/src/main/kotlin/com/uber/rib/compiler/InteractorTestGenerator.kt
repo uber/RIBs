@@ -13,19 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import com.google.common.base.Joiner;
-import com.google.common.collect.ImmutableList;
-import com.squareup.javapoet.JavaFile;
-import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.ParameterSpec;
-import com.squareup.javapoet.TypeName;
-import com.squareup.javapoet.TypeSpec;
-import java.io.IOException;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.lang.model.element.Modifier;
-import javax.lang.model.element.VariableElement;
+import com.google.common.base.Joiner
+import com.google.common.collect.ImmutableList
+import com.squareup.javapoet.JavaFile
+import com.squareup.javapoet.MethodSpec
+import com.squareup.javapoet.ParameterSpec
+import com.squareup.javapoet.TypeName
+import com.squareup.javapoet.TypeSpec
+import com.uber.rib.compiler.CompilerUtils.Companion.packageNameOf
+import java.io.IOException
+import javax.annotation.processing.ProcessingEnvironment
+import javax.lang.model.element.Modifier
 
 /**
  * Generates a dagger scope for a RibBuilder. Example: <code>
@@ -34,77 +34,61 @@ import javax.lang.model.element.VariableElement;
  * @Retention(SOURCE) public @interface LoggedInScope { }
  * </code>
  */
-public class InteractorTestGenerator extends Generator<InteractorAnnotatedClass> {
-
-  /**
-   * Constructor.
-   *
-   * @param processingEnvironment the current {@link ProcessingEnvironment}.
-   * @param errorReporter the {@link ErrorReporter} for error output
-   */
-  public InteractorTestGenerator(
-      ProcessingEnvironment processingEnvironment, ErrorReporter errorReporter) {
-    super(processingEnvironment, errorReporter);
-  }
-
-  @Override
-  public void generate(InteractorAnnotatedClass annotatedInteractor) throws IOException {
-    if (annotatedInteractor.isCodeGenerated()) {
-      return;
+open class InteractorTestGenerator(
+  processingEnvironment: ProcessingEnvironment,
+  errorReporter: ErrorReporter
+) : Generator<InteractorAnnotatedClass>(processingEnvironment, errorReporter) {
+  @Throws(IOException::class)
+  override fun generate(annotatedInteractor: InteractorAnnotatedClass) {
+    if (annotatedInteractor.isCodeGenerated) {
+      return
     }
-
-    String interactorTestBaseClassName =
-        Constants.INTERACTOR_TEST_CREATOR_PREFIX
-            + annotatedInteractor.getRootName()
-            + Constants.INTERACTOR_TEST_CREATOR_SUFFIX;
-
-    MethodSpec constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build();
-
-    MethodSpec createInteractor = createMethodSpec(annotatedInteractor);
-
-    TypeSpec testBaseClass =
-        TypeSpec.classBuilder(interactorTestBaseClassName)
-            .addMethod(constructor)
-            .addMethod(createInteractor)
-            .addModifiers(Modifier.PUBLIC)
-            .build();
-
-    String packageName = CompilerUtils.packageNameOf(annotatedInteractor.getTypeElement());
+    val interactorTestBaseClassName = (
+      Constants.INTERACTOR_TEST_CREATOR_PREFIX +
+        annotatedInteractor.rootName +
+        Constants.INTERACTOR_TEST_CREATOR_SUFFIX
+      )
+    val constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build()
+    val createInteractor = createMethodSpec(annotatedInteractor)
+    val testBaseClass = TypeSpec.classBuilder(interactorTestBaseClassName)
+      .addMethod(constructor)
+      .addMethod(createInteractor)
+      .addModifiers(Modifier.PUBLIC)
+      .build()
+    val packageName = packageNameOf(annotatedInteractor.typeElement)
     JavaFile.builder(packageName, testBaseClass)
-        .build()
-        .writeTo(getProcessingEnvironment().getFiler());
-
-    annotatedInteractor.setCodeGenerated(true);
+      .build()
+      .writeTo(processingEnvironment.filer)
+    annotatedInteractor.isCodeGenerated = true
   }
 
-  private MethodSpec createMethodSpec(InteractorAnnotatedClass interactor) {
-    MethodSpec.Builder builder =
-        MethodSpec.methodBuilder(Constants.INTERACTOR_TEST_CREATOR_METHOD_NAME)
-            .returns(TypeName.get(interactor.getTypeElement().asType()))
-            .addModifiers(ImmutableList.of(Modifier.PUBLIC, Modifier.STATIC));
-
-    for (VariableElement dependency : interactor.getDependencies()) {
-      ParameterSpec paramSpect =
-          ParameterSpec.builder(
-                  TypeName.get(dependency.asType()),
-                  dependency.getSimpleName().toString(),
-                  Modifier.FINAL)
-              .build();
-      builder.addParameter(paramSpect);
+  private fun createMethodSpec(interactor: InteractorAnnotatedClass): MethodSpec {
+    val builder = MethodSpec.methodBuilder(Constants.INTERACTOR_TEST_CREATOR_METHOD_NAME)
+      .returns(TypeName.get(interactor.typeElement.asType()))
+      .addModifiers(ImmutableList.of(Modifier.PUBLIC, Modifier.STATIC))
+    for (dependency in interactor.dependencies) {
+      val paramSpect = ParameterSpec.builder(
+        TypeName.get(dependency.asType()),
+        dependency.simpleName.toString(),
+        Modifier.FINAL
+      )
+        .build()
+      builder.addParameter(paramSpect)
     }
-    String interactorName = interactor.getTypeElement().getSimpleName().toString();
-    if (interactor.isBasic()) {
-      String params = Joiner.on(", ").join(interactor.getDependencies());
-      return builder.addStatement("return new $L($L)", interactorName, params).build();
+    val interactorName = interactor.typeElement.simpleName.toString()
+    return if (interactor.isBasic) {
+      val params = Joiner.on(", ").join(interactor.dependencies)
+      builder.addStatement("return new \$L(\$L)", interactorName, params).build()
     } else {
-      builder.addStatement("$L interactor = new $L()", interactorName, interactorName);
-      for (VariableElement dependencies : interactor.getDependencies()) {
+      builder.addStatement("\$L interactor = new \$L()", interactorName, interactorName)
+      for (dependencies in interactor.dependencies) {
         builder.addStatement(
-            "interactor.$L = $L",
-            dependencies.getSimpleName().toString(),
-            dependencies.getSimpleName().toString());
+          "interactor.\$L = \$L",
+          dependencies.simpleName.toString(),
+          dependencies.simpleName.toString()
+        )
       }
-      return builder.addStatement("return interactor").build();
+      builder.addStatement("return interactor").build()
     }
   }
 }

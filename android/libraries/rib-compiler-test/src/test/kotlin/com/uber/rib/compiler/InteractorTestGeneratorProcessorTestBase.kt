@@ -13,67 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import androidx.annotation.NonNull;
-import com.google.common.collect.ImmutableSet;
-import com.google.testing.compile.JavaFileObjects;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.tools.JavaFileObject;
-import org.junit.Before;
+import com.google.common.collect.ImmutableSet
+import com.google.testing.compile.JavaFileObjects
+import org.junit.Before
+import java.util.ArrayList
+import javax.annotation.processing.ProcessingEnvironment
+import javax.tools.JavaFileObject
 
-public abstract class InteractorTestGeneratorProcessorTestBase {
-
-  private RibProcessor ribProcessor;
-  private ArrayList<JavaFileObject> sources;
+abstract class InteractorTestGeneratorProcessorTestBase {
+  protected lateinit var ribInteractorProcessor: RibProcessor
+  protected lateinit var sources: ArrayList<JavaFileObject>
 
   @Before
-  public void setup() {
-    ribProcessor =
-        new RibProcessor() {
-          InteractorTestGenerator interactorTestGenerator;
+  fun setup() {
+    ribInteractorProcessor = object : RibProcessor() {
+      var interactorTestGenerator: InteractorTestGenerator? = null
 
-          @Override
-          public synchronized void init(ProcessingEnvironment processingEnv) {
-            interactorTestGenerator = new InteractorTestGenerator(processingEnv, getErrorReporter());
-            super.init(processingEnv);
-          }
+      @Synchronized
+      override fun init(processingEnv: ProcessingEnvironment) {
+        interactorTestGenerator = InteractorTestGenerator(processingEnv, ErrorReporter(processingEnv.messager))
+        super.init(processingEnv)
+      }
 
-          @NonNull
-          @Override
-          protected List<ProcessorPipeline> getProcessorPipelines(
-              @NonNull ProcessContext processContext) {
-            return Collections.<ProcessorPipeline>singletonList(
-                new RibInteractorProcessorPipeline(processContext, interactorTestGenerator));
-          }
+      override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
+        return listOf(
+          RibInteractorProcessorPipeline(processContext, interactorTestGenerator)
+        )
+      }
 
-          @Override
-          public Set<String> getSupportedAnnotationTypes() {
-            return ImmutableSet.of(
-                RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.getCanonicalName());
-          }
-        };
-    sources = new ArrayList<>();
+      override fun getSupportedAnnotationTypes(): Set<String> {
+        return ImmutableSet.of(
+          RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName
+        )
+      }
+    }
+    sources = ArrayList()
   }
 
-  protected RibProcessor getRibInteractorProcessor() {
-    return ribProcessor;
+  protected fun addResourceToSources(file: String) {
+    sources.add(getResourceFile(file))
   }
 
-  protected ArrayList<JavaFileObject> getSources() {
-    return sources;
-  }
-
-  protected void addResourceToSources(@NonNull String file) {
-    getSources().add(getResourceFile(file));
-  }
-
-  @NonNull
-  protected JavaFileObject getResourceFile(@NonNull String file) {
-    return JavaFileObjects.forResource(file);
+  protected fun getResourceFile(file: String): JavaFileObject {
+    return JavaFileObjects.forResource(file)
   }
 }
