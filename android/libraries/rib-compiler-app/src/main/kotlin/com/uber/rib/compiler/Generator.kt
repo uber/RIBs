@@ -13,36 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import java.io.IOException;
-import javax.annotation.processing.ProcessingEnvironment;
+import java.io.IOException
+import javax.annotation.processing.ProcessingEnvironment
 
 /**
  * Base class to encapsulate generating something.
  *
- * @param <T> the {@link AnnotatedClass} that the {@link Generator#generate(AnnotatedClass)} needs.
+ * @param <T> the [AnnotatedClass] that the [Generator.generate] needs.
  */
-public abstract class Generator<T extends AnnotatedClass> {
-
-  protected final ProcessingEnvironment processingEnvironment;
-  protected final ErrorReporter errorReporter;
-
-  /**
-   * Constructor.
-   *
-   * @param processingEnvironment the current {@link ProcessingEnvironment}.
-   * @param errorReporter the {@link ErrorReporter} for error output
-   */
-  public Generator(ProcessingEnvironment processingEnvironment, ErrorReporter errorReporter) {
-    this.processingEnvironment = processingEnvironment;
-    this.errorReporter = errorReporter;
-  }
-
-  /** @return the current {@link ProcessingEnvironment}. */
-  protected ProcessingEnvironment getProcessingEnvironment() {
-    return processingEnvironment;
-  }
+abstract class Generator<T : AnnotatedClass>(
+  protected val processingEnvironment: ProcessingEnvironment,
+  protected val errorReporter: ErrorReporter
+) {
 
   /**
    * Generator something for an interactor.
@@ -50,5 +34,6 @@ public abstract class Generator<T extends AnnotatedClass> {
    * @param builder metadata.
    * @throws IOException when something goes wrong.
    */
-  public abstract void generate(T builder) throws IOException;
+  @Throws(IOException::class)
+  abstract fun generate(builder: T)
 }

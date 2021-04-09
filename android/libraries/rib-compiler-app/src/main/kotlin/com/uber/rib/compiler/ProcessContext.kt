@@ -13,35 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+import javax.lang.model.util.Elements
+import javax.lang.model.util.Types
 
 /**
- * The interface defines the context that shared across {@link ProcessorPipeline} during annotation
+ * The interface defines the context that shared across [ProcessorPipeline] during annotation
  * processing.
  */
-public interface ProcessContext {
+interface ProcessContext {
+  /** @return the [ErrorReporter] */
+  val errorReporter: ErrorReporter?
 
-  /**
-   * Get the {@link ErrorReporter} instance.
-   *
-   * @return the {@link ErrorReporter}.
-   */
-  ErrorReporter getErrorReporter();
+  /** @return the [Elements] */
+  val elementUtils: Elements?
 
-  /**
-   * Get the {@link Elements} instance.
-   *
-   * @return the {@link Elements}.
-   */
-  Elements getElementUtils();
-
-  /**
-   * Get the {@link Types} instance.
-   *
-   * @return the {@link Types}.
-   */
-  Types getTypesUtils();
+  /** @return the [Types] */
+  val typesUtils: Types?
 }

@@ -13,32 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import javax.lang.model.element.TypeElement;
+import javax.lang.model.element.TypeElement
 
-/** Information to a class. */
-public abstract class AnnotatedClass {
-
-  protected final TypeElement typeElement;
-  protected final String rootName;
-
-  protected boolean codeGenerated;
-
-  public AnnotatedClass(TypeElement typeElement) {
-    this.typeElement = typeElement;
-    String simpleName = typeElement.getSimpleName().toString();
-    rootName = simpleName.substring(0, simpleName.indexOf(getNameSuffix()));
-  }
-
-  /**
-   * Get the type element that this wraps.
-   *
-   * @return the type element.
-   */
-  public TypeElement getTypeElement() {
-    return typeElement;
-  }
+/** Information to a class.  */
+open abstract class AnnotatedClass(
+  /** @return the type element that this wraps. */
+  open val typeElement: TypeElement
+) {
 
   /**
    * Get the root name of the element. For instance, if the annotated class was "FooInteractor",
@@ -46,24 +29,13 @@ public abstract class AnnotatedClass {
    *
    * @return the root name.
    */
-  public String getRootName() {
-    return rootName;
+  open val rootName: String by lazy {
+    typeElement.simpleName.toString().substringBefore(nameSuffix)
   }
+
+  /** Set if code has been generated. */
+  open var isCodeGenerated = false
 
   /** @return the annotated class name suffix */
-  public abstract String getNameSuffix();
-
-  /** @return if code has been generated. */
-  public boolean isCodeGenerated() {
-    return codeGenerated;
-  }
-
-  /**
-   * Set if code has been generated.
-   *
-   * @param codeGenerated true if code has been generated.
-   */
-  public void setCodeGenerated(boolean codeGenerated) {
-    this.codeGenerated = codeGenerated;
-  }
+  abstract val nameSuffix: String
 }

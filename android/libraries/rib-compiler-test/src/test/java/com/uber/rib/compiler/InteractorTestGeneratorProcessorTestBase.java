@@ -39,7 +39,7 @@ public abstract class InteractorTestGeneratorProcessorTestBase {
 
           @Override
           public synchronized void init(ProcessingEnvironment processingEnv) {
-            interactorTestGenerator = new InteractorTestGenerator(processingEnv, errorReporter);
+            interactorTestGenerator = new InteractorTestGenerator(processingEnv, getErrorReporter());
             super.init(processingEnv);
           }
 

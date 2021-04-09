@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.element.Element;
-import javax.lang.model.element.TypeElement;
+import java.util.ArrayList
+import javax.annotation.processing.RoundEnvironment
+import javax.lang.model.element.Element
+import javax.lang.model.element.TypeElement
 
-/** Base ProcessorPipeline that parses the annotated elements as type element. */
-public abstract class TypeProcessorPipeline extends ProcessorPipeline {
-
-  /**
-   * Constructor.
-   *
-   * @param processContext the {@link ProcessContext}.
-   */
-  public TypeProcessorPipeline(ProcessContext processContext) {
-    super(processContext);
-  }
-
+/** Base ProcessorPipeline that parses the annotated elements as type element.  */
+abstract class TypeProcessorPipeline(
+  processContext: ProcessContext
+) : ProcessorPipeline(processContext) {
   /**
    * Process the annotations.
    *
@@ -42,24 +31,22 @@ public abstract class TypeProcessorPipeline extends ProcessorPipeline {
    * @param roundEnv
    * @throws Throwable
    */
-  @Override
-  protected final void processAnnotations(
-      Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) throws Throwable {
-    Collection<? extends Element> annotatedElements =
-        roundEnv.getElementsAnnotatedWith(getAnnotationType());
-    List<TypeElement> annotatedTypes = new ArrayList<>(annotatedElements.size());
-    for (Element e : annotatedElements) {
-      annotatedTypes.add((TypeElement) e);
+  @Throws(Throwable::class)
+  override fun processAnnotations(annotations: Set<TypeElement>, roundEnv: RoundEnvironment) {
+    val annotatedElements: Collection<Element> = roundEnv.getElementsAnnotatedWith(annotationType)
+    val annotatedTypes: MutableList<TypeElement> = ArrayList(annotatedElements.size)
+    for (e in annotatedElements) {
+      annotatedTypes.add(e as TypeElement)
     }
-
-    processTypeElements(annotatedTypes);
+    processTypeElements(annotatedTypes)
   }
 
   /**
-   * Process the list of {@link TypeElement}.
+   * Process the list of [TypeElement].
    *
    * @param annotatedClasses the type element list.
    * @throws Throwable
    */
-  protected abstract void processTypeElements(List<TypeElement> annotatedClasses) throws Throwable;
+  @Throws(Throwable::class)
+  protected abstract fun processTypeElements(annotatedClasses: List<TypeElement>)
 }

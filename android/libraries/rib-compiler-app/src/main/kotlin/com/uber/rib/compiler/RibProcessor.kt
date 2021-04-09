@@ -13,85 +13,69 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import javax.annotation.processing.AbstractProcessor;
-import javax.annotation.processing.ProcessingEnvironment;
-import javax.annotation.processing.RoundEnvironment;
-import javax.lang.model.SourceVersion;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.util.Elements;
-import javax.lang.model.util.Types;
+import java.util.ArrayList
+import java.util.Locale
+import javax.annotation.processing.AbstractProcessor
+import javax.annotation.processing.ProcessingEnvironment
+import javax.annotation.processing.RoundEnvironment
+import javax.lang.model.SourceVersion
+import javax.lang.model.element.TypeElement
+import javax.lang.model.util.Elements
+import javax.lang.model.util.Types
 
-/** Process the annotations with {@link ProcessorPipeline}. */
-public abstract class RibProcessor extends AbstractProcessor implements ProcessContext {
+/** Process the annotations with [ProcessorPipeline].  */
+abstract class RibProcessor : AbstractProcessor(), ProcessContext {
 
-  protected ErrorReporter errorReporter;
-  protected Elements elementUtils;
-  protected Types typesUtils;
+  override var errorReporter: ErrorReporter? = null
+    protected set
+  override var elementUtils: Elements? = null
+    protected set
+  override var typesUtils: Types? = null
+    protected set
 
-  List<ProcessorPipeline> processorPipelines = new ArrayList<>();
+  var processorPipelines: MutableList<ProcessorPipeline> = ArrayList()
 
-  @Override
-  public synchronized void init(ProcessingEnvironment processingEnv) {
-    super.init(processingEnv);
-    elementUtils = processingEnv.getElementUtils();
-    errorReporter = new ErrorReporter(processingEnv.getMessager());
-    typesUtils = processingEnv.getTypeUtils();
-    processorPipelines.addAll(getProcessorPipelines(this));
+  @Synchronized
+  override fun init(processingEnv: ProcessingEnvironment) {
+    super.init(processingEnv)
+    elementUtils = processingEnv.elementUtils
+    errorReporter = ErrorReporter(processingEnv.messager)
+    typesUtils = processingEnv.typeUtils
+    processorPipelines.addAll(getProcessorPipelines(this))
   }
 
-  @Override
-  public SourceVersion getSupportedSourceVersion() {
-    return SourceVersion.latestSupported();
+  override fun getSupportedSourceVersion(): SourceVersion {
+    return SourceVersion.latestSupported()
   }
 
-  @Override
-  public final boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-
+  override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
     if (roundEnv.processingOver()) {
-      return false;
+      return false
     }
-
-    for (ProcessorPipeline processorPipeline : processorPipelines) {
+    for (processorPipeline in processorPipelines) {
       try {
-        processorPipeline.process(annotations, roundEnv);
-      } catch (Throwable e) {
-        errorReporter.reportError(
-            String.format(
-                Locale.getDefault(),
-                "Fatal error running %s processor: %s",
-                processorPipeline.getAnnotationType().getSimpleName(),
-                e.getMessage()));
+        processorPipeline.process(annotations, roundEnv)
+      } catch (e: Throwable) {
+        errorReporter?.reportError(
+          String.format(
+            Locale.getDefault(),
+            "Fatal error running %s processor: %s",
+            processorPipeline.annotationType.simpleName,
+            e.message
+          )
+        )
       }
     }
-    return false;
+    return false
   }
 
   /**
-   * Get list of {@link ProcessorPipeline} to process each annotation.
+   * Get list of [ProcessorPipeline] to process each annotation.
    *
-   * @param processContext the {@link ProcessContext}.
+   * @param processContext the [ProcessContext].
    * @return the list of processor pipelines.
    */
-  protected abstract List<ProcessorPipeline> getProcessorPipelines(ProcessContext processContext);
-
-  @Override
-  public ErrorReporter getErrorReporter() {
-    return errorReporter;
-  }
-
-  @Override
-  public Elements getElementUtils() {
-    return elementUtils;
-  }
-
-  @Override
-  public Types getTypesUtils() {
-    return typesUtils;
-  }
+  protected abstract fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline>
 }

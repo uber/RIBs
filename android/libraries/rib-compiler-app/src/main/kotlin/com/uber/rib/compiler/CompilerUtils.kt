@@ -13,30 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import javax.lang.model.element.Element;
-import javax.lang.model.element.PackageElement;
+import javax.lang.model.element.Element
+import javax.lang.model.element.PackageElement
 
-/** Handy functions for generating code. */
-public class CompilerUtils {
-
-  private CompilerUtils() {}
-
-  /**
-   * Returns the name of the package that the given type is in. If the type is in the default
-   * (unnamed) package then the name is the empty string.
-   */
-  static String packageNameOf(Element type) {
-    while (true) {
-      Element enclosing = type.getEnclosingElement();
-      if (enclosing == null) {
-        throw new RuntimeException("null value from type.getEnclosingElement()");
+/** Handy functions for generating code.  */
+open class CompilerUtils {
+  companion object {
+    /**
+     * Returns the name of the package that the given type is in. If the type is in the default
+     * (unnamed) package then the name is the empty string.
+     */
+    @JvmStatic
+    fun packageNameOf(type: Element): String {
+      var type = type
+      while (true) {
+        val enclosing = type.enclosingElement
+          ?: throw RuntimeException("null value from type.getEnclosingElement()")
+        if (enclosing is PackageElement) {
+          return enclosing.qualifiedName.toString()
+        }
+        type = enclosing
       }
-      if (enclosing instanceof PackageElement) {
-        return ((PackageElement) enclosing).getQualifiedName().toString();
-      }
-      type = enclosing;
     }
   }
 }

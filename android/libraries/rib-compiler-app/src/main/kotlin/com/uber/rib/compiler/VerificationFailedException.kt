@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
 /**
  * Exception thrown when annotation processing should be aborted for the current class. Processing
@@ -21,4 +21,4 @@ package com.uber.rib.compiler;
  * one should explicitly be emitted or it should be clear that the compiler will be producing its
  * own error for other reasons.
  */
-final class VerificationFailedException extends Exception {}
+internal class VerificationFailedException : Exception()

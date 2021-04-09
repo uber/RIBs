@@ -13,50 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import com.google.common.collect.ImmutableSet;
-import com.google.testing.compile.JavaFileObjects;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
-import javax.tools.JavaFileObject;
-import org.junit.Before;
+import com.google.common.collect.ImmutableSet
+import com.google.testing.compile.JavaFileObjects
+import org.junit.Before
+import java.util.ArrayList
+import javax.tools.JavaFileObject
 
-public abstract class InteractorProcessorTestBase {
-
-  private RibProcessor ribProcessor;
-  private ArrayList<JavaFileObject> sources;
+abstract class InteractorProcessorTestBase {
+  protected lateinit var ribProcessor: RibProcessor
+    private set
+  protected lateinit var sources: ArrayList<JavaFileObject>
+    private set
 
   @Before
-  public void setup() {
-    ribProcessor =
-        new RibProcessor() {
-          @Override
-          protected List<ProcessorPipeline> getProcessorPipelines(ProcessContext processContext) {
-            return Collections.singletonList(
-                new RibInteractorProcessorPipeline(processContext, null));
-          }
+  fun setup() {
+    ribProcessor = object : RibProcessor() {
+      override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
+        return listOf(
+          RibInteractorProcessorPipeline(processContext, null)
+        )
+      }
 
-          @Override
-          public Set<String> getSupportedAnnotationTypes() {
-            return ImmutableSet.of(
-                RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.getCanonicalName());
-          }
-        };
-    sources = new ArrayList<>();
+      override fun getSupportedAnnotationTypes(): Set<String> {
+        return ImmutableSet.of(
+          RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName
+        )
+      }
+    }
+    sources = ArrayList()
   }
 
-  protected RibProcessor getRibProcessor() {
-    return ribProcessor;
-  }
-
-  protected ArrayList<JavaFileObject> getSources() {
-    return sources;
-  }
-
-  protected void addResourceToSources(String file) {
-    getSources().add(JavaFileObjects.forResource(file));
+  protected fun addResourceToSources(file: String?) {
+    sources.add(JavaFileObjects.forResource(file))
   }
 }

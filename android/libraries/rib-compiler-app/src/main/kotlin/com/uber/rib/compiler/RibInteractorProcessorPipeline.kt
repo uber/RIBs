@@ -13,44 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import androidx.annotation.Nullable;
-import com.uber.rib.core.RibInteractor;
-import java.io.IOException;
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import javax.lang.model.element.TypeElement;
+import com.uber.rib.core.RibInteractor
+import java.io.IOException
+import java.util.ArrayList
+import javax.lang.model.element.TypeElement
 
-/** The processor pipeline for {@link RibInteractor} */
-public class RibInteractorProcessorPipeline extends TypeProcessorPipeline {
+/** The processor pipeline for [RibInteractor]  */
+open class RibInteractorProcessorPipeline(
+  processContext: ProcessContext,
+  interactorGenerator: Generator<InteractorAnnotatedClass>?
+) : TypeProcessorPipeline(processContext) {
+  private val annotationVerifier: AnnotationVerifier<InteractorAnnotatedClass>
+  private val interactorGenerator: Generator<InteractorAnnotatedClass>?
+  private val builderAnnotatedClassesList: MutableList<InteractorAnnotatedClass?> = ArrayList()
 
-  public static final Class<RibInteractor> SUPPORT_ANNOTATION_TYPE = RibInteractor.class;
-
-  private AnnotationVerifier<InteractorAnnotatedClass> annotationVerifier;
-  @Nullable private Generator<InteractorAnnotatedClass> interactorGenerator;
-  private List<InteractorAnnotatedClass> builderAnnotatedClassesList = new ArrayList<>();
-
-  /**
-   * Constructor.
-   *
-   * @param processContext the {@link ProcessContext}.
-   * @param interactorGenerator the code generator.
+  /** @return the annotation type this processor pipeline deals with.
    */
-  public RibInteractorProcessorPipeline(
-      ProcessContext processContext,
-      @Nullable Generator<InteractorAnnotatedClass> interactorGenerator) {
-    super(processContext);
-    annotationVerifier = new InteractorAnnotationVerifier(errorReporter, elementUtils, typesUtils);
-    this.interactorGenerator = interactorGenerator;
-  }
-
-  /** @return the annotation type this processor pipeline deals with. */
-  @Override
-  public Class<? extends Annotation> getAnnotationType() {
-    return SUPPORT_ANNOTATION_TYPE;
-  }
+  override val annotationType: Class<out Annotation>
+    get() = SUPPORT_ANNOTATION_TYPE
 
   /**
    * Process the type elements.
@@ -58,31 +40,49 @@ public class RibInteractorProcessorPipeline extends TypeProcessorPipeline {
    * @param annotatedTypes annotation types.
    * @throws Throwable exception during annotation process.
    */
-  @Override
-  protected void processTypeElements(List<TypeElement> annotatedTypes) throws Throwable {
-    parseTypeElements(annotatedTypes);
-    generateSource();
+  @Throws(Throwable::class)
+  override fun processTypeElements(annotatedTypes: List<TypeElement>) {
+    parseTypeElements(annotatedTypes)
+    generateSource()
   }
 
-  /** Generate the source code. */
-  protected void generateSource() throws IOException {
+  /** Generate the source code.  */
+  @Throws(IOException::class)
+  protected fun generateSource() {
     if (interactorGenerator == null) {
-      return;
+      return
     }
-    for (InteractorAnnotatedClass interactorAnnotatedClass : builderAnnotatedClassesList) {
-      interactorGenerator.generate(interactorAnnotatedClass);
+    for (interactorAnnotatedClass in builderAnnotatedClassesList) {
+      interactorGenerator.generate(interactorAnnotatedClass!!)
     }
   }
 
   /**
-   * Verifies the element and get {@link InteractorAnnotatedClass} info.
+   * Verifies the element and get [InteractorAnnotatedClass] info.
    *
    * @param annotatedTypes the annotated types.
    */
-  protected void parseTypeElements(List<TypeElement> annotatedTypes) throws Throwable {
-    for (TypeElement typeElement : annotatedTypes) {
-      InteractorAnnotatedClass builderAnnotatedClass = annotationVerifier.verify(typeElement);
-      builderAnnotatedClassesList.add(builderAnnotatedClass);
+  @Throws(Throwable::class)
+  protected fun parseTypeElements(annotatedTypes: List<TypeElement>) {
+    for (typeElement in annotatedTypes) {
+      val builderAnnotatedClass = annotationVerifier.verify(typeElement)
+      builderAnnotatedClassesList.add(builderAnnotatedClass)
     }
+  }
+
+  companion object {
+    @JvmField
+    val SUPPORT_ANNOTATION_TYPE: Class<RibInteractor> = RibInteractor::class.java
+  }
+
+  /**
+   * Constructor.
+   *
+   * @param processContext the [ProcessContext].
+   * @param interactorGenerator the code generator.
+   */
+  init {
+    annotationVerifier = InteractorAnnotationVerifier(errorReporter!!, elementUtils!!, typesUtils!!)
+    this.interactorGenerator = interactorGenerator
   }
 }

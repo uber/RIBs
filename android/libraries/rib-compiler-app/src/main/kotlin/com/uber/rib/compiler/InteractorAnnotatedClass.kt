@@ -13,39 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import com.uber.rib.core.RibBuilder;
-import java.util.List;
-import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
+import javax.lang.model.element.TypeElement
+import javax.lang.model.element.VariableElement
 
-/** Extension point for adding more information to a class annotated with {@link RibBuilder}. */
-public class InteractorAnnotatedClass extends AnnotatedClass {
-
-  private final List<? extends VariableElement> dependencies;
-  private final boolean isBasic;
-
-  public InteractorAnnotatedClass(
-      TypeElement typeElement, List<? extends VariableElement> dependencies, boolean isBasic) {
-    super(typeElement);
-    this.dependencies = dependencies;
-    this.isBasic = isBasic;
-  }
-
+open class InteractorAnnotatedClass(
+  typeElement: TypeElement,
   /** @return the list of dependencies. */
-  public List<? extends VariableElement> getDependencies() {
-    return dependencies;
-  }
+  open val dependencies: List<VariableElement>,
+  /** @return Whether this interactor extends BasicInteractor.  */
+  open val isBasic: Boolean
+) : AnnotatedClass(typeElement) {
 
-  /** {@inheritDoc} */
-  @Override
-  public String getNameSuffix() {
-    return Constants.INTERACTOR_SUFFIX;
-  }
-
-  /** @return Whether this interactor extends BasicInteractor. */
-  public boolean isBasic() {
-    return isBasic;
-  }
+  open override val nameSuffix: String
+    get() = Constants.INTERACTOR_SUFFIX
 }

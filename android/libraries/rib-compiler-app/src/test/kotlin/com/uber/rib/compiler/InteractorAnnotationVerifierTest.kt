@@ -13,56 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import static com.google.common.truth.Truth.assert_;
-import static com.google.testing.compile.JavaSourcesSubjectFactory.javaSources;
+import com.google.common.truth.Truth
+import com.google.testing.compile.JavaSourcesSubjectFactory
+import org.junit.Test
 
-import org.junit.Test;
-
-public class InteractorAnnotationVerifierTest extends InteractorProcessorTestBase {
+class InteractorAnnotationVerifierTest : InteractorProcessorTestBase() {
 
   @Test
-  public void verify_whenTypeElementIsValid_shouldCompile() {
-    addResourceToSources("fixtures/AnnotatedInteractor.java");
-    assertCompiles();
+  fun verify_whenTypeElementIsValid_shouldCompile() {
+    addResourceToSources("fixtures/AnnotatedInteractor.java")
+    assertCompiles()
   }
 
   @Test
-  public void verify_whenTypeElementIsInteractorWithoutProperSuffix_shouldWriteErrorMessage() {
-    addResourceToSources("fixtures/AnnotatedInteractorNoSuffix.java");
-    assertFailsWithError("test.AnnotatedInteractorNoSuffix does not end in Interactor.");
+  fun verify_whenTypeElementIsInteractorWithoutProperSuffix_shouldWriteErrorMessage() {
+    addResourceToSources("fixtures/AnnotatedInteractorNoSuffix.java")
+    assertFailsWithError("test.AnnotatedInteractorNoSuffix does not end in Interactor.")
   }
 
   @Test
-  public void verify_whenInteractorHasAConstructor_shouldCompile() {
-    addResourceToSources("fixtures/CustomConstructorInteractor.java");
-    assertCompiles();
+  fun verify_whenInteractorHasAConstructor_shouldCompile() {
+    addResourceToSources("fixtures/CustomConstructorInteractor.java")
+    assertCompiles()
   }
 
   @Test
-  public void verify_whenTypeElementIsNotInteractor_shouldWriteErrorMessage() {
-    addResourceToSources("fixtures/AnnotatedNonInteractor.java");
+  fun verify_whenTypeElementIsNotInteractor_shouldWriteErrorMessage() {
+    addResourceToSources("fixtures/AnnotatedNonInteractor.java")
     assertFailsWithError(
-        "test.AnnotatedNonInteractor is annotated with @RibInteractor but is not an Interactor subclass");
+      "test.AnnotatedNonInteractor is annotated with @RibInteractor but is not an Interactor subclass"
+    )
   }
 
-  private void assertFailsWithError(String expectedErrorMessage) {
-    assert_()
-        .about(javaSources())
-        .that(getSources())
-        .withCompilerOptions("-source", "1.7", "-target", "1.7")
-        .processedWith(getRibProcessor())
-        .failsToCompile()
-        .withErrorContaining(expectedErrorMessage);
+  private fun assertFailsWithError(expectedErrorMessage: String) {
+    Truth.assert_()
+      .about(JavaSourcesSubjectFactory.javaSources())
+      .that(sources)
+      .withCompilerOptions("-source", "1.7", "-target", "1.7")
+      .processedWith(ribProcessor)
+      .failsToCompile()
+      .withErrorContaining(expectedErrorMessage)
   }
 
-  private void assertCompiles() {
-    assert_()
-        .about(javaSources())
-        .that(getSources())
-        .withCompilerOptions("-source", "1.7", "-target", "1.7")
-        .processedWith(getRibProcessor())
-        .compilesWithoutError();
+  private fun assertCompiles() {
+    Truth.assert_()
+      .about(JavaSourcesSubjectFactory.javaSources())
+      .that(sources)
+      .withCompilerOptions("-source", "1.7", "-target", "1.7")
+      .processedWith(ribProcessor)
+      .compilesWithoutError()
   }
 }

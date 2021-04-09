@@ -13,28 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-import androidx.annotation.Nullable;
-import javax.annotation.processing.Messager;
-import javax.lang.model.element.Element;
-import javax.tools.Diagnostic;
+import javax.annotation.processing.Messager
+import javax.lang.model.element.Element
+import javax.tools.Diagnostic
 
-/** Holds utilities for reporting errors. */
-class ErrorReporter {
-
-  private final Messager messager;
-
-  ErrorReporter(Messager messager) {
-    this.messager = messager;
-  }
-
-  void reportError(CharSequence message) {
-    reportError(message, null);
-  }
-
-  void reportError(CharSequence message, @Nullable Element element) {
-    messager.printMessage(Diagnostic.Kind.ERROR, message, element);
-    messager.printMessage(Diagnostic.Kind.NOTE, message, element);
+/** Holds utilities for reporting errors.  */
+open class ErrorReporter(private val messager: Messager) {
+  @JvmOverloads
+  internal open fun reportError(message: CharSequence, element: Element? = null) {
+    messager.printMessage(Diagnostic.Kind.ERROR, message, element)
+    messager.printMessage(Diagnostic.Kind.NOTE, message, element)
   }
 }

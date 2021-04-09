@@ -31,7 +31,7 @@ public final class RibTestProcessor extends RibProcessor {
 
   @Override
   public synchronized void init(ProcessingEnvironment processingEnv) {
-    interactorTestGenerator = new InteractorTestGenerator(processingEnv, errorReporter);
+    interactorTestGenerator = new InteractorTestGenerator(processingEnv, getErrorReporter());
     super.init(processingEnv);
   }
 

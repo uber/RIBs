@@ -13,12 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.compiler;
+package com.uber.rib.compiler
 
-/** Constant values used by the annotation processor. */
-public class Constants {
-
-  public static final String INTERACTOR_SUFFIX = "Interactor";
-
-  private Constants() {}
+/** Constant values used by the annotation processor.  */
+open class Constants {
+  companion object {
+    /** {@inheritDoc}  */
+    const val INTERACTOR_SUFFIX = "Interactor"
+  }
 }
