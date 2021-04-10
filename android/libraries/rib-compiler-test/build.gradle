@@ -16,15 +16,17 @@ import org.gradle.internal.jvm.Jvm
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.kotlin.kapt"
 
 dependencies {
     compile project(":libraries:rib-compiler-app")
+    compile deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
-    annotationProcessor deps.apt.autoService
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
+    kapt deps.apt.autoService
 
     testCompile deps.androidx.annotations
     testCompile deps.test.compileTesting
