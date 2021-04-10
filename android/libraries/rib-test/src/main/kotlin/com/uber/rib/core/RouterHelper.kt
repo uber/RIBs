@@ -82,7 +82,7 @@ object RouterHelper {
   }
 
   /**
-   * Verified that the [Router] is attached with a sepcific tag.
+   * Verified that the [Router] is attached with a specific tag.
    *
    * @param router the [Router].
    * @param tag the expected tag.
@@ -147,7 +147,7 @@ object RouterHelper {
   }
 
   /**
-   * Verifies that the [Router] is detached.
+   * Verifies that the [Router] is not detached.
    *
    * @param router the [Router].
    */
