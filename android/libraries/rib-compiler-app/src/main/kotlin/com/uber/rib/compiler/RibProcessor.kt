@@ -16,7 +16,6 @@
 package com.uber.rib.compiler
 
 import java.util.ArrayList
-import java.util.Locale
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.RoundEnvironment
@@ -59,12 +58,7 @@ abstract class RibProcessor : AbstractProcessor(), ProcessContext {
         processorPipeline.process(annotations, roundEnv)
       } catch (e: Throwable) {
         errorReporter?.reportError(
-          String.format(
-            Locale.getDefault(),
-            "Fatal error running %s processor: %s",
-            processorPipeline.annotationType.simpleName,
-            e.message
-          )
+          "Fatal error running ${processorPipeline.annotationType.simpleName} processor: ${e.message}"
         )
       }
     }

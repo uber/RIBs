@@ -28,8 +28,7 @@ open class RibInteractorProcessorPipeline(
   private val annotationVerifier: AnnotationVerifier<InteractorAnnotatedClass>
   private val builderAnnotatedClassesList: MutableList<InteractorAnnotatedClass?> = ArrayList()
 
-  /** @return the annotation type this processor pipeline deals with.
-   */
+  /** @return the annotation type this processor pipeline deals with. */
   override val annotationType: Class<out Annotation>
     get() = SUPPORT_ANNOTATION_TYPE
 

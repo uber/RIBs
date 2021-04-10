@@ -20,7 +20,7 @@ import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
 /**
- * Verifier that checks if the type element is valid and returns information as [ ].
+ * Verifier that checks if the type element is valid and returns information as [AnnotatedClass].
  *
  * @param <T> the actual [AnnotatedClass] info that it generates if valid.
  */

@@ -17,7 +17,6 @@ package com.uber.rib.compiler
 
 import com.uber.rib.core.Interactor
 import java.util.ArrayList
-import java.util.Locale
 import javax.inject.Inject
 import javax.lang.model.element.ElementKind
 import javax.lang.model.element.ExecutableElement
@@ -66,7 +65,7 @@ internal open class InteractorAnnotationVerifier(
         constructors.add(element as ExecutableElement)
       }
     }
-    return constructors.size != 1 || !constructors[0].parameters.isEmpty()
+    return constructors.size != 1 || constructors[0].parameters.isNotEmpty()
   }
 
   /**
@@ -77,7 +76,7 @@ internal open class InteractorAnnotationVerifier(
    */
   private fun validateInteractorSuffix(type: TypeElement): Boolean {
     return if (!type.simpleName.toString().endsWith(Constants.INTERACTOR_SUFFIX)) {
-      errorReporter.reportError(String.format(Locale.getDefault(), "%s does not end in Interactor.", type))
+      errorReporter.reportError("$type does not end in Interactor.")
       false
     } else {
       true
@@ -99,11 +98,7 @@ internal open class InteractorAnnotationVerifier(
     )
     return if (!typesUtils.isSubtype(type.asType(), rawElement)) {
       errorReporter.reportError(
-        String.format(
-          Locale.getDefault(),
-          "%s is annotated with @RibInteractor but is not an " + "Interactor subclass.",
-          type.toString()
-        ),
+        "$type is annotated with @RibInteractor but is not an Interactor subclass.",
         type
       )
       false
