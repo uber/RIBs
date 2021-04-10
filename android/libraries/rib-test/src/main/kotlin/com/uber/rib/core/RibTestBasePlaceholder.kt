@@ -13,25 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/**
- * Router for testing that does not automatically attach to the interactor.
- *
- * @param <I>
- */
-public final class FakeRouter<I extends Interactor<?, Router>> extends Router<I> {
-
-  public FakeRouter(I interactor) {
-    super(interactor);
-  }
-
-  public FakeRouter(I interactor, RibRefWatcher ribRefWatcher, Thread mainThread) {
-    super(null, interactor, ribRefWatcher, mainThread);
-  }
-
-  @Override
-  protected void attachToInteractor() {
-    // do not automatically attach this
-  }
-}
+open class RibTestBasePlaceholder

@@ -13,27 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-/** The helper to test {@link Presenter}. */
-public final class PresenterHelper {
-  private PresenterHelper() {}
+class FakeComponent<P : Presenter, T : Interactor<P, *>> private constructor(
+  private val presenter: P
+) : InteractorComponent<P, T> {
 
-  /**
-   * Loads the given {@link Presenter}.
-   *
-   * @param presenter the presenter.
-   */
-  public static void load(Presenter presenter) {
-    presenter.dispatchLoad();
+  override fun inject(interactor: T) { }
+
+  override fun presenter(): P {
+    return presenter
   }
 
-  /**
-   * Unloads the given {@link Presenter}.
-   *
-   * @param presenter the presenter.
-   */
-  public static void unload(Presenter presenter) {
-    presenter.dispatchUnload();
+  companion object {
+    @JvmStatic
+    fun <T : Interactor<FakePresenter, *>> withFakePresenterFor(interactorClass: Class<T>): FakeComponent<FakePresenter, T> {
+      return FakeComponent(FakePresenter())
+    }
   }
 }

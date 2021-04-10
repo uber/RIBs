@@ -13,6 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-public final class FakePresenter extends Presenter {}
+@SuppressWarnings("RibInteractorOnIteractor")
+open class FakeInteractor<P, R : Router<*>> : Interactor<P, R>() {
+  open fun attach() {
+    presenter = FakePresenter() as P
+    router = FakeRouter(this) as R
+    dispatchAttach(null)
+  }
+
+  open fun detach() {
+    dispatchDetach()
+  }
+}

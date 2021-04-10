@@ -13,27 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-public final class FakeComponent<P extends Presenter, T extends Interactor<P, ?>>
-    implements InteractorComponent<P, T> {
+/**
+ * Router for testing that does not automatically attach to the interactor.
+ *
+ * @param <I>
+ */
+class FakeRouter<I : Interactor<*, *>> : Router<I> {
+  constructor(interactor: I) : super(interactor)
+  constructor(interactor: I, ribRefWatcher: RibRefWatcher?, mainThread: Thread?) : super(null, interactor, ribRefWatcher, mainThread)
 
-  public static <T extends Interactor<FakePresenter, ?>>
-      FakeComponent<FakePresenter, T> withFakePresenterFor(Class<T> interactorClass) {
-    return new FakeComponent<>(new FakePresenter());
-  }
-
-  private P presenter;
-
-  private FakeComponent(P presenter) {
-    this.presenter = presenter;
-  }
-
-  @Override
-  public void inject(T interactor) {}
-
-  @Override
-  public P presenter() {
-    return presenter;
+  protected override fun attachToInteractor() {
+    // do not automatically attach this
   }
 }
