@@ -13,106 +13,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core.lifecycle;
+package com.uber.rib.core.lifecycle
 
-import android.os.Bundle;
-import androidx.annotation.Nullable;
-import java.util.Locale;
+import android.os.Bundle
 
-/** Lifecycle events that can be emitted by Activities. */
-public class ActivityLifecycleEvent implements ActivityEvent {
-
-  private static final ActivityLifecycleEvent START_EVENT = new ActivityLifecycleEvent(Type.START);
-  private static final ActivityLifecycleEvent RESUME_EVENT =
-      new ActivityLifecycleEvent(Type.RESUME);
-  private static final ActivityLifecycleEvent USER_LEAVING_EVENT =
-      new ActivityLifecycleEvent(Type.USER_LEAVING);
-  private static final ActivityLifecycleEvent PAUSE_EVENT = new ActivityLifecycleEvent(Type.PAUSE);
-  private static final ActivityLifecycleEvent STOP_EVENT = new ActivityLifecycleEvent(Type.STOP);
-  private static final ActivityLifecycleEvent DESTROY_EVENT =
-      new ActivityLifecycleEvent(Type.DESTROY);
-
-  private final Type type;
-
-  private ActivityLifecycleEvent(Type type) {
-    this.type = type;
-  }
-
-  /**
-   * Creates an event for onCreate.
-   *
-   * @param stateData the instate bundle.
-   * @return the created ActivityEvent.
-   */
-  public static ActivityLifecycleEvent.Create createOnCreateEvent(@Nullable Bundle stateData) {
-    return new Create(stateData);
-  }
-
-  /**
-   * Creates an activity event for a given type.
-   *
-   * @param type The type of event to get.
-   * @return The corresponding ActivityEvent.
-   */
-  public static ActivityLifecycleEvent create(Type type) {
-    switch (type) {
-      case START:
-        return START_EVENT;
-      case RESUME:
-        return RESUME_EVENT;
-      case USER_LEAVING:
-        return USER_LEAVING_EVENT;
-      case PAUSE:
-        return PAUSE_EVENT;
-      case STOP:
-        return STOP_EVENT;
-      case DESTROY:
-        return DESTROY_EVENT;
-      default:
-        throw new IllegalArgumentException(
-            "Use the createOn"
-                + capitalize(type.name().toLowerCase(Locale.US))
-                + "Event() method for this type!");
-    }
-  }
-
+/** Lifecycle events that can be emitted by Activities.  */
+open class ActivityLifecycleEvent private constructor(
   /** @return this event's type. */
-  @Override
-  public Type getType() {
-    return this.type;
+  override val type: Type
+) : ActivityEvent {
+
+  /** Types of activity events that can occur.  */
+  enum class Type : ActivityEvent.BaseType {
+    CREATE, START, RESUME, USER_LEAVING, PAUSE, STOP, DESTROY
   }
 
-  private static String capitalize(final String line) {
-    return Character.toUpperCase(line.charAt(0)) + line.substring(1);
-  }
+  /** An [ActivityLifecycleEvent] that encapsulates information from [Activity.onCreate]. */
+  open class Create(
+    /** @return this event's savedInstanceState data. */
+    open val savedInstanceState: Bundle?
+  ) : ActivityLifecycleEvent(Type.CREATE)
 
-  /** Types of activity events that can occur. */
-  public enum Type implements BaseType {
-    CREATE,
-    START,
-    RESUME,
-    USER_LEAVING,
-    PAUSE,
-    STOP,
-    DESTROY,
-  }
+  companion object {
+    private val START_EVENT = ActivityLifecycleEvent(Type.START)
+    private val RESUME_EVENT = ActivityLifecycleEvent(Type.RESUME)
+    private val USER_LEAVING_EVENT = ActivityLifecycleEvent(Type.USER_LEAVING)
+    private val PAUSE_EVENT = ActivityLifecycleEvent(Type.PAUSE)
+    private val STOP_EVENT = ActivityLifecycleEvent(Type.STOP)
+    private val DESTROY_EVENT = ActivityLifecycleEvent(Type.DESTROY)
 
-  /**
-   * An {@link ActivityLifecycleEvent} that encapsulates information from {@link
-   * Activity#onCreate(Bundle)}.
-   */
-  public static class Create extends ActivityLifecycleEvent {
-    @Nullable private final Bundle savedInstanceState;
-
-    private Create(@Nullable Bundle savedInstanceState) {
-      super(Type.CREATE);
-      this.savedInstanceState = savedInstanceState;
+    /**
+     * Creates an event for onCreate.
+     *
+     * @param stateData the instate bundle.
+     * @return the created ActivityEvent.
+     */
+    @JvmStatic
+    fun createOnCreateEvent(stateData: Bundle?): Create {
+      return Create(stateData)
     }
 
-    /** @return this event's savedInstanceState data. */
-    @Nullable
-    public Bundle getSavedInstanceState() {
-      return savedInstanceState;
+    /**
+     * Creates an activity event for a given type.
+     *
+     * @param type The type of event to get.
+     * @return The corresponding ActivityEvent.
+     */
+    @JvmStatic
+    fun create(type: Type): ActivityLifecycleEvent {
+      return when (type) {
+        Type.START -> START_EVENT
+        Type.RESUME -> RESUME_EVENT
+        Type.USER_LEAVING -> USER_LEAVING_EVENT
+        Type.PAUSE -> PAUSE_EVENT
+        Type.STOP -> STOP_EVENT
+        Type.DESTROY -> DESTROY_EVENT
+        else -> throw IllegalArgumentException(
+          "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!"
+        )
+      }
     }
   }
 }

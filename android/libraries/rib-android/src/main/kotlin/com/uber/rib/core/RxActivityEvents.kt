@@ -13,55 +13,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
-import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
-import io.reactivex.Observable;
-import io.reactivex.functions.Predicate;
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent
+import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
+import io.reactivex.Observable
 
 /** Interface for reactive activities. */
-public interface RxActivityEvents {
+interface RxActivityEvents {
+  /** @return an observable of this activity's lifecycle events. */
+  fun lifecycle(): Observable<ActivityLifecycleEvent>
 
   /** @return an observable of this activity's lifecycle events. */
-  Observable<ActivityLifecycleEvent> lifecycle();
-
-  /** @return an observable of this activity's lifecycle events. */
-  Observable<ActivityCallbackEvent> callbacks();
+  fun callbacks(): Observable<ActivityCallbackEvent>
 
   /**
-   * @param <T> The type of {@link ActivityLifecycleEvent} subclass you want.
-   * @param clazz The {@link ActivityLifecycleEvent} subclass you want.
+   * @param <T> The type of [ActivityLifecycleEvent] subclass you want.
+   * @param clazz The [ActivityLifecycleEvent] subclass you want.
    * @return an observable of this activity's lifecycle events.
    */
-  default <T extends ActivityLifecycleEvent> Observable<T> lifecycle(final Class<T> clazz) {
+  fun <T : ActivityLifecycleEvent> lifecycle(clazz: Class<T>): Observable<T> {
     return lifecycle()
-        // Lambdas within interfaces are not yet supported.
-        .filter(
-            new Predicate<ActivityLifecycleEvent>() {
-              @Override
-              public boolean test(final ActivityLifecycleEvent activityEvent) {
-                return clazz.isAssignableFrom(activityEvent.getClass());
-              }
-            })
-        .cast(clazz);
+      .filter { activityEvent -> clazz.isAssignableFrom(activityEvent.javaClass) }
+      .cast(clazz)
   }
 
   /**
-   * @param <T> The type of {@link ActivityCallbackEvent} subclass you want.
-   * @param clazz The {@link ActivityCallbackEvent} subclass you want.
+   * @param <T> The type of [ActivityCallbackEvent] subclass you want.
+   * @param clazz The [ActivityCallbackEvent] subclass you want.
    * @return an observable of this activity's callbacks events.
    */
-  default <T extends ActivityCallbackEvent> Observable<T> callbacks(final Class<T> clazz) {
+  fun <T : ActivityCallbackEvent> callbacks(clazz: Class<T>): Observable<T> {
     return callbacks()
-        // Lambdas within interfaces are not yet supported.
-        .filter(
-            new Predicate<ActivityCallbackEvent>() {
-              @Override
-              public boolean test(final ActivityCallbackEvent activityEvent) {
-                return clazz.isAssignableFrom(activityEvent.getClass());
-              }
-            })
-        .cast(clazz);
+      .filter { activityEvent -> clazz.isAssignableFrom(activityEvent.javaClass) }
+      .cast(clazz)
   }
 }

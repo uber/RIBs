@@ -13,18 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.content.Intent;
+import android.content.Intent
 
-/** Factory for an {@link Intent} that opens an activity. */
-public interface IntentFactory {
-
+/** Factory for an [Intent] that opens an activity.  */
+interface IntentFactory {
   /**
-   * Create a view router to be displayed for an {@link Intent}.
+   * Create a view router to be displayed for an [Intent].
    *
-   * @param intentCreator to create the {@link Intent}.
-   * @return the activity {@link Intent}.
+   * @param intentCreator to create the [Intent].
+   * @return the activity [Intent].
    */
-  Intent create(IntentCreator intentCreator);
+  fun create(intentCreator: IntentCreator): Intent
 }

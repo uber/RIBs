@@ -13,116 +13,100 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.view.Gravity;
-import android.view.View;
-import androidx.annotation.Nullable;
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import android.view.Gravity
+import android.view.View
 
-/** Utility class that shows riblets name in its background. */
-public final class XRay {
-
-  private static final XRay INSTANCE = new XRay();
-
-  private static final int FRAME_WIDTH = 500;
-  private static final int FRAME_HEIGHT = 150;
-  private static final float XRAY_ALFA = 0.9f;
-  private static final int TEXT_SIZE = 30;
-  private static final int TEXT_COLOR = Color.RED;
-
-  private boolean isEnabled;
-
-  @Nullable private Paint textPaint;
-
-  private XRay() {
-    isEnabled = false;
+/** Utility class that shows riblets name in its background.  */
+class XRay private constructor() {
+  private var isEnabled = false
+  private var textPaint: Paint? = null
+  private fun writeOnBitmap(bitmap: Bitmap, text: String) {
+    val canvas = Canvas(bitmap)
+    val textPaint = getTextPaint()
+    val xStartPoint = (bitmap.width - textPaint.measureText(text)) / 2f
+    val yStartPoint = bitmap.height / 2f
+    canvas.drawText(text, xStartPoint, yStartPoint, textPaint)
   }
 
-  /** Toggles state of XRay. */
-  public static void toggle() {
-    INSTANCE.isEnabled = !INSTANCE.isEnabled;
-  }
-
-  /** @return {@code true} if XRay is enabled, {@code false} otherwise. */
-  public static boolean isEnabled() {
-    return INSTANCE.isEnabled;
-  }
-
-  /**
-   * Puts {@link ViewBuilder}s riblet name in the background of the {@link View}
-   *
-   * @param viewRouter a {@link ViewRouter} which riblets name should be written.
-   * @param view a {@link View} to put the name behind.
-   */
-  static void apply(final ViewRouter viewRouter, final View view) {
-    final Drawable oldBackground = view.getBackground();
-
-    final Bitmap bitmap;
-
-    if (oldBackground != null) {
-      bitmap = drawableToBitmap(oldBackground);
-    } else {
-      bitmap = Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888);
-    }
-
-    INSTANCE.writeOnBitmap(bitmap, getRibletName(viewRouter));
-
-    final BitmapDrawable newBackground =
-        new BitmapDrawable(view.getContext().getResources(), bitmap);
-    newBackground.setGravity(Gravity.CENTER);
-
-    view.setBackground(newBackground);
-    view.setAlpha(XRAY_ALFA);
-  }
-
-  private static Bitmap drawableToBitmap(final Drawable drawable) {
-    if (drawable instanceof BitmapDrawable) {
-      final BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-      if (bitmapDrawable.getBitmap() != null) {
-        return bitmapDrawable.getBitmap();
+  private fun getTextPaint(): Paint {
+    if (textPaint == null) {
+      textPaint = Paint().apply {
+        textSize = TEXT_SIZE.toFloat()
+        color = TEXT_COLOR
       }
     }
+    return textPaint!!
+  }
 
-    final Bitmap bitmap;
-    if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-      bitmap = Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888);
-    } else {
-      bitmap =
-          Bitmap.createBitmap(
-              drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+  companion object {
+    private val INSTANCE = XRay()
+    private const val FRAME_WIDTH = 500
+    private const val FRAME_HEIGHT = 150
+    private const val XRAY_ALFA = 0.9f
+    private const val TEXT_SIZE = 30
+    private const val TEXT_COLOR = Color.RED
+
+    /** Toggles state of XRay.  */
+    @JvmStatic
+    fun toggle() {
+      INSTANCE.isEnabled = !INSTANCE.isEnabled
     }
 
-    final Canvas canvas = new Canvas(bitmap);
-    drawable.draw(canvas);
-    return bitmap;
-  }
-
-  private static String getRibletName(final ViewRouter viewRouter) {
-    return viewRouter.getClass().getSimpleName().replace("Router", "");
-  }
-
-  private void writeOnBitmap(final Bitmap bitmap, final String text) {
-    final Canvas canvas = new Canvas(bitmap);
-    final Paint textPaint = getTextPaint();
-
-    final float xStartPoint = (bitmap.getWidth() - textPaint.measureText(text)) / 2f;
-    final float yStartPoint = bitmap.getHeight() / 2f;
-
-    canvas.drawText(text, xStartPoint, yStartPoint, textPaint);
-  }
-
-  private Paint getTextPaint() {
-    if (textPaint == null) {
-      textPaint = new Paint();
-      textPaint.setTextSize(TEXT_SIZE);
-      textPaint.setColor(TEXT_COLOR);
+    /** @return `true` if XRay is enabled, `false` otherwise. */
+    @JvmStatic
+    fun isEnabled(): Boolean {
+      return INSTANCE.isEnabled
     }
-    return textPaint;
+
+    /**
+     * Puts [ViewBuilder]s riblet name in the background of the [View]
+     *
+     * @param viewRouter a [ViewRouter] which riblets name should be written.
+     * @param view a [View] to put the name behind.
+     */
+    @JvmStatic
+    fun apply(viewRouter: ViewRouter<*, *>, view: View) {
+      val oldBackground = view.background
+      val bitmap: Bitmap = if (oldBackground != null) {
+        drawableToBitmap(oldBackground)
+      } else {
+        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
+      }
+      INSTANCE.writeOnBitmap(bitmap, getRibletName(viewRouter))
+      val newBackground = BitmapDrawable(view.context.resources, bitmap)
+      newBackground.gravity = Gravity.CENTER
+      view.background = newBackground
+      view.alpha = XRAY_ALFA
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap {
+      if (drawable is BitmapDrawable) {
+        if (drawable.bitmap != null) {
+          return drawable.bitmap
+        }
+      }
+      val bitmap: Bitmap = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
+      } else {
+        Bitmap.createBitmap(
+          drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+        )
+      }
+      val canvas = Canvas(bitmap)
+      drawable.draw(canvas)
+      return bitmap
+    }
+
+    private fun getRibletName(viewRouter: ViewRouter<*, *>): String {
+      return viewRouter.javaClass.simpleName.replace("Router", "")
+    }
   }
 }

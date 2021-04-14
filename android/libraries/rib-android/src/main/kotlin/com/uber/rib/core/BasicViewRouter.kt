@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.view.View;
+import android.view.View
 
 /**
- * {@link ViewRouter} that does not require an {@link InteractorBaseComponent}.
+ * [ViewRouter] that does not require an [InteractorBaseComponent].
  *
  * @param <I> type of interactor.
  */
-public abstract class BasicViewRouter<V extends View, I extends Interactor>
-    extends ViewRouter<V, I> {
-
-  public BasicViewRouter(V view, I interactor) {
-    super(view, interactor);
-  }
-}
+abstract class BasicViewRouter<V : View, I : Interactor<*, *>>(
+  view: V,
+  interactor: I
+) : ViewRouter<V, I>(view, interactor)

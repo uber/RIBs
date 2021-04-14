@@ -13,262 +13,218 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.google.common.truth.Truth.assertThat;
-import static com.uber.autodispose.AutoDispose.autoDisposable;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.robolectric.Robolectric.buildActivity;
-import static org.robolectric.Robolectric.setupActivity;
+import android.app.Activity
+import android.content.Intent
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.uber.autodispose.AutoDispose
+import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.rib.android.R
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.create
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.SaveInstanceState
+import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
+import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
+import io.reactivex.Observable
+import io.reactivex.observers.TestObserver
+import io.reactivex.subjects.PublishSubject
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.Robolectric
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
+import org.robolectric.android.controller.ActivityController
 
-import android.app.Activity;
-import android.content.Intent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import com.uber.autodispose.lifecycle.LifecycleEndedException;
-import com.uber.rib.android.R;
-import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
-import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
-import io.reactivex.Observable;
-import io.reactivex.functions.Predicate;
-import io.reactivex.observers.TestObserver;
-import io.reactivex.subjects.PublishSubject;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.android.controller.ActivityController;
-
-@RunWith(RobolectricTestRunner.class)
-public class RibActivityTest {
-
-  private static final String TEST_BUNDLE_KEY = "test_bundle_key";
-  private static final String TEST_BUNDLE_VALUE = "test_bundle_value";
-
+@RunWith(RobolectricTestRunner::class)
+class RibActivityTest {
   @Test
-  public void onCreate_withSaveInstanceState_shouldForwardToRootRiblet() {
-    android.os.Bundle interactorBundle = new android.os.Bundle();
-    interactorBundle.putString(TEST_BUNDLE_KEY, TEST_BUNDLE_VALUE);
-
-    android.os.Bundle testBundle = new android.os.Bundle();
-    testBundle.putBundle(Router.KEY_INTERACTOR, interactorBundle);
-
-    ActivityController<EmptyActivity> activityController =
-        Robolectric.buildActivity(EmptyActivity.class);
-    activityController.create(testBundle);
-
+  fun onCreate_withSaveInstanceState_shouldForwardToRootRiblet() {
+    val interactorBundle = android.os.Bundle()
+    interactorBundle.putString(TEST_BUNDLE_KEY, TEST_BUNDLE_VALUE)
+    val testBundle = android.os.Bundle()
+    testBundle.putBundle(Router.KEY_INTERACTOR, interactorBundle)
+    val activityController: ActivityController<EmptyActivity> = Robolectric.buildActivity(EmptyActivity::class.java)
+    activityController.create(testBundle)
     assertThat(
-            activityController
-                .get()
-                .getTestInteractor()
-                .getSavedInstanceState()
-                .getString(TEST_BUNDLE_KEY))
-        .isEqualTo(TEST_BUNDLE_VALUE);
+      activityController
+        .get()
+        .testInteractor
+        .savedInstanceState
+        ?.getString(TEST_BUNDLE_KEY)
+    )
+      .isEqualTo(TEST_BUNDLE_VALUE)
   }
 
   @Test
-  public void onCreate_withNullSaveInstanceState_shouldForwardNullToRootRiblet() {
-    ActivityController<EmptyActivity> activityController =
-        Robolectric.buildActivity(EmptyActivity.class);
-    activityController.create();
-
-    assertThat(activityController.get().getTestInteractor().getSavedInstanceState()).isNull();
+  fun onCreate_withNullSaveInstanceState_shouldForwardNullToRootRiblet() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    activityController.create()
+    assertThat(activityController.get().testInteractor.savedInstanceState).isNull()
   }
 
   @Test
-  public void rxActivity_shouldCallback_onLowMemory() {
-    ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
-    RibActivity activity = activityController.setup().get();
-    TestObserver<ActivityCallbackEvent> testSub = new TestObserver<>();
+  fun rxActivity_shouldCallback_onLowMemory() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity: RibActivity = activityController.setup().get()
+    val testSub = TestObserver<ActivityCallbackEvent>()
     activity
-        .callbacks()
-        .filter(
-            new Predicate<ActivityCallbackEvent>() {
-              @Override
-              public boolean test(ActivityCallbackEvent activityEvent) throws Exception {
-                return activityEvent.getType() == ActivityCallbackEvent.Type.LOW_MEMORY;
-              }
-            })
-        .subscribe(testSub);
-
-    activity.onLowMemory();
-
-    testSub.assertValue(ActivityCallbackEvent.create(ActivityCallbackEvent.Type.LOW_MEMORY));
+      .callbacks()
+      .filter { activityEvent -> activityEvent.type === ActivityCallbackEvent.Type.LOW_MEMORY }
+      .subscribe(testSub)
+    activity.onLowMemory()
+    testSub.assertValue(create(ActivityCallbackEvent.Type.LOW_MEMORY))
   }
 
   @Test
-  public void ribActivity_onSaveInstanceStateAndCallbackFlagEnabled_shouldEmitToCallbacks() {
-    ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
-    RibActivity activity = activityController.setup().get();
-    TestObserver<ActivityCallbackEvent.SaveInstanceState> testSub = new TestObserver<>();
-    activity.callbacks(ActivityCallbackEvent.SaveInstanceState.class).subscribe(testSub);
-
-    android.os.Bundle state = new android.os.Bundle();
-    state.putString("hello", "seattle");
-    activity.onSaveInstanceState(state);
-
-    testSub.assertValueCount(1);
-    ActivityCallbackEvent.SaveInstanceState receivedEvent = testSub.values().get(0);
-    assertThat(receivedEvent.getType()).isEqualTo(ActivityCallbackEvent.Type.SAVE_INSTANCE_STATE);
-    assertThat(receivedEvent.getOutState()).isNotNull();
-    assertThat(receivedEvent.getOutState().getString("hello")).isEqualTo("seattle");
+  fun ribActivity_onSaveInstanceStateAndCallbackFlagEnabled_shouldEmitToCallbacks() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity: RibActivity = activityController.setup().get()
+    val testSub = TestObserver<SaveInstanceState>()
+    activity.callbacks(SaveInstanceState::class.java).subscribe(testSub)
+    val state = android.os.Bundle()
+    state.putString("hello", "seattle")
+    activity.onSaveInstanceState(state)
+    testSub.assertValueCount(1)
+    val receivedEvent = testSub.values()[0]
+    assertThat(receivedEvent.type).isEqualTo(ActivityCallbackEvent.Type.SAVE_INSTANCE_STATE)
+    assertThat(receivedEvent.outState).isNotNull()
+    assertThat(receivedEvent.outState!!.getString("hello")).isEqualTo("seattle")
   }
 
   @Test
-  public void rxActivity_shouldCallback_onActivityResult() {
-    ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
-    RibActivity activity = activityController.setup().get();
-    TestObserver<ActivityCallbackEvent.ActivityResult> testSub = new TestObserver<>();
-    activity.callbacks(ActivityCallbackEvent.ActivityResult.class).subscribe(testSub);
-
-    android.os.Bundle data = new android.os.Bundle();
-    data.putString("hello", "seattle");
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.putExtras(data);
-    int requestCode = 2;
-    int resultCode = Activity.RESULT_OK;
-    activity.onActivityResult(requestCode, resultCode, intent);
-
-    testSub.assertValueCount(1);
-    ActivityCallbackEvent.ActivityResult receivedEvent = testSub.values().get(0);
-    assertThat(receivedEvent.getType()).isEqualTo(ActivityCallbackEvent.Type.ACTIVITY_RESULT);
-    assertThat(receivedEvent.getRequestCode()).isEqualTo(requestCode);
-    assertThat(receivedEvent.getResultCode()).isEqualTo(resultCode);
-    assertThat(receivedEvent.getData()).isNotNull();
-    assertThat(receivedEvent.getData().getExtras()).isNotNull();
-    assertThat(receivedEvent.getData().getExtras().getString("hello")).isEqualTo("seattle");
+  fun rxActivity_shouldCallback_onActivityResult() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity: RibActivity = activityController.setup().get()
+    val testSub = TestObserver<ActivityCallbackEvent.ActivityResult>()
+    activity.callbacks(ActivityCallbackEvent.ActivityResult::class.java).subscribe(testSub)
+    val data = android.os.Bundle()
+    data.putString("hello", "seattle")
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.putExtras(data)
+    val requestCode = 2
+    val resultCode = Activity.RESULT_OK
+    activity.onActivityResult(requestCode, resultCode, intent)
+    testSub.assertValueCount(1)
+    val receivedEvent = testSub.values()[0]
+    assertThat(receivedEvent.type).isEqualTo(ActivityCallbackEvent.Type.ACTIVITY_RESULT)
+    assertThat(receivedEvent.requestCode).isEqualTo(requestCode)
+    assertThat(receivedEvent.resultCode).isEqualTo(resultCode)
+    assertThat(receivedEvent.data).isNotNull()
+    assertThat(receivedEvent.data!!.extras).isNotNull()
+    assertThat(receivedEvent.data!!.extras!!.getString("hello")).isEqualTo("seattle")
   }
 
   @Test
-  public void rxActivity_delaySubscription_shouldIgnoreOtherEvents() {
-    ActivityController<EmptyActivity> activityController = buildActivity(EmptyActivity.class);
-    final RibActivity activity = activityController.get();
-
-    final PublishSubject<Object> subject = PublishSubject.create();
-    AndroidRecordingRx2Observer<Object> o = new AndroidRecordingRx2Observer<>();
+  fun rxActivity_delaySubscription_shouldIgnoreOtherEvents() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity: RibActivity = activityController.get()
+    val subject = PublishSubject.create<Any>()
+    val o = AndroidRecordingRx2Observer<Any>()
     subject
-        .hide()
-        .delaySubscription(
-            activity
-                .lifecycle()
-                .filter(
-                    new Predicate<ActivityLifecycleEvent>() {
-                      @Override
-                      public boolean test(ActivityLifecycleEvent activityEvent) throws Exception {
-                        return activityEvent.getType() == ActivityLifecycleEvent.Type.RESUME;
-                      }
-                    }))
-        .subscribe(o);
-
-    subject.onNext(new Object());
-    activityController.create();
-    subject.onNext(new Object());
-    o.assertNoMoreEvents();
-    activityController.start();
-    subject.onNext(new Object());
-    o.assertNoMoreEvents();
-    activityController.postCreate(null);
-    subject.onNext(new Object());
-    o.assertNoMoreEvents();
-    activityController.resume();
-    subject.onNext(new Object());
-    assertThat(o.takeNext()).isNotNull();
-    o.assertNoMoreEvents();
+      .hide()
+      .delaySubscription(
+        activity
+          .lifecycle()
+          .filter { activityEvent -> activityEvent.type === ActivityLifecycleEvent.Type.RESUME }
+      )
+      .subscribe(o)
+    subject.onNext(Any())
+    activityController.create()
+    subject.onNext(Any())
+    o.assertNoMoreEvents()
+    activityController.start()
+    subject.onNext(Any())
+    o.assertNoMoreEvents()
+    activityController.postCreate(null)
+    subject.onNext(Any())
+    o.assertNoMoreEvents()
+    activityController.resume()
+    subject.onNext(Any())
+    assertThat(o.takeNext()).isNotNull()
+    o.assertNoMoreEvents()
   }
 
   @Test
-  public void onSaveInstanceState_shouldPropagate() {
-    ActivityController<EmptyActivity> activityController =
-        Robolectric.buildActivity(EmptyActivity.class);
-    EmptyActivity activity = activityController.setup().get();
-
-    android.os.Bundle bundle = new android.os.Bundle();
-    activity.onSaveInstanceState(bundle);
-
-    android.os.Bundle interactorBundle = bundle.getBundle(Router.KEY_INTERACTOR);
-    assertThat(interactorBundle).isNotNull();
+  fun onSaveInstanceState_shouldPropagate() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity = activityController.setup().get()
+    val bundle = android.os.Bundle()
+    activity.onSaveInstanceState(bundle)
+    val interactorBundle = bundle.getBundle(Router.KEY_INTERACTOR)
+    assertThat(interactorBundle).isNotNull()
   }
 
   @Test
-  public void bind_afterDestroy_shouldError() {
-    ActivityController<EmptyActivity> activityController =
-        Robolectric.buildActivity(EmptyActivity.class);
-    EmptyActivity activity = activityController.setup().pause().stop().destroy().get();
-    AndroidRecordingRx2Observer<Object> o = new AndroidRecordingRx2Observer<>();
-    Observable.just(new Object()).as(autoDisposable(activity)).subscribe(o);
-
-    assertThat(o.takeError()).isInstanceOf(LifecycleEndedException.class);
+  fun bind_afterDestroy_shouldError() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity = activityController.setup().pause().stop().destroy().get()
+    val o = AndroidRecordingRx2Observer<Any>()
+    Observable.just(Any()).`as`(AutoDispose.autoDisposable(activity)).subscribe(o)
+    assertThat(o.takeError()).isInstanceOf(LifecycleEndedException::class.java)
   }
 
   @Test
-  public void getController() {
-    RibActivity activity = setupActivity(EmptyActivity.class);
-    assertThat(activity.getInteractor()).isNotNull();
+  fun getController() {
+    val activity: RibActivity = Robolectric.setupActivity(EmptyActivity::class.java)
+    assertThat(activity.interactor).isNotNull()
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void createEvent_withIllegalType_shouldFail() {
-    ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.CREATE);
+  @Test(expected = IllegalArgumentException::class)
+  fun createEvent_withIllegalType_shouldFail() {
+    create(ActivityLifecycleEvent.Type.CREATE)
   }
 
-  private static class EmptyActivity extends RibActivity {
-
-    @Override
-    protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
-      setTheme(R.style.Theme_AppCompat);
-      super.onCreate(savedInstanceState);
+  private class EmptyActivity : RibActivity() {
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+      setTheme(R.style.Theme_AppCompat)
+      super.onCreate(savedInstanceState)
     }
 
-    @NonNull
-    @Override
-    protected ViewRouter<?, ?> createRouter(@NonNull ViewGroup parentViewGroup) {
-      FrameLayout view = new FrameLayout(RuntimeEnvironment.application);
-
-      InteractorComponent component = mock(InteractorComponent.class);
-      ViewPresenter presenter = new ViewPresenter<View>(view) {};
-      when(component.presenter()).thenReturn(presenter);
-
-      return new EmptyRouter(view, new TestInteractor(), component);
+    override fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *> {
+      val view = FrameLayout(RuntimeEnvironment.application)
+      val presenter = object : ViewPresenter<View>(view) {}
+      val component: InteractorComponent<ViewPresenter<*>, *> = mock {
+        on { presenter() } doReturn(presenter)
+      }
+      return EmptyRouter(view, TestInteractor(), component)
     }
 
-    TestInteractor getTestInteractor() {
-      return (TestInteractor) getInteractor();
-    }
+    val testInteractor: TestInteractor
+      get() = interactor as TestInteractor
   }
 
-  private static class EmptyRouter extends ViewRouter<FrameLayout, Interactor<ViewPresenter, ?>> {
-
-    EmptyRouter(
-        @NonNull FrameLayout view,
-        @NonNull Interactor<ViewPresenter, ?> interactor,
-        @NonNull InteractorComponent<ViewPresenter, ?> component) {
-      super(view, interactor, component);
-      interactor.presenter = component.presenter();
+  private class EmptyRouter internal constructor(
+    view: FrameLayout,
+    interactor: Interactor<ViewPresenter<*>, *>,
+    component: InteractorComponent<ViewPresenter<*>, *>
+  ) : ViewRouter<FrameLayout, Interactor<ViewPresenter<*>, *>>(view, interactor, component) {
+    init {
+      interactor.presenter = component.presenter()
     }
   }
 
-  private static class TestInteractor extends Interactor<ViewPresenter, EmptyRouter> {
+  private class TestInteractor : Interactor<ViewPresenter<*>, EmptyRouter>() {
+    var savedInstanceState: Bundle? = null
+      private set
 
-    private Bundle savedInstanceState;
-
-    @Override
-    protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
-      super.didBecomeActive(savedInstanceState);
-      this.savedInstanceState = savedInstanceState;
+    override fun didBecomeActive(savedInstanceState: Bundle?) {
+      super.didBecomeActive(savedInstanceState)
+      this.savedInstanceState = savedInstanceState
     }
 
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-      super.onSaveInstanceState(outState);
+    override fun onSaveInstanceState(outState: Bundle) {
+      super.onSaveInstanceState(outState)
     }
+  }
 
-    Bundle getSavedInstanceState() {
-      return savedInstanceState;
-    }
+  companion object {
+    private const val TEST_BUNDLE_KEY = "test_bundle_key"
+    private const val TEST_BUNDLE_VALUE = "test_bundle_value"
   }
 }

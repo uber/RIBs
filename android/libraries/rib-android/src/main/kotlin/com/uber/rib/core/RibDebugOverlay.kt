@@ -13,45 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.ColorFilter;
-import android.graphics.Paint;
-import android.graphics.PixelFormat;
-import android.graphics.drawable.Drawable;
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.ColorFilter
+import android.graphics.Paint
+import android.graphics.PixelFormat
+import android.graphics.drawable.Drawable
 
-public class RibDebugOverlay extends Drawable {
+open class RibDebugOverlay : Drawable() {
+  private var enabled = true
 
-  private static final int OVERLAY_COLOR = Color.RED;
-  private static final int OVERLAY_ALPHA = 35;
-  private boolean enabled = true;
-
-  public void setEnabled(boolean enabled) {
-    this.enabled = enabled;
+  open fun setEnabled(enabled: Boolean) {
+    this.enabled = enabled
   }
 
-  @Override
-  public void draw(Canvas canvas) {
+  override fun draw(canvas: Canvas) {
     if (enabled) {
-      Paint p = new Paint();
-      p.setColor(OVERLAY_COLOR);
-      p.setAlpha(OVERLAY_ALPHA);
-      p.setStyle(Paint.Style.FILL);
-      canvas.drawPaint(p);
+      val p = Paint()
+      p.color = OVERLAY_COLOR
+      p.alpha = OVERLAY_ALPHA
+      p.style = Paint.Style.FILL
+      canvas.drawPaint(p)
     }
   }
 
-  @Override
-  public void setAlpha(int i) {}
+  override fun setAlpha(i: Int) {}
 
-  @SuppressWarnings("NullAway")
-  @Override
-  public void setColorFilter(ColorFilter colorFilter) {}
+  override fun setColorFilter(colorFilter: ColorFilter?) {}
 
-  @Override
-  public int getOpacity() {
-    return PixelFormat.TRANSLUCENT;
+  override fun getOpacity() = PixelFormat.TRANSLUCENT
+
+  companion object {
+    private const val OVERLAY_COLOR = Color.RED
+    private const val OVERLAY_ALPHA = 35
   }
 }

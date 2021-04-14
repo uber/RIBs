@@ -13,17 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core.lifecycle;
+package com.uber.rib.core.lifecycle
+
+import com.uber.rib.core.lifecycle.ActivityEvent.BaseType
 
 /**
  * Base class for Activity events, useful for when you want a stream of both lifecycle and callback
  * events.
  */
-public interface ActivityEvent {
-
+interface ActivityEvent {
   /** @return This activity event type. */
-  BaseType getType();
+  val type: BaseType
 
   /** Base interface of Activity event types. */
-  interface BaseType {}
+  interface BaseType
 }

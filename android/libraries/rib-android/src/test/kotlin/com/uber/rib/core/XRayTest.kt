@@ -13,41 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import android.view.View
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.uber.rib.core.XRay.Companion.apply
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
-import android.view.View;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-
-@RunWith(RobolectricTestRunner.class)
-public class XRayTest {
-
-  private Context context;
-
-  @Before
-  public void setUp() throws Exception {
-    context = RuntimeEnvironment.application.getBaseContext();
-  }
+@RunWith(RobolectricTestRunner::class)
+class XRayTest {
 
   @Test
-  public void apply_changesViewBackground() {
-    final ViewRouter viewRouter = mock(ViewRouter.class);
-    final View view = mock(View.class);
-    when(view.getContext()).thenReturn(context);
-
-    XRay.apply(viewRouter, view);
-    verify(view).setBackground(any(Drawable.class));
-    verifyNoMoreInteractions(viewRouter);
+  fun apply_changesViewBackground() {
+    XRay.toggle()
+    val viewRouter: ViewRouter<*, *> = mock()
+    val view: View = mock {
+      on { context } doReturn(RuntimeEnvironment.application.baseContext)
+    }
+    apply(viewRouter, view)
+    verify(view).background = any()
+    verifyNoMoreInteractions(viewRouter)
   }
 }

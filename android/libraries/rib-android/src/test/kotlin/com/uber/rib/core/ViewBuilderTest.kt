@@ -13,82 +13,63 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.google.common.truth.Truth.assertThat;
+import android.content.Context
+import android.view.ContextThemeWrapper
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.FrameLayout
+import com.google.common.truth.Truth
+import com.nhaarman.mockitokotlin2.mock
+import com.uber.rib.android.R
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.RuntimeEnvironment
 
-import android.content.Context;
-import android.view.ContextThemeWrapper;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import androidx.annotation.NonNull;
-import com.uber.rib.android.R;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-
-@RunWith(RobolectricTestRunner.class)
-public class ViewBuilderTest {
-
+@RunWith(RobolectricTestRunner::class)
+class ViewBuilderTest {
   @Test
-  public void createView_shouldUseInflateViewToCreateView() {
-    ViewGroup parentViewGroup = new FrameLayout(RuntimeEnvironment.application);
-
-    final Holder holder = new Holder();
-
-    ViewBuilder viewBuilder =
-        new ViewBuilder(new Object()) {
-          @NonNull
-          @Override
-          protected View inflateView(LayoutInflater inflater, ViewGroup parentViewGroup) {
-            holder.inflaterContext = inflater.getContext();
-            holder.inflaterViewGroup = parentViewGroup;
-            return null;
-          }
-        };
-
-    viewBuilder.createView(parentViewGroup);
-
-    assertThat(holder.inflaterContext).isEqualTo(parentViewGroup.getContext());
-    assertThat(holder.inflaterViewGroup).isEqualTo(parentViewGroup);
+  fun createView_shouldUseInflateViewToCreateView() {
+    val parentViewGroup: ViewGroup = FrameLayout(RuntimeEnvironment.application)
+    val holder = Holder()
+    val viewBuilder: ViewBuilder<*, *, *> = object : ViewBuilder<View, Router<*>, Any>(Any()) {
+      override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): View {
+        holder.inflaterContext = inflater.context
+        holder.inflaterViewGroup = parentViewGroup
+        return mock()
+      }
+    }
+    viewBuilder.createView(parentViewGroup)
+    Truth.assertThat(holder.inflaterContext).isEqualTo(parentViewGroup.context)
+    Truth.assertThat(holder.inflaterViewGroup).isEqualTo(parentViewGroup)
   }
 
   @Test
-  public void createView_useCustomContext() {
-    ViewGroup parentViewGroup = new FrameLayout(RuntimeEnvironment.application);
-    final ContextThemeWrapper customContext =
-        new ContextThemeWrapper(RuntimeEnvironment.application, R.style.Theme_AppCompat);
+  fun createView_useCustomContext() {
+    val parentViewGroup: ViewGroup = FrameLayout(RuntimeEnvironment.application)
+    val customContext = ContextThemeWrapper(RuntimeEnvironment.application, R.style.Theme_AppCompat)
+    val holder = Holder()
+    val viewBuilder: ViewBuilder<*, *, *> = object : ViewBuilder<View, Router<*>, Any>(Any()) {
+      override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): View {
+        holder.inflaterContext = inflater.context
+        holder.inflaterViewGroup = parentViewGroup
+        return mock()
+      }
 
-    final Holder holder = new Holder();
-
-    ViewBuilder viewBuilder =
-        new ViewBuilder(new Object()) {
-          @NonNull
-          @Override
-          protected View inflateView(LayoutInflater inflater, ViewGroup parentViewGroup) {
-            holder.inflaterContext = inflater.getContext();
-            holder.inflaterViewGroup = parentViewGroup;
-            return null;
-          }
-
-          @NonNull
-          @Override
-          protected Context onThemeContext(@NonNull Context parentContext) {
-            return customContext;
-          }
-        };
-
-    viewBuilder.createView(parentViewGroup);
-
-    assertThat(holder.inflaterContext).isEqualTo(customContext);
-    assertThat(holder.inflaterViewGroup).isEqualTo(parentViewGroup);
+      override fun onThemeContext(parentContext: Context): Context {
+        return customContext
+      }
+    }
+    viewBuilder.createView(parentViewGroup)
+    Truth.assertThat(holder.inflaterContext).isEqualTo(customContext)
+    Truth.assertThat(holder.inflaterViewGroup).isEqualTo(parentViewGroup)
   }
 
-  private static class Holder {
-    private Context inflaterContext;
-    private ViewGroup inflaterViewGroup;
+  private class Holder {
+    var inflaterContext: Context? = null
+    var inflaterViewGroup: ViewGroup? = null
   }
 }

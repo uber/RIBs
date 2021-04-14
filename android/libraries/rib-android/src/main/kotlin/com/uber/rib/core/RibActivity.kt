@@ -13,251 +13,213 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.view.ViewGroup;
-import androidx.annotation.CallSuper;
-import androidx.annotation.Nullable;
-import com.google.common.base.Preconditions;
-import com.jakewharton.rxrelay2.BehaviorRelay;
-import com.jakewharton.rxrelay2.PublishRelay;
-import com.jakewharton.rxrelay2.Relay;
-import com.uber.autodispose.lifecycle.CorrespondingEventsFunction;
-import com.uber.autodispose.lifecycle.LifecycleEndedException;
-import com.uber.autodispose.lifecycle.LifecycleScopeProvider;
-import com.uber.autodispose.lifecycle.LifecycleScopes;
-import com.uber.rib.core.lifecycle.ActivityCallbackEvent;
-import com.uber.rib.core.lifecycle.ActivityLifecycleEvent;
-import io.reactivex.CompletableSource;
-import io.reactivex.Observable;
+import android.R
+import android.content.Intent
+import android.content.res.Configuration
+import android.os.Build
+import android.view.ViewGroup
+import androidx.annotation.CallSuper
+import com.jakewharton.rxrelay2.BehaviorRelay
+import com.jakewharton.rxrelay2.PublishRelay
+import com.jakewharton.rxrelay2.Relay
+import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
+import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.autodispose.lifecycle.LifecycleScopeProvider
+import com.uber.autodispose.lifecycle.LifecycleScopes
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.create
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createNewIntent
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createOnActivityResultEvent
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createOnSaveInstanceStateEvent
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createPictureInPictureMode
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createTrimMemoryEvent
+import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
+import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
+import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.createOnCreateEvent
+import io.reactivex.CompletableSource
+import io.reactivex.Observable
 
-/** Base implementation for all VIP {@link android.app.Activity}s. */
-public abstract class RibActivity extends CoreAppCompatActivity
-    implements ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {
-
-  /**
-   * Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities.
-   */
-  private static final CorrespondingEventsFunction<ActivityLifecycleEvent> ACTIVITY_LIFECYCLE =
-      lastEvent -> {
-        switch (lastEvent.getType()) {
-          case CREATE:
-            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
-          case START:
-            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
-          case RESUME:
-            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE);
-          case USER_LEAVING:
-            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
-          case PAUSE:
-            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP);
-          case STOP:
-            return ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY);
-          case DESTROY:
-            throw new LifecycleEndedException(
-                "Cannot bind to Activity lifecycle when outside of it.");
-        }
-        throw new UnsupportedOperationException("Binding to " + lastEvent + " not yet implemented");
-      };
-
-  private ViewRouter<?, ?> router;
-
-  private final BehaviorRelay<ActivityLifecycleEvent> lifecycleBehaviorRelay =
-      BehaviorRelay.create();
-  private final Relay<ActivityLifecycleEvent> lifecycleRelay =
-      lifecycleBehaviorRelay.toSerialized();
-  private final Relay<ActivityCallbackEvent> callbacksRelay =
-      PublishRelay.<ActivityCallbackEvent>create().toSerialized();
+/** Base implementation for all VIP [android.app.Activity]s. */
+abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {
+  private var router: ViewRouter<*, *>? = null
+  private val lifecycleBehaviorRelay = BehaviorRelay.create<ActivityLifecycleEvent>()
+  private val lifecycleRelay: Relay<ActivityLifecycleEvent> = lifecycleBehaviorRelay.toSerialized()
+  private val callbacksRelay = PublishRelay.create<ActivityCallbackEvent>().toSerialized()
 
   /** @return an observable of this activity's lifecycle events. */
-  @Override
-  public Observable<ActivityLifecycleEvent> lifecycle() {
-    return lifecycleRelay.hide();
+  override fun lifecycle(): Observable<ActivityLifecycleEvent> {
+    return lifecycleRelay.hide()
   }
 
   /** @return an observable of this activity's lifecycle events. */
-  @Override
-  public Observable<ActivityCallbackEvent> callbacks() {
-    return callbacksRelay.hide();
+  override fun callbacks(): Observable<ActivityCallbackEvent> {
+    return callbacksRelay.hide()
   }
 
-  @Override
-  public CorrespondingEventsFunction<ActivityLifecycleEvent> correspondingEvents() {
-    return ACTIVITY_LIFECYCLE;
+  override fun correspondingEvents(): CorrespondingEventsFunction<ActivityLifecycleEvent> {
+    return ACTIVITY_LIFECYCLE
   }
 
-  @Nullable
-  @Override
-  public ActivityLifecycleEvent peekLifecycle() {
-    return lifecycleBehaviorRelay.getValue();
+  override fun peekLifecycle(): ActivityLifecycleEvent {
+    return lifecycleBehaviorRelay.value!!
   }
 
-  @Override
-  public CompletableSource requestScope() {
-    return LifecycleScopes.resolveScopeFromLifecycle(this);
+  override fun requestScope(): CompletableSource {
+    return LifecycleScopes.resolveScopeFromLifecycle(this)
   }
 
-  @SuppressWarnings("CheckNullabilityTypes")
   @Initializer
   @CallSuper
-  @Override
-  protected void onCreate(@Nullable android.os.Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    ViewGroup rootViewGroup = findViewById(android.R.id.content);
-
-    lifecycleRelay.accept(ActivityLifecycleEvent.createOnCreateEvent(savedInstanceState));
-    router = createRouter(rootViewGroup);
-
-    Bundle wrappedBundle = null;
-    if (savedInstanceState != null) {
-      wrappedBundle = new Bundle(savedInstanceState);
-    }
-    router.dispatchAttach(wrappedBundle);
-
-    rootViewGroup.addView(router.getView());
-    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, router, null);
+  override fun onCreate(savedInstanceState: android.os.Bundle?) {
+    super.onCreate(savedInstanceState)
+    val rootViewGroup = findViewById<ViewGroup>(R.id.content)
+    lifecycleRelay.accept(createOnCreateEvent(savedInstanceState))
+    router = createRouter(rootViewGroup)
+    val wrappedBundle: Bundle? = if (savedInstanceState != null) Bundle(savedInstanceState) else null
+    router?.dispatchAttach(wrappedBundle)
+    rootViewGroup.addView(router?.view)
+    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, router, null)
   }
 
-  @Override
   @CallSuper
-  protected void onSaveInstanceState(android.os.Bundle outState) {
-    super.onSaveInstanceState(outState);
-    callbacksRelay.accept(ActivityCallbackEvent.createOnSaveInstanceStateEvent(outState));
-    Preconditions.checkNotNull(router).saveInstanceState(new Bundle(outState));
+  public override fun onSaveInstanceState(outState: android.os.Bundle) {
+    super.onSaveInstanceState(outState)
+    callbacksRelay.accept(createOnSaveInstanceStateEvent(outState))
+    router?.saveInstanceState(Bundle(outState)) ?: throw NullPointerException("Router should not be null")
   }
 
-  @Override
   @CallSuper
-  protected void onStart() {
-    super.onStart();
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.START));
+  override fun onStart() {
+    super.onStart()
+    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.START))
   }
 
-  @Override
   @CallSuper
-  protected void onResume() {
-    super.onResume();
-
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.RESUME));
+  override fun onResume() {
+    super.onResume()
+    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.RESUME))
   }
 
-  @Override
   @CallSuper
-  protected void onNewIntent(Intent intent) {
-    super.onNewIntent(intent);
-
-    callbacksRelay.accept(ActivityCallbackEvent.createNewIntent(intent));
+  override fun onNewIntent(intent: Intent) {
+    super.onNewIntent(intent)
+    callbacksRelay.accept(createNewIntent(intent))
   }
 
-  @Override
   @CallSuper
-  protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-    super.onActivityResult(requestCode, resultCode, data);
-
-    callbacksRelay.accept(
-        ActivityCallbackEvent.createOnActivityResultEvent(requestCode, resultCode, data));
+  public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+    super.onActivityResult(requestCode, resultCode, data)
+    callbacksRelay.accept(createOnActivityResultEvent(requestCode, resultCode, data))
   }
 
-  @Override
   @CallSuper
-  protected void onPause() {
-
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.PAUSE));
-    super.onPause();
+  override fun onPause() {
+    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.PAUSE))
+    super.onPause()
   }
 
-  @Override
   @CallSuper
-  protected void onStop() {
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.STOP));
-    super.onStop();
+  override fun onStop() {
+    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.STOP))
+    super.onStop()
   }
 
-  @Override
   @CallSuper
-  @SuppressWarnings("CheckNullabilityTypes")
-  protected void onDestroy() {
-    if (lifecycleRelay != null) {
-      lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.DESTROY));
-    }
+  override fun onDestroy() {
+    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.DESTROY))
     if (router != null) {
-      router.dispatchDetach();
-      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, router, null);
+      router?.dispatchDetach()
+      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, router, null)
     }
-    router = null;
-    super.onDestroy();
+    router = null
+    super.onDestroy()
   }
 
-  @Override
   @CallSuper
-  public void onLowMemory() {
-    super.onLowMemory();
-    callbacksRelay.accept(ActivityCallbackEvent.create(ActivityCallbackEvent.Type.LOW_MEMORY));
+  override fun onLowMemory() {
+    super.onLowMemory()
+    callbacksRelay.accept(create(ActivityCallbackEvent.Type.LOW_MEMORY))
   }
 
-  @Override
   @CallSuper
-  public void onTrimMemory(int level) {
-    super.onTrimMemory(level);
-    callbacksRelay.accept(ActivityCallbackEvent.createTrimMemoryEvent(level));
+  override fun onTrimMemory(level: Int) {
+    super.onTrimMemory(level)
+    callbacksRelay.accept(createTrimMemoryEvent(level))
   }
 
-  @Override
-  public void onPictureInPictureModeChanged(
-      boolean isInPictureInPictureMode, Configuration newConfig) {
+  override fun onPictureInPictureModeChanged(
+    isInPictureInPictureMode: Boolean,
+    newConfig: Configuration
+  ) {
     callbacksRelay.accept(
-        ActivityCallbackEvent.createPictureInPictureMode(isInPictureInPictureMode));
+      createPictureInPictureMode(isInPictureInPictureMode)
+    )
   }
 
-  @Override
-  public void onBackPressed() {
-    if (router != null && !router.handleBackPress()) {
-      onUnhandledBackPressed();
+  override fun onBackPressed() {
+    if (router?.handleBackPress() != true) {
+      onUnhandledBackPressed()
 
       // https://issuetracker.google.com/issues/139738913
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
-          && isTaskRoot()
-          && getSupportFragmentManager().getBackStackEntryCount() == 0) {
-        super.finishAfterTransition();
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isTaskRoot &&
+        supportFragmentManager.backStackEntryCount == 0
+      ) {
+        super.finishAfterTransition()
       } else {
-        super.onBackPressed();
+        super.onBackPressed()
       }
     }
   }
 
-  @Override
-  protected void onUserLeaveHint() {
-    lifecycleRelay.accept(ActivityLifecycleEvent.create(ActivityLifecycleEvent.Type.USER_LEAVING));
-    super.onUserLeaveHint();
+  override fun onUserLeaveHint() {
+    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.USER_LEAVING))
+    super.onUserLeaveHint()
   }
 
   /**
    * Invoked when none of the ribs handle back press. In this case, default activity back press
    * behavior occurs.
    */
-  protected void onUnhandledBackPressed() {}
+  protected fun onUnhandledBackPressed() {}
 
   /**
-   * @return the {@link Interactor} when the activity has alive.
+   * @return the [Interactor] when the activity has alive.
    * @throws IllegalStateException if the activity has not been created or has been destroyed.
    */
-  protected Interactor getInteractor() {
-    if (router != null) {
-      return router.getInteractor();
+  open val interactor: Interactor<*, *>
+    get() = if (router != null) {
+      router?.interactor as Interactor<*, *>
     } else {
-      throw new IllegalStateException(
-          "Attempting to get a router when activity is not created or has been " + "destroyed.");
+      throw IllegalStateException(
+        "Attempting to get a router when activity is not created or has been destroyed."
+      )
     }
-  }
 
   /**
-   * Creates the {@link Interactor}.
+   * Creates the [Interactor].
    *
-   * @return the {@link Interactor}.
+   * @return the [Interactor].
    */
-  protected abstract ViewRouter<?, ?> createRouter(ViewGroup parentViewGroup);
+  protected abstract fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *>
+
+  companion object {
+    /**
+     * Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities.
+     */
+    private val ACTIVITY_LIFECYCLE = CorrespondingEventsFunction { lastEvent: ActivityLifecycleEvent ->
+      return@CorrespondingEventsFunction when (lastEvent.type) {
+        ActivityLifecycleEvent.Type.CREATE -> create(ActivityLifecycleEvent.Type.DESTROY)
+        ActivityLifecycleEvent.Type.START -> create(ActivityLifecycleEvent.Type.STOP)
+        ActivityLifecycleEvent.Type.RESUME -> create(ActivityLifecycleEvent.Type.PAUSE)
+        ActivityLifecycleEvent.Type.USER_LEAVING -> create(ActivityLifecycleEvent.Type.DESTROY)
+        ActivityLifecycleEvent.Type.PAUSE -> create(ActivityLifecycleEvent.Type.STOP)
+        ActivityLifecycleEvent.Type.STOP -> create(ActivityLifecycleEvent.Type.DESTROY)
+        ActivityLifecycleEvent.Type.DESTROY -> throw LifecycleEndedException(
+          "Cannot bind to Activity lifecycle when outside of it."
+        )
+      }
+    }
+  }
 }

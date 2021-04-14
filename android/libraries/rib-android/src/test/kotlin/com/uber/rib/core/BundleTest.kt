@@ -13,42 +13,41 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static com.google.common.truth.Truth.assertThat;
+import com.google.common.truth.Truth.assertThat
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
+@RunWith(RobolectricTestRunner::class)
+class BundleTest {
 
-@RunWith(RobolectricTestRunner.class)
-public class BundleTest {
-
-  private static final String TEST_KEY_STRING = "test_string_key";
-  private static final String TEST_VALUE_STRING = "test_string_value";
-
-  private android.os.Bundle androidBundle;
-  private Bundle bundle;
+  private lateinit var androidBundle: android.os.Bundle
+  private lateinit var bundle: Bundle
 
   @Before
-  public void setup() {
-    androidBundle = new android.os.Bundle();
-    androidBundle.putString(TEST_KEY_STRING, TEST_VALUE_STRING);
-
-    bundle = new Bundle(androidBundle);
+  fun setup() {
+    androidBundle = android.os.Bundle()
+    androidBundle.putString(TEST_KEY_STRING, TEST_VALUE_STRING)
+    bundle = Bundle(androidBundle)
   }
 
   @Test
-  public void getString_shouldReturnValueFromAndroidBundle() {
-    assertThat(bundle.getString(TEST_KEY_STRING)).isEqualTo(TEST_VALUE_STRING);
+  fun string_shouldReturnValueFromAndroidBundle() {
+    assertThat(bundle.getString(TEST_KEY_STRING)).isEqualTo(TEST_VALUE_STRING)
   }
 
   @Test
-  public void putString_shouldSetValueOnAndroidBundle() {
-    final String newValue = "test";
-    bundle.putString(TEST_KEY_STRING, newValue);
+  fun putString_shouldSetValueOnAndroidBundle() {
+    val newValue = "test"
+    bundle.putString(TEST_KEY_STRING, newValue)
+    assertThat(androidBundle.getString(TEST_KEY_STRING)).isEqualTo(newValue)
+  }
 
-    assertThat(androidBundle.getString(TEST_KEY_STRING)).isEqualTo(newValue);
+  companion object {
+    private const val TEST_KEY_STRING = "test_string_key"
+    private const val TEST_VALUE_STRING = "test_string_value"
   }
 }

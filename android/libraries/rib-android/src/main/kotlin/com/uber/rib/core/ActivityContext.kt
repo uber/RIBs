@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import java.lang.annotation.Retention
+import java.lang.annotation.RetentionPolicy.RUNTIME
+import javax.inject.Qualifier
 
-import java.lang.annotation.Retention;
-import javax.inject.Qualifier;
-
-/** Injection qualifier for an Activity Context. */
+/** Injection qualifier for an Activity Context.  */
 @Qualifier
 @Retention(RUNTIME)
-public @interface ActivityContext {}
+annotation class ActivityContext
