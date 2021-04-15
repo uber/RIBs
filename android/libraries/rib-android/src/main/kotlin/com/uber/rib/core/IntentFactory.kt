@@ -13,19 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.view.View;
+import android.content.Intent
 
-/**
- * {@link ViewRouter} that does not require an {@link InteractorBaseComponent}.
- *
- * @param <I> type of interactor.
- */
-public abstract class BasicViewRouter<V extends View, I extends Interactor>
-    extends ViewRouter<V, I> {
-
-  public BasicViewRouter(V view, I interactor) {
-    super(view, interactor);
-  }
+/** Factory for an [Intent] that opens an activity.  */
+interface IntentFactory {
+  /**
+   * Create a view router to be displayed for an [Intent].
+   *
+   * @param intentCreator to create the [Intent].
+   * @return the activity [Intent].
+   */
+  fun create(intentCreator: IntentCreator): Intent
 }

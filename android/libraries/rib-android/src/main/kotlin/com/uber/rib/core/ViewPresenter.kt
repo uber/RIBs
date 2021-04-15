@@ -13,30 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.view.View;
+import android.view.View
 
 /**
- * This represents the portion of UI controlled by {@link Interactor}.
+ * This represents the portion of UI controlled by [Interactor].
  *
  * @param <V> the view type.
  */
-public abstract class ViewPresenter<V extends View> extends Presenter {
-
-  private final V view;
-
-  /**
-   * Constructor.
-   *
-   * @param view The view to bind to.
-   */
-  public ViewPresenter(V view) {
-    this.view = view;
-  }
-
+abstract class ViewPresenter<V : View>(
   /** @return the view fronted by the page. */
-  public final V getView() {
-    return view;
-  }
-}
+  val view: V
+) : Presenter()

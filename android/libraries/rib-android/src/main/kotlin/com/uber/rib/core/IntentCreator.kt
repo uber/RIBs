@@ -13,13 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.content.Intent;
+import android.content.Intent
 
-/** Creates intent objects. */
-public interface IntentCreator {
-
+/** Creates intent objects.  */
+interface IntentCreator {
   /**
    * Create an explicit intent targeted at a particular class, which is guaranteed to be limited to
    * your app's package.
@@ -27,7 +26,7 @@ public interface IntentCreator {
    * @param cls The class that you intend to receive this intent.
    * @return The intent.
    */
-  Intent create(Class<?> cls);
+  fun create(cls: Class<*>): Intent
 
   /**
    * Create an implicit intent targeted at an action, which may end up resolving to your app or to
@@ -38,5 +37,5 @@ public interface IntentCreator {
    * @param action The intent action, which any app may register to receive.
    * @return The intent.
    */
-  Intent create(String action);
+  fun create(action: String): Intent
 }

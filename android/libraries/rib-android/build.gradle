@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -40,6 +41,7 @@ android {
 dependencies {
     api project(":libraries:rib-android-core")
     api project(":libraries:rib-base")
+    api deps.external.rxkotlin
     api deps.external.rxrelay2
     api deps.external.rxjava2
     implementation deps.apt.javaxInject
@@ -48,6 +50,7 @@ dependencies {
     implementation deps.external.guavaAndroid
     testImplementation deps.external.roboelectricBase
     testImplementation deps.androidx.appcompat
+    testImplementation deps.test.mockitoKotlin
     testImplementation project(":libraries:rib-test")
 }
 

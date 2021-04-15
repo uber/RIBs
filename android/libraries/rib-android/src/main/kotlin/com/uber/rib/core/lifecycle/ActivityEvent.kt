@@ -13,18 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core.lifecycle
 
-import android.content.Intent;
+import com.uber.rib.core.lifecycle.ActivityEvent.BaseType
 
-/** Factory for an {@link Intent} that opens an activity. */
-public interface IntentFactory {
+/**
+ * Base class for Activity events, useful for when you want a stream of both lifecycle and callback
+ * events.
+ */
+interface ActivityEvent {
+  /** @return This activity event type. */
+  val type: BaseType
 
-  /**
-   * Create a view router to be displayed for an {@link Intent}.
-   *
-   * @param intentCreator to create the {@link Intent}.
-   * @return the activity {@link Intent}.
-   */
-  Intent create(IntentCreator intentCreator);
+  /** Base interface of Activity event types. */
+  interface BaseType
 }

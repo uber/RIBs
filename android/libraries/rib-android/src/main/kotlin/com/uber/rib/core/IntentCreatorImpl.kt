@@ -13,32 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.content.Context;
-import android.content.Intent;
+import android.content.Context
+import android.content.Intent
 
-/** A default implementation of {@link IntentCreator}. */
-public class IntentCreatorImpl implements IntentCreator {
+/** A default implementation of [IntentCreator]. */
+open class IntentCreatorImpl(private val context: Context) : IntentCreator {
+  override fun create(cls: Class<*>) = Intent(context, cls)
 
-  private final Context context;
-
-  /**
-   * Constructor.
-   *
-   * @param context The context used to create intents.
-   */
-  public IntentCreatorImpl(Context context) {
-    this.context = context;
-  }
-
-  @Override
-  public Intent create(Class<?> cls) {
-    return new Intent(context, cls);
-  }
-
-  @Override
-  public Intent create(String action) {
-    return new Intent(action);
-  }
+  override fun create(action: String) = Intent(action)
 }

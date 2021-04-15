@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import android.view.View;
+import android.view.View
 
 /**
  * Router subclass that has a view.
@@ -23,28 +23,21 @@ import android.view.View;
  * @param <V> type of view owned by the router.
  * @param <I> type of interactor owned by the router.
  */
-public abstract class ViewRouter<V extends View, I extends Interactor> extends Router<I> {
-
-  private final V view;
-
-  public ViewRouter(V view, I interactor, InteractorBaseComponent component) {
-    super(interactor, component);
-    this.view = view;
-    if (XRay.isEnabled()) {
-      XRay.apply(this, view);
-    }
-  }
-
-  protected ViewRouter(V view, I interactor) {
-    super(null, interactor, com.uber.rib.core.RibRefWatcher.getInstance(), getMainThread());
-    this.view = view;
-    if (XRay.isEnabled()) {
-      XRay.apply(this, view);
-    }
-  }
-
+abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
   /** @return the router's view. */
-  public V getView() {
-    return view;
+  open val view: V
+
+  constructor(view: V, interactor: I, component: InteractorBaseComponent<*>) : super(interactor, component) {
+    this.view = view
+    if (XRay.isEnabled()) {
+      XRay.apply(this, view)
+    }
+  }
+
+  protected constructor(view: V, interactor: I) : super(null, interactor, RibRefWatcher.getInstance(), getMainThread()) {
+    this.view = view
+    if (XRay.isEnabled()) {
+      XRay.apply(this, view)
+    }
   }
 }

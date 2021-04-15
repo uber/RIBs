@@ -13,14 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.core;
+package com.uber.rib.core
 
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
+import android.view.View
 
-import java.lang.annotation.Retention;
-import javax.inject.Qualifier;
-
-/** Injection qualifier for an Activity Context. */
-@Qualifier
-@Retention(RUNTIME)
-public @interface ActivityContext {}
+/**
+ * [ViewRouter] that does not require an [InteractorBaseComponent].
+ *
+ * @param <I> type of interactor.
+ */
+abstract class BasicViewRouter<V : View, I : Interactor<*, *>>(
+  view: V,
+  interactor: I
+) : ViewRouter<V, I>(view, interactor)
