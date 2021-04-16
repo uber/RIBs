@@ -193,7 +193,6 @@ class RibActivityTest {
         on { presenter() } doReturn(presenter)
       }
       return EmptyRouter(view, TestInteractor(presenter), component)
-//      return FakeViewRouter<View, TestInteractor>(testInteractor, component)
     }
 
     val testInteractor: TestInteractor

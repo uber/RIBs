@@ -15,11 +15,9 @@
  */
 package android.os
 
-import java.util.HashMap
-
 /** Stub class to have pure Java unit tests.  */
 class Bundle : Parcelable {
-  private val testData: MutableMap<String, Any> = HashMap()
+  private val testData: MutableMap<String, Any> = mutableMapOf()
 
   fun getString(key: String): String? {
     return testData[key] as String?
