@@ -16,15 +16,13 @@
 package com.uber.rib.core
 
 /**
- * Router for testing that does not automatically attach to the interactor.
+ * Drop-in replacement for com.facebook.infer.annotation.Initializer.
  *
- * @param <I>
+ *
+ * Method, annotated as @Initializer, should be call before object is used externally. It can be
+ * used as a marker for different late-init methods of Android lifecycle, methods called indirectly
+ * by the constructor or builder methods necessary to complete before build.
  */
-class FakeRouter<I : Interactor<*, *>> : Router<I> {
-  constructor(interactor: I) : super(interactor)
-  constructor(interactor: I, ribRefWatcher: RibRefWatcher, mainThread: Thread) : super(null, interactor, ribRefWatcher, mainThread)
-
-  override fun attachToInteractor() {
-    // do not automatically attach this
-  }
-}
+@Retention(AnnotationRetention.BINARY)
+@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+annotation class Initializer

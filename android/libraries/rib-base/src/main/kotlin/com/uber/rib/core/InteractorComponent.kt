@@ -16,15 +16,24 @@
 package com.uber.rib.core
 
 /**
- * Router for testing that does not automatically attach to the interactor.
+ * Designates a component that can provide a specific interactor. This is identical to [ ]. This
+ * exists soley for backwards compatibility with old versions of the Presidio Intellij Plugin.
  *
- * @param <I>
+ * @param <T> type of interactor that is injected.
+ * @param <P> type of presenter.
  */
-class FakeRouter<I : Interactor<*, *>> : Router<I> {
-  constructor(interactor: I) : super(interactor)
-  constructor(interactor: I, ribRefWatcher: RibRefWatcher, mainThread: Thread) : super(null, interactor, ribRefWatcher, mainThread)
+interface InteractorComponent<P : Presenter, T : Interactor<P, *>> : InteractorBaseComponent<T> {
+  /**
+   * Inject the interactor.
+   *
+   * @param interactor to inject.
+   */
+  override fun inject(interactor: T)
 
-  override fun attachToInteractor() {
-    // do not automatically attach this
-  }
+  /**
+   * The presenter.
+   *
+   * @return the presenter.
+   */
+  fun presenter(): P
 }

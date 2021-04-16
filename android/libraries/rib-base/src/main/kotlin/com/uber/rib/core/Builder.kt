@@ -13,13 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test;
+package com.uber.rib.core
 
-import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
-import com.uber.rib.core.RibInteractor;
-import com.uber.rib.core.Router;
-
-@RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
-}
+/**
+ * Responsible for building a router. Parent routers should pass in static dependencies via the
+ * dependency passed in via the constructor. For dynamic dependencies (things that are fetched
+ * asynchronously - or created dynamically in the parent), they should be passed in via a build
+ * method that vends a router.
+ *
+ * @param <T> type of interactor to build.
+ * @param <D> type of dependency required to build the interactor.
+ * @param dependency required to build the router.
+ */
+abstract class Builder<T : Router<*>, D>(protected val dependency: D)

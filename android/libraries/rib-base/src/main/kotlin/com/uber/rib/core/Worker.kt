@@ -16,15 +16,19 @@
 package com.uber.rib.core
 
 /**
- * Router for testing that does not automatically attach to the interactor.
- *
- * @param <I>
+ * Interface used when creating a manager or helper class that should be bound to an interactor's
+ * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the
+ * interactor's actual lifecycle so that we're not stuck moving these classes around if there are
+ * other lifecycles we're interested in.
  */
-class FakeRouter<I : Interactor<*, *>> : Router<I> {
-  constructor(interactor: I) : super(interactor)
-  constructor(interactor: I, ribRefWatcher: RibRefWatcher, mainThread: Thread) : super(null, interactor, ribRefWatcher, mainThread)
+interface Worker {
+  /**
+   * Called when worker is started.
+   *
+   * @param lifecycle The lifecycle of the worker to use for subscriptions.
+   */
+  fun onStart(lifecycle: WorkerScopeProvider) {}
 
-  override fun attachToInteractor() {
-    // do not automatically attach this
-  }
+  /** Called when the worker is stopped.  */
+  fun onStop() {}
 }

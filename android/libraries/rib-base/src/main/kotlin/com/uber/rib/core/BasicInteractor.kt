@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test;
+package com.uber.rib.core
 
-import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
-import com.uber.rib.core.RibInteractor;
-import com.uber.rib.core.Router;
-
-@RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
-}
+/**
+ * [Interactor] that doesn't rely on field injection.
+ *
+ * @param <P> the type of [Presenter].
+ * @param <R> the type of [Router].
+ */
+abstract class BasicInteractor<P : Any, R : Router<*>> protected constructor(
+  protected var presenter: P
+) : Interactor<P, R>(presenter)

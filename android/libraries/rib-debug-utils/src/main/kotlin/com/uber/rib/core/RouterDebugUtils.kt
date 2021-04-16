@@ -32,9 +32,9 @@ object RouterDebugUtils {
   @JvmStatic
   @JvmOverloads
   fun printRouterSubtree(router: Router<*>, prefix: String = "", isTail: Boolean = true) {
-    Rib.getConfiguration()
-      .handleDebugMessage(prefix + (if (isTail) ARM_RIGHT else INTERSECTION) + router.tag)
-    val children = router.children
+    Rib.configuration
+      ?.handleDebugMessage(prefix + (if (isTail) ARM_RIGHT else INTERSECTION) + router.tag)
+    val children = router.getChildren()
     for (i in 0 until children.size - 1) {
       printRouterSubtree(children[i], prefix + if (isTail) SPACE else LINE, false)
     }

@@ -13,13 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test;
+package android.os
 
-import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
-import com.uber.rib.core.RibInteractor;
-import com.uber.rib.core.Router;
-
-@RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
-}
+/** Stub class to have pure Java unit tests.  */
+interface Parcelable

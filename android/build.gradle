@@ -39,6 +39,9 @@ Set<String> useErrorProneProjects = [
 ]
 
 def moduleFriends = [
+        'rib-android': 'rib-base',
+        'rib-debug-utils': 'rib-base',
+        'rib-router-navigator': 'rib-base',
         'rib-test': 'rib-base',
         'rib-workflow-test': 'rib-workflow'
 ]
@@ -149,8 +152,13 @@ subprojects {
                     "-Xjvm-default=all"
             ]
             if (project.name in moduleFriends.keySet()) {
-                def outputJarPath = "build/intermediates/compile_library_classes/release/classes.jar"
-                extraCompilerArgs.add("-Xfriend-paths=${project.rootDir}/libraries/${moduleFriends[project.name]}/$outputJarPath")
+                def friendName = moduleFriends[project.name]
+                def friendProject = rootProject.subprojects.stream().filter { it.name == friendName }.findFirst().get()
+                def outputJarPath = friendProject.plugins.hasPlugin("com.android.library")
+                        ? "build/intermediates/compile_library_classes/release/classes.jar"
+                        : "build/libs/$friendName-${project.property('VERSION_NAME')}.jar"
+                def friendPath="${project.rootDir}/libraries/${moduleFriends[project.name]}/$outputJarPath"
+                extraCompilerArgs.add("-Xfriend-paths=$friendPath")
             }
             if (isAndroidLibrary) {
                 project.android.sourceSets {

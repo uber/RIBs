@@ -13,13 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test;
+package android.os
 
-import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
-import com.uber.rib.core.RibInteractor;
-import com.uber.rib.core.Router;
+/** Stub class to have pure Java unit tests.  */
+class Bundle : Parcelable {
+  private val testData: MutableMap<String, Any> = mutableMapOf()
 
-@RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
+  fun getString(key: String): String? {
+    return testData[key] as String?
+  }
+
+  fun <T : Parcelable?> getParcelable(key: String): T? {
+    return testData[key] as T?
+  }
+
+  fun putParcelable(key: String, value: Parcelable) {
+    testData[key] = value
+  }
+
+  fun putString(key: String, value: String) {
+    testData[key] = value
+  }
 }

@@ -13,13 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test;
+package com.uber.rib.core
 
-import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
-import com.uber.rib.core.RibInteractor;
-import com.uber.rib.core.Router;
+import android.view.View
 
-@RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
-}
+/**
+ * A module that takes an interactor and a view as dependencies.
+ *
+ * @param <I> type of interactor.
+ * @param <V> type of view.
+ */
+abstract class InteractorAndViewModule<I : Interactor<*, *>, V : View>(
+  interactor: I,
+  protected val view: V
+) : InteractorModule<I>(interactor)

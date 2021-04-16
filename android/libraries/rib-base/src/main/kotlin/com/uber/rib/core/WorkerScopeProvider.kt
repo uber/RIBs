@@ -13,13 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package test;
+package com.uber.rib.core
 
-import com.uber.rib.core.Interactor;
-import com.uber.rib.core.Presenter;
-import com.uber.rib.core.RibInteractor;
-import com.uber.rib.core.Router;
+import com.uber.autodispose.ScopeProvider
+import com.uber.rib.core.lifecycle.WorkerEvent
+import io.reactivex.CompletableSource
+import io.reactivex.Observable
 
-@RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
+/** [ScopeProvider] for [Worker] instances.  */
+open class WorkerScopeProvider internal constructor(
+  private val workerLifecycleObservable: Observable<WorkerEvent>
+) : ScopeProvider {
+  override fun requestScope(): CompletableSource {
+    return workerLifecycleObservable.skip(1).firstElement().ignoreElement()
+  }
 }

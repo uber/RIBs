@@ -36,7 +36,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun <R : Router<*>> attach(router: R) {
-    router.dispatchAttach(null)
+    router.dispatchAttachInternal(null)
   }
 
   /**
@@ -46,7 +46,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun detach(router: Router<*>) {
-    router.dispatchDetach()
+    router.dispatchDetachInternal()
   }
 
   /**
@@ -56,7 +56,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>) {
-    verify(router).dispatchAttach(or(isNull(), isA(Bundle::class.java)), anyString())
+    verify(router).dispatchAttachInternal(or(isNull(), isA(Bundle::class.java)), anyString())
   }
 
   /**
@@ -67,7 +67,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>, times: Int) {
-    verify(router, times(times)).dispatchAttach(or(isNull(), isA(Bundle::class.java)), anyString())
+    verify(router, times(times)).dispatchAttachInternal(or(isNull(), isA(Bundle::class.java)), anyString())
   }
 
   /**
@@ -78,7 +78,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(order: InOrder, router: Router<*>) {
-    order.verify(router).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
+    order.verify(router).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
   }
 
   /**
@@ -89,7 +89,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>, tag: String) {
-    verify(router).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), eq(tag))
+    verify(router).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), eq(tag))
   }
 
   /**
@@ -100,7 +100,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>, mode: VerificationMode) {
-    verify(router, mode).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
+    verify(router, mode).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
   }
 
   /**
@@ -111,7 +111,7 @@ object RouterHelper {
   @JvmStatic
   open fun verifyNotAttached(router: Router<*>) {
     verify(router, never())
-      .dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
+      .dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
   }
 
   /**
@@ -121,7 +121,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyDetached(router: Router<*>) {
-    verify(router).dispatchDetach()
+    verify(router).dispatchDetachInternal()
   }
 
   /**
@@ -132,7 +132,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyDetached(order: InOrder, router: Router<*>) {
-    order.verify(router).dispatchDetach()
+    order.verify(router).dispatchDetachInternal()
   }
 
   /**
@@ -143,7 +143,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyDetached(router: Router<*>, mode: VerificationMode) {
-    verify(router, mode).dispatchDetach()
+    verify(router, mode).dispatchDetachInternal()
   }
 
   /**
@@ -153,6 +153,6 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyNotDetached(router: Router<*>) {
-    verify(router, never()).dispatchDetach()
+    verify(router, never()).dispatchDetachInternal()
   }
 }
