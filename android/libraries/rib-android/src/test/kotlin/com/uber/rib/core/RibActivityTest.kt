@@ -180,6 +180,16 @@ class RibActivityTest {
     create(ActivityLifecycleEvent.Type.CREATE)
   }
 
+  @Test
+  fun onActivityCallbackEvent_shouldTriggerCallbacksObservable() {
+    val activity: RibActivity = Robolectric.buildActivity(EmptyActivity::class.java).setup().get()
+    val testSub = TestObserver<ActivityCallbackEvent>()
+    activity.callbacks().subscribe(testSub)
+    activity.onActivityCallbackEvent(create(ActivityCallbackEvent.Type.LOW_MEMORY))
+    testSub.assertValueCount(1)
+    assertThat(testSub.values().firstOrNull()).isNotNull()
+  }
+
   private class EmptyActivity : RibActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
       setTheme(R.style.Theme_AppCompat)

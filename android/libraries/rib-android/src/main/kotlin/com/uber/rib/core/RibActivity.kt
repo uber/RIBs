@@ -21,6 +21,8 @@ import android.content.res.Configuration
 import android.os.Build
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import androidx.annotation.VisibleForTesting
+import androidx.annotation.VisibleForTesting.PROTECTED
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.PublishRelay
 import com.jakewharton.rxrelay2.Relay
@@ -178,7 +180,8 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     super.onUserLeaveHint()
   }
 
-  protected fun onActivityCallbackEvent(event: ActivityCallbackEvent) {
+  @VisibleForTesting(otherwise = PROTECTED)
+  fun onActivityCallbackEvent(event: ActivityCallbackEvent) {
     callbacksRelay.accept(event)
   }
 
