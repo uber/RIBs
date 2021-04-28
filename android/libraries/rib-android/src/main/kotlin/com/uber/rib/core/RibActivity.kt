@@ -180,6 +180,11 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     super.onUserLeaveHint()
   }
 
+  /**
+   * Invoked when an activity callback function is triggered. These can be of types
+   * [ActivityCallbackEvent.Type]. This allows VIPs activities to send [ActivityCallbackEvent]
+   * through the [callbacksRelay]
+   */
   @VisibleForTesting(otherwise = PROTECTED)
   fun onActivityCallbackEvent(event: ActivityCallbackEvent) {
     callbacksRelay.accept(event)
