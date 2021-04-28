@@ -88,7 +88,7 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   @CallSuper
   public override fun onSaveInstanceState(outState: android.os.Bundle) {
     super.onSaveInstanceState(outState)
-    callbacksRelay.accept(createOnSaveInstanceStateEvent(outState))
+    onActivityCallbackEvent(createOnSaveInstanceStateEvent(outState))
     router?.saveInstanceStateInternal(Bundle(outState)) ?: throw NullPointerException("Router should not be null")
   }
 
@@ -107,13 +107,13 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   @CallSuper
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
-    callbacksRelay.accept(createNewIntent(intent))
+    onActivityCallbackEvent(createNewIntent(intent))
   }
 
   @CallSuper
   public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    callbacksRelay.accept(createOnActivityResultEvent(requestCode, resultCode, data))
+    onActivityCallbackEvent(createOnActivityResultEvent(requestCode, resultCode, data))
   }
 
   @CallSuper
@@ -142,22 +142,20 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   @CallSuper
   override fun onLowMemory() {
     super.onLowMemory()
-    callbacksRelay.accept(create(ActivityCallbackEvent.Type.LOW_MEMORY))
+    onActivityCallbackEvent(create(ActivityCallbackEvent.Type.LOW_MEMORY))
   }
 
   @CallSuper
   override fun onTrimMemory(level: Int) {
     super.onTrimMemory(level)
-    callbacksRelay.accept(createTrimMemoryEvent(level))
+    onActivityCallbackEvent(createTrimMemoryEvent(level))
   }
 
   override fun onPictureInPictureModeChanged(
     isInPictureInPictureMode: Boolean,
     newConfig: Configuration
   ) {
-    callbacksRelay.accept(
-      createPictureInPictureMode(isInPictureInPictureMode)
-    )
+    onActivityCallbackEvent(createPictureInPictureMode(isInPictureInPictureMode))
   }
 
   override fun onBackPressed() {
@@ -178,6 +176,10 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   override fun onUserLeaveHint() {
     lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.USER_LEAVING))
     super.onUserLeaveHint()
+  }
+
+  protected fun onActivityCallbackEvent(event: ActivityCallbackEvent) {
+    callbacksRelay.accept(event)
   }
 
   /**
