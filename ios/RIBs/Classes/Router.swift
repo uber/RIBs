@@ -24,7 +24,7 @@ public enum RouterLifecycle {
 }
 
 /// The scope of a `Router`, defining various lifecycles of a `Router`.
-public protocol RouterScope: class {
+public protocol RouterScope: AnyObject {
 
     /// An observable that emits values when the router scope reaches its corresponding life-cycle stages. This
     /// observable completes when the router scope is deallocated.

@@ -27,7 +27,7 @@ protocol TicTacToePresentable: Presentable {
     func announce(winner: PlayerType?, withCompletionHandler handler: @escaping () -> ())
 }
 
-protocol TicTacToeListener: class {
+protocol TicTacToeListener: AnyObject {
     func gameDidEnd(withWinner winner: PlayerType?)
 }
 

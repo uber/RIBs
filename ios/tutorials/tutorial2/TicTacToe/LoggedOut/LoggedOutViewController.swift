@@ -20,7 +20,7 @@ import RxSwift
 import SnapKit
 import UIKit
 
-protocol LoggedOutPresentableListener: class {
+protocol LoggedOutPresentableListener: AnyObject {
     func login(withPlayer1Name: String?, player2Name: String?)
 }
 

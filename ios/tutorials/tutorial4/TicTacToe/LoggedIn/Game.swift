@@ -16,7 +16,7 @@
 
 import RIBs
 
-public protocol GameListener: class {
+public protocol GameListener: AnyObject {
     func gameDidEnd(with winner: PlayerType?)
 }
 

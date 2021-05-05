@@ -20,7 +20,7 @@ import RxSwift
 import SnapKit
 import UIKit
 
-protocol OffGamePresentableListener: class {
+protocol OffGamePresentableListener: AnyObject {
     func start(_ game: Game)
 }
 
