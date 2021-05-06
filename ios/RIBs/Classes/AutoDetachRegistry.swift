@@ -100,10 +100,6 @@ final class AutoDetachHandler {
         subscribeChildLifecycle()
     }
 
-    deinit {
-        disposable.dispose()
-    }
-
     func detachIfNeeded() {
         guard let child = child else {
             detachedHandler?()
@@ -123,7 +119,7 @@ final class AutoDetachHandler {
     private weak var parent: Routing?
     private weak var child: ViewableRouting?
     private let detachedHandler: (() -> ())?
-    private let disposable = CompositeDisposable()
+    private let disposable = DisposeBag()
     private let dismissSubject = PublishSubject<()>()
 
     private func subscribeChildLifecycle() {
@@ -148,7 +144,7 @@ final class AutoDetachHandler {
             .subscribe(onNext: { [weak self] in
                 self?.detachIfNeeded()
             })
-            .addDisposableTo(disposable: disposable)
+            .disposed(by: disposable)
     }
 
     private func shouldDetach(_ viewController: ViewControllable) -> Bool {
