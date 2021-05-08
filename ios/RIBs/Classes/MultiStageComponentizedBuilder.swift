@@ -88,7 +88,7 @@ open class MultiStageComponentizedBuilder<Component, Router, DynamicBuildDepende
     /// - parameter dynamicDependency: The given dynamic dependency.
     /// - returns: The router of the RIB.
     open func finalStageBuild(with component: Component, _ dynamicDependency: DynamicBuildDependency) -> Router {
-        fatalError("This method should be oevrriden by the subclass.")
+        fatalError("This method should be overridden by the subclass.")
     }
 
     // MARK: - Private
@@ -128,7 +128,7 @@ open class SimpleMultiStageComponentizedBuilder<Component, Router>: MultiStageCo
     /// - parameter component: The corresponding DI component to use.
     /// - returns: The router of the RIB.
     open func finalStageBuild(with component: Component) -> Router {
-        fatalError("This method should be oevrriden by the subclass.")
+        fatalError("This method should be overridden by the subclass.")
     }
 
     /// Build a new instance of the RIB as the last stage of this mult-
