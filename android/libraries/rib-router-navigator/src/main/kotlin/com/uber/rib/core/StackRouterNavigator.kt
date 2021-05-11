@@ -406,7 +406,7 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
   companion object {
     /** Writes out to the debug log.  */
     private fun log(text: String) {
-      Rib.configuration?.handleDebugMessage("%s: $text", "RouterNavigator")
+      Rib.getConfiguration().handleDebugMessage("%s: $text", "RouterNavigator")
     }
   }
 

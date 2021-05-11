@@ -53,7 +53,7 @@ class InteractorAndRouterTest {
     router.dispatchAttachInternal(null)
 
     // Then.
-    verify(childInteractor).dispatchAttach(null)
+    verify(childInteractor).dispatchAttachInternal(null)
   }
 
   @Test
@@ -65,7 +65,7 @@ class InteractorAndRouterTest {
     router.dispatchDetachInternal()
 
     // Then.
-    verify(childInteractor).dispatchDetach()
+    verify(childInteractor).dispatchDetachInternal()
   }
 
   @Test
@@ -85,10 +85,10 @@ class InteractorAndRouterTest {
   fun saveInstanceState_whenDetached_shouldNotSaveChildControllerState() {
     // When.
     val outState: Bundle = mock()
-    interactor.onSaveInstanceState(outState)
+    interactor.onSaveInstanceStateInternal(outState)
 
     // Then.
-    verify(childInteractor, times(0)).onSaveInstanceState(outState)
+    verify(childInteractor, times(0)).onSaveInstanceStateInternal(outState)
   }
 
   @Test
@@ -146,7 +146,7 @@ class InteractorAndRouterTest {
     verify(ribRefWatcher, never()).watchDeletedObject(anyObject())
 
     // Action: Detach the child interactor.
-    router.detachChild(childRouter)
+    router.detachChildInternal(childRouter)
 
     // Verify: the reference watcher observes the detached interactor and child.
     verify(ribRefWatcher).watchDeletedObject(eq(childInteractor))
@@ -165,7 +165,7 @@ class InteractorAndRouterTest {
     verify(ribRefWatcher, never()).watchDeletedObject(anyObject())
 
     // Action: Detach all child interactors.
-    rootRouter.detachChild(child)
+    rootRouter.detachChildInternal(child)
 
     // Verify: called four times. Twice for each interactor.
     verify(ribRefWatcher, times(2)).watchDeletedObject(anyObject())
@@ -190,7 +190,7 @@ class InteractorAndRouterTest {
     override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
       val router: Router<*> = FakeRouter(mChildInteractor, getInstance(), Thread.currentThread())
-      getRouter().attachChildInternal(router)
+      this.router.attachChildInternal(router)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
