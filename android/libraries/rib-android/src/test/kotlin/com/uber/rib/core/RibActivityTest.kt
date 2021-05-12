@@ -89,7 +89,7 @@ class RibActivityTest {
     activity.callbacks(SaveInstanceState::class.java).subscribe(testSub)
     val state = android.os.Bundle()
     state.putString("hello", "seattle")
-    activity.onSaveInstanceState(state)
+    activityController.saveInstanceState(state)
     testSub.assertValueCount(1)
     val receivedEvent = testSub.values()[0]
     assertThat(receivedEvent.type).isEqualTo(ActivityCallbackEvent.Type.SAVE_INSTANCE_STATE)
@@ -100,7 +100,7 @@ class RibActivityTest {
   @Test
   fun rxActivity_shouldCallback_onActivityResult() {
     val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
-    val activity: RibActivity = activityController.setup().get()
+    val activity: EmptyActivity = activityController.setup().get()
     val testSub = TestObserver<ActivityCallbackEvent.ActivityResult>()
     activity.callbacks(ActivityCallbackEvent.ActivityResult::class.java).subscribe(testSub)
     val data = android.os.Bundle()
@@ -155,7 +155,7 @@ class RibActivityTest {
     val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
     val activity = activityController.setup().get()
     val bundle = android.os.Bundle()
-    activity.onSaveInstanceState(bundle)
+    activityController.saveInstanceState(bundle)
     val interactorBundle = bundle.getBundle(Router.KEY_INTERACTOR)
     assertThat(interactorBundle).isNotNull()
   }
@@ -193,6 +193,10 @@ class RibActivityTest {
         on { presenter() } doReturn(presenter)
       }
       return EmptyRouter(view, TestInteractor(presenter), component)
+    }
+
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+      super.onActivityResult(requestCode, resultCode, data)
     }
 
     val testInteractor: TestInteractor

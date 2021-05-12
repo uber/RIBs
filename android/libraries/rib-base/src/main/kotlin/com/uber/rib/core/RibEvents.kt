@@ -20,11 +20,9 @@ import io.reactivex.Observable
 
 class RibEvents private constructor() {
 
-  private val events: PublishRelay<RibEvent> = PublishRelay.create()
+  private val eventRelay: PublishRelay<RibEvent> = PublishRelay.create()
 
-  open fun getEvents(): Observable<RibEvent> {
-    return events.hide()
-  }
+  open val events: Observable<RibEvent> = eventRelay.hide()
 
   /**
    * @param eventType [RibEventType]
@@ -33,11 +31,13 @@ class RibEvents private constructor() {
    * RibActivity/Fragment
    */
   open fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
-    events.accept(RibEvent(eventType, child, parent))
+    eventRelay.accept(RibEvent(eventType, child, parent))
   }
 
   companion object {
+    private val instance: RibEvents = RibEvents()
+
     @JvmStatic
-    val instance = RibEvents()
+    fun getInstance() = instance
   }
 }

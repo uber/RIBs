@@ -38,13 +38,21 @@ abstract class Presenter : ScopeProvider {
   protected var isLoaded = false
     private set
 
-  open fun dispatchLoad() {
+  internal fun dispatchLoadInternal() {
+    dispatchLoad()
+  }
+
+  protected open fun dispatchLoad() {
     isLoaded = true
     lifecycleRelay.accept(PresenterEvent.LOADED)
     didLoad()
   }
 
-  open fun dispatchUnload() {
+  internal fun dispatchUnloadInternal() {
+    dispatchLoad()
+  }
+
+  protected open fun dispatchUnload() {
     isLoaded = false
     willUnload()
     lifecycleRelay.accept(PresenterEvent.UNLOADED)
@@ -52,7 +60,7 @@ abstract class Presenter : ScopeProvider {
 
   /** Tells the presenter that it has finished loading.  */
   @CallSuper
-  protected fun didLoad() {
+  protected open fun didLoad() {
   }
 
   /**
@@ -61,7 +69,7 @@ abstract class Presenter : ScopeProvider {
    */
   @UIEffect
   @CallSuper
-  protected fun willUnload() {
+  protected open fun willUnload() {
   }
 
   /** @return an observable of this controller's lifecycle events. */

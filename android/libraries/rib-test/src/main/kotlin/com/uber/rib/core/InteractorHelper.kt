@@ -40,8 +40,8 @@ object InteractorHelper {
     savedInstanceState: Bundle?
   ) {
     interactor.actualPresenter = presenter
-    interactor.router = router
-    interactor.dispatchAttach(savedInstanceState)
+    interactor.setRouterInternal(router)
+    interactor.dispatchAttachInternal(savedInstanceState)
   }
 
   /**
@@ -52,7 +52,7 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun reattach(interactor: Interactor<*, *>, savedInstanceState: Bundle?) {
-    interactor.dispatchAttach(savedInstanceState)
+    interactor.dispatchAttachInternal(savedInstanceState)
   }
 
   /**
@@ -62,7 +62,7 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun detach(controller: Interactor<*, *>) {
-    controller.dispatchDetach()
+    controller.dispatchDetachInternal()
   }
 
   /**
@@ -72,7 +72,7 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun verifyAttached(interactor: Interactor<*, *>) {
-    verify(interactor).dispatchAttach(or(isNull(Bundle::class.java), isA(Bundle::class.java)))
+    verify(interactor).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)))
   }
 
   /**
@@ -82,6 +82,6 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun verifyDetached(interactor: Interactor<*, *>) {
-    verify(interactor).dispatchDetach()
+    verify(interactor).dispatchDetachInternal()
   }
 }

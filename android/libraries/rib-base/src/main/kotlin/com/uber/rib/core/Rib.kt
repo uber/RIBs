@@ -72,27 +72,33 @@ open class Rib {
   companion object {
     /**
      * Sets the configuration to use in the application. This can only be called once before any RIB
-     * code is used. Calling it twice, or calling it after using RIB code will throw an [ ].
+     * code is used. Calling it twice, or calling it after using RIB code will throw an exception.
      *
      * @param configurationToSet to set.
      */
+    private var configuration: Configuration? = null
+
     @JvmStatic
-    var configuration: Configuration? = null
-      get() {
-        if (field == null) {
-          field = DefaultConfiguration()
-        }
-        return field
-      }
-      set(configurationToSet) {
-        field = if (configuration == null) {
-          configurationToSet
+    fun setConfiguration(configurationToSet: Configuration) {
+      if (configuration == null) {
+        configuration = configurationToSet
+      } else {
+        if (configuration is DefaultConfiguration) {
+          throw IllegalStateException("Attempting to set a configuration after using RIB code.")
         } else {
-          check(configuration !is DefaultConfiguration) { "Attempting to set a configuration after using RIB code." }
           throw IllegalStateException(
             "Attempting to set a configuration after one has previously been set."
           )
         }
       }
+    }
+
+    @JvmStatic
+    fun getConfiguration(): Configuration {
+      if (configuration == null) {
+        configuration = DefaultConfiguration()
+      }
+      return configuration!!
+    }
   }
 }
