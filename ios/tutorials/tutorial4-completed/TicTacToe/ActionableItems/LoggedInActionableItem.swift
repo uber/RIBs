@@ -16,6 +16,6 @@
 
 import RxSwift
 
-public protocol LoggedInActionableItem: class {
+public protocol LoggedInActionableItem: AnyObject {
     func launchGame(with id: String?) -> Observable<(LoggedInActionableItem, ())>
 }

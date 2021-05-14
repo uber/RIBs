@@ -20,7 +20,7 @@ import RxSwift
 import SnapKit
 import UIKit
 
-protocol RandomWinPresentableListener: class {
+protocol RandomWinPresentableListener: AnyObject {
     func determineWinner()
 }
 

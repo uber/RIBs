@@ -26,7 +26,7 @@ protocol OffGamePresentable: Presentable {
     func set(score: Score)
 }
 
-protocol OffGameListener: class {
+protocol OffGameListener: AnyObject {
     func startTicTacToe()
 }
 

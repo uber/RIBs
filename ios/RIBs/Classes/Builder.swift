@@ -17,7 +17,7 @@
 import Foundation
 
 /// The base builder protocol that all builders should conform to.
-public protocol Buildable: class {}
+public protocol Buildable: AnyObject {}
 
 /// Utility that instantiates a RIB and sets up its internal wirings.
 open class Builder<DependencyType>: Buildable {

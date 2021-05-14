@@ -28,7 +28,7 @@ protocol LoggedInRouting: Routing {
     func routeToOffGame()
 }
 
-protocol LoggedInListener: class {
+protocol LoggedInListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 

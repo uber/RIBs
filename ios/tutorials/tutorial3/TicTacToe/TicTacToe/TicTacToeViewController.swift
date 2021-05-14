@@ -18,7 +18,7 @@ import RIBs
 import SnapKit
 import UIKit
 
-protocol TicTacToePresentableListener: class {
+protocol TicTacToePresentableListener: AnyObject {
     func placeCurrentPlayerMark(atRow row: Int, col: Int)
     func closeGame()
 }

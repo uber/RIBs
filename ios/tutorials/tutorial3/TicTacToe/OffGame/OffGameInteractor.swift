@@ -26,7 +26,7 @@ protocol OffGamePresentable: Presentable {
     // TODO: Declare methods the interactor can invoke the presenter to present data.
 }
 
-protocol OffGameListener: class {
+protocol OffGameListener: AnyObject {
     func startTicTacToe()
 }
 

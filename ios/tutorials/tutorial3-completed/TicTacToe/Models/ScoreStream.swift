@@ -26,7 +26,7 @@ struct Score {
     }
 }
 
-protocol ScoreStream: class {
+protocol ScoreStream: AnyObject {
     var score: Observable<Score> { get }
 }
 

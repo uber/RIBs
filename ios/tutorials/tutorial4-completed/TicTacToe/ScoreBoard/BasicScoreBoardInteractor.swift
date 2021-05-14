@@ -26,7 +26,7 @@ protocol BasicScoreBoardPresentable: Presentable {
     func set(score: Score)
 }
 
-public protocol BasicScoreBoardListener: class {
+public protocol BasicScoreBoardListener: AnyObject {
     // TODO: Declare methods the interactor can invoke to communicate with other RIBs.
 }
 
