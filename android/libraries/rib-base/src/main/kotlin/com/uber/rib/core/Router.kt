@@ -84,26 +84,7 @@ abstract class Router<I : InteractorType> protected constructor(
   protected open fun willDetach() {}
 
   @MainThread
-  internal fun attachChildInternal(childRouter: Router<*>) {
-    attachChildInternal(childRouter, childRouter.javaClass.name)
-  }
-
-  /**
-   * Attaches a child router to this router. This method will automatically tag the child router by
-   * its class name to namespace its saved instance state [Bundle] object.
-   *
-   *
-   * If you have multiple children of the same class, use [Router.attachChild] to specify a custom tag.
-   *
-   * @param childRouter the [Router] to be attached.
-   */
-  @MainThread
-  internal fun attachChildInternal(childRouter: Router<*>, tag: String = childRouter.javaClass.name) {
-    attachChild(childRouter, tag)
-  }
-
-  @MainThread
-  protected open fun attachChild(childRouter: Router<*>) {
+  public open fun attachChild(childRouter: Router<*>) {
     attachChild(childRouter, childRouter.javaClass.name)
   }
 
@@ -114,7 +95,7 @@ abstract class Router<I : InteractorType> protected constructor(
    * @param tag an identifier to namespace saved instance state [Bundle] objects.
    */
   @MainThread
-  protected open fun attachChild(childRouter: Router<*>, tag: String) {
+  public open fun attachChild(childRouter: Router<*>, tag: String) {
     for (child in children) {
       if (tag == child.tag) {
         Rib.getConfiguration().handleNonFatalWarning(
@@ -138,11 +119,6 @@ abstract class Router<I : InteractorType> protected constructor(
     childRouter.dispatchAttach(childBundle, tag)
   }
 
-  @MainThread
-  internal fun detachChildInternal(childRouter: Router<*>) {
-    detachChild(childRouter)
-  }
-
   /**
    * Detaches the {@param childFactory} from the current [Interactor]. NOTE: No consumers of
    * this API should ever keep a reference to the detached child router, leak canary will enforce
@@ -154,7 +130,7 @@ abstract class Router<I : InteractorType> protected constructor(
    * @param childRouter the [Router] to be detached.
    */
   @MainThread
-  protected open fun detachChild(childRouter: Router<*>) {
+  public open fun detachChild(childRouter: Router<*>) {
     val isChildRemoved = children.remove(childRouter)
     val interactor = childRouter.interactor
     ribRefWatcher.watchDeletedObject(interactor)
@@ -171,23 +147,14 @@ abstract class Router<I : InteractorType> protected constructor(
     }
   }
 
-  internal fun dispatchAttachInternal(savedInstanceState: Bundle?) {
-    dispatchAttach(savedInstanceState)
-  }
-
-  internal fun dispatchAttachInternal(savedInstanceState: Bundle?, tag: String) {
-    dispatchAttach(savedInstanceState, tag)
-  }
-
   @CallSuper
-  @Initializer
-  protected open fun dispatchAttach(savedInstanceState: Bundle?) {
+  public open fun dispatchAttach(savedInstanceState: Bundle?) {
     dispatchAttach(savedInstanceState, javaClass.name)
   }
 
   @CallSuper
   @Initializer
-  protected open fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
+  public open fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
     checkForMainThread()
     if (!isLoaded) {
       isLoaded = true
@@ -200,17 +167,13 @@ abstract class Router<I : InteractorType> protected constructor(
     if (this.savedInstanceState != null) {
       interactorBundle = this.savedInstanceState!!.getBundleExtra(KEY_INTERACTOR)
     }
-    interactorGeneric.dispatchAttachInternal(interactorBundle)
+    interactorGeneric.dispatchAttach(interactorBundle)
   }
 
-  internal fun dispatchDetachInternal() {
-    dispatchDetach()
-  }
-
-  protected open fun dispatchDetach() {
+  public open fun dispatchDetach() {
     checkForMainThread()
 
-    interactorGeneric.dispatchDetachInternal()
+    interactorGeneric.dispatchDetach()
     willDetach()
     for (child in children) {
       detachChild(child)

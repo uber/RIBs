@@ -26,6 +26,7 @@ dependencies {
     api deps.test.junit
     api deps.test.truth
     api deps.test.mockito
+    implementation deps.test.mockitoKotlin
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

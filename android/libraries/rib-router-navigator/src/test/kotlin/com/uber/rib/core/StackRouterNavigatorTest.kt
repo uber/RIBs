@@ -78,12 +78,12 @@ class StackRouterNavigatorTest {
   fun pushRetained_whenNotInitialPush_shouldRunPreviousDetachRunnerAndRunNewAttachRunnerWithCorrectState() {
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushRetainedState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
-    verify(hostRouter).detachChildInternal(router1)
+    verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
     verifyZeroInteractions(detachTransition2)
   }
@@ -92,12 +92,12 @@ class StackRouterNavigatorTest {
   fun pushTransientDeprecated_whenNotInitialPush_shouldRunPreviousDetachRunnerAndRunNewAttachRunnerWithCorrectState() {
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushTransientState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
-    verify(hostRouter).detachChildInternal(router1)
+    verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
     verifyZeroInteractions(detachTransition2)
   }
@@ -105,12 +105,12 @@ class StackRouterNavigatorTest {
   @Test
   fun pushRetained_whenChildRouterSwitchesStateImmediately_shouldSwitchToCorrectState() {
     val hostRouter: Router<*> = mock {
-      on { attachChildInternal(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
+      on { attachChild(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
     }
     routerNavigator = StackRouterNavigator(hostRouter)
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushRetainedState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
@@ -126,12 +126,12 @@ class StackRouterNavigatorTest {
   @Test
   fun pushTransientDeprecated_whenChildRouterSwitchesStateImmediately_shouldSwitchToCorrectState() {
     val hostRouter: Router<*> = mock {
-      on { attachChildInternal(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
+      on { attachChild(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
     }
     routerNavigator = StackRouterNavigator(hostRouter)
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushTransientState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
@@ -180,12 +180,12 @@ class StackRouterNavigatorTest {
   fun pushDefault_whenNotInitialPush_shouldRunPreviousDetachRunnerAndRunNewAttachRunnerWithCorrectState() {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
-    verify(hostRouter).detachChildInternal(router1)
+    verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
     verifyZeroInteractions(detachTransition2)
   }
@@ -194,7 +194,7 @@ class StackRouterNavigatorTest {
   fun pushTransient_whenNotInitialPush_shouldRunPreviousDetachRunnerAndRunNewAttachRunnerWithCorrectState() {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushState(
       TestState.STATE_2,
@@ -204,7 +204,7 @@ class StackRouterNavigatorTest {
     )
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
-    verify(hostRouter).detachChildInternal(router1)
+    verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
     verifyZeroInteractions(detachTransition2)
   }
@@ -212,12 +212,12 @@ class StackRouterNavigatorTest {
   @Test
   fun pushDefault_whenChildRouterSwitchesStateImmediately_shouldSwitchToCorrectState() {
     val hostRouter: Router<*> = mock {
-      on { attachChildInternal(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
+      on { attachChild(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
     }
     routerNavigator = StackRouterNavigator(hostRouter)
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
@@ -233,12 +233,12 @@ class StackRouterNavigatorTest {
   @Test
   fun pushTransient_whenChildRouterSwitchesStateImmediately_shouldSwitchToCorrectState() {
     val hostRouter: Router<*> = mock {
-      on { attachChildInternal(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
+      on { attachChild(router2) } doAnswer { routerNavigator.pushState(TestState.STATE_3, attachTransition3, detachTransition3) }
     }
     routerNavigator = StackRouterNavigator(hostRouter)
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
-    verify(hostRouter).attachChildInternal(router1)
+    verify(hostRouter).attachChild(router1)
     verifyZeroInteractions(detachTransition1)
     routerNavigator.pushState(
       TestState.STATE_2,
@@ -516,7 +516,7 @@ class StackRouterNavigatorTest {
     routerNavigator.popState()
     verify(detachTransition2)
       .willDetachFromHost(router2, TestState.STATE_2, TestState.STATE_1, false)
-    verify(hostRouter).detachChildInternal(router2)
+    verify(hostRouter).detachChild(router2)
     verify(attachTransition1)
       .willAttachToHost(router1, TestState.STATE_2, TestState.STATE_1, false)
   }
@@ -541,7 +541,7 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     routerNavigator.popState()
     verify(detachTransition1).willDetachFromHost(router1, TestState.STATE_1, null, false)
-    verify(hostRouter).detachChildInternal(router1)
+    verify(hostRouter).detachChild(router1)
   }
 
   @Test

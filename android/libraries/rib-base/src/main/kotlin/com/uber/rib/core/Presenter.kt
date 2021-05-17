@@ -38,21 +38,13 @@ abstract class Presenter : ScopeProvider {
   protected var isLoaded = false
     private set
 
-  internal fun dispatchLoadInternal() {
-    dispatchLoad()
-  }
-
-  protected open fun dispatchLoad() {
+  public open fun dispatchLoad() {
     isLoaded = true
     lifecycleRelay.accept(PresenterEvent.LOADED)
     didLoad()
   }
 
-  internal fun dispatchUnloadInternal() {
-    dispatchLoad()
-  }
-
-  protected open fun dispatchUnload() {
+  public open fun dispatchUnload() {
     isLoaded = false
     willUnload()
     lifecycleRelay.accept(PresenterEvent.UNLOADED)

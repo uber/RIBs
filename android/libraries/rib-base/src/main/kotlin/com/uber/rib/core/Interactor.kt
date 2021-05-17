@@ -42,8 +42,9 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
   private val lifecycleRelay = behaviorRelay.toSerialized()
 
+  private val routerDelegate = InitOnceProperty<R>()
   /** @return the router for this interactor. */
-  var router: R by InitOnceProperty()
+  open var router: R by routerDelegate
     protected set
 
   constructor()
@@ -95,29 +96,23 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
    */
   protected open fun onSaveInstanceState(outState: Bundle) {}
 
-  internal fun dispatchAttachInternal(savedInstanceState: Bundle?) {
-    dispatchAttach(savedInstanceState)
-  }
-
-  protected open fun dispatchAttach(savedInstanceState: Bundle?) {
+  public open fun dispatchAttach(savedInstanceState: Bundle?) {
     lifecycleRelay.accept(InteractorEvent.ACTIVE)
-    (getPresenter() as? Presenter)?.dispatchLoadInternal()
+    (getPresenter() as? Presenter)?.dispatchLoad()
     didBecomeActive(savedInstanceState)
   }
 
-  internal fun dispatchDetachInternal(): P {
-    return dispatchDetach()
-  }
-
-  protected open fun dispatchDetach(): P {
-    (getPresenter() as? Presenter)?.dispatchUnloadInternal()
+  public open fun dispatchDetach(): P {
+    (getPresenter() as? Presenter)?.dispatchUnload()
     willResignActive()
     lifecycleRelay.accept(InteractorEvent.INACTIVE)
     return getPresenter()
   }
 
   internal fun setRouterInternal(router: Router<*>) {
-    this.router = router as R
+    if (routerDelegate != null) {
+      this.router = router as R
+    }
   }
 
   /** @return the currently attached presenter if there is one */
@@ -148,7 +143,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
     return behaviorRelay.value
   }
 
-  override fun requestScope(): CompletableSource {
+  final override fun requestScope(): CompletableSource {
     return LifecycleScopes.resolveScopeFromLifecycle(this)
   }
 

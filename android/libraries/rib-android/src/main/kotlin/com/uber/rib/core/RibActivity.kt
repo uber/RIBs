@@ -79,7 +79,7 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     val wrappedBundle: Bundle? = if (savedInstanceState != null) Bundle(savedInstanceState) else null
     router = createRouter(rootViewGroup)
     router?.let {
-      it.dispatchAttachInternal(wrappedBundle)
+      it.dispatchAttach(wrappedBundle)
       rootViewGroup.addView(it.view)
       RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, it, null)
     }
@@ -132,7 +132,7 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   override fun onDestroy() {
     lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.DESTROY))
     router?.let {
-      it.dispatchDetachInternal()
+      it.dispatchDetach()
       RibEvents.getInstance().emitEvent(RibEventType.DETACHED, it, null)
     }
     router = null
