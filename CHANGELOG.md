@@ -24,3 +24,6 @@
 
 * Migrate library modules to Kotlin but keep the same APIs
 
+### Version 0.11.1
+
+* Bugfixes for Kotlin migration
