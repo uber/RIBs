@@ -44,7 +44,7 @@ class RouterTest {
         didLoad.set(true)
       }
     }
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
     assertThat(didLoad.get()).isTrue()
   }
 }

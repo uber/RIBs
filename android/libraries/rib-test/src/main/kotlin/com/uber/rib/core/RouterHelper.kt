@@ -15,15 +15,15 @@
  */
 package com.uber.rib.core
 
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.isA
+import com.nhaarman.mockitokotlin2.isNull
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.times
+import com.nhaarman.mockitokotlin2.verify
 import org.mockito.AdditionalMatchers.or
 import org.mockito.InOrder
-import org.mockito.Matchers.anyString
-import org.mockito.Matchers.eq
-import org.mockito.Matchers.isA
-import org.mockito.Matchers.isNull
-import org.mockito.Mockito.never
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
 import org.mockito.verification.VerificationMode
 
 /** The helper to test [Router].  */
@@ -36,7 +36,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun <R : Router<*>> attach(router: R) {
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
   }
 
   /**
@@ -46,7 +46,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun detach(router: Router<*>) {
-    router.dispatchDetachInternal()
+    router.dispatchDetach()
   }
 
   /**
@@ -56,7 +56,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>) {
-    verify(router).dispatchAttachInternal(or(isNull(), isA(Bundle::class.java)), anyString())
+    verify(router).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**
@@ -67,7 +67,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>, times: Int) {
-    verify(router, times(times)).dispatchAttachInternal(or(isNull(), isA(Bundle::class.java)), anyString())
+    verify(router, times(times)).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**
@@ -78,7 +78,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(order: InOrder, router: Router<*>) {
-    order.verify(router).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
+    order.verify(router).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**
@@ -89,7 +89,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>, tag: String) {
-    verify(router).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), eq(tag))
+    verify(router).dispatchAttach(or(isNull(), isA<Bundle>()), eq(tag))
   }
 
   /**
@@ -100,7 +100,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyAttached(router: Router<*>, mode: VerificationMode) {
-    verify(router, mode).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
+    verify(router, mode).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**
@@ -111,7 +111,7 @@ object RouterHelper {
   @JvmStatic
   open fun verifyNotAttached(router: Router<*>) {
     verify(router, never())
-      .dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)), anyString())
+      .dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**
@@ -121,7 +121,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyDetached(router: Router<*>) {
-    verify(router).dispatchDetachInternal()
+    verify(router).dispatchDetach()
   }
 
   /**
@@ -132,7 +132,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyDetached(order: InOrder, router: Router<*>) {
-    order.verify(router).dispatchDetachInternal()
+    order.verify(router).dispatchDetach()
   }
 
   /**
@@ -143,7 +143,7 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyDetached(router: Router<*>, mode: VerificationMode) {
-    verify(router, mode).dispatchDetachInternal()
+    verify(router, mode).dispatchDetach()
   }
 
   /**
@@ -153,6 +153,6 @@ object RouterHelper {
    */
   @JvmStatic
   open fun verifyNotDetached(router: Router<*>) {
-    verify(router, never()).dispatchDetachInternal()
+    verify(router, never()).dispatchDetach()
   }
 }

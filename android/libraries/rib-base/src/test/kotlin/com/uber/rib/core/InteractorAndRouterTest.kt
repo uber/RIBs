@@ -50,22 +50,22 @@ class InteractorAndRouterTest {
   @Test
   fun attach_shouldAttachChildController() {
     // When.
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
 
     // Then.
-    verify(childInteractor).dispatchAttachInternal(null)
+    verify(childInteractor).dispatchAttach(null)
   }
 
   @Test
   fun detach_shouldDetachChildController() {
     // Given.
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
 
     // When.
-    router.dispatchDetachInternal()
+    router.dispatchDetach()
 
     // Then.
-    verify(childInteractor).dispatchDetachInternal()
+    verify(childInteractor).dispatchDetach()
   }
 
   @Test
@@ -103,7 +103,7 @@ class InteractorAndRouterTest {
     val router = TestRouterA(parentInteractor, component)
     val parentObserver = RecordingObserver<InteractorEvent>()
     parentInteractor.lifecycle().subscribe(parentObserver)
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
     Truth.assertThat(parentObserver.takeNext()).isEqualTo(InteractorEvent.ACTIVE)
     val childA = TestChildInteractor()
     val childComponent: InteractorComponent<TestPresenter, TestChildInteractor> = object : InteractorComponent<TestPresenter, TestChildInteractor> {
@@ -115,15 +115,15 @@ class InteractorAndRouterTest {
     val childRouter = TestChildRouter(childA, childComponent)
     val childObserverA = RecordingObserver<InteractorEvent>()
     childA.lifecycle().subscribe(childObserverA)
-    router.attachChildInternal(childRouter)
+    router.attachChild(childRouter)
     Truth.assertThat(childObserverA.takeNext()).isEqualTo(InteractorEvent.ACTIVE)
     val childB = TestChildInteractor()
     val childObserverB = RecordingObserver<InteractorEvent>()
     childB.lifecycle().subscribe(childObserverB)
     val childBRouter = TestChildRouter(childB, childComponent)
-    childRouter.attachChildInternal(childBRouter)
+    childRouter.attachChild(childBRouter)
     Truth.assertThat(childObserverB.takeNext()).isEqualTo(InteractorEvent.ACTIVE)
-    router.dispatchDetachInternal()
+    router.dispatchDetach()
     Truth.assertThat(parentObserver.takeNext()).isEqualTo(InteractorEvent.INACTIVE)
     Truth.assertThat(childObserverA.takeNext()).isEqualTo(InteractorEvent.INACTIVE)
     Truth.assertThat(childObserverB.takeNext()).isEqualTo(InteractorEvent.INACTIVE)
@@ -139,14 +139,14 @@ class InteractorAndRouterTest {
       }
     }
     val router = TestRouterB(component, rootInteractor, ribRefWatcher)
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
     val childInteractor = TestInteractorB()
     val childRouter = TestRouterB(childInteractor, component)
-    router.attachChildInternal(childRouter)
+    router.attachChild(childRouter)
     verify(ribRefWatcher, never()).watchDeletedObject(anyObject())
 
     // Action: Detach the child interactor.
-    router.detachChildInternal(childRouter)
+    router.detachChild(childRouter)
 
     // Verify: the reference watcher observes the detached interactor and child.
     verify(ribRefWatcher).watchDeletedObject(eq(childInteractor))
@@ -165,7 +165,7 @@ class InteractorAndRouterTest {
     verify(ribRefWatcher, never()).watchDeletedObject(anyObject())
 
     // Action: Detach all child interactors.
-    rootRouter.detachChildInternal(child)
+    rootRouter.detachChild(child)
 
     // Verify: called four times. Twice for each interactor.
     verify(ribRefWatcher, times(2)).watchDeletedObject(anyObject())
@@ -178,11 +178,11 @@ class InteractorAndRouterTest {
         return TestPresenter()
       }
     }
-    router.dispatchAttachInternal(null)
+    router.dispatchAttach(null)
     val childRouter1 = TestRouterB(component, TestInteractorB(), ribRefWatcher)
     val childRouter2 = TestRouterB(component, TestInteractorB(), ribRefWatcher)
-    router.attachChildInternal(childRouter1)
-    childRouter1.attachChildInternal(childRouter2)
+    router.attachChild(childRouter1)
+    childRouter1.attachChild(childRouter2)
     return childRouter1
   }
 
@@ -190,7 +190,7 @@ class InteractorAndRouterTest {
     override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
       val router: Router<*> = FakeRouter(mChildInteractor, getInstance(), Thread.currentThread())
-      this.router.attachChildInternal(router)
+      this.router.attachChild(router)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

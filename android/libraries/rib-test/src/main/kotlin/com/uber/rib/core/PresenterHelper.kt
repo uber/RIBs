@@ -24,7 +24,7 @@ object PresenterHelper {
    */
   @JvmStatic
   open fun load(presenter: Presenter) {
-    presenter.dispatchLoadInternal()
+    presenter.dispatchLoad()
   }
 
   /**
@@ -34,6 +34,6 @@ object PresenterHelper {
    */
   @JvmStatic
   open fun unload(presenter: Presenter) {
-    presenter.dispatchUnloadInternal()
+    presenter.dispatchUnload()
   }
 }

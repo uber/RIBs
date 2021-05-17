@@ -15,10 +15,10 @@
  */
 package com.uber.rib.core
 
+import com.nhaarman.mockitokotlin2.isA
+import com.nhaarman.mockitokotlin2.isNull
+import com.nhaarman.mockitokotlin2.verify
 import org.mockito.AdditionalMatchers.or
-import org.mockito.Matchers.isA
-import org.mockito.Matchers.isNull
-import org.mockito.Mockito.verify
 
 /** The helper to test [Interactor].  */
 object InteractorHelper {
@@ -41,7 +41,7 @@ object InteractorHelper {
   ) {
     interactor.actualPresenter = presenter
     interactor.setRouterInternal(router)
-    interactor.dispatchAttachInternal(savedInstanceState)
+    interactor.dispatchAttach(savedInstanceState)
   }
 
   /**
@@ -52,7 +52,7 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun reattach(interactor: Interactor<*, *>, savedInstanceState: Bundle?) {
-    interactor.dispatchAttachInternal(savedInstanceState)
+    interactor.dispatchAttach(savedInstanceState)
   }
 
   /**
@@ -62,7 +62,7 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun detach(controller: Interactor<*, *>) {
-    controller.dispatchDetachInternal()
+    controller.dispatchDetach()
   }
 
   /**
@@ -72,7 +72,7 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun verifyAttached(interactor: Interactor<*, *>) {
-    verify(interactor).dispatchAttachInternal(or(isNull(Bundle::class.java), isA(Bundle::class.java)))
+    verify(interactor).dispatchAttach(or(isNull(), isA<Bundle>()))
   }
 
   /**
@@ -82,6 +82,6 @@ object InteractorHelper {
    */
   @JvmStatic
   open fun verifyDetached(interactor: Interactor<*, *>) {
-    verify(interactor).dispatchDetachInternal()
+    verify(interactor).dispatchDetach()
   }
 }
