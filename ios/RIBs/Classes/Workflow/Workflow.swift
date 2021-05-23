@@ -206,7 +206,21 @@ public extension Disposable {
     /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a `Workflow`.
     ///
     /// - parameter workflow: The workflow to dispose the subscription with.
+    func disposeWith<ActionableItemType>(workflow: Workflow<ActionableItemType>) {
+        _ = workflow.compositeDisposable.insert(self)
+    }
+
+    /// Dispose the subscription when the given `Workflow` is disposed.
+    ///
+    /// When using this composition, the subscription closure may freely retain the workflow itself, since the
+    /// subscription closure is disposed once the workflow is disposed, thus releasing the retain cycle before the
+    /// `Workflow` needs to be deallocated.
+    ///
+    /// - note: This is the preferred method when trying to confine a subscription to the lifecycle of a `Workflow`.
+    ///
+    /// - parameter workflow: The workflow to dispose the subscription with.
+    @available(*, deprecated, renamed: "disposeWith(workflow:)")
     func disposeWith<ActionableItemType>(worflow: Workflow<ActionableItemType>) {
-        _ = worflow.compositeDisposable.insert(self)
+        disposeWith(workflow: worflow)
     }
 }
