@@ -139,7 +139,13 @@ abstract class Router<I : InteractorType> protected constructor(
     )
     if (savedInstanceState != null) {
       val childrenBundles = savedInstanceState?.getBundleExtra(KEY_CHILD_ROUTERS)
-      childrenBundles?.putBundleExtra(childRouter.tag!!, null)
+      val childRouterTag = childRouter.tag
+      if (childRouterTag != null) {
+        childrenBundles?.putBundleExtra(childRouterTag, null)
+      } else {
+        Rib.getConfiguration()
+          .handleNonFatalWarning("A RIB tried to detach a child that was never attached", null)
+      }
     }
     childRouter.dispatchDetach()
     if (isChildRemoved) {
