@@ -27,3 +27,7 @@
 ### Version 0.11.1
 
 * Bugfixes for Kotlin migration
+
+### Version 0.11.2
+
+* One more bugfix and log message for Kotlin migration edge case
