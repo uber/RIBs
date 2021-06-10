@@ -12,7 +12,7 @@ To integrate Flipper to your app, please refer to [Flipper official documentatio
 
 Then, to enable RIBs plugin, simply add it to the list of used plugin during Flipper initialization.
 
-In summary, your application ```onCreate()``` method should look similar to the one below: 
+In summary, your application ```onCreate()``` method should look similar to the one below:
 
 ```
 public class SampleApplication extends Application {
