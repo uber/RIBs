@@ -19,5 +19,3 @@ package com.uber.rib.flipper
 enum class RibTreeMessageType {
   SHOW_HIGHLIGHT, HIDE_HIGHLIGHT
 }
-
-
