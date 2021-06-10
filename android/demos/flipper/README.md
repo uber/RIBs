@@ -8,8 +8,11 @@ it with Flipper tool and our Flipper RIBs plugin.
 
 ## Integration
 
-To integrate Flipper to your app, please refer to the official documentation : https://fbflipper.com/docs/getting-started/android-native
-Then, to enable RIBs plugin, simply add it to the list of used plugin during Flipper initialization : 
+To integrate Flipper to your app, please refer to [Flipper official documentation](https://fbflipper.com/docs/getting-started/android-native)
+
+Then, to enable RIBs plugin, simply add it to the list of used plugin during Flipper initialization.
+
+In summary, your application ```onCreate()``` method should look similar to the one below: 
 
 ```
 public class SampleApplication extends Application {
