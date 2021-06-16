@@ -7,6 +7,7 @@ buildscript {
 apply plugin: "java"
 apply plugin: "maven"
 apply plugin: "org.jetbrains.intellij"
+apply plugin: "org.jetbrains.kotlin.jvm"
 
 group "com.uber.rib"
 
@@ -17,6 +18,7 @@ repositories {
 dependencies {
     compile deps.apt.androidApi
     compile deps.build.commonsLang
+    compile deps.external.ddms
     compile deps.external.guavaAndroid
     compile deps.androidx.annotations
 
@@ -60,7 +62,7 @@ ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.
 version = pluginXml.version
 
 intellij {
-    plugins = ['CheckStyle-IDEA:5.5.0']
+    plugins = ['CheckStyle-IDEA:5.5.0', 'java', 'Kotlin' ]
     version deps.versions.intellij
     pluginName "UberRIBPresidioPlugin"
     updateSinceUntilBuild false
