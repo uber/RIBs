@@ -18,16 +18,19 @@ def versions = [
     androidx: [
         annotations: '1.1.0',
         appcompat: '1.3.0',
+        compose: '1.0.0',
         percent: '1.0.0'
     ],
     autodispose: '1.4.0',
+    coroutines: '1.4.3',
     dagger: "2.34",
     errorProne: '2.3.3',
     gjf: '1.7',
     intellij: "2019.2",
-    kotlin: "1.5.20",
+    kotlin: "1.5.10",
     ktfmt: '0.23',
     ktlint: '0.41.0',
+    motif: '0.3.4',
     rave: "2.0.0",
     robolectric: "4.4",
     spotless: '5.11.0'
@@ -52,7 +55,7 @@ def build = [
     buildToolsVersion: '30.0.2',
     compileSdkVersion: 30,
     ci: 'true' == System.getenv('CI'),
-    minSdkVersion: 16,
+    minSdkVersion: 21,
     targetSdkVersion: 28,
     javaVersion: JavaVersion.VERSION_1_8,
     guavaJre: "com.google.guava:guava:27.1-jre",
@@ -64,7 +67,7 @@ def build = [
     errorProneTestHelpers: "com.google.errorprone:error_prone_test_helpers:${versions.errorProne}",
     nullAway: 'com.uber.nullaway:nullaway:0.9.0',
     gradlePlugins: [
-        android: 'com.android.tools.build:gradle:4.2.2',
+        android: 'com.android.tools.build:gradle:7.0.0',
         apt: "net.ltgt.gradle:gradle-apt-plugin:0.21",
         errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
         japicmp: 'me.champeau.gradle:japicmp-gradle-plugin:0.2.8',
@@ -75,9 +78,20 @@ def build = [
 ]
 
 def androidx = [
+    activity: "androidx.activity:activity:1.3.0-alpha08",
+    activityCompose: "androidx.activity:activity-compose:1.3.0-beta02",
+    activityKtx: "androidx.activity:activity-ktx:1.3.0-beta02",
     annotations: "androidx.annotation:annotation:${versions.androidx.annotations}",
     appcompat: "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
-    percent: "androidx.percentlayout:percentlayout:${versions.androidx.percent}"
+    composeAnimation: "androidx.compose.animation:animation:${versions.androidx.compose}",
+    composeFoundation: "androidx.compose.foundation:foundation:${versions.androidx.compose}",
+    composeMaterial: "androidx.compose.material:material:${versions.androidx.compose}",
+    composeNavigation: "androidx.navigation:navigation-compose:2.4.0-alpha03",
+    composeRuntimeRxJava2: "androidx.compose.runtime:runtime-rxjava2:${versions.androidx.compose}",
+    composeUi: "androidx.compose.ui:ui:${versions.androidx.compose}",
+    composeViewModel: "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha05",
+    percent: "androidx.percentlayout:percentlayout:${versions.androidx.percent}",
+    uiTooling: "androidx.compose.ui:ui-tooling:1.0.0-beta09" // ${versions.androidx.compose}
 ]
 
 def test = [
@@ -94,6 +108,7 @@ def external = [
     ddms: "com.android.tools.ddms:ddmlib:27.1.3",
     guavaAndroid: "com.google.guava:guava:27.1-android",
     gson: "com.google.code.gson:gson:2.8.7",
+    materialComponents: "com.google.android.material:material:1.1.0",
     flipper: "com.facebook.flipper:flipper:0.93.0",
     rxjava2: "io.reactivex.rxjava2:rxjava:2.2.8",
     rxrelay2: "com.jakewharton.rxrelay2:rxrelay:2.1.0",
@@ -106,14 +121,20 @@ def external = [
 ]
 
 def kotlin = [
+    coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+    coroutinesAndroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
+    coroutinesRx2: "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
     stdlib: "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 ]
 
 def uber = [
     autodispose: "com.uber.autodispose:autodispose:${versions.autodispose}",
-    autodisposeLifecycle: "com.uber.autodispose:autodispose-lifecycle:${versions.autodispose}",
     autodisposeAndroid : "com.uber.autodispose:autodispose-android:${versions.autodispose}@aar",
+    autodisposeLifecycle: "com.uber.autodispose:autodispose-lifecycle:${versions.autodispose}",
+    autodisposeCoroutines: "com.uber.autodispose:autodispose-coroutines-interop:${versions.autodispose}",
     autodisposeErrorProne: "com.uber.autodispose:autodispose-error-prone:${versions.autodispose}",
+    motif: "com.uber.motif:motif:${versions.motif}",
+    motifCompiler: "com.uber.motif:motif-compiler:${versions.motif}",
     rave: "com.uber:rave:${versions.rave}",
 ]
 

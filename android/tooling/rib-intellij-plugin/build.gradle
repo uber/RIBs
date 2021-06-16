@@ -5,8 +5,8 @@ buildscript {
 }
 
 apply plugin: "java"
-apply plugin: "maven"
-apply plugin: "org.jetbrains.intellij"
+//apply plugin: "maven"
+//apply plugin: "org.jetbrains.intellij"
 apply plugin: "org.jetbrains.kotlin.jvm"
 
 group "com.uber.rib"
@@ -22,20 +22,20 @@ dependencies {
     implementation deps.external.guavaAndroid
     implementation deps.androidx.annotations
 
-    testCompile(project(":libraries:rib-base")) {
+    testImplementation(project(":libraries:rib-base")) {
         transitive = false
     }
     compileOnly(project(path: ":libraries:rib-android", configuration: 'default')) {
         transitive = false
     }
 
-    testCompile(project(":libraries:rib-test")) {
+    testImplementation(project(":libraries:rib-test")) {
         transitive = false
     }
-    testCompile(project(":libraries:rib-compiler-app")) {
+    testImplementation(project(":libraries:rib-compiler-app")) {
         transitive = false
     }
-    testCompile(project(":libraries:rib-compiler-test")) {
+    testImplementation(project(":libraries:rib-compiler-test")) {
         transitive = false
     }
     testImplementation deps.apt.daggerCompiler
@@ -61,37 +61,37 @@ def isReleaseBuild() {
 ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
 version = pluginXml.version
 
-intellij {
-    plugins = ['java', 'Kotlin' ]
-    version deps.versions.intellij
-    pluginName "UberRIBPresidioPlugin"
-    updateSinceUntilBuild false
-    sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
-    downloadSources false
-}
+//intellij {
+//    plugins = ['java', 'Kotlin' ]
+//    version deps.versions.intellij
+//    pluginName "UberRIBPresidioPlugin"
+//    updateSinceUntilBuild false
+//    sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
+//    downloadSources false
+//}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = "sources"
     from sourceSets.main.allSource
 }
 
-afterEvaluate {
-    artifacts {
-        archives sourcesJar
-        archives project.tasks.getByName("buildPlugin")
-    }
-}
-
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
-            if (isReleaseBuild() && hasMavenCredentials()) {
-                repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
-                    authentication(userName: mavenUser, password: mavenPassword)
-                }
-            }
-        }
-    }
-}
-build.dependsOn uploadArchives
+//afterEvaluate {
+//    artifacts {
+//        archives sourcesJar
+//        archives project.tasks.getByName("buildPlugin")
+//    }
+//}
+//
+//uploadArchives {
+//    repositories {
+//        mavenDeployer {
+//            repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
+//            if (isReleaseBuild() && hasMavenCredentials()) {
+//                repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
+//                    authentication(userName: mavenUser, password: mavenPassword)
+//                }
+//            }
+//        }
+//    }
+//}
+//build.dependsOn uploadArchives

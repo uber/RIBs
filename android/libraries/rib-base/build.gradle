@@ -53,7 +53,7 @@ dependencies {
     testImplementation deps.test.mockito
     testImplementation deps.test.mockitoKotlin
     testImplementation deps.test.truth
-    testCompile(project(":libraries:rib-test")) {
+    testImplementation(project(":libraries:rib-test")) {
         transitive = false
     }
 }

@@ -93,6 +93,7 @@ subprojects {
     }
 
     afterEvaluate {
+        boolean isAndroidApp = project.plugins.hasPlugin("com.android.application")
         boolean isAndroidLibrary = project.plugins.hasPlugin("com.android.library")
         boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
         boolean usesErrorProne = project.name in useErrorProneProjects
@@ -160,7 +161,7 @@ subprojects {
                 def friendPath="${project.rootDir}/libraries/${moduleFriends[project.name]}/$outputJarPath"
                 extraCompilerArgs.add("-Xfriend-paths=$friendPath")
             }
-            if (isAndroidLibrary) {
+            if (isAndroidLibrary || isAndroidApp) {
                 project.android.sourceSets {
                     main.java.srcDirs += 'src/main/kotlin'
                     test.java.srcDirs += 'src/test/kotlin'
@@ -195,4 +196,4 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-apply from: rootProject.file('gradle/japicmp.gradle')
+//apply from: rootProject.file('gradle/japicmp.gradle')

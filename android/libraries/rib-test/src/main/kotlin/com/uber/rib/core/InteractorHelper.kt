@@ -39,9 +39,9 @@ object InteractorHelper {
     router: R,
     savedInstanceState: Bundle?
   ) {
-    interactor.actualPresenter = presenter
-    interactor.setRouterInternal(router)
-    interactor.dispatchAttach(savedInstanceState)
+//    interactor.actualPresenter = presenter
+//    interactor.setRouterInternal(router)
+//    interactor.dispatchAttach(savedInstanceState)
   }
 
   /**

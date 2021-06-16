@@ -18,9 +18,9 @@ package com.uber.rib.core
 @SuppressWarnings("RibInteractorOnIteractor")
 open class FakeInteractor<P : Any, R : Router<*>> : Interactor<P, R>() {
   open fun attach() {
-    actualPresenter = FakePresenter() as P
-    router = FakeRouter(this) as R
-    dispatchAttach(null)
+//    actualPresenter = FakePresenter() as P
+//    router = FakeRouter(this) as R
+//    dispatchAttach(null)
   }
 
   open fun detach() {
