@@ -20,22 +20,21 @@ import com.uber.debug.broadcast.core.DebugBroadcastReceiver;
 import com.uber.debug.broadcast.rib.RibHierarchyDebugBroadcastHandler;
 import com.uber.rib.core.RibEvents;
 import com.uber.rib.intellij.BuildConfig;
-
 import java.util.Arrays;
 
 public class SampleApplication extends Application {
 
-    @Override
-    public void onCreate() {
-        super.onCreate();
+  @Override
+  public void onCreate() {
+    super.onCreate();
 
-        // Enable IntelliJ RIB tree plugin extension
-        if (BuildConfig.DEBUG) {
-            DebugBroadcastReceiver.initWithDefaults(
-                    this,
-                    Arrays.asList(
-                            new RibHierarchyDebugBroadcastHandler(
-                                    getApplicationContext(), RibEvents.getInstance().getEvents())));
-        }
+    // Enable IntelliJ RIB tree plugin extension
+    if (BuildConfig.DEBUG) {
+      DebugBroadcastReceiver.initWithDefaults(
+          this,
+          Arrays.asList(
+              new RibHierarchyDebugBroadcastHandler(
+                  getApplicationContext(), RibEvents.getInstance().getEvents())));
     }
+  }
 }
