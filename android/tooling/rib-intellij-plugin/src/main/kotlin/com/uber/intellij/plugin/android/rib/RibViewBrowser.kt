@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -47,10 +47,10 @@ import kotlin.Comparator
 /** UI component used to render tree of Ribs. */
 @SuppressWarnings("TooManyFunctions")
 class RibViewBrowser(
-    project: Project,
-    private val model: Model,
-    private val rootElement: PsiElement,
-    private val selectionListener: Listener?
+  project: Project,
+  private val model: Model,
+  private val rootElement: PsiElement,
+  private val selectionListener: Listener?
 ) : HierarchyBrowserBase(project, rootElement) {
 
   companion object {
@@ -76,11 +76,11 @@ class RibViewBrowser(
    * @param selectedViewId the view ID of the view selected by user (if any)
    */
   data class Model(
-      val ribNode: RibNode,
-      val ribView: RibView,
-      val rootRib: RibNode,
-      val selectedRibId: String = "",
-      val selectedViewId: String = ""
+    val ribNode: RibNode,
+    val ribView: RibView,
+    val rootRib: RibNode,
+    val selectedRibId: String = "",
+    val selectedViewId: String = ""
   )
 
   private var hasFocus: Boolean = false
@@ -132,11 +132,11 @@ class RibViewBrowser(
   }
 
   override fun createHierarchyTreeStructure(
-      typeName: String,
-      psiElement: PsiElement
+    typeName: String,
+    psiElement: PsiElement
   ): HierarchyTreeStructure? {
     val rootDescriptor =
-        RibViewRootNodeDescriptor(project, psiElement, model.ribNode, model.ribView)
+      RibViewRootNodeDescriptor(project, psiElement, model.ribNode, model.ribView)
     return RibHierarchyTreeStructure(project, rootDescriptor)
   }
 
@@ -144,16 +144,16 @@ class RibViewBrowser(
     super.configureTree(tree)
 
     tree.addFocusListener(
-        object : FocusListener {
-          override fun focusLost(e: FocusEvent?) {
-            hasFocus = false
-          }
+      object : FocusListener {
+        override fun focusLost(e: FocusEvent?) {
+          hasFocus = false
+        }
 
-          override fun focusGained(e: FocusEvent?) {
-            hasFocus = true
-            notifySelectedViewChanged()
-          }
-        })
+        override fun focusGained(e: FocusEvent?) {
+          hasFocus = true
+          notifySelectedViewChanged()
+        }
+      })
 
     tree.addTreeSelectionListener { notifySelectedViewChanged() }
 
@@ -162,9 +162,10 @@ class RibViewBrowser(
       expandAll()
       if (model.selectedViewId.isNotEmpty() && this.model.ribNode.id == this.model.selectedRibId) {
         val ribView: RibView =
-            RibHierarchyUtils.findRibViewRecursive(
-                this.model.rootRib.view, UUID.fromString(model.selectedViewId))
-                ?: return@invokeLater
+          RibHierarchyUtils.findRibViewRecursive(
+            this.model.rootRib.view, UUID.fromString(model.selectedViewId)
+          )
+            ?: return@invokeLater
         selectionListener?.onSelectedViewChanged(ribView)
 
         ApplicationManager.getApplication().invokeLater { selectById(model.selectedViewId) }
@@ -178,8 +179,9 @@ class RibViewBrowser(
     if (node is DefaultMutableTreeNode && hasFocus) {
       val descriptor = node.userObject
       if (descriptor is RibViewNodeDescriptor &&
-          descriptor.ribView != null &&
-          descriptor.ribView.id.isNotEmpty()) {
+        descriptor.ribView != null &&
+        descriptor.ribView.id.isNotEmpty()
+      ) {
         selectionListener?.onSelectedViewChanged(descriptor.ribView)
       }
     }

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -54,9 +54,9 @@ object CommandLineUtils {
    * @throws IOException
    */
   fun executeWithLineOutput(
-      project: Project,
-      command: String,
-      vararg params: String
+    project: Project,
+    command: String,
+    vararg params: String
   ): ProcessOutput {
 
     val commandLine = GeneralCommandLine(command)
@@ -69,7 +69,8 @@ object CommandLineUtils {
     process.waitFor()
 
     return ProcessOutput(
-        consumeInputStream(process.inputStream), consumeInputStream(process.errorStream))
+      consumeInputStream(process.inputStream), consumeInputStream(process.errorStream)
+    )
   }
 
   private fun consumeInputStream(inputStream: InputStream?): List<String> {

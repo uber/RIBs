@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +28,10 @@ import com.android.ddmlib.IDevice
  * @param numRetries the number of retires to use for this request
  */
 open class Request<T>(
-    val device: IDevice,
-    val command: String,
-    val clazz: Class<T>,
-    val params: List<Pair<String, Any>> = emptyList(),
-    val timeoutMs: Int = 2000,
-    val numRetries: Int = 1
+  val device: IDevice,
+  val command: String,
+  val clazz: Class<T>,
+  val params: List<Pair<String, Any>> = emptyList(),
+  val timeoutMs: Int = 2000,
+  val numRetries: Int = 1
 )

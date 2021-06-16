@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -45,7 +45,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class RibProjectComponent(val project: Project) :
-    ProjectComponent, AndroidDeviceRepositoryComponent.Listener {
+  ProjectComponent, AndroidDeviceRepositoryComponent.Listener {
 
   companion object {
     private const val TOOL_WINDOW_ID: String = "Ribs"
@@ -54,7 +54,7 @@ class RibProjectComponent(val project: Project) :
     private const val LABEL_RIB_REFRESH: String = "Refreshing Rib Hierarchy..."
     private const val LABEL_RIB_LOCATE: String = "Waiting for RIB selection on Device..."
     private val EMPTY_MODEL: RibHierarchyBrowser.Model =
-        RibHierarchyBrowser.Model(RibHost("", null), "", "")
+      RibHierarchyBrowser.Model(RibHost("", null), "", "")
     private val executor: Executor = Executors.newSingleThreadExecutor()
 
     fun getInstance(project: Project): RibProjectComponent {
@@ -93,31 +93,32 @@ class RibProjectComponent(val project: Project) :
       val device: IDevice = selectedDevice ?: return
       isRefreshing = true
       ProgressManager.getInstance()
-          .run(
-              object : Task.Backgroundable(project, LABEL_RIB_REFRESH) {
-                override fun run(indicator: ProgressIndicator) {
-                  ApplicationManager.getApplication().invokeLater {
-                    val request: Request<RibHierarchyResponse> = RibHierarchyRequest(device)
-                    val future = LogcatRequestProcessor().execute(request)
-                    Futures.addCallback(
-                        future,
-                        object : FutureCallback<RibHierarchyResponse> {
-                          override fun onSuccess(result: RibHierarchyResponse?) {
-                            val host: RibHost = result?.payload ?: return
-                            val model = RibHierarchyBrowser.Model(host)
-                            onModelUpdated(model)
-                            isRefreshing = false
-                          }
+        .run(
+          object : Task.Backgroundable(project, LABEL_RIB_REFRESH) {
+            override fun run(indicator: ProgressIndicator) {
+              ApplicationManager.getApplication().invokeLater {
+                val request: Request<RibHierarchyResponse> = RibHierarchyRequest(device)
+                val future = LogcatRequestProcessor().execute(request)
+                Futures.addCallback(
+                  future,
+                  object : FutureCallback<RibHierarchyResponse> {
+                    override fun onSuccess(result: RibHierarchyResponse?) {
+                      val host: RibHost = result?.payload ?: return
+                      val model = RibHierarchyBrowser.Model(host)
+                      onModelUpdated(model)
+                      isRefreshing = false
+                    }
 
-                          override fun onFailure(throwable: Throwable) {
-                            onModelUpdated(EMPTY_MODEL)
-                            isRefreshing = false
-                          }
-                        },
-                        executor)
-                  }
-                }
-              })
+                    override fun onFailure(throwable: Throwable) {
+                      onModelUpdated(EMPTY_MODEL)
+                      isRefreshing = false
+                    }
+                  },
+                  executor
+                )
+              }
+            }
+          })
     }
   }
 
@@ -142,37 +143,39 @@ class RibProjectComponent(val project: Project) :
 
     val device: IDevice = selectedDevice ?: return
     ProgressManager.getInstance()
-        .run(
-            object : Task.Backgroundable(project, LABEL_RIB_LOCATE) {
-              override fun run(indicator: ProgressIndicator) {
-                ApplicationManager.getApplication().invokeLater {
-                  isLocating = true
-                  val request: Request<RibHierarchyWithSelectionResponse> =
-                      EnableLocateModeRequest(device, true)
-                  val future = LogcatRequestProcessor().execute(request)
-                  Futures.addCallback(
-                      future,
-                      object : FutureCallback<RibHierarchyWithSelectionResponse> {
-                        override fun onSuccess(result: RibHierarchyWithSelectionResponse?) {
-                          isLocating = false
-                          val payload: RibHostWithSelection = result?.payload ?: return
-                          val model =
-                              RibHierarchyBrowser.Model(
-                                  RibHost(payload.name, payload.application),
-                                  payload.selectedRibId,
-                                  payload.selectedViewId)
-                          onModelUpdated(model)
-                        }
+      .run(
+        object : Task.Backgroundable(project, LABEL_RIB_LOCATE) {
+          override fun run(indicator: ProgressIndicator) {
+            ApplicationManager.getApplication().invokeLater {
+              isLocating = true
+              val request: Request<RibHierarchyWithSelectionResponse> =
+                EnableLocateModeRequest(device, true)
+              val future = LogcatRequestProcessor().execute(request)
+              Futures.addCallback(
+                future,
+                object : FutureCallback<RibHierarchyWithSelectionResponse> {
+                  override fun onSuccess(result: RibHierarchyWithSelectionResponse?) {
+                    isLocating = false
+                    val payload: RibHostWithSelection = result?.payload ?: return
+                    val model =
+                      RibHierarchyBrowser.Model(
+                        RibHost(payload.name, payload.application),
+                        payload.selectedRibId,
+                        payload.selectedViewId
+                      )
+                    onModelUpdated(model)
+                  }
 
-                        override fun onFailure(throwable: Throwable) {
-                          isLocating = false
-                          LogcatRequestProcessor().execute(EnableLocateModeRequest(device, false))
-                        }
-                      },
-                      executor)
-                }
-              }
-            })
+                  override fun onFailure(throwable: Throwable) {
+                    isLocating = false
+                    LogcatRequestProcessor().execute(EnableLocateModeRequest(device, false))
+                  }
+                },
+                executor
+              )
+            }
+          }
+        })
   }
 
   fun selectDevice(device: IDevice?) {
@@ -209,7 +212,7 @@ class RibProjectComponent(val project: Project) :
       val toolWindowManager: ToolWindowManager = ToolWindowManager.getInstance(project)
       if (toolWindowManager.getToolWindow(TOOL_WINDOW_ID) == null) {
         val toolWindow: ToolWindow =
-            toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, true, ToolWindowAnchor.RIGHT)
+          toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, true, ToolWindowAnchor.RIGHT)
         toolWindow.setIcon(IconLoader.getIcon("/icons/rib.png"))
         toolWindow.title = TOOL_WINDOW_TITLE
 

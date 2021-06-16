@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -48,7 +48,6 @@ import com.uber.intellij.plugin.android.rib.ui.RibHierarchyRootNodeDescriptor
 import com.uber.intellij.plugin.android.rib.ui.RibHierarchyTreeStructure
 import java.text.MessageFormat
 import java.util.UUID
-import javax.swing.Icon
 import javax.swing.JPanel
 import javax.swing.JTree
 import javax.swing.tree.DefaultMutableTreeNode
@@ -56,10 +55,10 @@ import javax.swing.tree.DefaultMutableTreeNode
 /** UI component used to render tree of Ribs. */
 @SuppressWarnings("TooManyFunctions")
 class RibHierarchyBrowser(
-    project: Project,
-    initialModel: Model,
-    private val rootElement: PsiElement,
-    private val selectionListener: Listener?
+  project: Project,
+  initialModel: Model,
+  private val rootElement: PsiElement,
+  private val selectionListener: Listener?
 ) : HierarchyBrowserBase(project, rootElement) {
 
   companion object {
@@ -75,7 +74,7 @@ class RibHierarchyBrowser(
     private const val ENABLE_LOCATE_MODE: String = "Enable selecting RIB on device"
 
     private const val LOCATE_VIEW: String =
-        "Please click on the UI element on your<br>" + "emulator/device locate it."
+      "Please click on the UI element on your<br>" + "emulator/device locate it."
     private val DATA_KEY = DataKey.create<RibHierarchyBrowser>(RibHierarchyBrowser::class.java.name)
   }
 
@@ -95,9 +94,9 @@ class RibHierarchyBrowser(
    * @param selectedViewId the view ID of the view selected by user (if any)
    */
   data class Model(
-      val host: RibHost,
-      val selectedRibId: String = "",
-      val selectedViewId: String = ""
+    val host: RibHost,
+    val selectedRibId: String = "",
+    val selectedViewId: String = ""
   )
 
   private var status: Status = Status.UNINITIALIZED
@@ -169,13 +168,14 @@ class RibHierarchyBrowser(
   }
 
   override fun createHierarchyTreeStructure(
-      typeName: String,
-      psiElement: PsiElement
+    typeName: String,
+    psiElement: PsiElement
   ): HierarchyTreeStructure? {
     if (psiElement == rootElement) {
       val rootDescriptor =
-          RibHierarchyRootNodeDescriptor(
-              project, getPsiClass(project, model.host.name), model.host, status)
+        RibHierarchyRootNodeDescriptor(
+          project, getPsiClass(project, model.host.name), model.host, status
+        )
       return RibHierarchyTreeStructure(project, rootDescriptor)
     }
     return null
@@ -240,10 +240,11 @@ class RibHierarchyBrowser(
   }
 
   private inner class RefreshAction internal constructor() :
-      com.intellij.ide.actions.RefreshAction(
-          IdeBundle.message("action.refresh"),
-          IdeBundle.message("action.refresh"),
-          AllIcons.Actions.Refresh) {
+    com.intellij.ide.actions.RefreshAction(
+      IdeBundle.message("action.refresh"),
+      IdeBundle.message("action.refresh"),
+      AllIcons.Actions.Refresh
+    ) {
 
     override fun actionPerformed(e: AnActionEvent) {
       doRefresh(false)
@@ -257,7 +258,7 @@ class RibHierarchyBrowser(
   }
 
   private inner class LocateAction internal constructor() :
-      AnAction(ENABLE_LOCATE_MODE, ENABLE_LOCATE_MODE, AllIcons.General.Locate) {
+    AnAction(ENABLE_LOCATE_MODE, ENABLE_LOCATE_MODE, AllIcons.General.Locate) {
 
     private var popupDisplayed = false
 
@@ -276,10 +277,11 @@ class RibHierarchyBrowser(
   }
 
   private inner class HelpAction internal constructor() :
-      AnAction(
-          IdeBundle.message("action.help"),
-          IdeBundle.message("action.help"),
-          AllIcons.General.TodoQuestion) {
+    AnAction(
+      IdeBundle.message("action.help"),
+      IdeBundle.message("action.help"),
+      AllIcons.General.TodoQuestion
+    ) {
 
     override fun actionPerformed(e: AnActionEvent) {
       BrowserUtil.open("https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android")

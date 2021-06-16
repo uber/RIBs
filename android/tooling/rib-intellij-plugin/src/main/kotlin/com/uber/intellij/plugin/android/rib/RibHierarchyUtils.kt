@@ -1,3 +1,18 @@
+/*
+ * Copyright (C) 2021. Uber Technologies
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.uber.intellij.plugin.android.rib
 
 /*
@@ -59,8 +74,8 @@ class RibHierarchyUtils {
     /** Build root element, used when class is not available. */
     fun buildRootElement(project: Project): PsiClass {
       val psiClass: PsiClass? =
-          JavaPsiFacade.getInstance(project)
-              .findClass(Object::class.java.name, GlobalSearchScope.allScope(project))
+        JavaPsiFacade.getInstance(project)
+          .findClass(Object::class.java.name, GlobalSearchScope.allScope(project))
       checkNotNull(psiClass)
       return psiClass!!
     }
@@ -68,7 +83,7 @@ class RibHierarchyUtils {
     /** Return the psiClass corresponding to the given class name. */
     fun getPsiClass(project: Project, name: String): PsiClass {
       val psiClass: PsiClass? =
-          JavaPsiFacade.getInstance(project).findClass(name, GlobalSearchScope.allScope(project))
+        JavaPsiFacade.getInstance(project).findClass(name, GlobalSearchScope.allScope(project))
       return psiClass ?: buildRootElement(project)
     }
 
@@ -145,21 +160,21 @@ class RibHierarchyUtils {
     /** Returns whether virtual file belongs to project and appears to be a layout file */
     fun isProjectLayoutFile(project: Project, file: VirtualFile): Boolean {
       return ProjectRootManager.getInstance(project).fileIndex.isInContent(file) &&
-          file.fileType is XmlFileType &&
-          file.path.contains("/$LAYOUT_FOLDER_NAME/")
+        file.fileType is XmlFileType &&
+        file.path.contains("/$LAYOUT_FOLDER_NAME/")
     }
 
     /** Display popup balloon. */
     fun displayPopup(
-        message: String,
-        location: RelativePoint,
-        type: MessageType = MessageType.WARNING
+      message: String,
+      location: RelativePoint,
+      type: MessageType = MessageType.WARNING
     ) {
       JBPopupFactory.getInstance()
-          .createHtmlTextBalloonBuilder(message, type, null)
-          .setFadeoutTime(BALLOON_FADE_OUT_TIME)
-          .createBalloon()
-          .show(location, Balloon.Position.above)
+        .createHtmlTextBalloonBuilder(message, type, null)
+        .setFadeoutTime(BALLOON_FADE_OUT_TIME)
+        .createBalloon()
+        .show(location, Balloon.Position.above)
     }
 
     /** Display notification bubble. */

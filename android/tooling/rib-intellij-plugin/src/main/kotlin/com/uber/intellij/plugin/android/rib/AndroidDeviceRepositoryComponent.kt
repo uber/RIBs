@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeoutException
 
 /** IntelliJ Project component responsible for exposing connected Android devices. */
 class AndroidDeviceRepositoryComponent(val project: Project) :
-    ProjectComponent, AndroidDebugBridge.IDeviceChangeListener {
+  ProjectComponent, AndroidDebugBridge.IDeviceChangeListener {
 
   companion object {
     private const val timeOutMs: Long = 5
@@ -80,8 +80,8 @@ class AndroidDeviceRepositoryComponent(val project: Project) :
 
     private fun isInitialized(): Boolean {
       return AndroidDebugBridge.getBridge() != null &&
-          AndroidDebugBridge.getBridge().isConnected &&
-          AndroidDebugBridge.getBridge().hasInitialDeviceList()
+        AndroidDebugBridge.getBridge().isConnected &&
+        AndroidDebugBridge.getBridge().hasInitialDeviceList()
     }
   }
 

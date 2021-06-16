@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -37,7 +37,7 @@ import javax.swing.tree.TreeSelectionModel
  * searching for given scope(s) in the entire graph hierarchy (which can be pretty large).
  */
 abstract class HierarchyBrowserBase(val project: Project, private val rootElement: PsiElement) :
-    HierarchyBrowserBaseEx(project, rootElement) {
+  HierarchyBrowserBaseEx(project, rootElement) {
 
   override fun doRefresh(currentBuilderOnly: Boolean) {
     ApplicationManager.getApplication().invokeLater {
@@ -57,15 +57,15 @@ abstract class HierarchyBrowserBase(val project: Project, private val rootElemen
     TreeSpeedSearch(tree, { path -> path.lastPathComponent.toString() }, true)
     TreeUtil.installActions(tree)
     object : AutoScrollToSourceHandler() {
-          override fun isAutoScrollMode(): Boolean {
-            return HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE
-          }
+      override fun isAutoScrollMode(): Boolean {
+        return HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE
+      }
 
-          override fun setAutoScrollMode(state: Boolean) {
-            HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE = state
-          }
-        }
-        .install(tree)
+      override fun setAutoScrollMode(state: Boolean) {
+        HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE = state
+      }
+    }
+      .install(tree)
   }
 
   /** Refresh completion callback. */
@@ -79,20 +79,21 @@ abstract class HierarchyBrowserBase(val project: Project, private val rootElemen
   /** Select a given item in the hierarchy, based on provided id. */
   fun selectById(id: String) {
     TreeUtil.promiseSelect(
-        currentTree,
-        object : TreeVisitor {
-          override fun visit(path: TreePath): TreeVisitor.Action {
-            if (path.lastPathComponent is DefaultMutableTreeNode) {
-              val node: DefaultMutableTreeNode = path.lastPathComponent as DefaultMutableTreeNode
-              if (node.userObject is RibHierarchyDescriptor) {
-                val descriptor = node.userObject as RibHierarchyDescriptor
-                if (descriptor.getUniqueId() == id) {
-                  return TreeVisitor.Action.INTERRUPT
-                }
+      currentTree,
+      object : TreeVisitor {
+        override fun visit(path: TreePath): TreeVisitor.Action {
+          if (path.lastPathComponent is DefaultMutableTreeNode) {
+            val node: DefaultMutableTreeNode = path.lastPathComponent as DefaultMutableTreeNode
+            if (node.userObject is RibHierarchyDescriptor) {
+              val descriptor = node.userObject as RibHierarchyDescriptor
+              if (descriptor.getUniqueId() == id) {
+                return TreeVisitor.Action.INTERRUPT
               }
             }
-            return TreeVisitor.Action.CONTINUE
           }
-        })
+          return TreeVisitor.Action.CONTINUE
+        }
+      }
+    )
   }
 }

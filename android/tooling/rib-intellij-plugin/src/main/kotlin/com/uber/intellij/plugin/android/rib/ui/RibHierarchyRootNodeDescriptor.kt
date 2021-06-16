@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -27,16 +27,16 @@ import javax.swing.Icon
 
 /** Node descriptor used to render tree roots. */
 class RibHierarchyRootNodeDescriptor(
-    val nonNullProject: Project,
-    element: PsiElement,
-    val ribHost: RibHost,
-    private val status: RibHierarchyBrowser.Status
+  val nonNullProject: Project,
+  element: PsiElement,
+  val ribHost: RibHost,
+  private val status: RibHierarchyBrowser.Status
 ) : RibHierarchyDescriptor(nonNullProject, null, element, true) {
 
   companion object {
     /** Label used when android bridge is not connected */
     const val LABEL_NO_BRIDGE: String =
-        "No Android bridge. Make sure Android SDK is configured for this project."
+      "No Android bridge. Make sure Android SDK is configured for this project."
 
     /** Label used when no device is connected. */
     const val LABEL_NO_DEVICE: String = "No Android device connected..."
@@ -46,7 +46,7 @@ class RibHierarchyRootNodeDescriptor(
 
     /** Label used when no no Rib info could be fetched from device. */
     const val LABEL_ERROR: String =
-        "No RIB info available. Make sure RIB app is running in foreground, then refresh."
+      "No RIB info available. Make sure RIB app is running in foreground, then refresh."
   }
 
   override fun updateText(text: CompositeAppearance) {

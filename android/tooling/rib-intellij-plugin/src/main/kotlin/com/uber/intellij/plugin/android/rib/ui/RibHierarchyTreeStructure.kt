@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,7 +22,7 @@ import com.uber.intellij.plugin.android.rib.RibHierarchyUtils
 
 /** Tree structure used by Rib hierarchy */
 class RibHierarchyTreeStructure(private val project: Project, descriptor: HierarchyNodeDescriptor) :
-    HierarchyTreeStructure(project, descriptor) {
+  HierarchyTreeStructure(project, descriptor) {
 
   init {
     setBaseElement(descriptor)
@@ -34,59 +34,71 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
       is RibHierarchyRootNodeDescriptor -> {
         descriptor.ribHost.application?.let {
           descriptors.add(
-              RibHierarchyApplicationDescriptor(
-                  myProject,
-                  descriptor,
-                  RibHierarchyUtils.getPsiClass(project, descriptor.ribHost.name),
-                  it))
+            RibHierarchyApplicationDescriptor(
+              myProject,
+              descriptor,
+              RibHierarchyUtils.getPsiClass(project, descriptor.ribHost.name),
+              it
+            )
+          )
         }
       }
       is RibHierarchyApplicationDescriptor -> {
         descriptor.ribApplication.activities.forEach { activity ->
           descriptors.add(
-              RibHierarchyActivityDescriptor(
-                  myProject,
-                  descriptor,
-                  RibHierarchyUtils.getPsiClass(project, activity.name),
-                  activity))
+            RibHierarchyActivityDescriptor(
+              myProject,
+              descriptor,
+              RibHierarchyUtils.getPsiClass(project, activity.name),
+              activity
+            )
+          )
         }
       }
       is RibHierarchyActivityDescriptor -> {
         descriptors.add(
-            RibHierarchyNodeDescriptor(
-                myProject,
-                descriptor,
-                RibHierarchyUtils.getPsiClass(project, descriptor.ribActivity.name),
-                descriptor.ribActivity.rootRib))
+          RibHierarchyNodeDescriptor(
+            myProject,
+            descriptor,
+            RibHierarchyUtils.getPsiClass(project, descriptor.ribActivity.name),
+            descriptor.ribActivity.rootRib
+          )
+        )
       }
       is RibHierarchyNodeDescriptor -> {
         descriptor.ribNode.children.forEach { childRibNode ->
           descriptors.add(
-              RibHierarchyNodeDescriptor(
-                  myProject,
-                  descriptor,
-                  RibHierarchyUtils.getPsiClass(project, childRibNode.name),
-                  childRibNode))
+            RibHierarchyNodeDescriptor(
+              myProject,
+              descriptor,
+              RibHierarchyUtils.getPsiClass(project, childRibNode.name),
+              childRibNode
+            )
+          )
         }
       }
       is RibViewRootNodeDescriptor -> {
         descriptor.ribView?.children?.forEach { view ->
           descriptors.add(
-              RibViewNodeDescriptor(
-                  myProject,
-                  RibHierarchyUtils.getPsiClass(project, view.id),
-                  descriptor.ribNode,
-                  view))
+            RibViewNodeDescriptor(
+              myProject,
+              RibHierarchyUtils.getPsiClass(project, view.id),
+              descriptor.ribNode,
+              view
+            )
+          )
         }
       }
       is RibViewNodeDescriptor -> {
         descriptor.ribView?.children?.forEach { view ->
           descriptors.add(
-              RibViewNodeDescriptor(
-                  myProject,
-                  RibHierarchyUtils.getPsiClass(project, view.id),
-                  descriptor.ribNode,
-                  view))
+            RibViewNodeDescriptor(
+              myProject,
+              RibHierarchyUtils.getPsiClass(project, view.id),
+              descriptor.ribNode,
+              view
+            )
+          )
         }
       }
     }

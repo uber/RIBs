@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -28,10 +28,10 @@ import javax.swing.Icon
 
 /** Base class for all tree node descriptors used in Rib IntelliJ plugin. */
 open class RibHierarchyDescriptor(
-    project: Project,
-    val parentDescriptor: HierarchyNodeDescriptor?,
-    val element: PsiElement,
-    isBase: Boolean
+  project: Project,
+  val parentDescriptor: HierarchyNodeDescriptor?,
+  val element: PsiElement,
+  isBase: Boolean
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
 
   /** Method to set text of the node entry. */

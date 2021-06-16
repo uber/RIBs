@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,10 +33,10 @@ import java.awt.Font
  * @param ribView the rib view corresponding to this descriptor
  */
 class RibViewRootNodeDescriptor(
-    private val nonNullProject: Project,
-    element: PsiElement,
-    ribNode: RibNode,
-    ribView: RibView?
+  private val nonNullProject: Project,
+  element: PsiElement,
+  ribNode: RibNode,
+  ribView: RibView?
 ) : RibViewNodeDescriptor(nonNullProject, element, ribNode, ribView) {
 
   override fun updateText(text: CompositeAppearance) {
@@ -45,8 +45,9 @@ class RibViewRootNodeDescriptor(
       return
     }
     text.ending.addText(
-        RibHierarchyUtils.formatSimpleName(ribNode.name).replace("Router", "View"),
-        getDefaultTextAttributes())
+      RibHierarchyUtils.formatSimpleName(ribNode.name).replace("Router", "View"),
+      getDefaultTextAttributes()
+    )
     if (ribView != null && ribView.layoutId.isNotEmpty()) {
       val boldFont = TextAttributes(myColor, null, null, null, Font.BOLD)
       text.ending.addText(" [layout/${ribView.layoutId}.xml]", boldFont)

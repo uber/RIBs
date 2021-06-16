@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,10 +35,10 @@ import javax.swing.Icon
  * @param ribView the rib view corresponding to this descriptor
  */
 open class RibViewNodeDescriptor(
-    project: Project,
-    element: PsiElement,
-    val ribNode: RibNode,
-    val ribView: RibView?
+  project: Project,
+  element: PsiElement,
+  val ribNode: RibNode,
+  val ribView: RibView?
 ) : RibHierarchyDescriptor(project, null, element, false) {
 
   override fun updateText(text: CompositeAppearance) {
@@ -56,7 +56,8 @@ open class RibViewNodeDescriptor(
 
     if (ribView.name.isNotEmpty()) {
       text.ending.addText(
-          " (${RibHierarchyUtils.formatQualifiedName(ribView.name)})", getPackageNameAttributes())
+        " (${RibHierarchyUtils.formatQualifiedName(ribView.name)})", getPackageNameAttributes()
+      )
     }
   }
 

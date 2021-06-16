@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -35,10 +35,10 @@ data class RibActivity(val name: String, val rootRib: RibNode)
  * @param view the view for this rib node
  */
 data class RibNode(
-    val id: String,
-    val name: String,
-    val children: List<RibNode>,
-    val view: RibView
+  val id: String,
+  val name: String,
+  val children: List<RibNode>,
+  val view: RibView
 )
 
 /**
@@ -51,11 +51,11 @@ data class RibNode(
  * @param children the list of children for this view
  */
 data class RibView(
-    val id: String,
-    val name: String,
-    val viewId: String,
-    val layoutId: String,
-    val children: List<RibView>
+  val id: String,
+  val name: String,
+  val viewId: String,
+  val layoutId: String,
+  val children: List<RibView>
 )
 
 /** Data class representing the response of the Rib hierarchy request. */
@@ -63,4 +63,4 @@ data class RibHierarchyResponse(val host: RibHost) : Response<RibHost>()
 
 /** Data class representing the request for a Rib hierarchy. */
 class RibHierarchyRequest(device: IDevice) :
-    Request<RibHierarchyResponse>(device, "RIB_HIERARCHY", RibHierarchyResponse::class.java)
+  Request<RibHierarchyResponse>(device, "RIB_HIERARCHY", RibHierarchyResponse::class.java)

@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2018-2019 Uber Technologies, Inc.
+ * Copyright (C) 2018-2019. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -33,9 +33,9 @@ import java.util.concurrent.atomic.AtomicInteger
 class LogcatRequestProcessor : RequestProcessor {
   companion object {
     private const val SHELL_COMMAND_TEMPLATE: String =
-        "am broadcast -a com.uber.debug.intent.action.COMMAND --ei SEQ %d --es CMD %s"
+      "am broadcast -a com.uber.debug.intent.action.COMMAND --ei SEQ %d --es CMD %s"
     private const val LOGCAT_COMMAND_TEMPLATE: String =
-        "logcat -s DebugBroadcastReceiver[%d] -b main -d -v long -t 100"
+      "logcat -s DebugBroadcastReceiver[%d] -b main -d -v long -t 100"
     private const val PARAM_TEMPLATE: String = " --es %s %s"
     private const val ADB_BROADCAST_SUCCESS_MESSAGE: String = "Broadcast completed: result=0"
     private const val SLEEP_INCREMENT: Long = 100
@@ -44,7 +44,7 @@ class LogcatRequestProcessor : RequestProcessor {
 
     private val counter: AtomicInteger = AtomicInteger((Math.random() * MAX_SEQUENCE).toInt())
     private val service: ListeningExecutorService =
-        MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(THREAD_COUNT))
+      MoreExecutors.listeningDecorator(Executors.newFixedThreadPool(THREAD_COUNT))
     private val jsonParser: Gson = Gson()
   }
 
@@ -53,58 +53,59 @@ class LogcatRequestProcessor : RequestProcessor {
 
   override fun <T> execute(request: Request<T>): ListenableFuture<T> {
     return service.submit(
-        Callable<T> {
-          val sequence: Int = counter.getAndIncrement() % MAX_SEQUENCE
+      Callable<T> {
+        val sequence: Int = counter.getAndIncrement() % MAX_SEQUENCE
 
-          // Send command to Android device via intent broadcast
-          var shellCommand: String =
-              String.format(SHELL_COMMAND_TEMPLATE, sequence, request.command)
-          request.params.forEach {
-            shellCommand += String.format(PARAM_TEMPLATE, it.first, it.second)
-          }
-          val broadcastReceiver = StringMatchReceiver(ADB_BROADCAST_SUCCESS_MESSAGE)
-          request.device.executeShellCommand(shellCommand, broadcastReceiver)
+        // Send command to Android device via intent broadcast
+        var shellCommand: String =
+          String.format(SHELL_COMMAND_TEMPLATE, sequence, request.command)
+        request.params.forEach {
+          shellCommand += String.format(PARAM_TEMPLATE, it.first, it.second)
+        }
+        val broadcastReceiver = StringMatchReceiver(ADB_BROADCAST_SUCCESS_MESSAGE)
+        request.device.executeShellCommand(shellCommand, broadcastReceiver)
 
-          if (!broadcastReceiver.matched) {
-            error("Failed to broadcast intent")
-          }
+        if (!broadcastReceiver.matched) {
+          error("Failed to broadcast intent")
+        }
 
-          // Parse logcat for response in separate thread
-          val receiver = LogCatOutputReceiver(request.device, request.clazz, LogCatMessageParser())
-          val logCatCommand = String.format(LOGCAT_COMMAND_TEMPLATE, sequence)
-          request.device.executeShellCommand(logCatCommand, receiver)
+        // Parse logcat for response in separate thread
+        val receiver = LogCatOutputReceiver(request.device, request.clazz, LogCatMessageParser())
+        val logCatCommand = String.format(LOGCAT_COMMAND_TEMPLATE, sequence)
+        request.device.executeShellCommand(logCatCommand, receiver)
 
-          // .. and wait for result value to be set
-          var timeWaitingMs: Long = 0
-          var retryCount = 0
-          while (result == null) {
-            Thread.sleep(SLEEP_INCREMENT)
+        // .. and wait for result value to be set
+        var timeWaitingMs: Long = 0
+        var retryCount = 0
+        while (result == null) {
+          Thread.sleep(SLEEP_INCREMENT)
 
-            timeWaitingMs += SLEEP_INCREMENT
-            if (timeWaitingMs > request.timeoutMs) {
-              if (retryCount++ > request.numRetries) {
-                error("Timed out waiting for response to be output in logcat")
-              } else {
-                request.device.executeShellCommand(logCatCommand, receiver)
-                timeWaitingMs = 0
-              }
-            }
-            if (error != null) {
-              error("Response could not be parsed: $error")
+          timeWaitingMs += SLEEP_INCREMENT
+          if (timeWaitingMs > request.timeoutMs) {
+            if (retryCount++ > request.numRetries) {
+              error("Timed out waiting for response to be output in logcat")
+            } else {
+              request.device.executeShellCommand(logCatCommand, receiver)
+              timeWaitingMs = 0
             }
           }
-          val response: Response<*> = result as Response<*>
-          if (response.errorDescription?.isNotEmpty() == true) {
-            error("Command failed: ${response.errorDescription}")
+          if (error != null) {
+            error("Response could not be parsed: $error")
           }
-          result as T
-        })
+        }
+        val response: Response<*> = result as Response<*>
+        if (response.errorDescription?.isNotEmpty() == true) {
+          error("Command failed: ${response.errorDescription}")
+        }
+        result as T
+      }
+    )
   }
 
   private inner class LogCatOutputReceiver<T>(
-      private val device: IDevice,
-      private val clazz: Class<T>,
-      private val parser: LogCatMessageParser
+    private val device: IDevice,
+    private val clazz: Class<T>,
+    private val parser: LogCatMessageParser
   ) : MultiLineReceiver() {
 
     private val decoder: LogcatMessageDecoder = LogcatMessageDecoder()

@@ -1,5 +1,5 @@
 
-# RIB Demo: Flipper Debugging Tool
+# RIB Demo: RIBs Tree IntelliJ plugin.
 
 ## Goal
 
