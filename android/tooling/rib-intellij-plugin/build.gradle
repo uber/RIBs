@@ -62,7 +62,7 @@ ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.
 version = pluginXml.version
 
 intellij {
-    plugins = ['CheckStyle-IDEA:5.5.0', 'java', 'Kotlin' ]
+    plugins = ['java', 'Kotlin' ]
     version deps.versions.intellij
     pluginName "UberRIBPresidioPlugin"
     updateSinceUntilBuild false

@@ -24,7 +24,7 @@ def versions = [
     dagger: "2.28",
     errorProne: '2.3.3',
     gjf: '1.7',
-    intellij: "IC-2019.2",
+    intellij: "2019.2",
     kotlin: "1.4.21",
     ktfmt: '0.23',
     ktlint: '0.41.0',
