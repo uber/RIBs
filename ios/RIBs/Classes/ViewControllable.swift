@@ -17,7 +17,7 @@
 import UIKit
 
 /// Basic interface between a `Router` and the UIKit `UIViewController`.
-public protocol ViewControllable: class {
+public protocol ViewControllable: AnyObject {
 
     var uiviewController: UIViewController { get }
 }
