@@ -194,5 +194,3 @@ subprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
-
-apply from: rootProject.file('gradle/japicmp.gradle')
