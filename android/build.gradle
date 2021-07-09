@@ -155,7 +155,7 @@ subprojects {
                 def friendName = moduleFriends[project.name]
                 def friendProject = rootProject.subprojects.stream().filter { it.name == friendName }.findFirst().get()
                 def outputJarPath = friendProject.plugins.hasPlugin("com.android.library")
-                        ? "build/intermediates/compile_library_classes/release/classes.jar"
+                        ? "build/intermediates/compile_library_classes_jar/release/classes.jar"
                         : "build/libs/$friendName-${project.property('VERSION_NAME')}.jar"
                 def friendPath="${project.rootDir}/libraries/${moduleFriends[project.name]}/$outputJarPath"
                 extraCompilerArgs.add("-Xfriend-paths=$friendPath")
