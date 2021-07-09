@@ -37,10 +37,10 @@ public class RootInteractor extends Interactor<RootInteractor.RootPresenter, Roo
   class LoggedOutListener implements LoggedOutInteractor.Listener {
 
     @Override
-    public void login(String userNameA, String userNameB) {
+    public void requestLogin(String playerOne, String playerTwo) {
       // Switch to logged in. Let’s just ignore userName for now.
       getRouter().detachLoggedOut();
-      getRouter().attachLoggedIn();
+      getRouter().attachLoggedIn(playerOne, playerTwo);
     }
   }
 
