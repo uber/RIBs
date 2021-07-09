@@ -17,23 +17,17 @@ package com.uber.rib.root.logged_out;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 import com.jakewharton.rxbinding2.view.RxView;
-import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
 /** Top level view for {@link LoggedOutBuilder.LoggedOutScope}. */
 public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
-
-  private Button loginButton;
-  private EditText playerOneEditText;
-  private EditText playerTwoEditText;
 
   public LoggedOutView(Context context) {
     this(context, null);
@@ -47,24 +41,17 @@ public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.L
     super(context, attrs, defStyle);
   }
 
-  @Initializer
   @Override
-  protected void onFinishInflate() {
-    super.onFinishInflate();
-    playerOneEditText = (EditText) findViewById(R.id.player_one_name);
-    playerTwoEditText = (EditText) findViewById(R.id.player_two_name);
-    loginButton = (Button) findViewById(R.id.login_button);
-  }
-
-  @Override
-  public Observable<Pair<String, String>> playerNames() {
+  public Observable<Pair<String, String>> loginName() {
     return RxView.clicks(findViewById(R.id.login_button))
         .map(
             new Function<Object, Pair<String, String>>() {
               @Override
-              public Pair<String, String> apply(Object irrelevant) throws Exception {
-                return new Pair<>(
-                    playerOneEditText.getText().toString(), playerTwoEditText.getText().toString());
+              public Pair<String, String> apply(Object o) throws Exception {
+                TextView playerNameOne = (TextView) findViewById(R.id.player_name_1);
+                TextView playerNameTwo = (TextView) findViewById(R.id.player_name_2);
+                return Pair.create(
+                    playerNameOne.getText().toString(), playerNameTwo.getText().toString());
               }
             });
   }

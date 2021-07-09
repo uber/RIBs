@@ -46,19 +46,21 @@ public class LoggedOutInteractorTest extends RibTestBasePlaceholder {
 
   @Test
   public void attach_whenViewEmitsName_shouldCallListener() {
-    when(presenter.loginName()).thenReturn(Observable.just(Pair.create("fakename", "fakename")));
+    String fakeName1 = "1";
+    String fakeName2 = "2";
+    when(presenter.playerNames()).thenReturn(Observable.just(new Pair<>(fakeName1, fakeName2)));
 
     InteractorHelper.attach(interactor, presenter, router, null);
 
-    verify(listener).login(any(String.class), any(String.class));
+    verify(listener).requestLogin(any(String.class), any(String.class));
   }
 
   @Test
   public void attach_whenViewEmitsEmptyName_shouldNotCallListener() {
-    when(presenter.loginName()).thenReturn(Observable.just(Pair.create("", "")));
+    when(presenter.playerNames()).thenReturn(Observable.just(new Pair<String, String>("", "")));
 
     InteractorHelper.attach(interactor, presenter, router, null);
 
-    verify(listener, never()).login(any(String.class), any(String.class));
+    verify(listener, never()).requestLogin(any(String.class), any(String.class));
   }
 }

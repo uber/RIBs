@@ -23,7 +23,6 @@ import com.uber.rib.root.logged_in.tic_tac_toe.Board.MarkerType;
 import io.reactivex.Observable;
 import io.reactivex.functions.Consumer;
 import javax.inject.Inject;
-import javax.inject.Named;
 
 /** Coordinates Business Logic for {@link TicTacToeScope}. */
 @RibInteractor
@@ -31,16 +30,10 @@ public class TicTacToeInteractor
     extends Interactor<TicTacToeInteractor.TicTacToePresenter, TicTacToeRouter> {
 
   @Inject Board board;
-  @Inject Listener listener;
   @Inject TicTacToePresenter presenter;
 
-  @Inject
-  @Named("player_one")
-  String playerOne;
-
-  @Inject
-  @Named("player_two")
-  String playerTwo;
+  private final String playerOne = "Fake name 1";
+  private final String playerTwo = "Fake name 2";
 
   private MarkerType currentPlayer = MarkerType.CROSS;
 
@@ -71,13 +64,10 @@ public class TicTacToeInteractor
                 }
                 if (board.hasWon(MarkerType.CROSS)) {
                   presenter.setPlayerWon(playerOne);
-                  listener.gameWon(playerOne);
                 } else if (board.hasWon(MarkerType.NOUGHT)) {
                   presenter.setPlayerWon(playerTwo);
-                  listener.gameWon(playerTwo);
                 } else if (board.isDraw()) {
                   presenter.setPlayerTie();
-                  listener.gameWon(null);
                 } else {
                   updateCurrentPlayer();
                 }
@@ -109,13 +99,5 @@ public class TicTacToeInteractor
     void addNought(BoardCoordinate xy);
   }
 
-  public interface Listener {
-
-    /**
-     * Called when the game is over.
-     *
-     * @param winner player that won, or null if it's a tie.
-     */
-    void gameWon(@Nullable String winner);
-  }
+  public interface Listener {}
 }

@@ -37,13 +37,13 @@ public class LoggedOutInteractor
   protected void didBecomeActive(@Nullable Bundle savedInstanceState) {
     super.didBecomeActive(savedInstanceState);
     presenter
-        .playerNames()
+        .loginName()
         .subscribe(
             new Consumer<Pair<String, String>>() {
               @Override
               public void accept(Pair<String, String> names) throws Exception {
                 if (!isEmpty(names.first) && !isEmpty(names.second)) {
-                  listener.requestLogin(names.first, names.second);
+                  listener.login(names.first, names.second);
                 }
               }
             });
@@ -56,11 +56,10 @@ public class LoggedOutInteractor
   /** Presenter interface implemented by this RIB's view. */
   interface LoggedOutPresenter {
 
-    Observable<Pair<String, String>> playerNames();
+    Observable<Pair<String, String>> loginName();
   }
 
   public interface Listener {
-
-    void requestLogin(String playerOne, String playerTwo);
+    void login(String userNameA, String userNameB);
   }
 }

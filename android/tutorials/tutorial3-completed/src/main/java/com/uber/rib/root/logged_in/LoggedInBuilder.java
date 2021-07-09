@@ -24,9 +24,12 @@ import com.uber.rib.root.RootView;
 import com.uber.rib.root.logged_in.off_game.OffGameBuilder;
 import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeBuilder;
+import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeInteractor;
+import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
 import java.lang.annotation.Retention;
+import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
@@ -41,12 +44,14 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
    *
    * @return a new {@link LoggedInRouter}.
    */
-  public LoggedInRouter build() {
+  public LoggedInRouter build(String playerOne, String playerTwo) {
     LoggedInInteractor interactor = new LoggedInInteractor();
     Component component =
         DaggerLoggedInBuilder_Component.builder()
             .parentComponent(getDependency())
             .interactor(interactor)
+            .playerOne(playerOne)
+            .playerTwo(playerTwo)
             .build();
 
     return component.loggedinRouter();
@@ -79,10 +84,28 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
     }
 
     @LoggedInScope
+    @LoggedInInternal
+    @Provides
+    static MutableScoreStream mutableScoreStream(
+        @Named("player_one") String playerOne, @Named("player_two") String playerTwo) {
+      return new MutableScoreStream(playerOne, playerTwo);
+    }
+
+    @LoggedInScope
     @Provides
     static OffGameInteractor.Listener listener(LoggedInInteractor interactor) {
       return interactor.new OffGameListener();
     }
+
+    @LoggedInScope
+    @Provides
+    static TicTacToeInteractor.Listener ticTacToeListener(LoggedInInteractor interactor) {
+      return interactor.new TicTacToeListener();
+    }
+
+    @LoggedInScope
+    @Binds
+    abstract ScoreStream scoreStream(@LoggedInInternal MutableScoreStream mutableScoreStream);
   }
 
   @LoggedInScope
@@ -102,6 +125,12 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
       Builder parentComponent(ParentComponent component);
 
       Component build();
+
+      @BindsInstance
+      Builder playerOne(@Named("player_one") String playerOne);
+
+      @BindsInstance
+      Builder playerTwo(@Named("player_two") String playerTwo);
     }
   }
 

@@ -25,6 +25,7 @@ import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
 import io.reactivex.Observable;
+import java.util.Locale;
 
 /** Top level view for {@link OffGameBuilder.OffGameScope}. */
 public class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
@@ -56,6 +57,20 @@ public class OffGameView extends LinearLayout implements OffGameInteractor.OffGa
     playerTwoName = (TextView) findViewById(R.id.player_two_name);
     playerOneScore = (TextView) findViewById(R.id.player_one_win_count);
     playerTwoScore = (TextView) findViewById(R.id.player_two_win_count);
+  }
+
+  @Override
+  public void setPlayerNames(String playerOne, String playerTwo) {
+    playerOneName.setText(playerOne);
+    playerTwoName.setText(playerTwo);
+  }
+
+  @Override
+  public void setScores(Integer playerOneScore, Integer playerTwoScore) {
+    this.playerOneScore.setText(
+        String.format(Locale.getDefault(), "Win Count: %d", playerOneScore));
+    this.playerTwoScore.setText(
+        String.format(Locale.getDefault(), "Win Count: %d", playerTwoScore));
   }
 
   @Override

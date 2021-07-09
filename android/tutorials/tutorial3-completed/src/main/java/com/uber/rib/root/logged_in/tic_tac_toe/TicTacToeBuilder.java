@@ -26,6 +26,7 @@ import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
 import java.lang.annotation.Retention;
+import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
@@ -61,7 +62,14 @@ public class TicTacToeBuilder
   }
 
   public interface ParentComponent {
-    // TODO: Define dependencies required from your parent interactor here.
+
+    TicTacToeInteractor.Listener ticTacToeListener();
+
+    @Named("player_one")
+    String playerOne();
+
+    @Named("player_two")
+    String playerTwo();
   }
 
   @dagger.Module
