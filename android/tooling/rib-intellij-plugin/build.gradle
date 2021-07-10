@@ -16,11 +16,11 @@ repositories {
 }
 
 dependencies {
-    compile deps.apt.androidApi
-    compile deps.build.commonsLang
-    compile deps.external.ddms
-    compile deps.external.guavaAndroid
-    compile deps.androidx.annotations
+    implementation deps.apt.androidApi
+    implementation deps.build.commonsLang
+    implementation deps.external.ddms
+    implementation deps.external.guavaAndroid
+    implementation deps.androidx.annotations
 
     testCompile(project(":libraries:rib-base")) {
         transitive = false
@@ -38,14 +38,14 @@ dependencies {
     testCompile(project(":libraries:rib-compiler-test")) {
         transitive = false
     }
-    testCompile deps.apt.daggerCompiler
-    testCompile deps.apt.javaxInject
-    testCompile deps.external.dagger
-    testCompile deps.uber.autodispose
-    testCompile deps.uber.autodisposeLifecycle
-    testCompile deps.test.truth
-    testCompile deps.test.compileTesting
-    testCompile deps.test.mockito
+    testImplementation deps.apt.daggerCompiler
+    testImplementation deps.apt.javaxInject
+    testImplementation deps.external.dagger
+    testImplementation deps.uber.autodispose
+    testImplementation deps.uber.autodisposeLifecycle
+    testImplementation deps.test.truth
+    testImplementation deps.test.compileTesting
+    testImplementation deps.test.mockito
 }
 
 // Determines if the machine has Maven credentials.

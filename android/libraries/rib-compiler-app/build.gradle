@@ -20,18 +20,18 @@ sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
 
-    compile deps.apt.autoCommon
-    compile deps.apt.javapoet
-    compile deps.external.dagger
-    compile deps.kotlin.stdlib
+    implementation deps.apt.autoCommon
+    implementation deps.apt.javapoet
+    implementation deps.external.dagger
+    implementation deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
 
-    testCompile deps.test.compileTesting
+    testImplementation deps.test.compileTesting
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
