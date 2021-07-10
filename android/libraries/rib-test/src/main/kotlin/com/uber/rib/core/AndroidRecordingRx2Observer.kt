@@ -60,10 +60,7 @@ open class AndroidRecordingRx2Observer<T : Any> : Observer<T> {
       events.pollFirst(1, TimeUnit.SECONDS)
     } catch (e: InterruptedException) {
       throw RuntimeException(e)
-    }
-    if (event == null) {
-      throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
-    }
+    } ?: throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
     assertThat(event).isInstanceOf(wanted)
     return event as E
   }
