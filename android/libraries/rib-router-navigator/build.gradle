@@ -20,14 +20,15 @@ sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    compile deps.external.checkerQual
-    compile project(':libraries:rib-base')
+    implementation deps.external.checkerQual
+    implementation deps.external.rxrelay2
+    implementation project(':libraries:rib-base')
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
 
-    testCompile deps.test.junit
-    testCompile deps.test.mockitoKotlin
-    testCompile deps.test.truth
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockitoKotlin
+    testImplementation deps.test.truth
 }
 
 apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

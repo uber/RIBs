@@ -20,16 +20,17 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.kotlin.kapt"
 
 dependencies {
-    compile project(":libraries:rib-compiler-app")
-    compile deps.kotlin.stdlib
+    implementation project(":libraries:rib-compiler-app")
+    implementation deps.apt.javapoet
+    implementation deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
     kapt deps.apt.autoService
 
-    testCompile deps.androidx.annotations
-    testCompile deps.test.compileTesting
+    testImplementation deps.androidx.annotations
+    testImplementation deps.test.compileTesting
     if (!Jvm.current().javaVersion.isJava9Compatible()) {
         testCompile files(Jvm.current().getToolsJar())
     }

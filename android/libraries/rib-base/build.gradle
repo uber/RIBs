@@ -32,27 +32,27 @@ dependencies {
     kapt deps.apt.daggerCompiler
     kapt deps.apt.androidApi
 
-    compile deps.external.guavaAndroid
-    compile deps.external.reactiveStreams
-    compile deps.external.rxrelay2
-    compile deps.external.rxjava2
-    compile deps.kotlin.stdlib
-    compile deps.uber.autodispose
+    implementation deps.external.guavaAndroid
+    implementation deps.external.reactiveStreams
+    implementation deps.external.rxrelay2
+    implementation deps.external.rxjava2
+    implementation deps.kotlin.stdlib
+    implementation deps.uber.autodispose
     api deps.uber.autodisposeLifecycle
-    compile deps.apt.javaxInject
+    implementation deps.apt.javaxInject
 
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
     compileOnly deps.external.checkerQual
 
-    testCompile deps.androidx.annotations
-    testCompile deps.apt.androidApi
-    testCompile deps.kotlin.stdlib
-    testCompile deps.test.junit
-    testCompile deps.test.mockito
-    testCompile deps.test.mockitoKotlin
-    testCompile deps.test.truth
+    testImplementation deps.androidx.annotations
+    testImplementation deps.apt.androidApi
+    testImplementation deps.kotlin.stdlib
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.mockitoKotlin
+    testImplementation deps.test.truth
     testCompile(project(":libraries:rib-test")) {
         transitive = false
     }
