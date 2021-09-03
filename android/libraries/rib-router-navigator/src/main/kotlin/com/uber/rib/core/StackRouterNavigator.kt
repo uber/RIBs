@@ -90,7 +90,7 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
     val fromState = peekState()
     val currentRouterAndState = peekCurrentRouterAndState()
     if (fromState != null && fromState.stateName() != newState.stateName()) {
-      if (currentRouterAndState != null && currentRouterAndState.router != null) {
+      if (currentRouterAndState?.router != null) {
         detachInternal(currentRouterAndState, newState, true)
       }
     }
@@ -103,7 +103,7 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
     val newRouterAndState: RouterNavigator.RouterAndState<StateT>
     when (flag) {
       RouterNavigator.Flag.DEFAULT -> {
-        if (fromState != null && fromState.stateName() == newState.stateName()) {
+        if (newStateIsTop) {
           detachInternal(currentRouterAndState, newState, true)
         }
         newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
@@ -143,6 +143,12 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
         navigationStack.clear()
         navigationStack.push(currentRouterAndState)
       } else {
+        detachAll()
+        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+        attachInternal(currentRouterAndState, newRouterAndState, true)
+        navigationStack.push(newRouterAndState)
+      }
+      RouterNavigator.Flag.NEW_TASK_REPLACE -> {
         detachAll()
         newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
         attachInternal(currentRouterAndState, newRouterAndState, true)
