@@ -485,10 +485,10 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2)
     routerNavigator.pushState(
-            TestState.STATE_3,
-            RouterNavigator.Flag.NEW_TASK_REPLACE,
-            attachTransition3,
-            detachTransition3
+      TestState.STATE_3,
+      RouterNavigator.Flag.NEW_TASK_REPLACE,
+      attachTransition3,
+      detachTransition3
     )
     verify(detachTransition2).willDetachFromHost(router2, TestState.STATE_2, null, false)
     Truth.assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_3)
@@ -500,10 +500,10 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2)
     routerNavigator.pushState(
-            TestState.STATE_2,
-            RouterNavigator.Flag.NEW_TASK_REPLACE,
-            attachTransition3,
-            detachTransition3
+      TestState.STATE_2,
+      RouterNavigator.Flag.NEW_TASK_REPLACE,
+      attachTransition3,
+      detachTransition3
     )
     verify(detachTransition2).willDetachFromHost(router2, TestState.STATE_2, null, false)
     Truth.assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_2)
