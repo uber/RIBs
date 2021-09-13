@@ -25,7 +25,7 @@ def versions = [
     errorProne: '2.3.3',
     gjf: '1.7',
     intellij: "2019.2",
-    kotlin: "1.5.20",
+    kotlin: "1.4.21",
     ktfmt: '0.23',
     ktlint: '0.41.0',
     rave: "2.0.0",
