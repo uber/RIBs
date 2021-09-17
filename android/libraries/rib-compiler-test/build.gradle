@@ -18,6 +18,7 @@ import org.gradle.internal.jvm.Jvm
 
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.kotlin.kapt"
+apply plugin: "com.vanniktech.maven.publish"
 
 dependencies {
     implementation project(":libraries:rib-compiler-app")
@@ -42,5 +43,3 @@ task copyTestResources(type: Copy) {
     into "${buildDir}/classes/test"
 }
 processTestResources.dependsOn copyTestResources
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

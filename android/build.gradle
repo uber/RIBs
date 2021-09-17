@@ -29,6 +29,7 @@ buildscript {
         classpath deps.build.gradlePlugins.errorprone
         classpath deps.build.gradlePlugins.kotlin
         classpath deps.build.gradlePlugins.spotless
+        classpath deps.build.gradlePlugins.gradleMavenPublish
     }
 }
 

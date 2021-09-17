@@ -22,6 +22,7 @@ buildscript {
 
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.kotlin.kapt"
+apply plugin: "com.vanniktech.maven.publish"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
@@ -57,5 +58,3 @@ dependencies {
         transitive = false
     }
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

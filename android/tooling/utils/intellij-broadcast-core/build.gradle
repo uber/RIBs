@@ -15,6 +15,7 @@
  */
 
 apply plugin: 'com.android.library'
+apply plugin: "com.vanniktech.maven.publish"
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -50,5 +51,3 @@ dependencies {
     implementation deps.external.guavaAndroid
     implementation deps.external.gson
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
