@@ -16,6 +16,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: "com.vanniktech.maven.publish"
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -38,5 +39,3 @@ dependencies {
     api deps.external.rxbinding
     implementation deps.androidx.annotations
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

@@ -5,7 +5,6 @@ buildscript {
 }
 
 apply plugin: "java"
-apply plugin: "maven"
 apply plugin: "org.jetbrains.intellij"
 apply plugin: "org.jetbrains.kotlin.jvm"
 
@@ -82,16 +81,4 @@ afterEvaluate {
     }
 }
 
-uploadArchives {
-    repositories {
-        mavenDeployer {
-            repository url: "file://" + new File(System.getProperty("user.home"), ".m2/repository").absolutePath
-            if (isReleaseBuild() && hasMavenCredentials()) {
-                repository(url: "${config.build.artifactoryUrl}/${pluginsMavenRepositoryBucket}") {
-                    authentication(userName: mavenUser, password: mavenPassword)
-                }
-            }
-        }
-    }
-}
-build.dependsOn uploadArchives
+apply plugin: "com.vanniktech.maven.publish"

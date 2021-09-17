@@ -15,6 +15,7 @@
  */
 
 apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "com.vanniktech.maven.publish"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
@@ -28,5 +29,3 @@ dependencies {
     api deps.test.mockito
     implementation deps.test.mockitoKotlin
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
