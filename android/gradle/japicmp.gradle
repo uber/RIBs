@@ -84,7 +84,7 @@ def createJapicmpTask(Project project, String baselineJar, String outputJar) {
 
 allprojects { project ->
     afterEvaluate {
-        if (project.path.startsWith(':libraries:')) {
+        if (project.path.startsWith(':libraries:') && !project.path.startsWith(':libraries:rib-android-compose')) {
             String baselineArtifact = baselineArtifact(project)
             String baselineJar = baselineArtifact.endsWith('.aar')
                     ? "${unpackAarDir(project)}/classes.jar"
