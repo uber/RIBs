@@ -21,20 +21,20 @@ dependencies {
     implementation deps.external.guavaAndroid
     implementation deps.androidx.annotations
 
-    testCompile(project(":libraries:rib-base")) {
+    testImplementation(project(":libraries:rib-base")) {
         transitive = false
     }
     compileOnly(project(path: ":libraries:rib-android", configuration: 'default')) {
         transitive = false
     }
 
-    testCompile(project(":libraries:rib-test")) {
+    testImplementation(project(":libraries:rib-test")) {
         transitive = false
     }
-    testCompile(project(":libraries:rib-compiler-app")) {
+    testImplementation(project(":libraries:rib-compiler-app")) {
         transitive = false
     }
-    testCompile(project(":libraries:rib-compiler-test")) {
+    testImplementation(project(":libraries:rib-compiler-test")) {
         transitive = false
     }
     testImplementation deps.apt.daggerCompiler
