@@ -1,0 +1,67 @@
+apply plugin: 'com.android.application'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: "org.jetbrains.kotlin.kapt"
+
+android {
+    compileSdkVersion deps.build.compileSdkVersion
+    buildToolsVersion deps.build.buildToolsVersion
+
+    defaultConfig {
+        minSdkVersion deps.build.minSdkVersion
+        targetSdkVersion deps.build.targetSdkVersion
+        applicationId "com.uber.rib.compose"
+        versionCode 1
+        versionName "1.0"
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion "${deps.versions.androidx.compose}"
+    }
+    compileOptions {
+        sourceCompatibility deps.build.javaVersion
+        targetCompatibility deps.build.javaVersion
+    }
+
+    // No need for lint. This is just a tutorial.
+    lintOptions {
+        abortOnError false
+        quiet true
+    }
+}
+
+dependencies {
+    kapt deps.uber.motifCompiler
+    implementation project(":libraries:rib-android")
+    implementation project(":libraries:rib-android-compose")
+    implementation deps.androidx.activityCompose
+    implementation deps.androidx.annotations
+    implementation deps.androidx.appcompat
+    implementation deps.androidx.composeAnimation
+    implementation deps.androidx.composeFoundation
+    implementation deps.androidx.composeMaterial
+    implementation deps.androidx.composeNavigation
+    implementation deps.androidx.composeRuntimeRxJava2
+    implementation deps.androidx.composeUi
+    implementation deps.androidx.composeViewModel
+    implementation deps.androidx.composeUiTooling
+    implementation deps.external.rxandroid2
+    implementation deps.kotlin.coroutines
+    implementation deps.kotlin.coroutinesAndroid
+    implementation deps.kotlin.coroutinesRx2
+    implementation deps.kotlin.stdlib
+    implementation deps.uber.autodisposeCoroutines
+    implementation deps.uber.motif
+
+
+    // Flipper Debug tool integration
+    debugImplementation 'com.facebook.flipper:flipper:0.93.0'
+    debugImplementation 'com.facebook.soloader:soloader:0.10.1'
+    releaseImplementation 'com.facebook.flipper:flipper-noop:0.93.0'
+
+    // Flipper RIBs plugin
+    implementation project(":tooling:rib-flipper-plugin")
+
+    testImplementation deps.test.junit
+}

@@ -22,6 +22,7 @@ def versions = [
         percent: '1.0.0'
     ],
     autodispose: '1.4.0',
+    coroutines: '1.4.3',
     dagger: "2.34",
     errorProne: '2.3.3',
     gjf: '1.7',
@@ -29,6 +30,7 @@ def versions = [
     kotlin: "1.5.21",
     ktfmt: '0.23',
     ktlint: '0.41.0',
+    motif: '0.3.4',
     rave: "2.0.0",
     robolectric: "4.4",
     spotless: '5.11.0'
@@ -119,14 +121,20 @@ def external = [
 ]
 
 def kotlin = [
+    coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
+    coroutinesAndroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
+    coroutinesRx2: "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
     stdlib: "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 ]
 
 def uber = [
     autodispose: "com.uber.autodispose:autodispose:${versions.autodispose}",
-    autodisposeLifecycle: "com.uber.autodispose:autodispose-lifecycle:${versions.autodispose}",
     autodisposeAndroid : "com.uber.autodispose:autodispose-android:${versions.autodispose}@aar",
+    autodisposeLifecycle: "com.uber.autodispose:autodispose-lifecycle:${versions.autodispose}",
+    autodisposeCoroutines: "com.uber.autodispose:autodispose-coroutines-interop:${versions.autodispose}",
     autodisposeErrorProne: "com.uber.autodispose:autodispose-error-prone:${versions.autodispose}",
+    motif: "com.uber.motif:motif:${versions.motif}",
+    motifCompiler: "com.uber.motif:motif-compiler:${versions.motif}",
     rave: "com.uber:rave:${versions.rave}",
 ]
 
