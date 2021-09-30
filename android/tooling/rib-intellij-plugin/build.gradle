@@ -80,5 +80,3 @@ afterEvaluate {
         archives project.tasks.getByName("buildPlugin")
     }
 }
-
-apply plugin: "com.vanniktech.maven.publish"
