@@ -35,3 +35,8 @@
 ### Version 0.11.3
 
 * Added NEW_TASK_REPLACE `RouterNavigator` flag
+
+### Version 0.12.0
+
+* Added Jetpack Compose RIB classes
+
