@@ -38,14 +38,12 @@ class RootRouter(
     if (mainRouter == null) {
       mainRouter = scope.mainScope(view).router().also {
         attachChild(it)
-        this@RootRouter.view.addView(it.view)
       }
     }
   }
 
   private fun detachMain() {
     mainRouter?.let {
-      this@RootRouter.view.removeView(it.view)
       detachChild(it)
     }
   }

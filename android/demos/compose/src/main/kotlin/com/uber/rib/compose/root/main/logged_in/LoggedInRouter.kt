@@ -16,9 +16,8 @@
 package com.uber.rib.compose.root.main.logged_in
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.logged_in.off_game.OffGameRouter
 import com.uber.rib.compose.root.main.logged_in.tic_tac_toe.TicTacToeRouter
@@ -28,28 +27,29 @@ import com.uber.rib.core.ComposePresenter
 class LoggedInRouter(
   presenter: ComposePresenter,
   interactor: LoggedInInteractor,
+  slot: MutableState<(@Composable () -> Unit)>,
   private val scope: LoggedInScope,
   private val childContent: ChildContent
-) : BasicComposeRouter<LoggedInInteractor>(presenter, interactor) {
+) : BasicComposeRouter<LoggedInInteractor>(presenter, interactor, slot) {
 
   private var offGameRouter: OffGameRouter? = null
   private var ticTacToeRouter: TicTacToeRouter? = null
 
   internal fun attachOffGame(authInfo: AuthInfo) {
     if (offGameRouter == null) {
-      offGameRouter = scope.offGameScope(authInfo).router().also {
-        attachChild(it)
-        childContent.fullScreenContent = it.presenter.composable
-      }
+      offGameRouter =
+        scope.offGameScope(childContent.fullScreenSlot, authInfo).router().also {
+          attachChild(it)
+        }
     }
   }
 
   internal fun attachTicTacToe(authInfo: AuthInfo) {
     if (ticTacToeRouter == null) {
-      ticTacToeRouter = scope.ticTacToeScope(authInfo).router().also {
-        attachChild(it)
-        childContent.fullScreenContent = it.presenter.composable
-      }
+      ticTacToeRouter =
+        scope.ticTacToeScope(childContent.fullScreenSlot, authInfo).router().also {
+          attachChild(it)
+        }
     }
   }
 
@@ -58,7 +58,6 @@ class LoggedInRouter(
       detachChild(it)
     }
     offGameRouter = null
-    childContent.fullScreenContent = null
   }
 
   internal fun detachTicTacToe() {
@@ -66,15 +65,9 @@ class LoggedInRouter(
       detachChild(it)
     }
     ticTacToeRouter = null
-    childContent.fullScreenContent = null
-  }
-
-  override fun willDetach() {
-    detachTicTacToe()
-    super.willDetach()
   }
 
   class ChildContent {
-    internal var fullScreenContent: (@Composable () -> Unit)? by mutableStateOf(null)
+    internal var fullScreenSlot: MutableState<(@Composable () -> Unit)> = mutableStateOf({})
   }
 }

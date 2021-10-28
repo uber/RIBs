@@ -16,6 +16,7 @@
 package com.uber.rib.compose.root.main.logged_in
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.logged_in.off_game.OffGameInteractor
 import com.uber.rib.compose.root.main.logged_in.off_game.OffGameScope
@@ -29,9 +30,9 @@ import motif.Expose
 interface LoggedInScope {
   fun router(): LoggedInRouter
 
-  fun offGameScope(authInfo: AuthInfo): OffGameScope
+  fun offGameScope(slot: MutableState<(@Composable (() -> Unit))>, authInfo: AuthInfo): OffGameScope
 
-  fun ticTacToeScope(authInfo: AuthInfo): TicTacToeScope
+  fun ticTacToeScope(slot: MutableState<(@Composable (() -> Unit))>, authInfo: AuthInfo): TicTacToeScope
 
   @motif.Objects
   abstract class Objects {
@@ -41,7 +42,10 @@ interface LoggedInScope {
 
     abstract fun childContent(): LoggedInRouter.ChildContent
 
-    fun presenter(eventStream: EventStream<LoggedInEvent>, childContent: LoggedInRouter.ChildContent): ComposePresenter {
+    fun presenter(
+      eventStream: EventStream<LoggedInEvent>,
+      childContent: LoggedInRouter.ChildContent
+    ): ComposePresenter {
       return object : ComposePresenter() {
         override val composable = @Composable {
           LoggedInView(eventStream, childContent)

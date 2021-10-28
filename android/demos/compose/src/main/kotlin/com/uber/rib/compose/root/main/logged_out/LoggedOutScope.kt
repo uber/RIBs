@@ -31,10 +31,16 @@ interface LoggedOutScope {
 
     abstract fun interactor(): LoggedOutInteractor
 
-    fun presenter(stateStream: StateStream<LoggedOutViewModel>, eventStream: EventStream<LoggedOutEvent>): ComposePresenter {
+    fun presenter(
+      stateStream: StateStream<LoggedOutViewModel>,
+      eventStream: EventStream<LoggedOutEvent>
+    ): ComposePresenter {
       return object : ComposePresenter() {
         override val composable = @Composable {
-          LoggedOutView(stateStream.observe().subscribeAsState(initial = stateStream.current()), eventStream)
+          LoggedOutView(
+            stateStream.observe().subscribeAsState(initial = stateStream.current()),
+            eventStream
+          )
         }
       }
     }

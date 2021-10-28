@@ -15,10 +15,13 @@
  */
 package com.uber.rib.compose.root.main.logged_out
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import com.uber.rib.core.BasicComposeRouter
 import com.uber.rib.core.ComposePresenter
 
 class LoggedOutRouter(
   presenter: ComposePresenter,
-  interactor: LoggedOutInteractor
-) : BasicComposeRouter<LoggedOutInteractor>(presenter, interactor)
+  interactor: LoggedOutInteractor,
+  slot: MutableState<(@Composable () -> Unit)>
+) : BasicComposeRouter<LoggedOutInteractor>(presenter, interactor, slot)

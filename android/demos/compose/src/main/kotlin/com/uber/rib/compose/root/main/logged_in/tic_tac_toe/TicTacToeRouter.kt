@@ -15,10 +15,13 @@
  */
 package com.uber.rib.compose.root.main.logged_in.tic_tac_toe
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import com.uber.rib.core.BasicComposeRouter
 import com.uber.rib.core.ComposePresenter
 
 class TicTacToeRouter(
   presenter: ComposePresenter,
-  interactor: TicTacToeInteractor
-) : BasicComposeRouter<TicTacToeInteractor>(presenter, interactor)
+  interactor: TicTacToeInteractor,
+  slot: MutableState<(@Composable () -> Unit)>,
+) : BasicComposeRouter<TicTacToeInteractor>(presenter, interactor, slot)

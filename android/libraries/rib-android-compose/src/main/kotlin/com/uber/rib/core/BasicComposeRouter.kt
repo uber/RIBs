@@ -15,7 +15,21 @@
  */
 package com.uber.rib.core
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+
 open class BasicComposeRouter<I : BasicInteractor<*, *>>(
   val presenter: ComposePresenter,
-  interactor: I
-) : BasicRouter<I>(interactor)
+  interactor: I,
+  val slot: MutableState<(@Composable () -> Unit)>
+) : BasicRouter<I>(interactor) {
+  override fun willAttach() {
+    slot.value = presenter.composable
+    super.willAttach()
+  }
+
+  override fun willDetach() {
+    slot.value = {}
+    super.willDetach()
+  }
+}
