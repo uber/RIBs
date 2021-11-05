@@ -17,6 +17,7 @@ package com.uber.rib.compose.root.main
 
 import android.view.ViewGroup
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
@@ -33,9 +34,10 @@ import motif.Expose
 interface MainScope {
   fun router(): MainRouter
 
-  fun loggedOutScope(parentViewGroup: ViewGroup): LoggedOutScope
+  fun loggedOutScope(slot: MutableState<(@Composable () -> Unit)>): LoggedOutScope
 
-  fun loggedInScope(parentViewGroup: ViewGroup, authInfo: AuthInfo): LoggedInScope
+  fun loggedInScope(slot: MutableState<(@Composable () -> Unit)>, authInfo: AuthInfo):
+    LoggedInScope
 
   @motif.Objects
   abstract class Objects {
@@ -52,18 +54,15 @@ interface MainScope {
       return object : ComposePresenter() {
         override val composable = @Composable {
           MainView(childContent)
-//          CustomClientProvider(
-//              analyticsClient = analyticsClient,
-//              experimentClient = experimentClient,
-//              loggerClient = loggerClient
-//          ) {
-//
-//          }
         }
       }
     }
 
-    fun view(parentViewGroup: ViewGroup, activity: RibActivity, presenter: ComposePresenter): ComposeView {
+    fun view(
+      parentViewGroup: ViewGroup,
+      activity: RibActivity,
+      presenter: ComposePresenter
+    ): ComposeView {
       return ComposeView(parentViewGroup.context).apply {
         ViewTreeLifecycleOwner.set(this, activity)
         ViewTreeSavedStateRegistryOwner.set(this, activity)

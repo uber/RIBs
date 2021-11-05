@@ -38,7 +38,9 @@ import com.uber.rib.compose.util.EventStream
 @Composable
 fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream<LoggedOutEvent>) {
   Column(
-    modifier = Modifier.fillMaxSize().padding(16.dp),
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
   ) {
     TextField(
@@ -54,7 +56,10 @@ fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream
       modifier = Modifier.fillMaxWidth()
     )
     Button(
-      colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
+      colors = ButtonDefaults.buttonColors(
+        backgroundColor = Color.Black,
+        contentColor = Color.White
+      ),
       onClick = { eventStream.notify(LoggedOutEvent.LogInClick) },
       modifier = Modifier.fillMaxWidth()
     ) {

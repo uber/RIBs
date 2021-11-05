@@ -55,12 +55,14 @@ fun LoggedInView(
         .padding(4.dp)
         .background(Color.LightGray)
     ) {
-      childContent.fullScreenContent?.invoke()
+      childContent.fullScreenSlot.value.invoke()
     }
     CustomButton(
       analyticsId = "8a570808-07a4",
       onClick = { eventStream.notify(LoggedInEvent.LogOutClick) },
-      modifier = Modifier.fillMaxWidth().padding(16.dp)
+      modifier = Modifier
+        .fillMaxWidth()
+        .padding(16.dp)
     ) {
       Text(text = "LOGOUT")
     }

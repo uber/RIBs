@@ -15,10 +15,13 @@
  */
 package com.uber.rib.compose.root.main.logged_in.off_game
 
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import com.uber.rib.core.BasicComposeRouter
 import com.uber.rib.core.ComposePresenter
 
 class OffGameRouter(
   presenter: ComposePresenter,
-  interactor: OffGameInteractor
-) : BasicComposeRouter<OffGameInteractor>(presenter, interactor)
+  interactor: OffGameInteractor,
+  slot: MutableState<(@Composable () -> Unit)>,
+) : BasicComposeRouter<OffGameInteractor>(presenter, interactor, slot)

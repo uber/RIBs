@@ -15,7 +15,6 @@
  */
 package com.uber.rib.compose.root.main
 
-import android.widget.FrameLayout
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,8 +29,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.viewinterop.AndroidView
-import com.uber.rib.compose.R
 
 @Composable
 fun MainView(childContent: MainRouter.ChildContent) {
@@ -52,19 +49,7 @@ fun MainView(childContent: MainRouter.ChildContent) {
         .padding(4.dp)
         .background(Color.Yellow)
     ) {
-      if (childContent.fullScreenContent != null) {
-        childContent.fullScreenContent?.invoke()
-      } else {
-        AndroidView(
-          modifier = Modifier.fillMaxSize(), // Occupy the max size in the Compose UI tree
-          factory = { context ->
-            FrameLayout(context).apply {
-              id = R.id.login_logout_container
-              setBackgroundColor(android.graphics.Color.DKGRAY)
-            }
-          }
-        )
-      }
+      childContent.fullScreenSlot.value.invoke()
     }
   }
 }
