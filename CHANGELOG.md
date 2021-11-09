@@ -40,3 +40,7 @@
 
 * Added Jetpack Compose RIB classes
 
+### Version 0.12.1
+
+* `BasicComposeRouter` now auto-attaches child composable content
+
