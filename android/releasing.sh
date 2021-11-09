@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+set -e
 ROOT_DIR="$(git rev-parse --show-toplevel)"
 ANDROID_DIR="$ROOT_DIR/android"
 
@@ -8,7 +9,7 @@ NEW_VERSION=$(grep -Eo "\d+\.\d+\.\d+" $ANDROID_DIR/gradle.properties)
 echo "Preparing to release: $NEW_VERSION"
 
 # Update the `README.md` with the new version
-OLD_VERSION=$(grep -iE "'com.uber.rib:rib-" README.md | grep -Eo "\d+\.\d+\.\d+" | sort | uniq)
+OLD_VERSION=$(grep -iE "'com.uber.rib:rib-" $ROOT_DIR/README.md | grep -Eo "\d+\.\d+\.\d+" | sort | uniq)
 sed -i '' "s|$OLD_VERSION|$NEW_VERSION|g" $ROOT_DIR/README.md
 
 # Update the `CHANGELOG.md` for the impending release
