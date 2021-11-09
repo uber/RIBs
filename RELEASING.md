@@ -5,8 +5,8 @@ Android
 -------
 
  1. Change the version in `gradle.properties` to a non-SNAPSHOT version.
- 2. Update the `CHANGELOG.md` for the impending release.
- 3. Update the `README.md` with the new version.
+ 2. Update the `README.md` with the new version.
+ 3. Update the `CHANGELOG.md` for the impending release.
  4. `git commit -am "Prepare for release X.Y.Z."` (where X.Y.Z is the new version)
  5. `git tag -a X.Y.Z -m "Version X.Y.Z"` (where X.Y.Z is the new version)
  6. `./gradlew clean publish --no-daemon --no-parallel && ./gradlew closeAndReleaseRepository`
@@ -30,4 +30,4 @@ Note: This may vary based on your distribution mechanism.  Assuming CocoaPods:
  6. `git tag "X.Y.Z"` (where X.Y.Z is the new version)
  7. `git push --tags`
  8. `pod trunk push Name.podspec`
- 
+
