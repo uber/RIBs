@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,13 +14,9 @@
  * limitations under the License.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-    }
-}
-
 apply plugin: 'com.android.library'
+apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: "com.vanniktech.maven.publish"
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -43,5 +39,3 @@ dependencies {
     api deps.external.rxbinding
     implementation deps.androidx.annotations
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

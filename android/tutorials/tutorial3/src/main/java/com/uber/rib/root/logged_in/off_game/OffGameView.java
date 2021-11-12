@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,24 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.off_game;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import androidx.annotation.Nullable;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
 import io.reactivex.Observable;
-import java.util.Locale;
 
-/**
- * Top level view for {@link OffGameBuilder.OffGameScope}.
- */
+/** Top level view for {@link OffGameBuilder.OffGameScope}. */
 public class OffGameView extends LinearLayout implements OffGameInteractor.OffGamePresenter {
 
   private Button button;
@@ -60,20 +56,6 @@ public class OffGameView extends LinearLayout implements OffGameInteractor.OffGa
     playerTwoName = (TextView) findViewById(R.id.player_two_name);
     playerOneScore = (TextView) findViewById(R.id.player_one_win_count);
     playerTwoScore = (TextView) findViewById(R.id.player_two_win_count);
-  }
-
-  @Override
-  public void setPlayerNames(String playerOne, String playerTwo) {
-    playerOneName.setText(playerOne);
-    playerTwoName.setText(playerTwo);
-  }
-
-  @Override
-  public void setScores(Integer playerOneScore, Integer playerTwoScore) {
-    this.playerOneScore.setText(
-        String.format(Locale.getDefault(), "Win Count: %d", playerOneScore));
-    this.playerTwoScore.setText(
-        String.format(Locale.getDefault(), "Win Count: %d", playerTwoScore));
   }
 
   @Override

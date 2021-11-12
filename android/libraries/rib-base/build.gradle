@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,8 +20,9 @@ buildscript {
     }
 }
 
-apply plugin: 'net.ltgt.apt'
-apply plugin: 'java-library'
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.kotlin.kapt"
+apply plugin: "com.vanniktech.maven.publish"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
@@ -29,25 +30,31 @@ targetCompatibility = deps.build.javaVersion.toString()
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
     // in order to invert a dependency. With a bit of work this could be removed.
-    annotationProcessor deps.apt.daggerCompiler
+    kapt deps.apt.daggerCompiler
+    kapt deps.apt.androidApi
 
-    compile project(':libraries:rib-uava')
-    compile deps.external.reactiveStreams
-    compile deps.external.rxrelay2
-    compile deps.external.rxjava2
-    compile deps.uber.autodispose
+    implementation deps.external.guavaAndroid
+    implementation deps.external.reactiveStreams
+    implementation deps.external.rxrelay2
+    implementation deps.external.rxjava2
+    implementation deps.kotlin.stdlib
+    implementation deps.uber.autodispose
     api deps.uber.autodisposeLifecycle
-    compile deps.apt.javaxInject
+    implementation deps.apt.javaxInject
 
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
+    compileOnly deps.external.checkerQual
 
-    testCompile deps.androidx.annotations
-    testCompile deps.apt.androidApi
-    testCompile deps.test.junit
-    testCompile deps.test.mockito
-    testCompile deps.test.assertj
+    testImplementation deps.androidx.annotations
+    testImplementation deps.apt.androidApi
+    testImplementation deps.kotlin.stdlib
+    testImplementation deps.test.junit
+    testImplementation deps.test.mockito
+    testImplementation deps.test.mockitoKotlin
+    testImplementation deps.test.truth
+    testImplementation(project(":libraries:rib-test")) {
+        transitive = false
+    }
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

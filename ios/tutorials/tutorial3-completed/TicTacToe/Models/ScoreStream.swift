@@ -15,6 +15,7 @@
 //
 
 import RxSwift
+import RxCocoa
 
 struct Score {
     let player1Score: Int
@@ -25,7 +26,7 @@ struct Score {
     }
 }
 
-protocol ScoreStream: class {
+protocol ScoreStream: AnyObject {
     var score: Observable<Score> { get }
 }
 
@@ -53,10 +54,10 @@ class ScoreStreamImpl: MutableScoreStream {
                 return Score(player1Score: currentScore.player1Score, player2Score: currentScore.player2Score + 1)
             }
         }()
-        variable.value = newScore
+        variable.accept(newScore)
     }
 
     // MARK: - Private
 
-    private let variable = Variable<Score>(Score(player1Score: 0, player2Score: 0))
+    private let variable = BehaviorRelay<Score>(value: Score(player1Score: 0, player2Score: 0))
 }

@@ -19,7 +19,7 @@ import RxSwift
 import UIKit
 
 /// Protocol defining the activeness of an interactor's scope.
-public protocol InteractorScope: class {
+public protocol InteractorScope: AnyObject {
 
     // The following properties must be declared in the base protocol, since `Router` internally invokes these methods.
     // In order to unit test router with a mock interactor, the mocked interactor first needs to conform to the custom

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://fbflipper.com/schemas/plugin-package/v2.json",
+  "name": "flipper-plugin-ribtree",
+  "id": "ribtree",
+  "title": "Rib Explorer",
+  "version": "1.0.1",
+  "description": "Rib Tree Visualizer",
+  "keywords": [
+    "flipper-plugin"
+  ],
+  "icon": "apps",
+  "flipperBundlerEntry": "src/index.js",
+  "main": "dist/bundle.js",
+  "author": "oliviern@uber.com",
+  "license": "MIT",
+  "scripts": {
+    "lint": "flipper-pkg lint",
+    "prepack": "flipper-pkg lint && flipper-pkg bundle",
+    "build": "flipper-pkg bundle",
+    "watch": "flipper-pkg bundle --watch"
+  },
+  "dependencies": {
+    "d3": "^5.9.7"
+  },
+  "peerDependencies": {
+    "flipper": "latest"
+  },
+  "devDependencies": {
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "flipper": "latest",
+    "flipper-pkg": "latest"
+  }
+}

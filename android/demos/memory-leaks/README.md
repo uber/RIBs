@@ -28,6 +28,7 @@ RibRefWatcher.getInstance().setReferenceWatcher(new RibRefWatcher.ReferenceWatch
     // Ignore for now. Useful for collecting production analytics.
   }
 });
+RibRefWatcher.getInstance().enableLeakCanary();
 ```
 
 If you run the memory-leak demo app and enter a username you'll see the following message caused by the `LoggedOutInteractor` leak:
@@ -36,10 +37,10 @@ If you run the memory-leak demo app and enter a username you'll see the followin
 
 ## Static Leak Detection
 
-Why did we even need to rely on LeakCanary in this case? Wouldn't it have been better if we had prevented this at build time? If you look at the offending code and remove `SuppressWarnings("RxJavaMissingAutodisposeErrorChecker")` then you'll be unable to build with this memory leak. You'll see the following error:
+Why did we even need to rely on LeakCanary in this case? Wouldn't it have been better if we had prevented this at build time? If you look at the offending code and remove `SuppressWarnings("AutoDispose")` then you'll be unable to build with this memory leak. You'll see the following error:
 
 ```
-error: [RxJavaMissingAutodisposeErrorChecker] Always apply an Autodispose scope before subscribing
+error: [AutoDispose] Missing Disposable handling: Apply AutoDispose or cache the Disposable instance manually and enable lenient mode
         .subscribe(new Consumer<String>() {
                   ^
     (see https://github.com/uber/RIBs/blob/memory_leaks_module/android/demos/memory-leaks/README.md)

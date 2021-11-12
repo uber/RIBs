@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "com.vanniktech.maven.publish"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    compile project(":libraries:rib-base")
+    implementation project(":libraries:rib-base")
 
-    compile deps.apt.autoCommon
-    compile deps.external.dagger
-    compile deps.apt.javapoet
+    implementation deps.apt.autoCommon
+    implementation deps.apt.javapoet
+    implementation deps.external.dagger
+    implementation deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
 
-    testCompile deps.test.compileTesting
+    testImplementation deps.test.compileTesting
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
@@ -39,5 +41,3 @@ task copyTestResources(type: Copy) {
     into "${buildDir}/classes/test"
 }
 processTestResources.dependsOn copyTestResources
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

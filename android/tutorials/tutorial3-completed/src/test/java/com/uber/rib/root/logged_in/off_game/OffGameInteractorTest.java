@@ -1,25 +1,43 @@
+/*
+ * Copyright (C) 2017. Uber Technologies
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.uber.rib.root.logged_in.off_game;
 
 import com.uber.rib.core.RibTestBasePlaceholder;
-import com.uber.rib.core.InteractorHelper;
-
+import com.uber.rib.root.logged_in.ScoreStream;
 import org.junit.Before;
-import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
 public class OffGameInteractorTest extends RibTestBasePlaceholder {
 
-    @Mock OffGameInteractor.Listener listener;
-    @Mock OffGameInteractor.OffGamePresenter presenter;
-    @Mock OffGameRouter router;
+  private final String playerOne = "playerOne";
+  private final String playerTwo = "playerTwo";
 
-    private OffGameInteractor interactor;
+  @Mock OffGameInteractor.Listener listener;
+  @Mock OffGameInteractor.OffGamePresenter presenter;
+  @Mock OffGameRouter router;
+  @Mock ScoreStream scoreStream;
 
-    @Before
-    public void setup() {
-        MockitoAnnotations.initMocks(this);
+  private OffGameInteractor interactor;
 
-        interactor = TestOffGameInteractor.create(listener, presenter);
-    }
+  @Before
+  public void setup() {
+    MockitoAnnotations.initMocks(this);
+
+    interactor =
+        TestOffGameInteractor.create(playerOne, playerTwo, listener, presenter, scoreStream);
+  }
 }

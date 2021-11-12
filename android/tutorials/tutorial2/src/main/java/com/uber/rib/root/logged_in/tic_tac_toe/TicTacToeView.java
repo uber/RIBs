@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,29 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.tic_tac_toe;
 
 import android.content.Context;
-import androidx.annotation.Nullable;
-import androidx.percentlayout.widget.PercentRelativeLayout;
 import android.util.AttributeSet;
 import android.widget.TextView;
-
+import androidx.annotation.Nullable;
+import androidx.percentlayout.widget.PercentRelativeLayout;
 import com.jakewharton.rxbinding2.view.RxView;
 import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
-
-import java.util.ArrayList;
-
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
+import java.util.ArrayList;
 
-/**
- * Top level view for {@link TicTacToeBuilder.TicTacToeScope}.
- */
-public class TicTacToeView extends PercentRelativeLayout implements
-    TicTacToeInteractor.TicTacToePresenter {
+/** Top level view for {@link TicTacToeBuilder.TicTacToeScope}. */
+public class TicTacToeView extends PercentRelativeLayout
+    implements TicTacToeInteractor.TicTacToePresenter {
 
   private TextView[][] imageButtons;
   private TextView titleView;
@@ -58,22 +52,22 @@ public class TicTacToeView extends PercentRelativeLayout implements
     super.onFinishInflate();
     imageButtons = new TextView[3][];
     imageButtons[0] =
-        new TextView[]{
-            (TextView) findViewById(R.id.button11),
-            (TextView) findViewById(R.id.button12),
-            (TextView) findViewById(R.id.button13)
+        new TextView[] {
+          (TextView) findViewById(R.id.button11),
+          (TextView) findViewById(R.id.button12),
+          (TextView) findViewById(R.id.button13)
         };
     imageButtons[1] =
-        new TextView[]{
-            (TextView) findViewById(R.id.button21),
-            (TextView) findViewById(R.id.button22),
-            (TextView) findViewById(R.id.button23)
+        new TextView[] {
+          (TextView) findViewById(R.id.button21),
+          (TextView) findViewById(R.id.button22),
+          (TextView) findViewById(R.id.button23)
         };
     imageButtons[2] =
-        new TextView[]{
-            (TextView) findViewById(R.id.button31),
-            (TextView) findViewById(R.id.button32),
-            (TextView) findViewById(R.id.button33)
+        new TextView[] {
+          (TextView) findViewById(R.id.button31),
+          (TextView) findViewById(R.id.button32),
+          (TextView) findViewById(R.id.button33)
         };
     titleView = (TextView) findViewById(R.id.title);
   }

@@ -16,6 +16,6 @@
 
 import RxSwift
 
-public protocol RootActionableItem: class {
+public protocol RootActionableItem: AnyObject {
     func waitForLogin() -> Observable<(LoggedInActionableItem, ())>
 }

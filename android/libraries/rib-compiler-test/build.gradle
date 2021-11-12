@@ -1,3 +1,5 @@
+import org.gradle.internal.jvm.Jvm
+
 /*
  * Copyright (C) 2017. Uber Technologies
  *
@@ -5,7 +7,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,18 +16,25 @@
  * limitations under the License.
  */
 
-apply plugin: "java-library"
+apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "org.jetbrains.kotlin.kapt"
+apply plugin: "com.vanniktech.maven.publish"
 
 dependencies {
-    compile project(":libraries:rib-compiler-app")
+    implementation project(":libraries:rib-compiler-app")
+    implementation deps.apt.javapoet
+    implementation deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
-    annotationProcessor deps.apt.autoService
     compileOnly deps.apt.autoService
     compileOnly deps.apt.androidApi
+    kapt deps.apt.autoService
 
-    testCompile deps.androidx.annotations
-    testCompile deps.test.compileTesting
+    testImplementation deps.androidx.annotations
+    testImplementation deps.test.compileTesting
+    if (!Jvm.current().javaVersion.isJava9Compatible()) {
+        testCompile files(Jvm.current().getToolsJar())
+    }
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
@@ -34,5 +43,3 @@ task copyTestResources(type: Copy) {
     into "${buildDir}/classes/test"
 }
 processTestResources.dependsOn copyTestResources
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

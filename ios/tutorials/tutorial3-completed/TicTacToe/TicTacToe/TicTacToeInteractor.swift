@@ -27,7 +27,7 @@ protocol TicTacToePresentable: Presentable {
     func announce(winner: PlayerType?, withCompletionHandler handler: @escaping () -> ())
 }
 
-protocol TicTacToeListener: class {
+protocol TicTacToeListener: AnyObject {
     func gameDidEnd(withWinner winner: PlayerType?)
 }
 
@@ -125,7 +125,7 @@ final class TicTacToeInteractor: PresentableInteractor<TicTacToePresentable>, Ti
             }
         }
 
-        // Diagnals.
+        // Diagonal.
         guard let p11 = board[1][1] else {
             return nil
         }

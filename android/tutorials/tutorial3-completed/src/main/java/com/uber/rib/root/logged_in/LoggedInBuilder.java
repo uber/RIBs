@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in;
 
 import static java.lang.annotation.RetentionPolicy.CLASS;
@@ -25,9 +24,12 @@ import com.uber.rib.root.RootView;
 import com.uber.rib.root.logged_in.off_game.OffGameBuilder;
 import com.uber.rib.root.logged_in.off_game.OffGameInteractor;
 import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeBuilder;
+import com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeInteractor;
+import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
 import java.lang.annotation.Retention;
+import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
@@ -42,12 +44,15 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
    *
    * @return a new {@link LoggedInRouter}.
    */
-  public LoggedInRouter build() {
+  public LoggedInRouter build(String playerOne, String playerTwo) {
     LoggedInInteractor interactor = new LoggedInInteractor();
-    Component component = DaggerLoggedInBuilder_Component.builder()
-        .parentComponent(getDependency())
-        .interactor(interactor)
-        .build();
+    Component component =
+        DaggerLoggedInBuilder_Component.builder()
+            .parentComponent(getDependency())
+            .interactor(interactor)
+            .playerOne(playerOne)
+            .playerTwo(playerTwo)
+            .build();
 
     return component.loggedinRouter();
   }
@@ -68,8 +73,8 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
     @LoggedInScope
     @Provides
-    static LoggedInRouter router(Component component, LoggedInInteractor interactor,
-        RootView rootView) {
+    static LoggedInRouter router(
+        Component component, LoggedInInteractor interactor, RootView rootView) {
       return new LoggedInRouter(
           interactor,
           component,
@@ -79,20 +84,37 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
     }
 
     @LoggedInScope
+    @LoggedInInternal
+    @Provides
+    static MutableScoreStream mutableScoreStream(
+        @Named("player_one") String playerOne, @Named("player_two") String playerTwo) {
+      return new MutableScoreStream(playerOne, playerTwo);
+    }
+
+    @LoggedInScope
     @Provides
     static OffGameInteractor.Listener listener(LoggedInInteractor interactor) {
       return interactor.new OffGameListener();
     }
 
+    @LoggedInScope
+    @Provides
+    static TicTacToeInteractor.Listener ticTacToeListener(LoggedInInteractor interactor) {
+      return interactor.new TicTacToeListener();
+    }
+
+    @LoggedInScope
+    @Binds
+    abstract ScoreStream scoreStream(@LoggedInInternal MutableScoreStream mutableScoreStream);
   }
 
   @LoggedInScope
   @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
   public interface Component
       extends InteractorBaseComponent<LoggedInInteractor>,
-      BuilderComponent,
-      OffGameBuilder.ParentComponent,
-      TicTacToeBuilder.ParentComponent {
+          BuilderComponent,
+          OffGameBuilder.ParentComponent,
+          TicTacToeBuilder.ParentComponent {
 
     @dagger.Component.Builder
     interface Builder {
@@ -103,8 +125,13 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
       Builder parentComponent(ParentComponent component);
 
       Component build();
-    }
 
+      @BindsInstance
+      Builder playerOne(@Named("player_one") String playerOne);
+
+      @BindsInstance
+      Builder playerTwo(@Named("player_two") String playerTwo);
+    }
   }
 
   interface BuilderComponent {
@@ -114,14 +141,9 @@ public class LoggedInBuilder extends Builder<LoggedInRouter, LoggedInBuilder.Par
 
   @Scope
   @Retention(CLASS)
-  @interface LoggedInScope {
-
-  }
-
+  @interface LoggedInScope {}
 
   @Qualifier
   @Retention(CLASS)
-  @interface LoggedInInternal {
-
-  }
+  @interface LoggedInInternal {}
 }

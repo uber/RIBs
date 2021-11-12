@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_in.tic_tac_toe;
 
 import static java.lang.annotation.RetentionPolicy.CLASS;
@@ -27,13 +26,10 @@ import dagger.Binds;
 import dagger.BindsInstance;
 import dagger.Provides;
 import java.lang.annotation.Retention;
-import javax.inject.Named;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
-/**
- * Builder for the {@link TicTacToeScope}.
- */
+/** Builder for the {@link TicTacToeScope}. */
 public class TicTacToeBuilder
     extends ViewBuilder<TicTacToeView, TicTacToeRouter, TicTacToeBuilder.ParentComponent> {
 
@@ -50,11 +46,12 @@ public class TicTacToeBuilder
   public TicTacToeRouter build(ViewGroup parentViewGroup) {
     TicTacToeView view = createView(parentViewGroup);
     TicTacToeInteractor interactor = new TicTacToeInteractor();
-    Component component = DaggerTicTacToeBuilder_Component.builder()
-        .parentComponent(getDependency())
-        .view(view)
-        .interactor(interactor)
-        .build();
+    Component component =
+        DaggerTicTacToeBuilder_Component.builder()
+            .parentComponent(getDependency())
+            .view(view)
+            .interactor(interactor)
+            .build();
     return component.tictactoeRouter();
   }
 
@@ -64,12 +61,7 @@ public class TicTacToeBuilder
   }
 
   public interface ParentComponent {
-
-    TicTacToeInteractor.Listener ticTacToeListener();
-
-    @Named("player_one") String playerOne();
-
-    @Named("player_two") String playerTwo();
+    // TODO: Define dependencies required from your parent interactor here.
   }
 
   @dagger.Module
@@ -82,16 +74,13 @@ public class TicTacToeBuilder
     @TicTacToeScope
     @Provides
     static TicTacToeRouter router(
-        Component component,
-        TicTacToeView view,
-        TicTacToeInteractor interactor) {
+        Component component, TicTacToeView view, TicTacToeInteractor interactor) {
       return new TicTacToeRouter(view, interactor, component);
     }
   }
 
   @TicTacToeScope
-  @dagger.Component(modules = Module.class,
-      dependencies = ParentComponent.class)
+  @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
   interface Component extends InteractorBaseComponent<TicTacToeInteractor>, BuilderComponent {
 
     @dagger.Component.Builder
@@ -116,13 +105,9 @@ public class TicTacToeBuilder
 
   @Scope
   @Retention(CLASS)
-  @interface TicTacToeScope {
-
-  }
+  @interface TicTacToeScope {}
 
   @Qualifier
   @Retention(CLASS)
-  @interface TicTacToeInternal {
-
-  }
+  @interface TicTacToeInternal {}
 }

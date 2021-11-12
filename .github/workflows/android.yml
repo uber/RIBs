@@ -1,0 +1,44 @@
+name: CI Android
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: JDK ${{ matrix.java_version }}
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./android
+    strategy:
+      matrix:
+        # TODO Add 9, 10, 11, 12, and 13 after Kotlin 1.3.60
+        java_version: [11]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Install JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: ${{ matrix.java_version }}
+      - name: Install Android SDK
+        uses: malinskiy/action-android/install-sdk@release/0.1.1
+      - name: Gradle Wrapper Validation
+        uses: gradle/wrapper-validation-action@v1
+      - name: Configure Gradle
+        # Gradle configuration install deps
+        run: ./gradlew help
+      - name: Spot check
+        run: ./gradlew spotlessCheck --stacktrace
+      - name: Build Project
+        run: ./gradlew assemble --stacktrace
+      - name : Testing
+        run: ./gradlew test --stacktrace
+      - name: Final Checks
+        run: ./gradlew check --stacktrace
+      - name: Upload snapshot
+        run: ./gradlew publish --no-daemon --no-parallel -PSONATYPE_NEXUS_USERNAME="$SONATYPE_NEXUS_USERNAME" -PSONATYPE_NEXUS_PASSWORD="$SONATYPE_NEXUS_PASSWORD" && ./gradlew closeAndReleaseRepository
+        env:
+          SONATYPE_NEXUS_USERNAME: ${{ secrets.SonatypeUsername }}
+          SONATYPE_NEXUS_PASSWORD: ${{ secrets.SonatypePassword }}
+        if: success() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.java_version == '8'

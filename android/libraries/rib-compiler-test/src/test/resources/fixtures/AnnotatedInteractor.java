@@ -8,7 +8,7 @@ import com.uber.rib.core.Router;
 import javax.inject.Inject;
 
 @RibInteractor
-public class AnnotatedInteractor extends Interactor<Presenter, Router> {
+public class AnnotatedInteractor extends Interactor<Presenter, Router<?>> {
 
     @Inject Boolean fieldOne;
     @Inject Integer fieldTwo;

@@ -1,10 +1,3 @@
-package com.uber.rib.root.logged_out;
-
-import android.content.Context;
-import androidx.annotation.Nullable;
-import androidx.core.util.Pair;
-import android.util.AttributeSet;
-import android.widget.LinearLayout;
 /*
  * Copyright (C) 2017. Uber Technologies
  *
@@ -12,7 +5,7 @@ import android.widget.LinearLayout;
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,17 +13,27 @@ import android.widget.LinearLayout;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.uber.rib.root.logged_out;
 
-import android.widget.TextView;
+import android.content.Context;
+import android.util.AttributeSet;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import androidx.annotation.Nullable;
+import androidx.core.util.Pair;
 import com.jakewharton.rxbinding2.view.RxView;
+import com.uber.rib.core.Initializer;
 import com.uber.rib.tutorial1.R;
 import io.reactivex.Observable;
 import io.reactivex.functions.Function;
 
-/**
- * Top level view for {@link LoggedOutBuilder.LoggedOutScope}.
- */
+/** Top level view for {@link LoggedOutBuilder.LoggedOutScope}. */
 public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.LoggedOutPresenter {
+
+  private Button loginButton;
+  private EditText playerOneEditText;
+  private EditText playerTwoEditText;
 
   public LoggedOutView(Context context) {
     this(context, null);
@@ -44,16 +47,25 @@ public class LoggedOutView extends LinearLayout implements LoggedOutInteractor.L
     super(context, attrs, defStyle);
   }
 
+  @Initializer
   @Override
-  public Observable<Pair<String, String>> loginName() {
+  protected void onFinishInflate() {
+    super.onFinishInflate();
+    playerOneEditText = (EditText) findViewById(R.id.player_one_name);
+    playerTwoEditText = (EditText) findViewById(R.id.player_two_name);
+    loginButton = (Button) findViewById(R.id.login_button);
+  }
+
+  @Override
+  public Observable<Pair<String, String>> playerNames() {
     return RxView.clicks(findViewById(R.id.login_button))
-        .map(new Function<Object, Pair<String, String>>() {
-          @Override
-          public Pair<String, String> apply(Object o) throws Exception {
-            TextView playerNameOne = (TextView) findViewById(R.id.player_name_1);
-            TextView playerNameTwo = (TextView) findViewById(R.id.player_name_2);
-            return Pair.create(playerNameOne.getText().toString(), playerNameTwo.getText().toString());
-          }
-        });
+        .map(
+            new Function<Object, Pair<String, String>>() {
+              @Override
+              public Pair<String, String> apply(Object irrelevant) throws Exception {
+                return new Pair<>(
+                    playerOneEditText.getText().toString(), playerTwoEditText.getText().toString());
+              }
+            });
   }
 }

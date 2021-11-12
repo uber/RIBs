@@ -26,7 +26,7 @@ protocol RandomWinPresentable: Presentable {
     func announce(winner: PlayerType, withCompletionHandler handler: @escaping () -> ())
 }
 
-public protocol RandomWinListener: class {
+public protocol RandomWinListener: AnyObject {
     func didRandomlyWin(with player: PlayerType)
 }
 

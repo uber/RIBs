@@ -1,0 +1,102 @@
+import me.champeau.gradle.japicmp.JapicmpTask
+
+ext.javaBaselineVersion = "0.10.1"
+
+buildscript {
+    repositories {
+        gradlePluginPortal()
+    }
+    dependencies {
+        classpath deps.build.gradlePlugins.japicmp
+        classpath deps.build.guavaJre // https://github.com/melix/japicmp-gradle-plugin/issues/36
+    }
+}
+
+task checkBinaryCompatibility {
+    description = 'Generates binary compatibility reports'
+}
+
+def isAndroidLibrary(Project project) {
+    return project.plugins.hasPlugin("com.android.library")
+}
+
+def unpackAarDir(Project project) {
+    return "$buildDir/tmp/japicmp/$project.name"
+}
+
+def baselineArtifact(Project project) {
+    def group = project.property("GROUP")
+    def artifactId = project.property("POM_ARTIFACT_ID")
+    def artifactExtension = isAndroidLibrary(project) ? "aar" : "jar"
+    try {
+        String artifactName = "$artifactId-${javaBaselineVersion}.$artifactExtension"
+        project.group = 'virtual_group_for_japicmp' // Prevent it from resolving the current version.
+        def dependency = project.dependencies.create("$group:$artifactId:$javaBaselineVersion@$artifactExtension")
+        return project.configurations
+                .detachedConfiguration(dependency).files
+                .find { it.name == artifactName }
+    } finally {
+        project.group = group
+    }
+}
+
+def outputJar(Project project) {
+    if (isAndroidLibrary(project)) {
+        return "${project.buildDir}/intermediates/aar_main_jar/release/classes.jar"
+    } else {
+        return "${project.buildDir}/libs/${project.name}-${project.property("VERSION_NAME")}.jar"
+    }
+}
+
+def createUnpackAarTask(Project project, String baselineArtifact) {
+    return project.tasks.create(name: 'unpackBaselineAar', type: Copy) {
+        from zipTree(file(baselineArtifact))
+        into file(unpackAarDir(project))
+    }
+}
+
+def createJapicmpTask(Project project, String baselineJar, String outputJar) {
+    return project.tasks.create(name: 'japicmp', type: JapicmpTask) {
+        oldClasspath = files(baselineJar)
+        newClasspath = files(outputJar)
+        classExcludes = [
+                'com.uber.assert.BuildConfig',
+                'com.uber.rib.android.BuildConfig',
+                'com.uber.rib.android.core.BuildConfig',
+                'com.uber.rib.compiler.InteractorAnnotatedClass',
+                'com.uber.rib.core.BasicInteractor',
+                'com.uber.rib.core.BasicRouter',
+                'com.uber.rib.core.Interactor_MembersInjector',
+                'com.uber.rib.core.Router',
+                'com.uber.rib.core.RouterNavigatorState',
+                'com.uber.rib.compiler.VerificationFailedException',
+                'com.uber.rib.workflow.BuildConfig',
+                'com.uber.rib.workflow.test.BuildConfig',
+                'com.ubercab.core.screenstack.base.BuildConfig'
+        ]
+        onlyBinaryIncompatibleModified = true
+        failOnModification = true
+        txtOutputFile = file("$buildDir/reports/japi.txt")
+        ignoreMissingClasses = true
+        includeSynthetic = true
+    }
+}
+
+allprojects { project ->
+    afterEvaluate {
+        if (project.path.startsWith(':libraries:') && !project.path.startsWith(':libraries:rib-android-compose')) {
+            String baselineArtifact = baselineArtifact(project)
+            String baselineJar = baselineArtifact.endsWith('.aar')
+                    ? "${unpackAarDir(project)}/classes.jar"
+                    : baselineArtifact
+
+            def japicmpTask = createJapicmpTask(project, baselineJar, outputJar(project))
+            if (baselineArtifact.endsWith('.aar')) {
+                def unpackAarTask = createUnpackAarTask(project, baselineArtifact)
+                japicmpTask.dependsOn(unpackAarTask)
+            }
+            japicmpTask.dependsOn("$project.path:assemble")
+            checkBinaryCompatibility.dependsOn(japicmpTask)
+        }
+    }
+}

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *    http://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,7 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.uber.rib.root.logged_out;
 
 import static java.lang.annotation.RetentionPolicy.CLASS;
@@ -30,9 +29,7 @@ import java.lang.annotation.Retention;
 import javax.inject.Qualifier;
 import javax.inject.Scope;
 
-/**
- * Builder for the {@link LoggedOutScope}.
- */
+/** Builder for the {@link LoggedOutScope}. */
 public class LoggedOutBuilder
     extends ViewBuilder<LoggedOutView, LoggedOutRouter, LoggedOutBuilder.ParentComponent> {
 
@@ -49,11 +46,12 @@ public class LoggedOutBuilder
   public LoggedOutRouter build(ViewGroup parentViewGroup) {
     LoggedOutView view = createView(parentViewGroup);
     LoggedOutInteractor interactor = new LoggedOutInteractor();
-    Component component = DaggerLoggedOutBuilder_Component.builder()
-        .parentComponent(getDependency())
-        .view(view)
-        .interactor(interactor)
-        .build();
+    Component component =
+        DaggerLoggedOutBuilder_Component.builder()
+            .parentComponent(getDependency())
+            .view(view)
+            .interactor(interactor)
+            .build();
     return component.loggedoutRouter();
   }
 
@@ -77,9 +75,7 @@ public class LoggedOutBuilder
     @LoggedOutScope
     @Provides
     static LoggedOutRouter router(
-        Component component,
-        LoggedOutView view,
-        LoggedOutInteractor interactor) {
+        Component component, LoggedOutView view, LoggedOutInteractor interactor) {
       return new LoggedOutRouter(view, interactor, component);
     }
 
@@ -87,8 +83,7 @@ public class LoggedOutBuilder
   }
 
   @LoggedOutScope
-  @dagger.Component(modules = Module.class,
-      dependencies = ParentComponent.class)
+  @dagger.Component(modules = Module.class, dependencies = ParentComponent.class)
   interface Component extends InteractorBaseComponent<LoggedOutInteractor>, BuilderComponent {
 
     @dagger.Component.Builder
@@ -113,13 +108,9 @@ public class LoggedOutBuilder
 
   @Scope
   @Retention(CLASS)
-  @interface LoggedOutScope {
-
-  }
+  @interface LoggedOutScope {}
 
   @Qualifier
   @Retention(CLASS)
-  @interface LoggedOutInternal {
-
-  }
+  @interface LoggedOutInternal {}
 }
