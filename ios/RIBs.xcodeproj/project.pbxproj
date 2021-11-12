@@ -33,6 +33,8 @@
 		AFB7D4031FC81C8F00045D2B /* Foundation+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82F6731FC81B5F006DF7BC /* Foundation+ExtensionsTests.swift */; };
 		AFB7D4051FC81D6100045D2B /* LaunchRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */; };
 		BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5FC0F022808377004235F1 /* RxRelay.framework */; };
+		DB64C327273ED46E00CB2E5D /* ComponentizedBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64C326273ED46E00CB2E5D /* ComponentizedBuilder.swift */; };
+		DB64C329273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64C328273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchRouterTests.swift; sourceTree = "<group>"; };
 		BF5FC0F022808377004235F1 /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = ../Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
+		DB64C326273ED46E00CB2E5D /* ComponentizedBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentizedBuilder.swift; sourceTree = "<group>"; };
+		DB64C328273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiStageComponentizedBuilder.swift; sourceTree = "<group>"; };
 		E8E789432378AD000043E59E /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -103,8 +107,10 @@
 			isa = PBXGroup;
 			children = (
 				413177291F8EEFF0005F08F0 /* Builder.swift */,
+				DB64C326273ED46E00CB2E5D /* ComponentizedBuilder.swift */,
 				413177221F8EEFEF005F08F0 /* Interactor.swift */,
 				413177261F8EEFEF005F08F0 /* LaunchRouter.swift */,
+				DB64C328273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift */,
 				413177231F8EEFEF005F08F0 /* PresentableInteractor.swift */,
 				413177251F8EEFEF005F08F0 /* Presenter.swift */,
 				413177271F8EEFEF005F08F0 /* Router.swift */,
@@ -386,6 +392,7 @@
 				418C175C1F97F19F003C03F7 /* Component.swift in Sources */,
 				4131773D1F8EF98A005F08F0 /* Foundation+Extensions.swift in Sources */,
 				4131772E1F8EF5FF005F08F0 /* LaunchRouter.swift in Sources */,
+				DB64C329273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift in Sources */,
 				413177391F8EF70F005F08F0 /* Executor.swift in Sources */,
 				413177341F8EF602005F08F0 /* Worker.swift in Sources */,
 				418C175D1F97F1A1003C03F7 /* Dependency.swift in Sources */,
@@ -393,6 +400,7 @@
 				413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */,
 				413177351F8EF605005F08F0 /* Workflow.swift in Sources */,
 				4131772F1F8EF5FF005F08F0 /* PresentableInteractor.swift in Sources */,
+				DB64C327273ED46E00CB2E5D /* ComponentizedBuilder.swift in Sources */,
 				4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */,
 				413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */,
 				413177311F8EF5FF005F08F0 /* Router.swift in Sources */,
