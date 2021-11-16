@@ -22,6 +22,7 @@ buildscript {
 
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.kotlin.kapt"
+apply plugin: "com.vanniktech.maven.publish"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
@@ -53,9 +54,7 @@ dependencies {
     testImplementation deps.test.mockito
     testImplementation deps.test.mockitoKotlin
     testImplementation deps.test.truth
-    testCompile(project(":libraries:rib-test")) {
+    testImplementation(project(":libraries:rib-test")) {
         transitive = false
     }
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')

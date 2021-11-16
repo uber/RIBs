@@ -31,3 +31,16 @@
 ### Version 0.11.2
 
 * One more bugfix and log message for Kotlin migration edge case
+
+### Version 0.11.3
+
+* Added NEW_TASK_REPLACE `RouterNavigator` flag
+
+### Version 0.12.0
+
+* Added Jetpack Compose RIB classes
+
+### Version 0.12.1
+
+* `BasicComposeRouter` now auto-attaches child composable content
+

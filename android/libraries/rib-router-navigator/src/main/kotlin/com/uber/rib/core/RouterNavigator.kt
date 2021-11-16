@@ -59,10 +59,16 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
     NEW_TASK,
 
     /**
+     * Clears the previous stack (no back stack) and pushes the state on to the top of the stack.
+     * If the state is already on the top of the stack, it is detached and replaced.
+     */
+    NEW_TASK_REPLACE,
+
+    /**
      * Remove the top state in the stack if it is not empty and then push a new state to the top of
      * the stack.
      */
-    REPLACE_TOP
+    REPLACE_TOP,
   }
 
   /** Pop the current state and rewind to the previous state (if there is a previous state).  */

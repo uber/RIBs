@@ -16,6 +16,7 @@
 
 apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
+apply plugin: "com.vanniktech.maven.publish"
 
 android {
     compileSdkVersion deps.build.compileSdkVersion
@@ -47,5 +48,3 @@ dependencies {
     implementation deps.kotlin.stdlib
     implementation deps.test.truth
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
