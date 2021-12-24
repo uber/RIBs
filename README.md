@@ -32,7 +32,7 @@ MVC, MVP, MVI, MVVM and VIPER are architecture patterns. RIBs is a framework. Wh
 
 There are some other novel things about RIBs. However, these could also be implemented with other MV*/VIPER frameworks. These are:
 - **Cross-platform approach**, allowing iOS and Android architecture to stay in sync.
-- **Tooling to for easier adoption** on larger apps or teams. Tooling we are open sourcing includes IDE plugins for code generation and static code analysis.
+- **Tooling for easier adoption** on larger apps or teams. Tooling we are open sourcing includes IDE plugins for code generation and static code analysis.
 - **Strong opinions about how state should be communicated**, using DI and Rx. Each RIB defines its dependencies and what dependencies it needs from its parent. Parent components that fulfill a child’s parent dependencies are provided to child Builders as a constructor dependency to allow for hierarchical DI scoping. This means that information is communicated via these dependencies up and down the tree.
 
 ## Usage
