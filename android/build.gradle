@@ -96,11 +96,10 @@ subprojects {
     afterEvaluate {
         boolean isAndroidApp = project.plugins.hasPlugin("com.android.application")
         boolean isAndroidLibrary = project.plugins.hasPlugin("com.android.library")
-        boolean isSample = project.path.startsWith(":demos:") || project.path.startsWith(":tutorials:")
         boolean usesErrorProne = project.name in useErrorProneProjects
         boolean isKotlinLibrary = project.plugins.hasPlugin("org.jetbrains.kotlin.jvm") || project.plugins.hasPlugin("org.jetbrains.kotlin.android")
 
-        if ((isAndroidLibrary || isSample) && usesErrorProne) {
+        if ((isAndroidLibrary || isAndroidApp) && usesErrorProne) {
             def configurer = { variant ->
                 variant.getJavaCompileProvider().configure {
                     options.errorprone.nullaway {
@@ -113,13 +112,13 @@ subprojects {
             if (isAndroidLibrary) {
                 project.android.libraryVariants.configureEach(configurer)
             }
-            if (isSample) {
+            if (isAndroidApp) {
                 project.android.applicationVariants.configureEach(configurer)
             }
             project.android.testVariants.configureEach(configurer)
             project.android.unitTestVariants.configureEach(configurer)
         }
-        if (isAndroidLibrary || isSample) {
+        if (isAndroidLibrary || isAndroidApp) {
             // TODO replace with https://issuetracker.google.com/issues/72050365 once released.
             project.android {
                 if (isAndroidLibrary) {
@@ -134,7 +133,7 @@ subprojects {
                         }
                     }
                 }
-                if (isSample) {
+                if (isAndroidApp) {
                     buildTypes {
                         debug {
                             matchingFallbacks = ['release']

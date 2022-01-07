@@ -39,7 +39,9 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.createOnCreateEvent
 import io.reactivex.CompletableSource
+import io.reactivex.Maybe
 import io.reactivex.Observable
+import io.reactivex.Single
 
 /** Base implementation for all VIP [android.app.Activity]s. */
 abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {

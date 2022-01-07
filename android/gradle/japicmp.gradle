@@ -90,13 +90,17 @@ allprojects { project ->
                     ? "${unpackAarDir(project)}/classes.jar"
                     : baselineArtifact
 
-            def japicmpTask = createJapicmpTask(project, baselineJar, outputJar(project))
-            if (baselineArtifact.endsWith('.aar')) {
-                def unpackAarTask = createUnpackAarTask(project, baselineArtifact)
-                japicmpTask.dependsOn(unpackAarTask)
+                def japicmpTask = createJapicmpTask(project, baselineJar, outputJar(project))
+                if (baselineArtifact.endsWith('.aar')) {
+                    def unpackAarTask = createUnpackAarTask(project, baselineArtifact)
+                    japicmpTask.dependsOn(unpackAarTask)
+                }
+                japicmpTask.dependsOn("$project.path:assemble")
+                checkBinaryCompatibility.dependsOn(japicmpTask)
+            } catch(ResolveException ignored) {
+                logger.warn("Failed to resolve binary for API validation.")
             }
-            japicmpTask.dependsOn("$project.path:assemble")
-            checkBinaryCompatibility.dependsOn(japicmpTask)
+
         }
     }
 }
