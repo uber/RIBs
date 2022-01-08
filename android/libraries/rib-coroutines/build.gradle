@@ -16,6 +16,7 @@
 
 
 apply plugin: "org.jetbrains.kotlin.jvm"
+apply plugin: "com.vanniktech.maven.publish"
 
 sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
@@ -26,5 +27,3 @@ dependencies {
     implementation deps.uber.autodisposeCoroutines
     api deps.kotlin.coroutines
 }
-
-apply from: rootProject.file('gradle/gradle-mvn-push.gradle')
