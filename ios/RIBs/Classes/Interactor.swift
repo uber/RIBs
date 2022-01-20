@@ -126,7 +126,7 @@ open class Interactor: Interactable {
         isActiveSubject.onNext(false)
     }
 
-    /// Callend when the `Interactor` will resign the active state.
+    /// Called when the `Interactor` will resign the active state.
     ///
     /// This method is driven by the detachment of this interactor's owner router. Subclasses should override this
     /// method to cleanup any resources and states of the `Interactor`. The default implementation does nothing.
