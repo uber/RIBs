@@ -41,4 +41,4 @@ jobs:
         env:
           SONATYPE_NEXUS_USERNAME: ${{ secrets.SonatypeUsername }}
           SONATYPE_NEXUS_PASSWORD: ${{ secrets.SonatypePassword }}
-        if: success() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.java_version == '8'
+        if: success() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.java_version == '11'
