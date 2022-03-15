@@ -37,8 +37,5 @@ jobs:
       - name: Final Checks
         run: ./gradlew check --stacktrace
       - name: Upload snapshot
-        run: ./gradlew publish --no-daemon --no-parallel -PSONATYPE_NEXUS_USERNAME="$SONATYPE_NEXUS_USERNAME" -PSONATYPE_NEXUS_PASSWORD="$SONATYPE_NEXUS_PASSWORD" && ./gradlew closeAndReleaseRepository
-        env:
-          SONATYPE_NEXUS_USERNAME: ${{ secrets.SonatypeUsername }}
-          SONATYPE_NEXUS_PASSWORD: ${{ secrets.SonatypePassword }}
+        run: ./gradlew publish -PmavenCentralUsername="${{ secrets.SonatypeUsername }}" -PmavenCentralPassword="${{ secrets.SonatypePassword }}"
         if: success() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.java_version == '11'
