@@ -151,7 +151,6 @@ subprojects {
 
         if (isKotlinLibrary) {
             def extraCompilerArgs = [
-                    "-Xjvm-default=all"
             ]
             if (project.name in moduleFriends.keySet()) {
                 def friendName = moduleFriends[project.name]
