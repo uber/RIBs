@@ -18,13 +18,18 @@ package com.uber.rib;
 import android.app.Application;
 import com.squareup.leakcanary.LeakCanary;
 import com.squareup.leakcanary.RefWatcher;
+import com.uber.rib.core.ActivityDelegate;
+import com.uber.rib.core.HasActivityDelegate;
 import com.uber.rib.core.RibRefWatcher;
 import java.util.concurrent.TimeUnit;
 
-public class SampleApplication extends Application {
+public class SampleApplication extends Application implements HasActivityDelegate {
+
+  private SampleActivityDelegate activityDelegate;
 
   @Override
   public void onCreate() {
+    activityDelegate = new SampleActivityDelegate();
     super.onCreate();
     if (!LeakCanary.isInAnalyzerProcess(this)) {
       // This process is dedicated to LeakCanary for heap analysis. You should not init your app in
@@ -53,4 +58,11 @@ public class SampleApplication extends Application {
             });
     RibRefWatcher.getInstance().enableLeakCanary();
   }
+
+  @Override
+  public ActivityDelegate activityDelegate() {
+    return activityDelegate;
+  }
+
+  private static final class SampleActivityDelegate implements ActivityDelegate {}
 }
