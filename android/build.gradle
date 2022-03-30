@@ -151,7 +151,8 @@ subprojects {
 
         if (isKotlinLibrary) {
             def extraCompilerArgs = [
-                    "-Xjvm-default=all"
+                    // See https://github.com/bazelbuild/bazel/issues/15144
+                    "-Xjvm-default=enable"
             ]
             if (project.name in moduleFriends.keySet()) {
                 def friendName = moduleFriends[project.name]

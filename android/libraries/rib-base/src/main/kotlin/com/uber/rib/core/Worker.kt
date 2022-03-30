@@ -27,8 +27,10 @@ interface Worker {
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
+  @JvmDefault
   fun onStart(lifecycle: WorkerScopeProvider) {}
 
   /** Called when the worker is stopped.  */
+  @JvmDefault
   fun onStop() {}
 }
