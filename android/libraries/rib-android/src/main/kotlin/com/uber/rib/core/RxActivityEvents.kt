@@ -32,6 +32,7 @@ interface RxActivityEvents {
    * @param clazz The [ActivityLifecycleEvent] subclass you want.
    * @return an observable of this activity's lifecycle events.
    */
+  @JvmDefault
   fun <T : ActivityLifecycleEvent> lifecycle(clazz: Class<T>): Observable<T> {
     return lifecycle()
       .filter { activityEvent -> clazz.isAssignableFrom(activityEvent.javaClass) }
@@ -43,6 +44,7 @@ interface RxActivityEvents {
    * @param clazz The [ActivityCallbackEvent] subclass you want.
    * @return an observable of this activity's callbacks events.
    */
+  @JvmDefault
   fun <T : ActivityCallbackEvent> callbacks(clazz: Class<T>): Observable<T> {
     return callbacks()
       .filter { activityEvent -> clazz.isAssignableFrom(activityEvent.javaClass) }

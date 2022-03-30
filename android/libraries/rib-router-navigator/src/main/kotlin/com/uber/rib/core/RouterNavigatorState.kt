@@ -19,6 +19,7 @@ package com.uber.rib.core
 interface RouterNavigatorState {
 
   /** @return identifier for a [StackRouterNavigator] state. */
+  @JvmDefault
   fun stateName(): String {
     return if (this.javaClass.isEnum) {
       (this as Enum<*>).name
