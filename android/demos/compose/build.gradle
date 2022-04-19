@@ -35,6 +35,7 @@ dependencies {
     kapt deps.uber.motifCompiler
     implementation project(":libraries:rib-android")
     implementation project(":libraries:rib-android-compose")
+    implementation project(":libraries:rib-coroutines")
     implementation deps.androidx.activityCompose
     implementation deps.androidx.annotations
     implementation deps.androidx.appcompat

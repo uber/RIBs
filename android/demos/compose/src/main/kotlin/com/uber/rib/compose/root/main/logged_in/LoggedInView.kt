@@ -26,6 +26,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -33,36 +34,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.CustomButton
 import com.uber.rib.compose.util.EventStream
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoggedInView(
   eventStream: EventStream<LoggedInEvent>,
   childContent: LoggedInRouter.ChildContent,
 ) {
+
+  val coroutineScope = rememberCoroutineScope()
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
     modifier = Modifier
-      .fillMaxSize()
-      .background(Color.Green)
+            .fillMaxSize()
+            .background(Color.Green)
   ) {
     Text("Logged In! (Compose RIB)")
     Spacer(Modifier.height(16.dp))
     Box(
       modifier = Modifier
-        .fillMaxWidth()
-        .weight(1.0f)
-        .padding(4.dp)
-        .background(Color.LightGray)
+              .fillMaxWidth()
+              .weight(1.0f)
+              .padding(4.dp)
+              .background(Color.LightGray)
     ) {
       childContent.fullScreenSlot.value.invoke()
     }
     CustomButton(
       analyticsId = "8a570808-07a4",
-      onClick = { eventStream.notify(LoggedInEvent.LogOutClick) },
+      onClick = { coroutineScope.launch { eventStream.notify(LoggedInEvent.LogOutClick) } },
       modifier = Modifier
-        .fillMaxWidth()
-        .padding(16.dp)
+              .fillMaxWidth()
+              .padding(16.dp)
     ) {
       Text(text = "LOGOUT")
     }

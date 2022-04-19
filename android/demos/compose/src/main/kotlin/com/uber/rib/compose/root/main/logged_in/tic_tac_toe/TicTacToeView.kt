@@ -28,10 +28,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.GridCells
 import androidx.compose.foundation.lazy.LazyVerticalGrid
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,19 +36,24 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.EventStream
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TicTacToeView(viewModel: State<TicTacToeViewModel>, eventStream: EventStream<TicTacToeEvent>) {
+  val coroutineScope = rememberCoroutineScope()
+
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
     modifier = Modifier
-      .fillMaxSize()
-      .background(Color.Blue)
+            .fillMaxSize()
+            .background(Color.Blue)
   ) {
     Text("Current Player: ${viewModel.value.currentPlayer}", color = Color.White)
-    Box(modifier = Modifier.aspectRatio(1f).fillMaxSize()) {
+    Box(modifier = Modifier
+            .aspectRatio(1f)
+            .fillMaxSize()) {
       LazyVerticalGrid(cells = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
         val board = viewModel.value.board
         items(9) { i ->
@@ -65,17 +67,17 @@ fun TicTacToeView(viewModel: State<TicTacToeViewModel>, eventStream: EventStream
             },
             textAlign = TextAlign.Center,
             modifier = Modifier
-              .fillMaxWidth()
-              .aspectRatio(1f)
-              .padding(16.dp)
-              .background(Color.LightGray)
-              .clickable(
-                enabled = board.cells[row][col] == null,
-                onClick = {
-                  eventStream.notify(TicTacToeEvent.BoardClick(BoardCoordinate(row, col)))
-                }
-              )
-              .padding(32.dp)
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .padding(16.dp)
+                    .background(Color.LightGray)
+                    .clickable(
+                            enabled = board.cells[row][col] == null,
+                            onClick = {
+                              coroutineScope.launch { eventStream.notify(TicTacToeEvent.BoardClick(BoardCoordinate(row, col))) }
+                            }
+                    )
+                    .padding(32.dp)
           )
         }
       }

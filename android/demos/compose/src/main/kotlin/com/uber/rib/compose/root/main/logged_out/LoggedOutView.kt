@@ -24,34 +24,34 @@ import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.EventStream
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream<LoggedOutEvent>) {
+
+  val coroutineScope = rememberCoroutineScope()
   Column(
     modifier = Modifier
-      .fillMaxSize()
-      .padding(16.dp),
+            .fillMaxSize()
+            .padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
   ) {
     TextField(
       value = viewModel.value.playerOne,
-      onValueChange = { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 1)) },
+      onValueChange = { coroutineScope.launch { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 1)) } },
       placeholder = { Text(text = "Player One Name") },
       modifier = Modifier.fillMaxWidth()
     )
     TextField(
       value = viewModel.value.playerTwo,
-      onValueChange = { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 2)) },
+      onValueChange = { coroutineScope.launch { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 2)) } },
       placeholder = { Text(text = "Player Two Name") },
       modifier = Modifier.fillMaxWidth()
     )
@@ -60,7 +60,7 @@ fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream
         backgroundColor = Color.Black,
         contentColor = Color.White
       ),
-      onClick = { eventStream.notify(LoggedOutEvent.LogInClick) },
+      onClick = { coroutineScope.launch { eventStream.notify(LoggedOutEvent.LogInClick) } },
       modifier = Modifier.fillMaxWidth()
     ) {
       Text(text = "LOGIN")

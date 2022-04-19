@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package com.uber.rib.compose.util
-
-import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class StateStream<T : Any>(default: T) {
-  private val stateRelay = BehaviorRelay.createDefault(default)
+  private val stateFlow = MutableStateFlow(default)
 
-  fun dispatch(viewModel: T) = stateRelay.accept(viewModel)
+  suspend fun dispatch(viewModel: T) = stateFlow.emit(viewModel)
 
-  fun observe(): Observable<T> = stateRelay.hide()
+  fun observe(): Flow<T> = stateFlow.asSharedFlow()
 
-  fun current(): T = stateRelay.value ?: throw IllegalStateException("No state in relay")
+  fun current(): T = stateFlow.value
+
 }

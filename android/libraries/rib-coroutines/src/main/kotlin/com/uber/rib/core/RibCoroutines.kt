@@ -6,5 +6,15 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 
-val ScopeProvider.ribScope: CoroutineScope
-    get() = asCoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+val ScopeProvider.defaultScope: CoroutineScope
+    get() = asCoroutineScope(SupervisorJob() + RibDispatchers.Default)
+
+val ScopeProvider.mainScope: CoroutineScope
+    get() = asCoroutineScope(SupervisorJob() + RibDispatchers.Main)
+
+val ScopeProvider.ioScope: CoroutineScope
+    get() = asCoroutineScope(SupervisorJob() + RibDispatchers.IO)
+
+val ScopeProvider.unconfinedScope: CoroutineScope
+    get() = asCoroutineScope(SupervisorJob() + RibDispatchers.Unconfined)
+

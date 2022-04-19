@@ -16,7 +16,7 @@
 package com.uber.rib.compose.root.main.logged_in.off_game
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.collectAsState
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
@@ -38,7 +38,7 @@ interface OffGameScope {
     ): ComposePresenter {
       return object : ComposePresenter() {
         override val composable = @Composable {
-          OffGameView(stateStream.observe().subscribeAsState(initial = stateStream.current()), eventStream)
+          OffGameView(stateStream.observe().collectAsState(initial = stateStream.current()), eventStream)
         }
       }
     }

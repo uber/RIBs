@@ -22,21 +22,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.CustomButton
 import com.uber.rib.compose.util.EventStream
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.launch
 
 @Composable
 fun OffGameView(viewModel: State<OffGameViewModel>, eventStream: EventStream<OffGameEvent>) {
+  val coroutineScope = rememberCoroutineScope()
+
   Column(
-    modifier = Modifier.fillMaxSize().padding(16.dp),
+    modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
   ) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -49,7 +52,7 @@ fun OffGameView(viewModel: State<OffGameViewModel>, eventStream: EventStream<Off
     }
     CustomButton(
       analyticsId = "26882559-fc45",
-      onClick = { eventStream.notify(OffGameEvent.StartGame) },
+      onClick = { coroutineScope.launch { eventStream.notify(OffGameEvent.StartGame) } },
       modifier = Modifier.fillMaxWidth()
     ) {
       Text(text = "START GAME")

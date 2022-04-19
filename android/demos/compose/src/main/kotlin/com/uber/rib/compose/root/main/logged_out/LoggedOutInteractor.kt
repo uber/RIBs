@@ -15,7 +15,6 @@
  */
 package com.uber.rib.compose.root.main.logged_out
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.AuthStream
 import com.uber.rib.compose.util.EventStream
@@ -23,21 +22,24 @@ import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import io.reactivex.rxkotlin.ofType
+import com.uber.rib.core.CoroutineInteractor
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.filterIsInstance
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class LoggedOutInteractor(
   presenter: ComposePresenter,
   private val authStream: AuthStream,
   private val eventStream: EventStream<LoggedOutEvent>,
   private val stateStream: StateStream<LoggedOutViewModel>
-) : BasicInteractor<ComposePresenter, LoggedOutRouter>(presenter) {
+) : CoroutineInteractor<ComposePresenter, LoggedOutRouter>(presenter) {
 
-  override fun didBecomeActive(savedInstanceState: Bundle?) {
+  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
     super.didBecomeActive(savedInstanceState)
     eventStream.observe()
-      .ofType<LoggedOutEvent.PlayerNameChanged>()
-      .autoDispose(this)
-      .subscribe {
+      .filterIsInstance<LoggedOutEvent.PlayerNameChanged>()
+      .onEach {
         with(stateStream) {
           dispatch(
             current().copy(
@@ -46,14 +48,13 @@ class LoggedOutInteractor(
             )
           )
         }
-      }
+      }.launchIn(mainScope)
 
     eventStream.observe()
-      .ofType<LoggedOutEvent.LogInClick>()
-      .autoDispose(this)
-      .subscribe {
+      .filterIsInstance<LoggedOutEvent.LogInClick>()
+      .onEach {
         val currentState = stateStream.current()
         authStream.accept(AuthInfo(true, currentState.playerOne, currentState.playerTwo))
-      }
+      }.launchIn(mainScope)
   }
 }

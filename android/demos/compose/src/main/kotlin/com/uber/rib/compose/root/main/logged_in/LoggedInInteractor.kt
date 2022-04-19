@@ -15,16 +15,14 @@
  */
 package com.uber.rib.compose.root.main.logged_in
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.AuthStream
 import com.uber.rib.compose.root.main.logged_in.off_game.OffGameInteractor
 import com.uber.rib.compose.root.main.logged_in.tic_tac_toe.TicTacToeInteractor
 import com.uber.rib.compose.util.EventStream
-import com.uber.rib.core.BasicInteractor
-import com.uber.rib.core.Bundle
-import com.uber.rib.core.ComposePresenter
-import io.reactivex.rxkotlin.ofType
+import com.uber.rib.core.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.*
 
 class LoggedInInteractor(
   presenter: ComposePresenter,
@@ -32,26 +30,27 @@ class LoggedInInteractor(
   private val authStream: AuthStream,
   private val eventStream: EventStream<LoggedInEvent>,
   private val scoreStream: ScoreStream
-) : BasicInteractor<ComposePresenter, LoggedInRouter>(presenter),
+) : CoroutineInteractor<ComposePresenter, LoggedInRouter>(presenter),
   OffGameInteractor.Listener,
   TicTacToeInteractor.Listener {
 
-  override fun didBecomeActive(savedInstanceState: Bundle?) {
+  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope: CoroutineScope) {
     super.didBecomeActive(savedInstanceState)
+
     eventStream.observe()
-      .ofType<LoggedInEvent.LogOutClick>()
-      .autoDispose(this)
-      .subscribe { authStream.accept(AuthInfo(false)) }
+            .filterIsInstance<LoggedInEvent.LogOutClick>()
+            .onEach { authStream.accept(AuthInfo(false)) }
+            .launchIn(mainScope)
 
     router.attachOffGame(authInfo)
   }
 
-  override fun onStartGame() {
+  override suspend fun onStartGame() {
     router.detachOffGame()
     router.attachTicTacToe(authInfo)
   }
 
-  override fun onGameWon(winner: String?) {
+  override suspend fun onGameWon(winner: String?) {
     if (winner != null) {
       scoreStream.addVictory(winner)
     }
