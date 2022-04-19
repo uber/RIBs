@@ -18,10 +18,10 @@ package com.uber.rib.compose.root.main.logged_in.tic_tac_toe
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
+import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.CoroutineInteractor
-import kotlinx.coroutines.CoroutineScope
+import com.uber.rib.core.mainScope
 import kotlinx.coroutines.flow.*
 
 class TicTacToeInteractor(
@@ -30,13 +30,14 @@ class TicTacToeInteractor(
   private val eventStream: EventStream<TicTacToeEvent>,
   private val stateStream: StateStream<TicTacToeViewModel>,
   private val listener: Listener
-) : CoroutineInteractor<ComposePresenter, TicTacToeRouter>(presenter) {
+) : BasicInteractor<ComposePresenter, TicTacToeRouter>(presenter) {
 
   var currentPlayer: Board.MarkerType = Board.MarkerType.CROSS
 
-  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
+  override fun didBecomeActive(savedInstanceState: Bundle?) {
+      super.didBecomeActive(savedInstanceState)
 
-    eventStream.observe()
+      eventStream.observe()
             .onEach {
                 when(it) {
                     is TicTacToeEvent.BoardClick -> {

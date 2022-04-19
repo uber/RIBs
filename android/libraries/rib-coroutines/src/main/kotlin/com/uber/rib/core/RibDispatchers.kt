@@ -21,10 +21,12 @@ object RibDispatchers {
 
 }
 
+
+
 class DefaultDispatcherProvider : DispatcherProvider {
     override fun getDefault() = Dispatchers.Default
 
-    override fun getMain() = Dispatchers.Main
+    override fun getMain() = Dispatchers.Main.immediate
 
     override fun getIO() = Dispatchers.IO
 

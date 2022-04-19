@@ -18,20 +18,26 @@ package com.uber.rib.compose.root.main
 import com.uber.autodispose.autoDispose
 import com.uber.rib.core.*
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
+import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
+import kotlin.coroutines.CoroutineContext
 
 class MainInteractor(
   presenter: ComposePresenter,
   private val authStream: AuthStream,
   private val childContent: MainRouter.ChildContent
-) : CoroutineInteractor<ComposePresenter, MainRouter>(presenter) {
+) : BasicInteractor<ComposePresenter, MainRouter>(presenter) {
 
-  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope: CoroutineScope) {
-    router.view.setContent { MainView(childContent = childContent) }
+  override fun didBecomeActive(savedInstanceState: Bundle?) {
+      super.didBecomeActive(savedInstanceState)
+      CoroutineScope(RibDispatchers.Main).launch {  }
+
+      router.view.setContent { MainView(childContent = childContent) }
     authStream.observe()
         .onEach {
             if (it.isLoggedIn) {

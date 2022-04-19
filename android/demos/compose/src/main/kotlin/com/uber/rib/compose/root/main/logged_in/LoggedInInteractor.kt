@@ -30,11 +30,12 @@ class LoggedInInteractor(
   private val authStream: AuthStream,
   private val eventStream: EventStream<LoggedInEvent>,
   private val scoreStream: ScoreStream
-) : CoroutineInteractor<ComposePresenter, LoggedInRouter>(presenter),
+) : BasicInteractor<ComposePresenter, LoggedInRouter>(presenter),
   OffGameInteractor.Listener,
   TicTacToeInteractor.Listener {
 
-  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope: CoroutineScope) {
+  override fun didBecomeActive(savedInstanceState: Bundle?) {
+    super.didBecomeActive(savedInstanceState)
 
     eventStream.observe()
             .onEach {

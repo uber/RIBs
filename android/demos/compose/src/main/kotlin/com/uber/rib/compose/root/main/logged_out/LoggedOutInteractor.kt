@@ -34,10 +34,11 @@ class LoggedOutInteractor(
   private val authStream: AuthStream,
   private val eventStream: EventStream<LoggedOutEvent>,
   private val stateStream: StateStream<LoggedOutViewModel>
-) : CoroutineInteractor<ComposePresenter, LoggedOutRouter>(presenter) {
+) : BasicInteractor<ComposePresenter, LoggedOutRouter>(presenter) {
 
-  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
-    eventStream.observe()
+  override fun didBecomeActive(savedInstanceState: Bundle?) {
+      super.didBecomeActive(savedInstanceState)
+      eventStream.observe()
       .onEach {
           when(it) {
               is LoggedOutEvent.PlayerNameChanged -> {

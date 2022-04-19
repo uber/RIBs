@@ -33,10 +33,12 @@ class OffGameInteractor(
   private val stateStream: StateStream<OffGameViewModel>,
   private val scoreStream: ScoreStream,
   private val listener: Listener
-) : CoroutineInteractor<ComposePresenter, OffGameRouter>(presenter) {
+) : BasicInteractor<ComposePresenter, OffGameRouter>(presenter) {
 
-  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
-    eventStream.observe()
+  override fun didBecomeActive(savedInstanceState: Bundle?) {
+      super.didBecomeActive(savedInstanceState)
+
+      eventStream.observe()
       .onEach {
           when(it) {
               is OffGameEvent.StartGame -> {
