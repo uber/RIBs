@@ -35,11 +35,12 @@ class LoggedInInteractor(
   TicTacToeInteractor.Listener {
 
   override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope: CoroutineScope) {
-    super.didBecomeActive(savedInstanceState)
 
     eventStream.observe()
-            .filterIsInstance<LoggedInEvent.LogOutClick>()
-            .onEach { authStream.accept(AuthInfo(false)) }
+            .onEach {
+              when(it) {
+                is LoggedInEvent.LogOutClick -> authStream.accept(AuthInfo(false)) }
+              }
             .launchIn(mainScope)
 
     router.attachOffGame(authInfo)

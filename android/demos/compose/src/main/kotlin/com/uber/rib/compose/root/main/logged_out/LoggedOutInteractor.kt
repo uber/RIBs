@@ -17,16 +17,17 @@ package com.uber.rib.compose.root.main.logged_out
 
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.AuthStream
+import com.uber.rib.compose.root.main.MainScope
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
-import com.uber.rib.core.BasicInteractor
-import com.uber.rib.core.Bundle
-import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.CoroutineInteractor
+import com.uber.rib.core.*
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class LoggedOutInteractor(
   presenter: ComposePresenter,
@@ -36,25 +37,25 @@ class LoggedOutInteractor(
 ) : CoroutineInteractor<ComposePresenter, LoggedOutRouter>(presenter) {
 
   override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
-    super.didBecomeActive(savedInstanceState)
     eventStream.observe()
-      .filterIsInstance<LoggedOutEvent.PlayerNameChanged>()
       .onEach {
-        with(stateStream) {
-          dispatch(
-            current().copy(
-              playerOne = if (it.num == 1) it.name else current().playerOne,
-              playerTwo = if (it.num == 2) it.name else current().playerTwo
-            )
-          )
-        }
-      }.launchIn(mainScope)
+          when(it) {
+              is LoggedOutEvent.PlayerNameChanged -> {
+                  with(stateStream) {
+                      dispatch(
+                              current().copy(
+                                      playerOne = if (it.num == 1) it.name else current().playerOne,
+                                      playerTwo = if (it.num == 2) it.name else current().playerTwo
+                              )
+                      )
+                  }
+              }
+              LoggedOutEvent.LogInClick -> {
+                  val currentState = stateStream.current()
+                  authStream.accept(AuthInfo(true, currentState.playerOne, currentState.playerTwo))
+              }
+          }
 
-    eventStream.observe()
-      .filterIsInstance<LoggedOutEvent.LogInClick>()
-      .onEach {
-        val currentState = stateStream.current()
-        authStream.accept(AuthInfo(true, currentState.playerOne, currentState.playerTwo))
       }.launchIn(mainScope)
   }
 }

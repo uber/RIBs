@@ -16,33 +16,31 @@
 package com.uber.rib.compose.root.main
 
 import com.uber.autodispose.autoDispose
-import com.uber.rib.core.BasicInteractor
-import com.uber.rib.core.Bundle
-import com.uber.rib.core.ComposePresenter
+import com.uber.rib.core.*
 import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class MainInteractor(
   presenter: ComposePresenter,
   private val authStream: AuthStream,
   private val childContent: MainRouter.ChildContent
-) : BasicInteractor<ComposePresenter, MainRouter>(presenter) {
+) : CoroutineInteractor<ComposePresenter, MainRouter>(presenter) {
 
-  override fun didBecomeActive(savedInstanceState: Bundle?) {
-    super.didBecomeActive(savedInstanceState)
+  override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope: CoroutineScope) {
     router.view.setContent { MainView(childContent = childContent) }
     authStream.observe()
-      .subscribeOn(Schedulers.io())
-      .observeOn(mainThread())
-      .autoDispose(this)
-      .subscribe {
-        if (it.isLoggedIn) {
-          router.detachLoggedOut()
-          router.attachLoggedIn(it)
-        } else {
-          router.detachLoggedIn()
-          router.attachLoggedOut()
-        }
-      }
+        .onEach {
+            if (it.isLoggedIn) {
+              router.detachLoggedOut()
+              router.attachLoggedIn(it)
+            } else {
+              router.detachLoggedIn()
+              router.attachLoggedOut()
+            }
+      }.launchIn(mainScope)
   }
 }

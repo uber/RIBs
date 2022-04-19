@@ -35,56 +35,53 @@ class TicTacToeInteractor(
   var currentPlayer: Board.MarkerType = Board.MarkerType.CROSS
 
   override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
-    super.didBecomeActive(savedInstanceState)
 
     eventStream.observe()
-            .filterIsInstance<TicTacToeEvent.BoardClick>()
             .onEach {
-                val board: Board = stateStream.current().board
-                val coord = it.coordinate
+                when(it) {
+                    is TicTacToeEvent.BoardClick -> {
+                        val board: Board = stateStream.current().board
+                        val coord = it.coordinate
 
-                if (board.cells[coord.x][coord.y] == null) {
-                    if (currentPlayer == Board.MarkerType.CROSS) {
-                        board.cells[coord.x][coord.y] = Board.MarkerType.CROSS
-                        board.currentRow = coord.x
-                        board.currentCol = coord.y
-                        currentPlayer = Board.MarkerType.NOUGHT
-                    } else {
-                        board.cells[coord.x][coord.y] = Board.MarkerType.NOUGHT
-                        board.currentRow = coord.x
-                        board.currentCol = coord.y
-                        currentPlayer = Board.MarkerType.CROSS
-                    }
-                }
+                        if (board.cells[coord.x][coord.y] == null) {
+                            if (currentPlayer == Board.MarkerType.CROSS) {
+                                board.cells[coord.x][coord.y] = Board.MarkerType.CROSS
+                                board.currentRow = coord.x
+                                board.currentCol = coord.y
+                                currentPlayer = Board.MarkerType.NOUGHT
+                            } else {
+                                board.cells[coord.x][coord.y] = Board.MarkerType.NOUGHT
+                                board.currentRow = coord.x
+                                board.currentCol = coord.y
+                                currentPlayer = Board.MarkerType.CROSS
+                            }
+                        }
 
-                if (board.hasWon(Board.MarkerType.CROSS)) {
-                    listener.onGameWon(authInfo.playerOne)
-                } else if (board.hasWon(Board.MarkerType.NOUGHT)) {
-                    listener.onGameWon(authInfo.playerTwo)
-                } else if (board.isDraw()) {
-                    listener.onGameWon(null)
-                }
+                        if (board.hasWon(Board.MarkerType.CROSS)) {
+                            listener.onGameWon(authInfo.playerOne)
+                        } else if (board.hasWon(Board.MarkerType.NOUGHT)) {
+                            listener.onGameWon(authInfo.playerTwo)
+                        } else if (board.isDraw()) {
+                            listener.onGameWon(null)
+                        }
 
-                val newPlayerName = if (currentPlayer == Board.MarkerType.CROSS) {
-                    authInfo.playerOne
-                } else {
-                    authInfo.playerTwo
-                }
+                        val newPlayerName = if (currentPlayer == Board.MarkerType.CROSS) {
+                            authInfo.playerOne
+                        } else {
+                            authInfo.playerTwo
+                        }
 
-                stateStream.dispatch(
-                        stateStream.current().copy(
-                                board = board,
-                                currentPlayer = newPlayerName
+                        stateStream.dispatch(
+                                stateStream.current().copy(
+                                        board = board,
+                                        currentPlayer = newPlayerName
+                                )
                         )
-                )
+                    }
+                    TicTacToeEvent.XpButtonClick -> TODO("Go somewhere")
+                }
+
             }.launchIn(mainScope)
-
-
-    eventStream.observe()
-      .filterIsInstance<TicTacToeEvent.XpButtonClick>()
-      .onEach {
-        // router.goToSomewhere()
-      }.launchIn(mainScope)
   }
 
   interface Listener {

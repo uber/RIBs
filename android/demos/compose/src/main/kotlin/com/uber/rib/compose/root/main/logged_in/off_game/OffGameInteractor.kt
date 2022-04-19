@@ -36,11 +36,13 @@ class OffGameInteractor(
 ) : CoroutineInteractor<ComposePresenter, OffGameRouter>(presenter) {
 
   override suspend fun didBecomeActive(savedInstanceState: Bundle?, mainScope : CoroutineScope) {
-    super.didBecomeActive(savedInstanceState)
     eventStream.observe()
-      .filterIsInstance<OffGameEvent.StartGame>()
       .onEach {
-        listener.onStartGame()
+          when(it) {
+              is OffGameEvent.StartGame -> {
+                  listener.onStartGame()
+              }
+          }
       }.launchIn(mainScope)
 
     scoreStream.scores()
