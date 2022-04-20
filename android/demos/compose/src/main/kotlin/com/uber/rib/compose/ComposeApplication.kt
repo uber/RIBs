@@ -22,7 +22,11 @@ import com.facebook.flipper.core.FlipperClient
 import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.soloader.SoLoader
+import com.uber.rib.core.RibDispatchersConfig
+import com.uber.rib.core.RibDispatchersProvider
 import com.uber.rib.flipper.RibTreePlugin
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.MainCoroutineDispatcher
 
 class ComposeApplication : Application() {
 
