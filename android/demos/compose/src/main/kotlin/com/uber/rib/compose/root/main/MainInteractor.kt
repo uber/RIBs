@@ -35,10 +35,9 @@ class MainInteractor(
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
-      CoroutineScope(RibDispatchers.Main).launch {  }
 
       router.view.setContent { MainView(childContent = childContent) }
-    authStream.observe()
+      authStream.observe()
         .onEach {
             if (it.isLoggedIn) {
               router.detachLoggedOut()

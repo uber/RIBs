@@ -35,7 +35,6 @@ class LoggedOutInteractor(
   private val eventStream: EventStream<LoggedOutEvent>,
   private val stateStream: StateStream<LoggedOutViewModel>
 ) : BasicInteractor<ComposePresenter, LoggedOutRouter>(presenter) {
-
   override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
       eventStream.observe()
