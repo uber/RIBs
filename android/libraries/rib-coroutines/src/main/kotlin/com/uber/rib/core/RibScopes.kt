@@ -8,11 +8,11 @@ import java.util.*
 import kotlin.reflect.KProperty
 
 val ScopeProvider.defaultScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + RibDispatchers.Main)
+    asCoroutineScope(SupervisorJob() + RibDispatchers.Default)
 }
 
 val ScopeProvider.mainScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + RibDispatchers.Main)
+    asCoroutineScope(SupervisorJob() + RibDispatchers.Main.immediate)
 }
 
 val ScopeProvider.ioScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {

@@ -18,7 +18,7 @@ class RibDispatchersTest {
 
     @Test
     fun testSetConfigDelegate() {
-        val testDispatcher = TestDispatcherProvider()
+        val testDispatcher = DefaultRibDispatcherProvider()
 
         assertThat(RibDispatchers.Default).isNotEqualTo(testDispatcher.Default)
         assertThat(RibDispatchers.IO).isNotEqualTo(testDispatcher.IO)

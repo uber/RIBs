@@ -22,12 +22,7 @@ sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    implementation deps.kotlin.stdlib
-    implementation project(':libraries:rib-coroutines-test')
-    implementation deps.uber.autodisposeCoroutines
-    api deps.kotlin.coroutines
-    api deps.test.junit
-    api deps.test.truth
-    api deps.test.mockito
-    implementation deps.test.mockitoKotlin
+    implementation project(':libraries:rib-coroutines')
+    implementation deps.kotlin.coroutinesTest
+    implementation deps.test.junit
 }

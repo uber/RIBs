@@ -2,6 +2,10 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.*
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.setMain
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 
@@ -10,7 +14,18 @@ class RibScopesTest {
 
     @Before
     fun setup() {
-        RibDispatchersConfig.delegate = TestDispatcherProvider()
+        Dispatchers.setMain(TestCoroutineDispatcher())
+        RibDispatchersConfig.delegate = DefaultRibDispatcherProvider(
+                Default = TestCoroutineDispatcher(),
+                Main = Dispatchers.Main,
+                IO = TestCoroutineDispatcher(),
+                Unconfined = TestCoroutineDispatcher())
+    }
+
+    @After
+    fun teardown() {
+        Dispatchers.resetMain()
+        RibDispatchersConfig.reset()
     }
 
     @Test
