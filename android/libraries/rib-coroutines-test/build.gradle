@@ -23,16 +23,11 @@ targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
     implementation deps.kotlin.stdlib
-    api deps.uber.autodisposeCoroutines
-    api deps.kotlin.coroutinesTest
-
-    testImplementation project(":libraries:rib-base")
-    testImplementation project(":libraries:rib-test")
-    testImplementation deps.test.junit
-    testImplementation deps.test.mockito
-    testImplementation deps.test.mockitoKotlin
-    testImplementation deps.test.truth
-    testImplementation deps.kotlin.coroutinesTest
-    testImplementation deps.androidx.annotations
-    testImplementation deps.apt.androidApi
+    implementation project(':libraries:rib-coroutines-test')
+    implementation deps.uber.autodisposeCoroutines
+    api deps.kotlin.coroutines
+    api deps.test.junit
+    api deps.test.truth
+    api deps.test.mockito
+    implementation deps.test.mockitoKotlin
 }
