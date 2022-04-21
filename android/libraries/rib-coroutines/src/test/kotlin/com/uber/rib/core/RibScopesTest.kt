@@ -2,34 +2,20 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.*
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
-import kotlinx.coroutines.test.setMain
+import kotlinx.coroutines.test.*
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import java.lang.RuntimeException
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RibScopesTest {
 
-    @Before
-    fun setup() {
-        Dispatchers.setMain(TestCoroutineDispatcher())
-        RibDispatchersConfig.delegate = DefaultRibDispatcherProvider(
-                Default = TestCoroutineDispatcher(),
-                Main = Dispatchers.Main,
-                IO = TestCoroutineDispatcher(),
-                Unconfined = TestCoroutineDispatcher())
-    }
-
-    @After
-    fun teardown() {
-        Dispatchers.resetMain()
-        RibDispatchersConfig.reset()
-    }
+    @get:Rule var rule = RibDispatchersRule()
 
     @Test
-    fun testScopeLifecycle()  = runBlocking {
+    fun testScopeLifecycle()  = runBlockingTest {
         val interactor = FakeInteractor<Presenter, Router<*>>()
         interactor.attach()
         val job = interactor.mainScope.launch {
@@ -42,7 +28,7 @@ class RibScopesTest {
         assertThat(job.isActive).isFalse()
     }
 
-    @Test
+    @Test()
     fun testScopeCaching() {
 
         val interactor1 = FakeInteractor<Presenter, Router<*>>()
@@ -58,5 +44,17 @@ class RibScopesTest {
         assertThat(interactor1mainScope1).isNotEqualTo(interactor2mainScope1)
     }
 
+    @Test(expected = RuntimeException::class)
+    fun testUncaughtHandler() = runBlockingTest {
+        val handler = TestCoroutineExceptionHandler()
+        RibCoroutinesConfig.exceptionHandler = handler
 
+        val interactor = FakeInteractor<Presenter, Router<*>>()
+        interactor.attach()
+
+        interactor.mainScope.launch {
+            throw RuntimeException("mainScope failed")
+        }
+        handler.cleanupTestCoroutines()
+    }
 }

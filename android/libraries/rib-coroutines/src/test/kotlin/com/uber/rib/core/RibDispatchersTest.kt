@@ -25,7 +25,7 @@ class RibDispatchersTest {
         assertThat(RibDispatchers.Main).isNotEqualTo(testDispatcher.Main)
         assertThat(RibDispatchers.Unconfined).isNotEqualTo(testDispatcher.Unconfined)
 
-        RibDispatchersConfig.delegate = testDispatcher
+        RibCoroutinesConfig.dispatchers = testDispatcher
 
         assertThat(RibDispatchers.Default).isEqualTo(testDispatcher.Default)
         assertThat(RibDispatchers.IO).isEqualTo(testDispatcher.IO)

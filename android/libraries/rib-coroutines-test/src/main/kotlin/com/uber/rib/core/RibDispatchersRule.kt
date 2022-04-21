@@ -1,32 +1,33 @@
 package com.uber.rib.core
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.rules.TestRule
+import org.junit.rules.TestWatcher
 import org.junit.runner.Description
-import org.junit.runners.model.Statement
 
-class RibDispatchersRule : TestRule {
-    @OptIn(ExperimentalCoroutinesApi::class)
-    override fun apply(base: Statement, description: Description) = object : Statement() {
-        override fun evaluate() {
-            Dispatchers.setMain(TestCoroutineDispatcher())
-            RibDispatchersConfig.delegate = DefaultRibDispatcherProvider(
-                    Default = TestCoroutineDispatcher(),
-                    Main = Dispatchers.Main,
-                    IO = TestCoroutineDispatcher(),
-                    Unconfined = TestCoroutineDispatcher())
+class RibDispatchersRule : TestWatcher() {
 
-            Dispatchers.Main
-            try {
-                base.evaluate()
-            } finally {
-                Dispatchers.resetMain()
-                RibDispatchersConfig.reset()
-            }
-        }
+    override fun starting(description: Description) {
+        val defaultDispatcher = TestCoroutineDispatcher()
+        val mainDispatcher = TestCoroutineDispatcher()
+        val ioDispatcher = TestCoroutineDispatcher()
+        val unconfinedDispatcher = TestCoroutineDispatcher()
+
+        Dispatchers.setMain(mainDispatcher)
+
+        val mainDispatcherProxy = Dispatchers.Main
+
+        RibCoroutinesConfig.dispatchers = DefaultRibDispatcherProvider(
+                Default = defaultDispatcher,
+                Main = mainDispatcherProxy,
+                IO = ioDispatcher,
+                Unconfined = unconfinedDispatcher)
+    }
+
+    override fun finished(description: Description) {
+        Dispatchers.resetMain()
+        RibCoroutinesConfig.reset()
     }
 }

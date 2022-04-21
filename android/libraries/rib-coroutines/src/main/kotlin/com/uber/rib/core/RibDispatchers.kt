@@ -5,30 +5,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 
 object RibDispatchers : RibDispatchersProvider {
-    override val Default get() = RibDispatchersConfig.delegate.Default
-    override val Main get() = RibDispatchersConfig.delegate.Main
-    override val IO get() = RibDispatchersConfig.delegate.IO
-    override val Unconfined get() = RibDispatchersConfig.delegate.Unconfined
-}
-
-object RibDispatchersConfig {
-    /**
-     * Delegate used to override default Dispatchers.
-     * Useful in areas where injecting Dispatchers is not ideal, such as Test.
-     */
-    @JvmStatic
-    var delegate = createDefaultRibDispatchers()
-
-    /**
-     * Resets delegate to default [RibDispatchersProvider].
-     * Should be called after tests
-     */
-    @JvmStatic
-    fun reset() {
-        this.delegate = createDefaultRibDispatchers()
-    }
-
-    private fun createDefaultRibDispatchers() = DefaultRibDispatcherProvider()
+    override val Default get() = RibCoroutinesConfig.dispatchers.Default
+    override val Main get() = RibCoroutinesConfig.dispatchers.Main
+    override val IO get() = RibCoroutinesConfig.dispatchers.IO
+    override val Unconfined get() = RibCoroutinesConfig.dispatchers.Unconfined
 }
 
 class DefaultRibDispatcherProvider(override val Default : CoroutineDispatcher = Dispatchers.Default,

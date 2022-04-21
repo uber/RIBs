@@ -9,23 +9,23 @@ import java.util.*
 import kotlin.reflect.KProperty
 
 val ScopeProvider.defaultScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + scopeName(this, "defaultScope") + RibDispatchers.Default)
+    asCoroutineScope(  defaults(this, "defaultScope") + RibDispatchers.Default)
 }
 
 val ScopeProvider.mainScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + scopeName(this, "mainScope") + RibDispatchers.Main.immediate)
+    asCoroutineScope(defaults(this, "mainScope") + RibDispatchers.Main.immediate)
 }
 
 val ScopeProvider.ioScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + scopeName(this, "ioScope") + RibDispatchers.IO)
+    asCoroutineScope(defaults(this, "ioScope") + RibDispatchers.IO)
 }
 val ScopeProvider.unconfinedScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + scopeName(this, "unconfinedScope") + RibDispatchers.Unconfined)
+    asCoroutineScope(defaults(this, "unconfinedScope") + RibDispatchers.Unconfined)
 }
 
-private fun scopeName(scopeProvider : ScopeProvider, scopeName: String) = CoroutineName("${scopeProvider::class.simpleName}:${scopeName}")
+private fun defaults(scopeProvider : ScopeProvider, scopeName: String) = SupervisorJob() + RibCoroutinesConfig.exceptionHandler + CoroutineName("${scopeProvider::class.simpleName}:${scopeName}")
 
-private class LazyWithReceiver<This,Return>(val initializer:This.()->Return)
+internal class LazyWithReceiver<This,Return>(val initializer:This.()->Return)
 {
     private val values = WeakHashMap<This,Return>()
 
