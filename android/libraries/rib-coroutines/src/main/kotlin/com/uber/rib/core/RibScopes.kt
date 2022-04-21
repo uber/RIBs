@@ -9,19 +9,21 @@ import java.util.*
 import kotlin.reflect.KProperty
 
 val ScopeProvider.defaultScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + CoroutineName("defaultScope") + RibDispatchers.Default)
+    asCoroutineScope(SupervisorJob() + scopeName(this, "defaultScope") + RibDispatchers.Default)
 }
 
 val ScopeProvider.mainScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + CoroutineName("mainScope") + RibDispatchers.Main.immediate)
+    asCoroutineScope(SupervisorJob() + scopeName(this, "mainScope") + RibDispatchers.Main.immediate)
 }
 
 val ScopeProvider.ioScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + CoroutineName("ioScope") + RibDispatchers.IO)
+    asCoroutineScope(SupervisorJob() + scopeName(this, "ioScope") + RibDispatchers.IO)
 }
 val ScopeProvider.unconfinedScope by LazyWithReceiver<ScopeProvider, CoroutineScope> {
-    asCoroutineScope(SupervisorJob() + CoroutineName("unconfinedScope") + RibDispatchers.Unconfined)
+    asCoroutineScope(SupervisorJob() + scopeName(this, "unconfinedScope") + RibDispatchers.Unconfined)
 }
+
+private fun scopeName(scopeProvider : ScopeProvider, scopeName: String) = CoroutineName("${scopeProvider::class.simpleName}:${scopeName}")
 
 private class LazyWithReceiver<This,Return>(val initializer:This.()->Return)
 {
