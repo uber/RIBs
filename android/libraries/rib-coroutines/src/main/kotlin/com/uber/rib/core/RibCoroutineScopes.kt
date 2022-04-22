@@ -24,6 +24,13 @@ import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.reflect.KProperty
 
+/**
+ * [CoroutineScope] tied to this [ScopeProvider].
+ * This scope will be canceled when ScopeProvider is completed
+ *
+ * This scope is bound to
+ * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
+ */
 val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope {
   var context: CoroutineContext = SupervisorJob() + RibDispatchers.Main.immediate + CoroutineName("${this::class.simpleName}:coroutineScope")
 
