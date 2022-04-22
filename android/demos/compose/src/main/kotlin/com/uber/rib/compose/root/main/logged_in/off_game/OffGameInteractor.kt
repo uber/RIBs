@@ -18,7 +18,10 @@ package com.uber.rib.compose.root.main.logged_in.off_game
 import com.uber.rib.compose.root.main.logged_in.ScoreStream
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
-import com.uber.rib.core.*
+import com.uber.rib.core.BasicInteractor
+import com.uber.rib.core.Bundle
+import com.uber.rib.core.ComposePresenter
+import com.uber.rib.core.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -31,15 +34,15 @@ class OffGameInteractor(
 ) : BasicInteractor<ComposePresenter, OffGameRouter>(presenter) {
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
-      super.didBecomeActive(savedInstanceState)
+    super.didBecomeActive(savedInstanceState)
 
-      eventStream.observe()
+    eventStream.observe()
       .onEach {
-          when(it) {
-              is OffGameEvent.StartGame -> {
-                  listener.onStartGame()
-              }
+        when (it) {
+          is OffGameEvent.StartGame -> {
+            listener.onStartGame()
           }
+        }
       }.launchIn(coroutineScope)
 
     scoreStream.scores()

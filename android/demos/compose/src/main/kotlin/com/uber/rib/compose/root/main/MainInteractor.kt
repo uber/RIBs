@@ -15,10 +15,12 @@
  */
 package com.uber.rib.compose.root.main
 
-import com.uber.rib.core.*
+import com.uber.rib.core.BasicInteractor
+import com.uber.rib.core.Bundle
+import com.uber.rib.core.ComposePresenter
+import com.uber.rib.core.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-
 
 class MainInteractor(
   presenter: ComposePresenter,
@@ -27,18 +29,18 @@ class MainInteractor(
 ) : BasicInteractor<ComposePresenter, MainRouter>(presenter) {
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
-      super.didBecomeActive(savedInstanceState)
+    super.didBecomeActive(savedInstanceState)
 
-      router.view.setContent { MainView(childContent = childContent) }
-      authStream.observe()
-        .onEach {
-            if (it.isLoggedIn) {
-              router.detachLoggedOut()
-              router.attachLoggedIn(it)
-            } else {
-              router.detachLoggedIn()
-              router.attachLoggedOut()
-            }
+    router.view.setContent { MainView(childContent = childContent) }
+    authStream.observe()
+      .onEach {
+        if (it.isLoggedIn) {
+          router.detachLoggedOut()
+          router.attachLoggedIn(it)
+        } else {
+          router.detachLoggedIn()
+          router.attachLoggedOut()
+        }
       }.launchIn(coroutineScope)
   }
 }

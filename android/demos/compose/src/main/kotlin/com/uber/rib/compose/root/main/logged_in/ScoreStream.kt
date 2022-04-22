@@ -15,7 +15,6 @@
  */
 package com.uber.rib.compose.root.main.logged_in
 
-
 import com.uber.rib.core.RibDispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,10 +23,12 @@ import kotlinx.coroutines.withContext
 
 class ScoreStream(playerOne: String, playerTwo: String) {
 
-  private val scoresFlow = MutableStateFlow(mapOf(
-          playerOne to 0,
-          playerTwo to 0
-  ))
+  private val scoresFlow = MutableStateFlow(
+    mapOf(
+      playerOne to 0,
+      playerTwo to 0
+    )
+  )
 
   suspend fun addVictory(userName: String) = withContext(RibDispatchers.IO) {
     val scores = scoresFlow.value.toMutableMap()

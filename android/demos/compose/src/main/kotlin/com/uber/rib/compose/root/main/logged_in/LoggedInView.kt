@@ -48,17 +48,17 @@ fun LoggedInView(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
     modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Green)
+      .fillMaxSize()
+      .background(Color.Green)
   ) {
     Text("Logged In! (Compose RIB)")
     Spacer(Modifier.height(16.dp))
     Box(
       modifier = Modifier
-              .fillMaxWidth()
-              .weight(1.0f)
-              .padding(4.dp)
-              .background(Color.LightGray)
+        .fillMaxWidth()
+        .weight(1.0f)
+        .padding(4.dp)
+        .background(Color.LightGray)
     ) {
       childContent.fullScreenSlot.value.invoke()
     }
@@ -66,8 +66,8 @@ fun LoggedInView(
       analyticsId = "8a570808-07a4",
       onClick = { coroutineScope.launch { eventStream.notify(LoggedInEvent.LogOutClick) } },
       modifier = Modifier
-              .fillMaxWidth()
-              .padding(16.dp)
+        .fillMaxWidth()
+        .padding(16.dp)
     ) {
       Text(text = "LOGOUT")
     }

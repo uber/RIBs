@@ -26,5 +26,4 @@ class StateStream<T : Any>(default: T) {
   fun observe(): Flow<T> = stateFlow.asSharedFlow()
 
   fun current(): T = stateFlow.value
-
 }

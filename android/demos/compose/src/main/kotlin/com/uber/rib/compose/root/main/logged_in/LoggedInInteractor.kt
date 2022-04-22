@@ -20,8 +20,12 @@ import com.uber.rib.compose.root.main.AuthStream
 import com.uber.rib.compose.root.main.logged_in.off_game.OffGameInteractor
 import com.uber.rib.compose.root.main.logged_in.tic_tac_toe.TicTacToeInteractor
 import com.uber.rib.compose.util.EventStream
-import com.uber.rib.core.*
-import kotlinx.coroutines.flow.*
+import com.uber.rib.core.BasicInteractor
+import com.uber.rib.core.Bundle
+import com.uber.rib.core.ComposePresenter
+import com.uber.rib.core.coroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class LoggedInInteractor(
   presenter: ComposePresenter,
@@ -37,11 +41,12 @@ class LoggedInInteractor(
     super.didBecomeActive(savedInstanceState)
 
     eventStream.observe()
-            .onEach {
-              when(it) {
-                is LoggedInEvent.LogOutClick -> authStream.accept(AuthInfo(false)) }
-              }
-            .launchIn(coroutineScope)
+      .onEach {
+        when (it) {
+          is LoggedInEvent.LogOutClick -> authStream.accept(AuthInfo(false))
+        }
+      }
+      .launchIn(coroutineScope)
 
     router.attachOffGame(authInfo)
   }

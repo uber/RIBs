@@ -17,7 +17,6 @@ package com.uber.rib.compose.root.main.logged_out
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.rxjava2.subscribeAsState
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.ComposePresenter
