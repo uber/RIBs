@@ -58,6 +58,6 @@ class OffGameInteractor(
   }
 
   interface Listener {
-    suspend fun onStartGame()
+      fun onStartGame()
   }
 }

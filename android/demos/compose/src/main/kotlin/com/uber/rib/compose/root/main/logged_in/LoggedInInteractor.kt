@@ -26,6 +26,7 @@ import com.uber.rib.core.ComposePresenter
 import com.uber.rib.core.coroutineScope
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class LoggedInInteractor(
   presenter: ComposePresenter,
@@ -51,14 +52,14 @@ class LoggedInInteractor(
     router.attachOffGame(authInfo)
   }
 
-  override suspend fun onStartGame() {
+  override fun onStartGame() {
     router.detachOffGame()
     router.attachTicTacToe(authInfo)
   }
 
-  override suspend fun onGameWon(winner: String?) {
+  override fun onGameWon(winner: String?) {
     if (winner != null) {
-      scoreStream.addVictory(winner)
+      coroutineScope.launch { scoreStream.addVictory(winner) }
     }
 
     router.detachTicTacToe()

@@ -86,6 +86,6 @@ class TicTacToeInteractor(
   }
 
   interface Listener {
-    suspend fun onGameWon(winnerName: String?)
+    fun onGameWon(winnerName: String?)
   }
 }
