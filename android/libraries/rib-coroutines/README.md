@@ -1,6 +1,6 @@
 # rib-coroutines
 
-This module is responsible for defining the coroutines extensions for the rib-base module.  
+This module is responsible for defining the coroutines extensions for the rib-base module.
 
 ## Installation
 ```gradle
@@ -30,8 +30,8 @@ MyInteractor: Interactor {
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
     coroutineScope.launch {
-      //Do things in this coroutine 
-    }        
+      //Do things in this coroutine
+    }
   }
 }
 ```

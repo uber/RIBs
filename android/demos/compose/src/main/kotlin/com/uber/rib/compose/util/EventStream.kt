@@ -24,6 +24,5 @@ class EventStream<T> {
 
   suspend fun notify(event: T) = sharedFlow.emit(event)
 
-
   fun observe(): Flow<T> = sharedFlow.asSharedFlow()
 }
