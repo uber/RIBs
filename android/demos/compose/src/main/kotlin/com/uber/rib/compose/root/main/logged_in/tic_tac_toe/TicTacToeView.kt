@@ -32,7 +32,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,13 +39,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.EventStream
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun TicTacToeView(viewModel: State<TicTacToeViewModel>, eventStream: EventStream<TicTacToeEvent>) {
-  val coroutineScope = rememberCoroutineScope()
-
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
@@ -80,7 +76,7 @@ fun TicTacToeView(viewModel: State<TicTacToeViewModel>, eventStream: EventStream
               .clickable(
                 enabled = board.cells[row][col] == null,
                 onClick = {
-                  coroutineScope.launch { eventStream.notify(TicTacToeEvent.BoardClick(BoardCoordinate(row, col))) }
+                  eventStream.notify(TicTacToeEvent.BoardClick(BoardCoordinate(row, col)))
                 }
               )
               .padding(32.dp)

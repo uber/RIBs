@@ -26,7 +26,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -34,16 +33,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.CustomButton
 import com.uber.rib.compose.util.EventStream
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoggedInView(
   eventStream: EventStream<LoggedInEvent>,
   childContent: LoggedInRouter.ChildContent,
 ) {
-
-  val coroutineScope = rememberCoroutineScope()
-
   Column(
     horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.Top,
@@ -64,7 +59,7 @@ fun LoggedInView(
     }
     CustomButton(
       analyticsId = "8a570808-07a4",
-      onClick = { coroutineScope.launch { eventStream.notify(LoggedInEvent.LogOutClick) } },
+      onClick = { eventStream.notify(LoggedInEvent.LogOutClick) },
       modifier = Modifier
         .fillMaxWidth()
         .padding(16.dp)

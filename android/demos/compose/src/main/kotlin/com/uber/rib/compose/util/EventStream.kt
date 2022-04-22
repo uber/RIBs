@@ -15,14 +15,14 @@
  */
 package com.uber.rib.compose.util
 
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class EventStream<T> {
-  private val sharedFlow = MutableSharedFlow<T>()
+  private val _sharedFlow = MutableSharedFlow<T>(extraBufferCapacity = 1)
+  private val sharedFlow = _sharedFlow.asSharedFlow()
 
-  suspend fun notify(event: T) = sharedFlow.emit(event)
+  fun notify(event: T) = _sharedFlow.tryEmit(event)
 
-  fun observe(): Flow<T> = sharedFlow.asSharedFlow()
+  fun observe() = sharedFlow
 }

@@ -16,29 +16,30 @@
 package com.uber.rib.compose.root.main.logged_in
 
 import com.uber.rib.core.RibDispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.withContext
 
 class ScoreStream(playerOne: String, playerTwo: String) {
 
-  private val scoresFlow = MutableStateFlow(
+  private val _scoresFlow = MutableStateFlow(
     mapOf(
       playerOne to 0,
       playerTwo to 0
     )
   )
+  private val scoresFlow = _scoresFlow.asStateFlow()
 
-  suspend fun addVictory(userName: String) = withContext(RibDispatchers.IO) {
-    val scores = scoresFlow.value.toMutableMap()
-    if (userName in scores) {
-      scores[userName] = scores[userName]!! + 1
+  suspend fun addVictory(userName: String) = withContext(RibDispatchers.Default) {
+    _scoresFlow.update { scores ->
+      scores.toMutableMap().apply {
+        if (userName in scores) {
+          set(userName, getValue(userName) + 1)
+        }
+      }.toMap()
     }
-    scoresFlow.emit(scores)
   }
 
-  fun scores(): Flow<Map<String, Int>> {
-    return scoresFlow.asSharedFlow()
-  }
+  fun scores() = scoresFlow
 }

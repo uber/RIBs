@@ -26,19 +26,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.CustomButton
 import com.uber.rib.compose.util.EventStream
-import kotlinx.coroutines.launch
 
 @Composable
 fun OffGameView(viewModel: State<OffGameViewModel>, eventStream: EventStream<OffGameEvent>) {
-  val coroutineScope = rememberCoroutineScope()
-
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -55,7 +51,7 @@ fun OffGameView(viewModel: State<OffGameViewModel>, eventStream: EventStream<Off
     }
     CustomButton(
       analyticsId = "26882559-fc45",
-      onClick = { coroutineScope.launch { eventStream.notify(OffGameEvent.StartGame) } },
+      onClick = { eventStream.notify(OffGameEvent.StartGame) },
       modifier = Modifier.fillMaxWidth()
     ) {
       Text(text = "START GAME")

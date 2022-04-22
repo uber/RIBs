@@ -28,19 +28,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.uber.rib.compose.util.EventStream
-import kotlinx.coroutines.launch
 
 @Composable
 fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream<LoggedOutEvent>) {
-
-  val coroutineScope = rememberCoroutineScope()
   Column(
     modifier = Modifier
       .fillMaxSize()
@@ -49,13 +45,13 @@ fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream
   ) {
     TextField(
       value = viewModel.value.playerOne,
-      onValueChange = { coroutineScope.launch { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 1)) } },
+      onValueChange = { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 1)) },
       placeholder = { Text(text = "Player One Name") },
       modifier = Modifier.fillMaxWidth()
     )
     TextField(
       value = viewModel.value.playerTwo,
-      onValueChange = { coroutineScope.launch { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 2)) } },
+      onValueChange = { eventStream.notify(LoggedOutEvent.PlayerNameChanged(it, 2)) },
       placeholder = { Text(text = "Player Two Name") },
       modifier = Modifier.fillMaxWidth()
     )
@@ -64,7 +60,7 @@ fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream
         backgroundColor = Color.Black,
         contentColor = Color.White
       ),
-      onClick = { coroutineScope.launch { eventStream.notify(LoggedOutEvent.LogInClick) } },
+      onClick = { eventStream.notify(LoggedOutEvent.LogInClick) },
       modifier = Modifier.fillMaxWidth()
     ) {
       Text(text = "LOGIN")

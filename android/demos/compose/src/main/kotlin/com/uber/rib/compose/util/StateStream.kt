@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 package com.uber.rib.compose.util
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class StateStream<T : Any>(default: T) {
-  private val stateFlow = MutableStateFlow(default)
+  private val _stateFlow = MutableStateFlow(default)
+  private val stateFlow = _stateFlow.asStateFlow()
 
-  suspend fun dispatch(viewModel: T) = stateFlow.emit(viewModel)
+  fun dispatch(viewModel: T) = _stateFlow.update { viewModel }
 
-  fun observe(): Flow<T> = stateFlow.asSharedFlow()
+  fun observe() = stateFlow
 
-  fun current(): T = stateFlow.value
+  fun current() = stateFlow.value
 }

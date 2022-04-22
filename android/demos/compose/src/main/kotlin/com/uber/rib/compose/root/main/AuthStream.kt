@@ -17,14 +17,16 @@ package com.uber.rib.compose.root.main
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class AuthStream {
-  private val authFlow = MutableStateFlow(AuthInfo(false, "", ""))
+  private val _authFlow = MutableStateFlow(AuthInfo(false, "", ""))
+  private val authFlow = _authFlow.asStateFlow()
 
-  fun observe() = authFlow.asStateFlow()
+  fun observe() = authFlow
 
-  suspend fun accept(value: AuthInfo) {
-    authFlow.emit(value)
+  fun accept(value: AuthInfo) {
+    _authFlow.update { value }
   }
 }
 
