@@ -44,7 +44,8 @@ def moduleFriends = [
         'rib-debug-utils': 'rib-base',
         'rib-router-navigator': 'rib-base',
         'rib-test': 'rib-base',
-        'rib-workflow-test': 'rib-workflow'
+        'rib-workflow-test': 'rib-workflow',
+        'rib-coroutines-test': 'rib-coroutines'
 ]
 
 subprojects {

@@ -15,17 +15,10 @@
  */
 package com.uber.rib.compose.root.main
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.core.*
-import io.reactivex.android.schedulers.AndroidSchedulers.mainThread
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlin.coroutines.CoroutineContext
+
 
 class MainInteractor(
   presenter: ComposePresenter,
@@ -46,6 +39,6 @@ class MainInteractor(
               router.detachLoggedIn()
               router.attachLoggedOut()
             }
-      }.launchIn(mainScope)
+      }.launchIn(coroutineScope)
   }
 }

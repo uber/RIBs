@@ -17,18 +17,11 @@ package com.uber.rib.compose.root.main.logged_out
 
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.AuthStream
-import com.uber.rib.compose.root.main.MainScope
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 class LoggedOutInteractor(
   presenter: ComposePresenter,
@@ -57,6 +50,6 @@ class LoggedOutInteractor(
               }
           }
 
-      }.launchIn(mainScope)
+      }.launchIn(coroutineScope)
   }
 }

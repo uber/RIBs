@@ -21,7 +21,6 @@ import com.uber.rib.compose.root.main.logged_in.off_game.OffGameInteractor
 import com.uber.rib.compose.root.main.logged_in.tic_tac_toe.TicTacToeInteractor
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.core.*
-import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.*
 
 class LoggedInInteractor(
@@ -42,7 +41,7 @@ class LoggedInInteractor(
               when(it) {
                 is LoggedInEvent.LogOutClick -> authStream.accept(AuthInfo(false)) }
               }
-            .launchIn(mainScope)
+            .launchIn(coroutineScope)
 
     router.attachOffGame(authInfo)
   }

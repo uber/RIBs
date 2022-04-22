@@ -15,15 +15,10 @@
  */
 package com.uber.rib.compose.root.main.logged_in.off_game
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.compose.root.main.logged_in.ScoreStream
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.*
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.ofType
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.flow.filterIsInstance
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 
@@ -45,7 +40,7 @@ class OffGameInteractor(
                   listener.onStartGame()
               }
           }
-      }.launchIn(mainScope)
+      }.launchIn(coroutineScope)
 
     scoreStream.scores()
       .onEach {
@@ -56,7 +51,7 @@ class OffGameInteractor(
             playerTwoWins = it[currentState.playerTwo] ?: 0,
           )
         )
-      }.launchIn(mainScope)
+      }.launchIn(coroutineScope)
   }
 
   interface Listener {

@@ -11,7 +11,7 @@ object RibCoroutinesConfig {
      * Useful in areas where injecting Dispatchers is not ideal, such as Test.
      */
     @JvmStatic
-    var dispatchers = createDefaultDispatchers()
+    var dispatchers : RibDispatchersProvider = DefaultRibDispatchers()
 
     /**
      * Specify [CoroutineExceptionHandler] to be used with Rib based scopes.
@@ -19,22 +19,6 @@ object RibCoroutinesConfig {
      * Useful for specifying additional information before passed to [Thread.UncaughtExceptionHandler].
      */
     @JvmStatic
-    var exceptionHandler = createDefaultExceptionHandler()
-
-    /**
-     * Resets delegate to default [RibDispatchersProvider].
-     * Should be called after tests
-     */
-    @JvmStatic
-    fun reset() {
-        this.dispatchers = createDefaultDispatchers()
-        this.exceptionHandler = createDefaultExceptionHandler()
-    }
-
-    private fun createDefaultDispatchers() = DefaultRibDispatcherProvider()
-
-    private fun createDefaultExceptionHandler() = CoroutineExceptionHandler { _, throwable ->
-        throw (throwable)
-    }
+    var exceptionHandler : CoroutineExceptionHandler? = null
 
 }

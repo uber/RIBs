@@ -5,16 +5,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.MainCoroutineDispatcher
 
 object RibDispatchers : RibDispatchersProvider {
-    override val Default get() = RibCoroutinesConfig.dispatchers.Default
-    override val Main get() = RibCoroutinesConfig.dispatchers.Main
-    override val IO get() = RibCoroutinesConfig.dispatchers.IO
-    override val Unconfined get() = RibCoroutinesConfig.dispatchers.Unconfined
+    override val Default : CoroutineDispatcher  get() = RibCoroutinesConfig.dispatchers.Default
+    override val Main : MainCoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Main
+    override val IO : CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.IO
+    override val Unconfined : CoroutineDispatcher  get() = RibCoroutinesConfig.dispatchers.Unconfined
 }
 
-class DefaultRibDispatcherProvider(override val Default : CoroutineDispatcher = Dispatchers.Default,
-                                         override val Main: MainCoroutineDispatcher = Dispatchers.Main,
-                                         override val IO : CoroutineDispatcher = Dispatchers.IO,
-                                         override val Unconfined : CoroutineDispatcher = Dispatchers.Unconfined) : RibDispatchersProvider
+data class DefaultRibDispatchers(override val Default : CoroutineDispatcher = Dispatchers.Default,
+                                 override val Main: MainCoroutineDispatcher = Dispatchers.Main,
+                                 override val IO : CoroutineDispatcher = Dispatchers.IO,
+                                 override val Unconfined : CoroutineDispatcher = Dispatchers.Unconfined) : RibDispatchersProvider
+
 
 /**
  * Allows providing default Dispatchers used for Rib CoroutineScopes

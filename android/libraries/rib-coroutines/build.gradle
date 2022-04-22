@@ -24,7 +24,6 @@ targetCompatibility = deps.build.javaVersion.toString()
 dependencies {
 
     api deps.uber.autodisposeCoroutines
-    api deps.kotlin.coroutinesTest
     implementation deps.kotlin.stdlib
     implementation deps.kotlin.coroutinesAndroid
 

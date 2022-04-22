@@ -18,10 +18,7 @@ package com.uber.rib.compose.root.main.logged_in.tic_tac_toe
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
-import com.uber.rib.core.BasicInteractor
-import com.uber.rib.core.Bundle
-import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.mainScope
+import com.uber.rib.core.*
 import kotlinx.coroutines.flow.*
 
 class TicTacToeInteractor(
@@ -82,7 +79,7 @@ class TicTacToeInteractor(
                     TicTacToeEvent.XpButtonClick -> TODO("Go somewhere")
                 }
 
-            }.launchIn(mainScope)
+            }.launchIn(coroutineScope)
   }
 
   interface Listener {
