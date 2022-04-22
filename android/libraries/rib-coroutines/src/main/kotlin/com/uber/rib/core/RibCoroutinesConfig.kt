@@ -19,6 +19,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.Dispatchers
 
+/**
+ * Config object to specify global overrides for Rib Coroutine behavior including Dispatchers and exception handling
+ */
 object RibCoroutinesConfig {
   /**
    * Specify [RibDispatchersProvider] that provide default [CoroutineDispatcher]'s for Rib based scopes.

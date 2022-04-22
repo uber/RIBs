@@ -27,7 +27,7 @@ import kotlin.coroutines.CoroutineContext
 
 @ExperimentalCoroutinesApi
 /**
- * Allows overriding [ScopeProvider.coroutineScope] with a [TestCoroutineScope] for testing
+ * returns the [TestCoroutineScope] override currently installed for testing.
  */
 val ScopeProvider.testCoroutineScopeOverride: TestCoroutineScope?
   // Due to custom friend path usage, reference to LazyCoroutineScope will stay red in IDE
@@ -36,20 +36,33 @@ val ScopeProvider.testCoroutineScopeOverride: TestCoroutineScope?
     return if (testScope != null && testScope is TestCoroutineScope) testScope else null
   }
 
+/**
+ * Overrides [ScopeProvider.coroutineScope] with a [TestCoroutineScope] with lifecycle integration for testing.
+ * Accessible directly as [TestCoroutineScope] via [ScopeProvider.testCoroutineScopeOverride].
+ */
 @ExperimentalCoroutinesApi
 fun ScopeProvider.enableTestCoroutineScopeOverride(context: CoroutineContext = SupervisorJob()) = synchronized(LazyCoroutineScope.values) {
   LazyCoroutineScope.values[this] = asTestCoroutineScope(context)
 }
 
+/**
+ * Disables the [ScopeProvider.coroutineScope] override with [TestCoroutineScope]
+ */
 fun ScopeProvider.disableTestCoroutineScopeOverride() = synchronized(LazyCoroutineScope.values) {
   LazyCoroutineScope.values.remove(this)
 }
 
+/**
+ * Returns a new [TestCoroutineScope] from the [ScopeProvider]
+ */
 @ExperimentalCoroutinesApi
 fun ScopeProvider.asTestCoroutineScope(context: CoroutineContext = SupervisorJob()): TestCoroutineScope {
   return requestScope().asTestCoroutineScope(context)
 }
 
+/**
+ * Returns a new [TestCoroutineScope] from the [CompletableSource]
+ */
 @ExperimentalCoroutinesApi
 fun CompletableSource.asTestCoroutineScope(context: CoroutineContext = SupervisorJob()): TestCoroutineScope {
   val scope = TestCoroutineScope(context)
