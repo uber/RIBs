@@ -22,8 +22,8 @@ sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    implementation project(':libraries:rib-coroutines')
-    implementation deps.kotlin.coroutinesTest
+    api project(':libraries:rib-coroutines')
+    api deps.kotlin.coroutinesTest
     api deps.test.junit
 
     testImplementation project(":libraries:rib-base")
