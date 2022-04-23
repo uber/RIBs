@@ -22,6 +22,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KProperty
 
 /**
@@ -31,20 +32,26 @@ import kotlin.reflect.KProperty
  * This scope is bound to
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
-val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope {
-  var context: CoroutineContext = SupervisorJob() + RibDispatchers.Main.immediate + CoroutineName("${this::class.simpleName}:coroutineScope")
+public val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope {
+  val context: CoroutineContext = SupervisorJob() +
+    RibDispatchers.Main.immediate +
+    CoroutineName("${this::class.simpleName}:coroutineScope") +
+    (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
 
-  RibCoroutinesConfig.exceptionHandler?.let {
-    context += RibCoroutinesConfig.exceptionHandler!!
-  }
   asCoroutineScope(context)
 }
 
 internal class LazyCoroutineScope(val initializer: ScopeProvider.() -> CoroutineScope) {
-  companion object {
-    val values = WeakHashMap<ScopeProvider, CoroutineScope>()
+  internal companion object {
+    private val values = WeakHashMap<ScopeProvider, CoroutineScope>()
+
+    // Used to get and set Test overrides from rib-coroutines-test utils
+    internal operator fun get(provider: ScopeProvider) = values[provider]
+    internal operator fun set(provider: ScopeProvider, scope: CoroutineScope?) {
+      values[provider] = scope
+    }
   }
-  operator fun getValue(thisRef: ScopeProvider, property: KProperty<*>): CoroutineScope = synchronized(values) {
+  operator fun getValue(thisRef: ScopeProvider, property: KProperty<*>): CoroutineScope = synchronized(LazyCoroutineScope) {
     return values.getOrPut(thisRef) { thisRef.initializer() }
   }
 }

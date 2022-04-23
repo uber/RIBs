@@ -23,7 +23,7 @@ RibCoroutinesConfig.exceptionHandler = CoroutineExceptionHandler { _, exception 
 ```
 
 
-Lifecycle based components such as Interactors and Workers receive a dedicated coroutineScope for usage.
+Lifecycle based components such as Interactors and Workers receive a dedicated coroutineScope for usage. The coroutine is cancelled when the ScopeProvider completes.
 
 ```kotlin
 MyInteractor: Interactor {

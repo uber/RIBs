@@ -24,7 +24,7 @@ import org.junit.runner.Description
  * RibCoroutinesRule is a Junit TestRule to act as a managed TestCoroutineScope in test and to facilitate install and cleanup of Test Dispatchers
  */
 @ExperimentalCoroutinesApi
-class RibCoroutinesRule(val ribDispatchers: TestRibDispatchers = TestRibDispatchers()) :
+public class RibCoroutinesRule(public val ribDispatchers: TestRibDispatchers = TestRibDispatchers()) :
   TestWatcher(),
   TestCoroutineScope by TestCoroutineScope(ribDispatchers.Default) {
 

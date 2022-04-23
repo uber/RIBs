@@ -38,3 +38,7 @@ dependencies {
     testImplementation deps.apt.androidApi
 
 }
+
+kotlin {
+    explicitApi()
+}

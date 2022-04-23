@@ -24,14 +24,14 @@ import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.MainScope
 import kotlin.coroutines.ContinuationInterceptor
 
-object RibDispatchers : RibDispatchersProvider {
+public object RibDispatchers : RibDispatchersProvider {
   override val Default: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Default
   override val Main: MainCoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Main
   override val IO: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.IO
   override val Unconfined: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Unconfined
 }
 
-data class DefaultRibDispatchers(
+public data class DefaultRibDispatchers(
   override val Default: CoroutineDispatcher = Dispatchers.Default,
   override val Main: MainCoroutineDispatcher = Dispatchers.Main,
   override val IO: CoroutineDispatcher = Dispatchers.IO,
@@ -41,7 +41,7 @@ data class DefaultRibDispatchers(
 /**
  * Allows providing default Dispatchers used for Rib CoroutineScopes
  */
-interface RibDispatchersProvider {
+public interface RibDispatchersProvider {
 
   /**
    * The Default [CoroutineDispatcher] that behaves as [Dispatchers.Default].
@@ -54,7 +54,7 @@ interface RibDispatchersProvider {
    * by this dispatcher is equal to the number of CPU cores, but is at least two.
    * Level of parallelism X guarantees that no more than X tasks can be executed in this dispatcher in parallel.
    */
-  val Default: CoroutineDispatcher
+  public val Default: CoroutineDispatcher
 
   /**
    * The Main [CoroutineDispatcher] that behaves as [Dispatchers.Main].
@@ -80,7 +80,7 @@ interface RibDispatchersProvider {
    *
    * Implementation note: [MainCoroutineDispatcher.immediate] is not supported on Native and JS platforms.
    */
-  val Main: MainCoroutineDispatcher
+  public val Main: MainCoroutineDispatcher
 
   /**
    * The IO [CoroutineDispatcher] that behaves as [Dispatchers.IO]
@@ -114,10 +114,10 @@ interface RibDispatchersProvider {
    * Note that if you need your coroutine to be confined to a particular thread or a thread-pool after resumption,
    * but still want to execute it in the current call-frame until its first suspension, then you can use
    * an optional [CoroutineStart] parameter in coroutine builders like
-   * [launch][CoroutineScope.launch] and [async][CoroutineScope.async] setting it to the
+   * [launch][kotlinx.coroutines.launch] and [async][kotlinx.coroutines.async] setting it to
    * the value of [CoroutineStart.UNDISPATCHED].
    */
-  val IO: CoroutineDispatcher
+  public val IO: CoroutineDispatcher
 
   /**
    * The Unconfined [CoroutineDispatcher] that behaves as [Dispatchers.Unconfined]
@@ -143,5 +143,5 @@ interface RibDispatchersProvider {
    * As a result of thread sharing, more than 64 (default parallelism) threads can be created (but not used)
    * during operations over IO dispatcher.
    */
-  val Unconfined: CoroutineDispatcher
+  public val Unconfined: CoroutineDispatcher
 }

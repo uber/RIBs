@@ -22,10 +22,10 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RibDispatchersTest {
+internal class RibDispatchersTest {
 
   @Test
-  fun testInitialInstances() {
+  internal fun testInitialInstances() {
     assertThat(RibDispatchers.Default).isEqualTo(Dispatchers.Default)
     assertThat(RibDispatchers.IO).isEqualTo(Dispatchers.IO)
     assertThat(RibDispatchers.Main).isEqualTo(Dispatchers.Main)
@@ -33,7 +33,7 @@ class RibDispatchersTest {
   }
 
   @Test
-  fun testSetConfigDelegate() {
+  internal fun testSetConfigDelegate() {
     assertThat(RibDispatchers.Default).isNotInstanceOf(TestCoroutineDispatcher::class.java)
     assertThat(RibDispatchers.IO).isNotInstanceOf(TestCoroutineDispatcher::class.java)
     assertThat(RibDispatchers.Main).isNotInstanceOf(TestCoroutineDispatcher::class.java)

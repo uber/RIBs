@@ -28,12 +28,12 @@ import org.junit.Test
 import java.lang.RuntimeException
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class RibScopesTest {
+internal class RibScopesTest {
 
   @get:Rule var rule = RibCoroutinesRule()
 
   @Test
-  fun testScopeLifecycle() = runBlockingTest {
+  internal fun testScopeLifecycle() = runBlockingTest {
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.attach()
     val job = interactor.coroutineScope.launch {
@@ -47,7 +47,7 @@ class RibScopesTest {
   }
 
   @Test
-  fun testScopeLifecycleWithTestScope() = runBlockingTest {
+  internal fun testScopeLifecycleWithTestScope() = runBlockingTest {
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.attach()
     interactor.enableTestCoroutineScopeOverride()
@@ -63,7 +63,7 @@ class RibScopesTest {
   }
 
   @Test()
-  fun testScopeCaching() {
+  internal fun testScopeCaching() {
 
     val interactor1 = FakeInteractor<Presenter, Router<*>>()
     val interactor2 = FakeInteractor<Presenter, Router<*>>()
@@ -79,7 +79,7 @@ class RibScopesTest {
   }
 
   @Test(expected = RuntimeException::class)
-  fun testUncaughtHandler() = runBlockingTest {
+  internal fun testUncaughtHandler() = runBlockingTest {
     val handler = TestCoroutineExceptionHandler()
     RibCoroutinesConfig.exceptionHandler = handler
 
@@ -92,7 +92,7 @@ class RibScopesTest {
   }
 
   @Test(expected = RuntimeException::class)
-  fun testException() = runBlockingTest {
+  internal fun testException() = runBlockingTest {
 
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.enableTestCoroutineScopeOverride()
@@ -104,7 +104,7 @@ class RibScopesTest {
   }
 
   @Test()
-  fun testSetTestScopeOverride() {
+  internal fun testSetTestScopeOverride() {
 
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.attach()

@@ -22,14 +22,14 @@ import kotlinx.coroutines.Dispatchers
 /**
  * Config object to specify global overrides for Rib Coroutine behavior including Dispatchers and exception handling
  */
-object RibCoroutinesConfig {
+public object RibCoroutinesConfig {
   /**
    * Specify [RibDispatchersProvider] that provide default [CoroutineDispatcher]'s for Rib based scopes.
    * Defaults to standard [Dispatchers].
    * Useful in areas where injecting Dispatchers is not ideal, such as Test.
    */
   @JvmStatic
-  var dispatchers: RibDispatchersProvider = DefaultRibDispatchers()
+  public var dispatchers: RibDispatchersProvider = DefaultRibDispatchers()
 
   /**
    * Specify [CoroutineExceptionHandler] to be used with Rib based scopes.
@@ -37,5 +37,5 @@ object RibCoroutinesConfig {
    * Useful for specifying additional information before passed to [Thread.UncaughtExceptionHandler].
    */
   @JvmStatic
-  var exceptionHandler: CoroutineExceptionHandler? = null
+  public var exceptionHandler: CoroutineExceptionHandler? = null
 }

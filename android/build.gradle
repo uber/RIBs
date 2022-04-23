@@ -152,7 +152,7 @@ subprojects {
         if (isKotlinLibrary) {
             def extraCompilerArgs = [
                     // See https://github.com/bazelbuild/bazel/issues/15144
-                    "-Xjvm-default=enable"
+                    "-Xjvm-default=enable",
                     "-Xopt-in=kotlin.RequiresOptIn"
             ]
             if (project.name in moduleFriends.keySet()) {

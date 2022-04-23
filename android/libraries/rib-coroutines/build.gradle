@@ -37,3 +37,7 @@ dependencies {
     testImplementation deps.androidx.annotations
     testImplementation deps.apt.androidApi
 }
+
+kotlin {
+    explicitApi()
+}

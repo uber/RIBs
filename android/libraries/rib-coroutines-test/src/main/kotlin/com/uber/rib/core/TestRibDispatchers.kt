@@ -23,27 +23,27 @@ import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
 @ExperimentalCoroutinesApi
-data class TestRibDispatchers(
+public data class TestRibDispatchers(
   override val Default: TestCoroutineDispatcher = TestCoroutineDispatcher(),
   override val IO: TestCoroutineDispatcher = TestCoroutineDispatcher(),
   override val Unconfined: TestCoroutineDispatcher = TestCoroutineDispatcher(),
   val MainTestDelegate: TestCoroutineDispatcher = TestCoroutineDispatcher()
 ) : RibDispatchersProvider {
 
-  fun installTestDispatchers() {
+  public fun installTestDispatchers() {
     // MainTestCoroutineDispatcher is Internal, so we need to wrap it through the main API
     Dispatchers.setMain(MainTestDelegate)
     RibCoroutinesConfig.dispatchers = this
   }
 
-  fun cleanupTestDispatchers() {
+  public fun cleanupTestDispatchers() {
     Default.cleanupTestCoroutines()
     MainTestDelegate.cleanupTestCoroutines()
     IO.cleanupTestCoroutines()
     Unconfined.cleanupTestCoroutines()
   }
 
-  fun resetTestDispatchers() {
+  public fun resetTestDispatchers() {
     Dispatchers.resetMain()
     RibCoroutinesConfig.dispatchers = DefaultRibDispatchers()
   }
