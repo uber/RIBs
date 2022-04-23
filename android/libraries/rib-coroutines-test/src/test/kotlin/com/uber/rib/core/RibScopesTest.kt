@@ -15,7 +15,9 @@
  */
 package com.uber.rib.core
 
+import android.app.Application
 import com.google.common.truth.Truth.assertThat
+import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -120,6 +122,27 @@ internal class RibScopesTest {
     interactor.disableTestCoroutineScopeOverride()
     val testScope2 = interactor.testCoroutineScopeOverride
     val realScope2 = interactor.coroutineScope
+    assertThat(testScope2).isNull()
+    assertThat(realScope2).isNotInstanceOf(TestCoroutineScope::class.java)
+  }
+
+  @Test()
+  internal fun testSetTestScopeOnApplicationOverride() {
+
+    // Can use mock since all logic is in extension function.
+    val application: Application = mock()
+
+    assertThat(application.testCoroutineScopeOverride).isNull()
+
+    application.enableTestCoroutineScopeOverride()
+    val testScope = application.testCoroutineScopeOverride
+    val realScope = application.coroutineScope
+    assertThat(testScope).isInstanceOf(TestCoroutineScope::class.java)
+    assertThat(testScope).isEqualTo(realScope)
+
+    application.disableTestCoroutineScopeOverride()
+    val testScope2 = application.testCoroutineScopeOverride
+    val realScope2 = application.coroutineScope
     assertThat(testScope2).isNull()
     assertThat(realScope2).isNotInstanceOf(TestCoroutineScope::class.java)
   }

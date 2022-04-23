@@ -27,7 +27,8 @@ dependencies {
     api deps.kotlin.coroutinesAndroid
     api deps.kotlin.coroutinesRx2
     implementation deps.kotlin.stdlib
-    
+
+    compileOnly deps.external.android
 
     testImplementation project(":libraries:rib-base")
     testImplementation project(":libraries:rib-test")

@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import android.app.Application
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.coroutinesinterop.autoDispose
 import io.reactivex.Completable
@@ -49,6 +50,33 @@ public fun ScopeProvider.enableTestCoroutineScopeOverride(context: CoroutineCont
  * Disables the [ScopeProvider.coroutineScope] override with [TestCoroutineScope]
  */
 public fun ScopeProvider.disableTestCoroutineScopeOverride(): Unit = synchronized(LazyCoroutineScope) {
+  LazyCoroutineScope[this] = null
+}
+
+/**
+ * returns the [TestCoroutineScope] override currently installed for testing.
+ */
+@ExperimentalCoroutinesApi
+public val Application.testCoroutineScopeOverride: TestCoroutineScope?
+  // Due to custom friend path usage, reference to LazyCoroutineScope will stay red in IDE
+  get() = synchronized(LazyCoroutineScope) {
+    val testScope = LazyCoroutineScope[this]
+    return if (testScope != null && testScope is TestCoroutineScope) testScope else null
+  }
+
+/**
+ * Overrides [ScopeProvider.coroutineScope] with a [TestCoroutineScope] with lifecycle integration for testing.
+ * Accessible directly as [TestCoroutineScope] via [ScopeProvider.testCoroutineScopeOverride].
+ */
+@ExperimentalCoroutinesApi
+public fun Application.enableTestCoroutineScopeOverride(context: CoroutineContext = SupervisorJob()): Unit = synchronized(LazyCoroutineScope) {
+  LazyCoroutineScope[this] = TestCoroutineScope(context)
+}
+
+/**
+ * Disables the [ScopeProvider.coroutineScope] override with [TestCoroutineScope]
+ */
+public fun Application.disableTestCoroutineScopeOverride(): Unit = synchronized(LazyCoroutineScope) {
   LazyCoroutineScope[this] = null
 }
 

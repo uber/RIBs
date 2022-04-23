@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import android.app.Application
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.coroutinesinterop.asCoroutineScope
 import kotlinx.coroutines.CoroutineName
@@ -32,7 +33,7 @@ import kotlin.reflect.KProperty
  * This scope is bound to
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
-public val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope {
+public val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope<ScopeProvider> {
   val context: CoroutineContext = SupervisorJob() +
     RibDispatchers.Main.immediate +
     CoroutineName("${this::class.simpleName}:coroutineScope") +
@@ -41,17 +42,33 @@ public val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope {
   asCoroutineScope(context)
 }
 
-internal class LazyCoroutineScope(val initializer: ScopeProvider.() -> CoroutineScope) {
-  internal companion object {
-    private val values = WeakHashMap<ScopeProvider, CoroutineScope>()
+/**
+ * [CoroutineScope] tied to this [Application].
+ * This scope will not be cancelled, it lives for the full application process.
+ *
+ * This scope is bound to
+ * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
+ */
+public val Application.coroutineScope: CoroutineScope by LazyCoroutineScope<Application> {
+  val context: CoroutineContext = SupervisorJob() +
+    RibDispatchers.Main.immediate +
+    CoroutineName("${this::class.simpleName}:coroutineScope") +
+    (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+
+  CoroutineScope(context)
+}
+
+internal class LazyCoroutineScope<This : Any>(val initializer: This.() -> CoroutineScope) {
+  companion object {
+    private val values = WeakHashMap<Any, CoroutineScope>()
 
     // Used to get and set Test overrides from rib-coroutines-test utils
-    internal operator fun get(provider: ScopeProvider) = values[provider]
-    internal operator fun set(provider: ScopeProvider, scope: CoroutineScope?) {
+    operator fun get(provider: Any) = values[provider]
+    operator fun set(provider: Any, scope: CoroutineScope?) {
       values[provider] = scope
     }
   }
-  operator fun getValue(thisRef: ScopeProvider, property: KProperty<*>): CoroutineScope = synchronized(LazyCoroutineScope) {
+  operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope = synchronized(LazyCoroutineScope) {
     return values.getOrPut(thisRef) { thisRef.initializer() }
   }
 }

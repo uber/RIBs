@@ -26,6 +26,8 @@ dependencies {
     api deps.kotlin.coroutinesTest
     api deps.test.junit
 
+    compileOnly deps.external.android
+
     testImplementation project(":libraries:rib-base")
     testImplementation project(":libraries:rib-test")
     testImplementation deps.test.junit
