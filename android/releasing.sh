@@ -10,7 +10,7 @@ echo "Preparing to release: $NEW_VERSION"
 
 # Update the `README.md` with the new version
 OLD_VERSION=$(grep -iE "'com.uber.rib:rib-" $ROOT_DIR/README.md | grep -Eo "\d+\.\d+\.\d+" | sort | uniq)
-sed -i '' "s|$OLD_VERSION|$NEW_VERSION|g" $ROOT_DIR/README.md
+find $ROOT_DIR -type f -name 'README.md' | grep -v 'ios' | xargs sed -i '' "s|$OLD_VERSION|$NEW_VERSION|g"
 
 # Update the `CHANGELOG.md` for the impending release
 vim $ROOT_DIR/CHANGELOG.md

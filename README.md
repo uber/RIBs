@@ -2,8 +2,9 @@
 <img src="https://github.com/uber/ribs/blob/assets/rib_horizontal_black.png" width="60%" height="60%" alt="RIBs"/>
 </p>
 
-[![Build Status](https://travis-ci.org/uber/RIBs.svg?branch=master&style=flat-square)](https://travis-ci.org/uber/RIBs)
+[![Android CI](https://github.com/uber/RIBs/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/uber/RIBs/actions/workflows/android.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+[![Maven Central](https://img.shields.io/maven-central/v/com.uber.rib/rib-android.svg)](https://search.maven.org/artifact/com.uber.rib/rib-android)
 [![Cocoapods Compatible](https://img.shields.io/cocoapods/v/RIBs.svg)](https://cocoapods.org/pods/ribs)
 [![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg)](https://github.com/Carthage/Carthage)
 
@@ -48,13 +49,13 @@ To integrate the recommended minimum setup for RIBs add the following to your `b
 
 ```gradle
 dependencies {
-  annotationProcessor 'com.uber.rib:rib-compiler-test:0.13.0'
-  implementation 'com.uber.rib:rib-android:0.13.0'
-  testImplementation 'com.uber.rib:rib-test:0.13.0'
+  annotationProcessor 'com.uber.rib:rib-compiler-test:0.12.2'
+  implementation 'com.uber.rib:rib-android:0.12.2'
+  testImplementation 'com.uber.rib:rib-test:0.12.2'
 }
-
-There are a number of extension packages available as well including Kotlin extensions, Jetpack Compose support, Coroutines support
 ```
+There are a number of extension packages available as well including Kotlin extensions, Jetpack Compose support, Coroutines support
+
 
 ## Installation for iOS
 #### CocoaPods
