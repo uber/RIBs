@@ -51,7 +51,11 @@ fun TicTacToeView(viewModel: State<TicTacToeViewModel>, eventStream: EventStream
       .background(Color.Blue)
   ) {
     Text("Current Player: ${viewModel.value.currentPlayer}", color = Color.White)
-    Box(modifier = Modifier.aspectRatio(1f).fillMaxSize()) {
+    Box(
+      modifier = Modifier
+        .aspectRatio(1f)
+        .fillMaxSize()
+    ) {
       LazyVerticalGrid(cells = GridCells.Fixed(3), modifier = Modifier.fillMaxSize()) {
         val board = viewModel.value.board
         items(9) { i ->

@@ -15,7 +15,6 @@
  */
 package com.uber.rib.compose.root.main.logged_in
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.root.main.AuthStream
 import com.uber.rib.compose.root.main.logged_in.off_game.OffGameInteractor
@@ -24,7 +23,10 @@ import com.uber.rib.compose.util.EventStream
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import io.reactivex.rxkotlin.ofType
+import com.uber.rib.core.coroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
+import kotlinx.coroutines.launch
 
 class LoggedInInteractor(
   presenter: ComposePresenter,
@@ -38,10 +40,14 @@ class LoggedInInteractor(
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
+
     eventStream.observe()
-      .ofType<LoggedInEvent.LogOutClick>()
-      .autoDispose(this)
-      .subscribe { authStream.accept(AuthInfo(false)) }
+      .onEach {
+        when (it) {
+          is LoggedInEvent.LogOutClick -> authStream.accept(AuthInfo(false))
+        }
+      }
+      .launchIn(coroutineScope)
 
     router.attachOffGame(authInfo)
   }
@@ -53,7 +59,7 @@ class LoggedInInteractor(
 
   override fun onGameWon(winner: String?) {
     if (winner != null) {
-      scoreStream.addVictory(winner)
+      coroutineScope.launch { scoreStream.addVictory(winner) }
     }
 
     router.detachTicTacToe()

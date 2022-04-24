@@ -22,7 +22,7 @@ def versions = [
         percent: '1.0.0'
     ],
     autodispose: '1.4.0',
-    coroutines: '1.4.3',
+    coroutines: '1.5.1',
     dagger: "2.34",
     errorProne: '2.3.3',
     gjf: '1.7',
@@ -72,6 +72,7 @@ def build = [
         errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
         gradleMavenPublish: "com.vanniktech:gradle-maven-publish-plugin:0.18.0",
         japicmp: 'me.champeau.gradle:japicmp-gradle-plugin:0.2.8',
+        kapt: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
         kotlin: "org.jetbrains.kotlin:kotlin-gradle-plugin:${versions.kotlin}",
         nullaway: "net.ltgt.gradle:gradle-nullaway-plugin:1.0.2",
         spotless: "com.diffplug.spotless:spotless-plugin-gradle:${versions.spotless}"
@@ -104,6 +105,7 @@ def test = [
 ]
 
 def external = [
+    android: "com.google.android:android:4.1.1.4",
     checkerQual: "org.checkerframework:checker-qual:2.5.1",
     dagger: "com.google.dagger:dagger:${versions.dagger}",
     ddms: "com.android.tools.ddms:ddmlib:27.1.3",
@@ -117,13 +119,15 @@ def external = [
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
     rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.0.0',
     rxkotlin: 'io.reactivex.rxjava2:rxkotlin:2.2.0',
-    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.5.4'
+    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.5.4',
+
 ]
 
 def kotlin = [
     coroutines: "org.jetbrains.kotlinx:kotlinx-coroutines-core:${versions.coroutines}",
     coroutinesAndroid: "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions.coroutines}",
     coroutinesRx2: "org.jetbrains.kotlinx:kotlinx-coroutines-rx2:${versions.coroutines}",
+    coroutinesTest: "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions.coroutines}",
     stdlib: "org.jetbrains.kotlin:kotlin-stdlib:${versions.kotlin}"
 ]
 

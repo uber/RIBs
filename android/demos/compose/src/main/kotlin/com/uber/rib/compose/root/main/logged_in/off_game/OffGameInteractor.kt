@@ -15,15 +15,15 @@
  */
 package com.uber.rib.compose.root.main.logged_in.off_game
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.compose.root.main.logged_in.ScoreStream
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.rxkotlin.ofType
+import com.uber.rib.core.coroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class OffGameInteractor(
   presenter: ComposePresenter,
@@ -35,17 +35,18 @@ class OffGameInteractor(
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
+
     eventStream.observe()
-      .ofType<OffGameEvent.StartGame>()
-      .autoDispose(this)
-      .subscribe {
-        listener.onStartGame()
-      }
+      .onEach {
+        when (it) {
+          is OffGameEvent.StartGame -> {
+            listener.onStartGame()
+          }
+        }
+      }.launchIn(coroutineScope)
 
     scoreStream.scores()
-      .observeOn(AndroidSchedulers.mainThread())
-      .autoDispose(this)
-      .subscribe {
+      .onEach {
         val currentState = stateStream.current()
         stateStream.dispatch(
           currentState.copy(
@@ -53,7 +54,7 @@ class OffGameInteractor(
             playerTwoWins = it[currentState.playerTwo] ?: 0,
           )
         )
-      }
+      }.launchIn(coroutineScope)
   }
 
   interface Listener {

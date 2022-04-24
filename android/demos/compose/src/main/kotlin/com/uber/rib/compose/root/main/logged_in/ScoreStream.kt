@@ -15,27 +15,31 @@
  */
 package com.uber.rib.compose.root.main.logged_in
 
-import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
+import com.uber.rib.core.RibDispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.withContext
 
 class ScoreStream(playerOne: String, playerTwo: String) {
 
-  private val scoresRelay: BehaviorRelay<Map<String, Int>> = BehaviorRelay.createDefault(
+  private val _scoresFlow = MutableStateFlow(
     mapOf(
       playerOne to 0,
       playerTwo to 0
     )
   )
+  private val scoresFlow = _scoresFlow.asStateFlow()
 
-  fun addVictory(userName: String) {
-    val scores = (scoresRelay.value ?: emptyMap()).toMutableMap()
-    if (userName in scores) {
-      scores[userName] = scores[userName]!! + 1
+  suspend fun addVictory(userName: String) = withContext(RibDispatchers.Default) {
+    _scoresFlow.update { scores ->
+      scores.toMutableMap().apply {
+        if (userName in scores) {
+          set(userName, getValue(userName) + 1)
+        }
+      }.toMap()
     }
-    scoresRelay.accept(scores)
   }
 
-  fun scores(): Observable<Map<String, Int>> {
-    return scoresRelay.hide()
-  }
+  fun scores() = scoresFlow
 }

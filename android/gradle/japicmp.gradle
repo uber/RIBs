@@ -82,9 +82,14 @@ def createJapicmpTask(Project project, String baselineJar, String outputJar) {
     }
 }
 
+def isProjectBaselined(Project project) {
+    !project.path.startsWith(':libraries:rib-android-compose')
+            && !project.path.startsWith(":libraries:rib-coroutines")
+}
+
 allprojects { project ->
     afterEvaluate {
-        if (project.path.startsWith(':libraries:') && !project.path.startsWith(':libraries:rib-android-compose')) {
+        if (project.path.startsWith(':libraries:') && isProjectBaselined(project)) {
             String baselineArtifact = baselineArtifact(project)
             String baselineJar = baselineArtifact.endsWith('.aar')
                     ? "${unpackAarDir(project)}/classes.jar"

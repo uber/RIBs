@@ -36,7 +36,9 @@ import com.uber.rib.compose.util.EventStream
 @Composable
 fun OffGameView(viewModel: State<OffGameViewModel>, eventStream: EventStream<OffGameEvent>) {
   Column(
-    modifier = Modifier.fillMaxSize().padding(16.dp),
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp),
     verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
   ) {
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {

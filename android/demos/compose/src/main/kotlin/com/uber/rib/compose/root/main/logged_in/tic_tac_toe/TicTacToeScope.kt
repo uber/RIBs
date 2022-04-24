@@ -16,7 +16,7 @@
 package com.uber.rib.compose.root.main.logged_in.tic_tac_toe
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.collectAsState
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
@@ -35,7 +35,7 @@ interface TicTacToeScope {
     fun presenter(stateStream: StateStream<TicTacToeViewModel>, eventStream: EventStream<TicTacToeEvent>): ComposePresenter {
       return object : ComposePresenter() {
         override val composable = @Composable {
-          TicTacToeView(stateStream.observe().subscribeAsState(initial = stateStream.current()), eventStream)
+          TicTacToeView(stateStream.observe().collectAsState(initial = stateStream.current()), eventStream)
         }
       }
     }

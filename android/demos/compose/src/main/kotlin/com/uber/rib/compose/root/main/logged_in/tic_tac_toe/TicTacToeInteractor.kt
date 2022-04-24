@@ -15,14 +15,15 @@
  */
 package com.uber.rib.compose.root.main.logged_in.tic_tac_toe
 
-import com.uber.autodispose.autoDispose
 import com.uber.rib.compose.root.main.AuthInfo
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import io.reactivex.rxkotlin.ofType
+import com.uber.rib.core.coroutineScope
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 
 class TicTacToeInteractor(
   presenter: ComposePresenter,
@@ -36,55 +37,52 @@ class TicTacToeInteractor(
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
-    eventStream.observe()
-      .ofType<TicTacToeEvent.BoardClick>()
-      .autoDispose(this)
-      .subscribe {
-        val board: Board = stateStream.current().board
-        val coord = it.coordinate
 
-        if (board.cells[coord.x][coord.y] == null) {
-          if (currentPlayer == Board.MarkerType.CROSS) {
-            board.cells[coord.x][coord.y] = Board.MarkerType.CROSS
-            board.currentRow = coord.x
-            board.currentCol = coord.y
-            currentPlayer = Board.MarkerType.NOUGHT
-          } else {
-            board.cells[coord.x][coord.y] = Board.MarkerType.NOUGHT
-            board.currentRow = coord.x
-            board.currentCol = coord.y
-            currentPlayer = Board.MarkerType.CROSS
+    eventStream.observe()
+      .onEach {
+        when (it) {
+          is TicTacToeEvent.BoardClick -> {
+            val board: Board = stateStream.current().board
+            val coord = it.coordinate
+
+            if (board.cells[coord.x][coord.y] == null) {
+              if (currentPlayer == Board.MarkerType.CROSS) {
+                board.cells[coord.x][coord.y] = Board.MarkerType.CROSS
+                board.currentRow = coord.x
+                board.currentCol = coord.y
+                currentPlayer = Board.MarkerType.NOUGHT
+              } else {
+                board.cells[coord.x][coord.y] = Board.MarkerType.NOUGHT
+                board.currentRow = coord.x
+                board.currentCol = coord.y
+                currentPlayer = Board.MarkerType.CROSS
+              }
+            }
+
+            if (board.hasWon(Board.MarkerType.CROSS)) {
+              listener.onGameWon(authInfo.playerOne)
+            } else if (board.hasWon(Board.MarkerType.NOUGHT)) {
+              listener.onGameWon(authInfo.playerTwo)
+            } else if (board.isDraw()) {
+              listener.onGameWon(null)
+            }
+
+            val newPlayerName = if (currentPlayer == Board.MarkerType.CROSS) {
+              authInfo.playerOne
+            } else {
+              authInfo.playerTwo
+            }
+
+            stateStream.dispatch(
+              stateStream.current().copy(
+                board = board,
+                currentPlayer = newPlayerName
+              )
+            )
           }
+          TicTacToeEvent.XpButtonClick -> TODO("Go somewhere")
         }
-
-        if (board.hasWon(Board.MarkerType.CROSS)) {
-          listener.onGameWon(authInfo.playerOne)
-        } else if (board.hasWon(Board.MarkerType.NOUGHT)) {
-          listener.onGameWon(authInfo.playerTwo)
-        } else if (board.isDraw()) {
-          listener.onGameWon(null)
-        }
-
-        val newPlayerName = if (currentPlayer == Board.MarkerType.CROSS) {
-          authInfo.playerOne
-        } else {
-          authInfo.playerTwo
-        }
-
-        stateStream.dispatch(
-          stateStream.current().copy(
-            board = board,
-            currentPlayer = newPlayerName
-          )
-        )
-      }
-
-    eventStream.observe()
-      .ofType<TicTacToeEvent.XpButtonClick>()
-      .autoDispose(this)
-      .subscribe {
-        // router.goToSomewhere()
-      }
+      }.launchIn(coroutineScope)
   }
 
   interface Listener {

@@ -15,16 +15,18 @@
  */
 package com.uber.rib.compose.root.main
 
-import com.jakewharton.rxrelay2.BehaviorRelay
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 
 class AuthStream {
-  private val authRelay = BehaviorRelay.createDefault(AuthInfo(false, "", ""))
+  private val _authFlow = MutableStateFlow(AuthInfo(false, "", ""))
+  private val authFlow = _authFlow.asStateFlow()
 
-  fun observe(): Observable<AuthInfo> = authRelay.hide()
+  fun observe() = authFlow
 
   fun accept(value: AuthInfo) {
-    authRelay.accept(value)
+    _authFlow.update { value }
   }
 }
 

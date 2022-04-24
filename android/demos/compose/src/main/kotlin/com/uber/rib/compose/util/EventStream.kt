@@ -15,13 +15,14 @@
  */
 package com.uber.rib.compose.util
 
-import com.jakewharton.rxrelay2.PublishRelay
-import io.reactivex.Observable
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 
 class EventStream<T> {
-  private val eventRelay = PublishRelay.create<T>()
+  private val _sharedFlow = MutableSharedFlow<T>(extraBufferCapacity = 1)
+  private val sharedFlow = _sharedFlow.asSharedFlow()
 
-  fun notify(event: T) = eventRelay.accept(event)
+  fun notify(event: T) = _sharedFlow.tryEmit(event)
 
-  fun observe(): Observable<T> = eventRelay.hide()
+  fun observe() = sharedFlow
 }

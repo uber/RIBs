@@ -16,7 +16,7 @@
 package com.uber.rib.compose.root.main.logged_out
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rxjava2.subscribeAsState
+import androidx.compose.runtime.collectAsState
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.ComposePresenter
@@ -38,7 +38,7 @@ interface LoggedOutScope {
       return object : ComposePresenter() {
         override val composable = @Composable {
           LoggedOutView(
-            stateStream.observe().subscribeAsState(initial = stateStream.current()),
+            stateStream.observe().collectAsState(initial = stateStream.current()),
             eventStream
           )
         }
