@@ -2,6 +2,13 @@
 
 This module is responsible for defining the coroutines test utils for the rib-coroutines module.
 
+## Installation
+```gradle
+dependencies {
+  implementation 'com.uber.rib:rib-coroutines-test:0.12.2'
+}
+```
+
 ## Usage
 
 RibCoroutinesRule is a Junit Rule to enable automatic setup and cleanup of TestCoroutineDispatchers with the RibCoroutineConfig.dispatchers global configuration by constructing in Tests.
