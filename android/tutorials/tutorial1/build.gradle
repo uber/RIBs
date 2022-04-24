@@ -42,7 +42,7 @@ android {
         targetCompatibility deps.build.javaVersion
     }
     // No need for lint. This is just a tutorial.
-    lintOptions {
+    lint {
         abortOnError false
         quiet true
     }
