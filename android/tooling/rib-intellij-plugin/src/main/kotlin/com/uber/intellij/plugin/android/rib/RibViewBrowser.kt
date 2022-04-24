@@ -112,7 +112,7 @@ class RibViewBrowser(
     return null
   }
 
-  override fun createTrees(trees: MutableMap<String, JTree>) {
+  override fun createTrees(trees: MutableMap<in String, in JTree>) {
     trees[TYPE_HIERARCHY_TYPE] = createTree(true)
   }
 
@@ -185,10 +185,6 @@ class RibViewBrowser(
         selectionListener?.onSelectedViewChanged(descriptor.ribView)
       }
     }
-  }
-
-  override fun getBrowserDataKey(): String {
-    return DATA_KEY.name
   }
 
   /**

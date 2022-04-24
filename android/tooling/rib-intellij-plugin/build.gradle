@@ -61,12 +61,12 @@ ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.
 version = pluginXml.version
 
 intellij {
-    plugins = ['java', 'Kotlin' ]
-    version deps.versions.intellij
-    pluginName "UberRIBPresidioPlugin"
-    updateSinceUntilBuild false
-    sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
-    downloadSources false
+    plugins = ['com.intellij.java', 'org.jetbrains.kotlin', 'org.jetbrains.android']
+    version = deps.versions.intellij
+    pluginName = "UberRIBPresidioPlugin"
+    updateSinceUntilBuild = false
+    sandboxDir = "${project.gradle.gradleHomeDir}/caches/intellij"
+    downloadSources = false
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {

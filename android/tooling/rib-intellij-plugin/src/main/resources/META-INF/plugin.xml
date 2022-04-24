@@ -29,6 +29,15 @@
 
     <idea-version since-build="163"/>
 
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.android</depends>
+    <depends>org.jetbrains.kotlin</depends>
+
+
+
+
     <actions>
         <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
             <separator/>
