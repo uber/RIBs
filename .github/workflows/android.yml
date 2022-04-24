@@ -38,4 +38,4 @@ jobs:
         run: ./gradlew check --stacktrace
       - name: Upload snapshot
         run: ./gradlew publish -PmavenCentralUsername="${{ secrets.SonatypeUsername }}" -PmavenCentralPassword="${{ secrets.SonatypePassword }}"
-        if: success() && github.ref == 'refs/heads/master' && github.event_name != 'pull_request' && matrix.java_version == '11'
+        if: success() && github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && matrix.java_version == '11'
