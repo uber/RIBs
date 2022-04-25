@@ -34,7 +34,7 @@ android {
 
     // This module is only testing utilities. Given this code isn't intended to be run inside a production
     // android app this module confuses android lint. Let's just disable lint errors here.
-    lintOptions {
+    lint {
         abortOnError false
         disable 'InvalidPackage'
     }

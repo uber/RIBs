@@ -35,7 +35,7 @@ android {
     }
 
     // No need for lint. This is just a demo.
-    lintOptions {
+    lint {
         abortOnError false
         quiet true
     }
