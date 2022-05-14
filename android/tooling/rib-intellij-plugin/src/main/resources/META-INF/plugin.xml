@@ -27,7 +27,10 @@
 
     </change-notes>
 
-    <idea-version since-build="163"/>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+
+    <idea-version since-build="201"/>
 
     <actions>
         <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
@@ -47,11 +50,9 @@
         <component>
             <implementation-class>com.uber.intellij.plugin.android.rib.AndroidDeviceRepositoryComponent
             </implementation-class>
-            <option name="workspace" value="true"/>
         </component>
         <component>
             <implementation-class>com.uber.intellij.plugin.android.rib.RibProjectComponent</implementation-class>
-            <option name="workspace" value="true"/>
         </component>
     </project-components>
 

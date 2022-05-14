@@ -26,7 +26,6 @@ import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.actionSystem.ActionPlaces
 import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
-import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -75,7 +74,6 @@ class RibHierarchyBrowser(
 
     private const val LOCATE_VIEW: String =
       "Please click on the UI element on your<br>" + "emulator/device locate it."
-    private val DATA_KEY = DataKey.create<RibHierarchyBrowser>(RibHierarchyBrowser::class.java.name)
   }
 
   /** Enum used to represent the status of the component */
@@ -138,12 +136,11 @@ class RibHierarchyBrowser(
     return null
   }
 
-  override fun createTrees(trees: MutableMap<String, JTree>) {
-    trees[TYPE_HIERARCHY_TYPE] = createTree(true)
-  }
-
   override fun getNextOccurenceActionNameImpl(): String {
     return LABEL_GO_NEXT_RIB
+  }
+  override fun createTrees(trees: MutableMap<in String, in JTree>) {
+    trees[TYPE_HIERARCHY_TYPE] = createTree(true)
   }
 
   override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
@@ -179,10 +176,6 @@ class RibHierarchyBrowser(
       return RibHierarchyTreeStructure(project, rootDescriptor)
     }
     return null
-  }
-
-  override fun getBrowserDataKey(): String {
-    return DATA_KEY.name
   }
 
   override fun configureTree(tree: Tree) {

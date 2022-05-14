@@ -20,7 +20,6 @@ import com.intellij.ide.hierarchy.HierarchyTreeStructure
 import com.intellij.ide.hierarchy.JavaHierarchyUtil
 import com.intellij.ide.util.treeView.NodeDescriptor
 import com.intellij.openapi.actionSystem.ActionPlaces
-import com.intellij.openapi.actionSystem.DataKey
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.project.Project
@@ -62,8 +61,6 @@ class RibViewBrowser(
 
     /** Type of the Rib hierarchy */
     const val TYPE_HIERARCHY_TYPE: String = "Views"
-
-    private val DATA_KEY = DataKey.create<RibViewBrowser>(RibViewBrowser::class.java.name)
   }
 
   /**
@@ -112,7 +109,7 @@ class RibViewBrowser(
     return null
   }
 
-  override fun createTrees(trees: MutableMap<String, JTree>) {
+  override fun createTrees(trees: MutableMap<in String, in JTree>) {
     trees[TYPE_HIERARCHY_TYPE] = createTree(true)
   }
 
@@ -185,10 +182,6 @@ class RibViewBrowser(
         selectionListener?.onSelectedViewChanged(descriptor.ribView)
       }
     }
-  }
-
-  override fun getBrowserDataKey(): String {
-    return DATA_KEY.name
   }
 
   /**
