@@ -63,7 +63,7 @@ version = pluginXml.version
 intellij {
     plugins = ['java', 'Kotlin' ]
     version = deps.versions.intellij
-    pluginName = "UberRIBPresidioPlugin"
+    pluginName = "uber-ribs"
     updateSinceUntilBuild = false
     sandboxDir = "${project.gradle.gradleHomeDir}/caches/intellij"
     downloadSources = false
