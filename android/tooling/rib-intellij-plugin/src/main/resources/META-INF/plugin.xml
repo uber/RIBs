@@ -1,33 +1,40 @@
 <idea-plugin version="2">
     <id>com.uber.rib.intellij-plugin</id>
-    <name>RIBs Plugin</name>
-    <version>0.1.3</version>
+    <name>RIBs</name>
+    <version>0.1.4</version>
     <vendor>
         Uber Mobile Platform Team
     </vendor>
 
     <description><![CDATA[
-      Uber RIB Plugin <br /> <br />
+      Uber RIBs<br /> <br />
       <ul>
         <li>Easily create new RIBs.</li>
+        <li>Visualize RIB hierarchy.</li>
       </ul>
     ]]></description>
 
     <change-notes><![CDATA[
+      <strong>0.1.4</strong><br/>
+      <ul>
+        <li>IntelliJ 2022 compatibility</li>
+      </ul>
+      <strong>0.1.3</strong><br/>
+      <ul>
+        <li>Added Kotlin support</li>
+      </ul>
       <strong>0.1.0</strong><br/>
       <ul>
         <li>Initial release</li>
       </ul>
-      <strong>0.1.3</strong><br/>
-      <ul>
-        <li>Added Kotlin support (experimental)</li>
-      </ul>
-
     ]]>
 
     </change-notes>
 
-    <idea-version since-build="163"/>
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.java</depends>
+
+    <idea-version since-build="201"/>
 
     <actions>
         <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
@@ -47,11 +54,9 @@
         <component>
             <implementation-class>com.uber.intellij.plugin.android.rib.AndroidDeviceRepositoryComponent
             </implementation-class>
-            <option name="workspace" value="true"/>
         </component>
         <component>
             <implementation-class>com.uber.intellij.plugin.android.rib.RibProjectComponent</implementation-class>
-            <option name="workspace" value="true"/>
         </component>
     </project-components>
 

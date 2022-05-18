@@ -15,6 +15,7 @@
  */
 package com.uber.presidio.intellij_plugin.action.rib;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
@@ -32,7 +33,7 @@ public class GenerateRibDialog extends DialogWrapper {
   private JCheckBox createKotlinCode;
 
   public GenerateRibDialog(final Listener listener) {
-    super(null);
+    super((Project) null);
     this.listener = listener;
     init();
 

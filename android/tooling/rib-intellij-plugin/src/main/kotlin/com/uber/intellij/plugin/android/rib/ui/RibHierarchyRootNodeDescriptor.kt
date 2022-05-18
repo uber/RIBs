@@ -27,11 +27,11 @@ import javax.swing.Icon
 
 /** Node descriptor used to render tree roots. */
 class RibHierarchyRootNodeDescriptor(
-  val nonNullProject: Project,
+  project: Project,
   element: PsiElement,
   val ribHost: RibHost,
   private val status: RibHierarchyBrowser.Status
-) : RibHierarchyDescriptor(nonNullProject, null, element, true) {
+) : RibHierarchyDescriptor(project, null, element, true) {
 
   companion object {
     /** Label used when android bridge is not connected */
@@ -50,12 +50,12 @@ class RibHierarchyRootNodeDescriptor(
   }
 
   override fun updateText(text: CompositeAppearance) {
-    if (!AndroidDeviceRepositoryComponent.getInstance(nonNullProject).isBridgeConnected()) {
+    if (!AndroidDeviceRepositoryComponent.getInstance(project).isBridgeConnected()) {
       text.ending.addText(LABEL_NO_BRIDGE)
       return
     }
 
-    if (!RibProjectComponent.getInstance(nonNullProject).hasSelectedDevice()) {
+    if (!RibProjectComponent.getInstance(project).hasSelectedDevice()) {
       text.ending.addText(LABEL_NO_DEVICE)
       return
     }
@@ -75,7 +75,7 @@ class RibHierarchyRootNodeDescriptor(
   }
 
   override fun getIcon(element: PsiElement): Icon? {
-    if (!RibProjectComponent.getInstance(nonNullProject).hasSelectedDevice()) {
+    if (!RibProjectComponent.getInstance(project).hasSelectedDevice()) {
       return AllIcons.General.BalloonInformation
     }
 

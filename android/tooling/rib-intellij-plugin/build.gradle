@@ -62,15 +62,15 @@ version = pluginXml.version
 
 intellij {
     plugins = ['java', 'Kotlin' ]
-    version deps.versions.intellij
-    pluginName "UberRIBPresidioPlugin"
-    updateSinceUntilBuild false
-    sandboxDirectory "${project.gradle.gradleHomeDir}/caches/intellij"
-    downloadSources false
+    version = deps.versions.intellij
+    pluginName = "uber-ribs"
+    updateSinceUntilBuild = false
+    sandboxDir = "${project.gradle.gradleHomeDir}/caches/intellij"
+    downloadSources = false
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = "sources"
+    archiveClassifier = "sources"
     from sourceSets.main.allSource
 }
 
