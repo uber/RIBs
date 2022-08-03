@@ -22,10 +22,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.common.truth.Truth
-import com.nhaarman.mockitokotlin2.mock
 import com.uber.rib.android.R
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 

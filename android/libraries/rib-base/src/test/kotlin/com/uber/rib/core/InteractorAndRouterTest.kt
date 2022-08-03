@@ -16,18 +16,18 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyObject
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 class InteractorAndRouterTest {
 
@@ -143,7 +143,7 @@ class InteractorAndRouterTest {
     val childInteractor = TestInteractorB()
     val childRouter = TestRouterB(childInteractor, component)
     router.attachChild(childRouter)
-    verify(ribRefWatcher, never()).watchDeletedObject(anyObject())
+    verify(ribRefWatcher, never()).watchDeletedObject(any())
 
     // Action: Detach the child interactor.
     router.detachChild(childRouter)
@@ -162,13 +162,13 @@ class InteractorAndRouterTest {
     }
     val rootRouter = TestRouterB(component, TestInteractorB(), ribRefWatcher)
     val child = addTwoNestedChildInteractors()
-    verify(ribRefWatcher, never()).watchDeletedObject(anyObject())
+    verify(ribRefWatcher, never()).watchDeletedObject(any())
 
     // Action: Detach all child interactors.
     rootRouter.detachChild(child)
 
     // Verify: called four times. Twice for each interactor.
-    verify(ribRefWatcher, times(2)).watchDeletedObject(anyObject())
+    verify(ribRefWatcher, times(2)).watchDeletedObject(any())
   }
 
   private fun addTwoNestedChildInteractors(): Router<TestInteractorB> {

@@ -16,15 +16,15 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth
-import com.nhaarman.mockitokotlin2.doAnswer
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.doAnswer
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 
 class StackRouterNavigatorTest {
   private enum class TestState : RouterNavigatorState {
@@ -79,13 +79,13 @@ class StackRouterNavigatorTest {
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushRetainedState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
     verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
-    verifyZeroInteractions(detachTransition2)
+    verifyNoInteractions(detachTransition2)
   }
 
   @Test
@@ -93,13 +93,13 @@ class StackRouterNavigatorTest {
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushTransientState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
     verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
-    verifyZeroInteractions(detachTransition2)
+    verifyNoInteractions(detachTransition2)
   }
 
   @Test
@@ -111,7 +111,7 @@ class StackRouterNavigatorTest {
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushRetainedState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
@@ -132,7 +132,7 @@ class StackRouterNavigatorTest {
     routerNavigator.pushRetainedState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushTransientState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
@@ -181,13 +181,13 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
     verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
-    verifyZeroInteractions(detachTransition2)
+    verifyNoInteractions(detachTransition2)
   }
 
   @Test
@@ -195,7 +195,7 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushState(
       TestState.STATE_2,
       RouterNavigator.Flag.TRANSIENT,
@@ -206,7 +206,7 @@ class StackRouterNavigatorTest {
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
     verify(hostRouter).detachChild(router1)
     verify(attachTransition2).willAttachToHost(router2, TestState.STATE_1, TestState.STATE_2, true)
-    verifyZeroInteractions(detachTransition2)
+    verifyNoInteractions(detachTransition2)
   }
 
   @Test
@@ -218,7 +218,7 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushState(TestState.STATE_2, attachTransition2, detachTransition2)
     verify(detachTransition1)
       .willDetachFromHost(router1, TestState.STATE_1, TestState.STATE_2, true)
@@ -239,7 +239,7 @@ class StackRouterNavigatorTest {
     routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
     verify(attachTransition1).willAttachToHost(router1, null, TestState.STATE_1, true)
     verify(hostRouter).attachChild(router1)
-    verifyZeroInteractions(detachTransition1)
+    verifyNoInteractions(detachTransition1)
     routerNavigator.pushState(
       TestState.STATE_2,
       RouterNavigator.Flag.TRANSIENT,
@@ -475,7 +475,7 @@ class StackRouterNavigatorTest {
       attachTransition3,
       detachTransition3
     )
-    verifyZeroInteractions(detachTransition2)
+    verifyNoInteractions(detachTransition2)
     Truth.assertThat(routerNavigator.peekState()).isEqualTo(TestState.STATE_2)
     Truth.assertThat(routerNavigator.size()).isEqualTo(1)
   }
