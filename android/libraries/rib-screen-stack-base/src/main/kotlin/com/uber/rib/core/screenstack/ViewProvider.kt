@@ -48,7 +48,7 @@ abstract class ViewProvider {
   /**
    * Callers can implement this in order to complete additional work when a call to [ ][.onViewRemoved] is performed.
    */
-  protected fun doOnViewRemoved() {}
+  protected open fun doOnViewRemoved() {}
 
   /** Notifies the view provider that the view has been popped from the stack.  */
   fun onViewRemoved() {
