@@ -15,15 +15,15 @@
  */
 package com.uber.rib.core
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.isA
-import com.nhaarman.mockitokotlin2.isNull
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import org.mockito.AdditionalMatchers.or
 import org.mockito.InOrder
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isA
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.verification.VerificationMode
 
 /** The helper to test [Router].  */

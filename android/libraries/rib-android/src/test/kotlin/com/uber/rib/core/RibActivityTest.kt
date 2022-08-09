@@ -21,8 +21,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.android.R
@@ -36,6 +34,8 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment

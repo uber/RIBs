@@ -98,8 +98,8 @@ def androidx = [
 
 def test = [
     junit: "junit:junit:4.12",
-    mockito: "org.mockito:mockito-core:2.27.0",
-    mockitoKotlin: "com.nhaarman.mockitokotlin2:mockito-kotlin:2.2.0",
+    mockito: "org.mockito:mockito-core:4.6.1",
+    mockitoKotlin: "org.mockito.kotlin:mockito-kotlin:4.0.0",
     compileTesting: "com.google.testing.compile:compile-testing:0.17",
     truth: "com.google.truth:truth:0.43",
 ]

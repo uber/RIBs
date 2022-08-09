@@ -15,12 +15,12 @@
  */
 package com.uber.rib.core
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import org.junit.After
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 
 class RibRefWatcherTest {
   private val referenceWatcher: RibRefWatcher.ReferenceWatcher = mock()
@@ -37,14 +37,14 @@ class RibRefWatcherTest {
     ribRefWatcher.enableLeakCanary()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
     ribRefWatcher.watchDeletedObject(null)
-    verifyZeroInteractions(referenceWatcher)
+    verifyNoInteractions(referenceWatcher)
   }
 
   @Test
   fun watchDeletedObject_whenReferenceWatcherIsNull_shouldDoNothing() {
     ribRefWatcher.enableLeakCanary()
     ribRefWatcher.watchDeletedObject(Any())
-    verifyZeroInteractions(referenceWatcher)
+    verifyNoInteractions(referenceWatcher)
   }
 
   @Test
@@ -69,14 +69,14 @@ class RibRefWatcherTest {
     ribRefWatcher.enableULeakLifecycleTracking()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
     ribRefWatcher.watchDeletedObject(null)
-    verifyZeroInteractions(referenceWatcher)
+    verifyNoInteractions(referenceWatcher)
   }
 
   @Test
   fun watchDeletedObject_whenReferenceWatcherIsNullULeakEnabled_shouldDoNothing() {
     ribRefWatcher.enableULeakLifecycleTracking()
     ribRefWatcher.watchDeletedObject(Any())
-    verifyZeroInteractions(referenceWatcher)
+    verifyNoInteractions(referenceWatcher)
   }
 
   @Test

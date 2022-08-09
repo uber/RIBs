@@ -17,7 +17,6 @@ package com.uber.rib.core
 
 import android.app.Application
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
@@ -27,6 +26,7 @@ import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.mock
 import java.lang.RuntimeException
 
 @OptIn(ExperimentalCoroutinesApi::class)

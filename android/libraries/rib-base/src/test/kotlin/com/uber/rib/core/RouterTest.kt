@@ -16,8 +16,8 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
+import org.mockito.kotlin.mock
 import java.util.concurrent.atomic.AtomicBoolean
 
 class RouterTest {

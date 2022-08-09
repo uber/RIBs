@@ -16,10 +16,6 @@
 package com.uber.rib.core
 
 import com.jakewharton.rxrelay2.BehaviorRelay
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import com.uber.rib.core.WorkerBinder.bind
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
 import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
@@ -28,6 +24,10 @@ import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import org.junit.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
 class WorkerBinderTest {
   private val worker: Worker = mock()
