@@ -17,7 +17,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion "${deps.versions.androidx.compose}"
+        kotlinCompilerExtensionVersion deps.versions.androidx.compose.compiler
     }
     compileOptions {
         sourceCompatibility deps.build.javaVersion
@@ -47,6 +47,7 @@ dependencies {
     implementation deps.androidx.composeUi
     implementation deps.androidx.composeViewModel
     implementation deps.androidx.composeUiTooling
+    implementation deps.androidx.savedState
     implementation deps.external.rxandroid2
     implementation deps.kotlin.coroutines
     implementation deps.kotlin.coroutinesAndroid

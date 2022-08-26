@@ -30,7 +30,7 @@ android {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion deps.versions.androidx.compose
+        kotlinCompilerExtensionVersion deps.versions.androidx.compose.compiler
     }
 
     compileOptions {

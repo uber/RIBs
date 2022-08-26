@@ -20,7 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
+import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.uber.rib.compose.root.main.logged_in.LoggedInScope
 import com.uber.rib.compose.root.main.logged_out.LoggedOutScope
 import com.uber.rib.compose.util.AnalyticsClient
@@ -65,7 +65,7 @@ interface MainScope {
     ): ComposeView {
       return ComposeView(parentViewGroup.context).apply {
         ViewTreeLifecycleOwner.set(this, activity)
-        ViewTreeSavedStateRegistryOwner.set(this, activity)
+        setViewTreeSavedStateRegistryOwner(activity)
       }
     }
 
