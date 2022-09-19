@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>Kind</key>
+	<string>Xcode.IDEFoundation.TextSubstitutionFileTemplateKind</string>
+	<key>Summary</key>
+	<string>RIBs</string>
+	<key>Description</key>
+	<string>RIBs classes.</string>
+	<key>SortOrder</key>
+	<string>1</string>
+	<key>AllowedTypes</key>
+	<array>
+		<string>public.objective-c-source</string>
+	</array>
+	<key>DefaultCompletionName</key>
+	<string>RIBs</string>
+	<key>MainTemplateFiles</key>
+	<string>___FILEBASENAME___.m</string>
+	<key>Platforms</key>
+	<array>
+		<string>com.apple.platform.iphoneos</string>
+	</array>
+	<key>Options</key>
+	<array>
+		<dict>
+			<key>Identifier</key>
+			<string>productName</string>
+			<key>Default</key>
+			<string>RIB</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>RIBs name:</string>
+			<key>Description</key>
+			<string>The name of the RIBs to create</string>
+			<key>Type</key>
+			<string>text</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>ownsView</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Owns corresponding view</string>
+			<key>Description</key>
+			<string>Whether this RIBs owns a corresponding view</string>
+			<key>Type</key>
+			<string>checkbox</string>
+			<key>Default</key>
+			<string>true</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+		</dict>
+		<dict>
+			<key>Identifier</key>
+			<string>ownsPresenter</string>
+			<key>Required</key>
+			<string>true</string>
+			<key>Name</key>
+			<string>Owns Presenter file</string>
+			<key>Description</key>
+			<string>Whether this RIBs owns a presenter file </string>
+			<key>Type</key>
+			<string>checkbox</string>
+			<key>Default</key>
+			<string>true</string>
+			<key>NotPersisted</key>
+			<string>true</string>
+			<key>RequiredOptions</key>
+			<dict>
+				<key>ownsView</key>
+				<string>false</string>
+				<key>withXIB</key>
+				<string>false</string>
+				<key>withStoryboard</key>
+				<string>false</string>
+			</dict>
+		</dict>
+	</array>
+</dict>
+</plist>
