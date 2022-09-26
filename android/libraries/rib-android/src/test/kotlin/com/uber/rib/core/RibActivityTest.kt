@@ -170,6 +170,24 @@ class RibActivityTest {
   }
 
   @Test
+  fun rxActivity_shouldCallback_onWindowFocusChanged() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity: EmptyActivity = activityController.setup().get()
+    val testSub = TestObserver<ActivityCallbackEvent.WindowFocus>()
+    activity.callbacks(ActivityCallbackEvent.WindowFocus::class.java).subscribe(testSub)
+    activity.onWindowFocusChanged(true)
+    activity.onWindowFocusChanged(false)
+    testSub.assertValueCount(2)
+    val receivedEvent1 = testSub.values()[0]
+    assertThat(receivedEvent1.type).isEqualTo(ActivityCallbackEvent.Type.WINDOW_FOCUS)
+    assertThat(receivedEvent1.hasFocus).isTrue()
+    val receivedEvent2 = testSub.values()[1]
+    assertThat(receivedEvent2.type).isEqualTo(ActivityCallbackEvent.Type.WINDOW_FOCUS)
+    assertThat(receivedEvent2.hasFocus).isFalse()
+
+  }
+
+  @Test
   fun getController() {
     val activity: RibActivity = Robolectric.setupActivity(EmptyActivity::class.java)
     assertThat(activity.interactor).isNotNull()

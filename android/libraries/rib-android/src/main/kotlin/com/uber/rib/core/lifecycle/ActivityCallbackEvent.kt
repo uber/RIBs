@@ -26,12 +26,15 @@ open class ActivityCallbackEvent private constructor(
 
   /** Types of activity events that can occur.  */
   enum class Type : ActivityEvent.BaseType {
-    LOW_MEMORY, ACTIVITY_RESULT, SAVE_INSTANCE_STATE, TRIM_MEMORY, PICTURE_IN_PICTURE_MODE, NEW_INTENT
+    LOW_MEMORY, ACTIVITY_RESULT, SAVE_INSTANCE_STATE, TRIM_MEMORY, PICTURE_IN_PICTURE_MODE, NEW_INTENT, WINDOW_FOCUS
   }
 
   /** An [ActivityCallbackEvent] that represents [Activity.onNewIntent] event  */
   open class NewIntent(open val intent: Intent) : ActivityCallbackEvent(Type.NEW_INTENT)
   open class PictureInPictureMode(open val isInPictureInPictureMode: Boolean) : ActivityCallbackEvent(Type.PICTURE_IN_PICTURE_MODE)
+
+  /** An [ActivityCallbackEvent] that represents [Activity.onWindowFocusChanged] event */
+  open class WindowFocus(open val hasFocus: Boolean) : ActivityCallbackEvent(Type.WINDOW_FOCUS)
 
   /** An [ActivityCallbackEvent] that represents [Activity.onTrimMemory] event  */
   open class TrimMemory internal constructor(open val trimMemoryType: Int) : ActivityCallbackEvent(Type.TRIM_MEMORY)
@@ -124,6 +127,17 @@ open class ActivityCallbackEvent private constructor(
     @JvmStatic
     fun createNewIntent(intent: Intent): NewIntent {
       return NewIntent(intent)
+    }
+
+    /**
+     * Creates an event for onWindowFocusChanged
+     *
+     * @param hasFocus determines whether the window of this activity got focus or not
+     * @return the newly created [WindowFocus]
+     */
+    @JvmStatic
+    fun createWindowFocusEvent(hasFocus: Boolean): WindowFocus {
+      return WindowFocus(hasFocus)
     }
   }
 }
