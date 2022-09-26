@@ -184,7 +184,6 @@ class RibActivityTest {
     val receivedEvent2 = testSub.values()[1]
     assertThat(receivedEvent2.type).isEqualTo(ActivityCallbackEvent.Type.WINDOW_FOCUS)
     assertThat(receivedEvent2.hasFocus).isFalse()
-
   }
 
   @Test
