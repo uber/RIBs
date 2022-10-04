@@ -35,6 +35,7 @@ import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createOnActiv
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createOnSaveInstanceStateEvent
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createPictureInPictureMode
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createTrimMemoryEvent
+import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.createWindowFocusEvent
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.createOnCreateEvent
@@ -178,6 +179,11 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   override fun onUserLeaveHint() {
     lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.USER_LEAVING))
     super.onUserLeaveHint()
+  }
+
+  override fun onWindowFocusChanged(hasFocus: Boolean) {
+    super.onWindowFocusChanged(hasFocus)
+    callbacksRelay.accept(createWindowFocusEvent(hasFocus))
   }
 
   /**
