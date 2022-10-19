@@ -147,8 +147,6 @@ internal class RibScopesTest {
     assertThat(realScope2).isNotInstanceOf(TestScope::class.java)
   }
 
-
-
   private class TestUncaughtExceptionCaptor : CoroutineExceptionHandler {
     var exceptions = mutableListOf<Throwable>()
 
