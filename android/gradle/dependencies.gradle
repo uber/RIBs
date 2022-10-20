@@ -35,7 +35,6 @@ def versions = [
     ktfmt: '0.23',
     ktlint: '0.41.0',
     motif: '0.3.4',
-    rave: "2.0.0",
     robolectric: "4.4",
     spotless: '5.11.0'
 ]
@@ -51,7 +50,6 @@ def apt = [
     javaxInject: "javax.inject:javax.inject:1",
     autoValue: "com.google.auto.value:auto-value:1.7",
     autoValueAnnotations: "com.google.auto.value:auto-value-annotations:1.7",
-    raveCompiler: "com.uber:rave-compiler:${versions.rave}",
     errorProneAnnotations: "com.google.errorprone:error_prone_annotations:${versions.errorProne}",
 ]
 
@@ -145,7 +143,6 @@ def uber = [
     autodisposeErrorProne: "com.uber.autodispose:autodispose-error-prone:${versions.autodispose}",
     motif: "com.uber.motif:motif:${versions.motif}",
     motifCompiler: "com.uber.motif:motif-compiler:${versions.motif}",
-    rave: "com.uber:rave:${versions.rave}",
 ]
 
 ext.deps = [
