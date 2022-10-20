@@ -79,9 +79,9 @@ internal class RibEventPayload(
         var context: android.content.Context? = view.getContext()
         while (context is ContextWrapper) {
           if (context is Activity) {
-            return (context as Activity).javaClass.getName()
+            return context.javaClass.getName()
           }
-          context = (context as ContextWrapper).getBaseContext()
+          context = context.getBaseContext()
         }
       }
       return ""

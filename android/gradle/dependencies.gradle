@@ -18,20 +18,23 @@ def versions = [
     androidx: [
         annotations: '1.1.0',
         appcompat: '1.3.0',
-        compose: '1.0.2',
-        percent: '1.0.0'
+        compose: [
+          compiler: "1.3.0",
+          libraries: "1.2.1"
+        ],
+        percent: '1.0.0',
+        savedState: "1.2.0"
     ],
     autodispose: '1.4.0',
-    coroutines: '1.5.1',
-    dagger: "2.34",
+    coroutines: '1.6.4',
+    dagger: "2.43.2",
     errorProne: '2.3.3',
     gjf: '1.7',
     intellij: "2022.1",
-    kotlin: "1.5.21",
+    kotlin: "1.7.10",
     ktfmt: '0.23',
     ktlint: '0.41.0',
     motif: '0.3.4',
-    rave: "2.0.0",
     robolectric: "4.4",
     spotless: '5.11.0'
 ]
@@ -47,13 +50,12 @@ def apt = [
     javaxInject: "javax.inject:javax.inject:1",
     autoValue: "com.google.auto.value:auto-value:1.7",
     autoValueAnnotations: "com.google.auto.value:auto-value-annotations:1.7",
-    raveCompiler: "com.uber:rave-compiler:${versions.rave}",
     errorProneAnnotations: "com.google.errorprone:error_prone_annotations:${versions.errorProne}",
 ]
 
 def build = [
-    buildToolsVersion: '30.0.2',
-    compileSdkVersion: 30,
+    buildToolsVersion: '33.0.0',
+    compileSdkVersion: 33,
     ci: 'true' == System.getenv('CI'),
     minSdkVersion: 21,
     targetSdkVersion: 28,
@@ -67,7 +69,7 @@ def build = [
     errorProneTestHelpers: "com.google.errorprone:error_prone_test_helpers:${versions.errorProne}",
     nullAway: 'com.uber.nullaway:nullaway:0.9.0',
     gradlePlugins: [
-        android: 'com.android.tools.build:gradle:7.1.0',
+        android: 'com.android.tools.build:gradle:7.2.2',
         apt: "net.ltgt.gradle:gradle-apt-plugin:0.21",
         errorprone: "net.ltgt.gradle:gradle-errorprone-plugin:1.3.0",
         gradleMavenPublish: "com.vanniktech:gradle-maven-publish-plugin:0.18.0",
@@ -85,15 +87,17 @@ def androidx = [
     activityKtx: "androidx.activity:activity-ktx:1.3.0-beta02",
     annotations: "androidx.annotation:annotation:${versions.androidx.annotations}",
     appcompat: "androidx.appcompat:appcompat:${versions.androidx.appcompat}",
-    composeAnimation: "androidx.compose.animation:animation:${versions.androidx.compose}",
-    composeFoundation: "androidx.compose.foundation:foundation:${versions.androidx.compose}",
-    composeMaterial: "androidx.compose.material:material:${versions.androidx.compose}",
+    composeAnimation: "androidx.compose.animation:animation:${versions.androidx.compose.libraries}",
+    composeCompiler: "androidx.compose.compiler:compiler:${versions.androidx.compose.compiler}",
+    composeFoundation: "androidx.compose.foundation:foundation:${versions.androidx.compose.libraries}",
+    composeMaterial: "androidx.compose.material:material:${versions.androidx.compose.libraries}",
     composeNavigation: "androidx.navigation:navigation-compose:2.4.0-alpha03",
-    composeRuntimeRxJava2: "androidx.compose.runtime:runtime-rxjava2:${versions.androidx.compose}",
-    composeUi: "androidx.compose.ui:ui:${versions.androidx.compose}",
-    composeUiTooling: "androidx.compose.ui:ui-tooling:${versions.androidx.compose}",
+    composeRuntimeRxJava2: "androidx.compose.runtime:runtime-rxjava2:${versions.androidx.compose.libraries}",
+    composeUi: "androidx.compose.ui:ui:${versions.androidx.compose.libraries}",
+    composeUiTooling: "androidx.compose.ui:ui-tooling:${versions.androidx.compose.libraries}",
     composeViewModel: "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha05",
-    percent: "androidx.percentlayout:percentlayout:${versions.androidx.percent}"
+    percent: "androidx.percentlayout:percentlayout:${versions.androidx.percent}",
+    savedState: "androidx.savedstate:savedstate:${versions.androidx.savedState}"
 ]
 
 def test = [
@@ -139,7 +143,6 @@ def uber = [
     autodisposeErrorProne: "com.uber.autodispose:autodispose-error-prone:${versions.autodispose}",
     motif: "com.uber.motif:motif:${versions.motif}",
     motifCompiler: "com.uber.motif:motif-compiler:${versions.motif}",
-    rave: "com.uber:rave:${versions.rave}",
 ]
 
 ext.deps = [

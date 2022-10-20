@@ -17,17 +17,18 @@ package com.uber.rib.core
 
 import android.app.Application
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineExceptionHandler
-import kotlinx.coroutines.test.TestCoroutineScope
-import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 import java.lang.RuntimeException
+import kotlin.coroutines.CoroutineContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
 internal class RibScopesTest {
@@ -35,7 +36,7 @@ internal class RibScopesTest {
   @get:Rule var rule = RibCoroutinesRule()
 
   @Test
-  internal fun testScopeLifecycle() = runBlockingTest {
+  internal fun testScopeLifecycle() = runTest {
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.attach()
     val job = interactor.coroutineScope.launch {
@@ -49,10 +50,10 @@ internal class RibScopesTest {
   }
 
   @Test
-  internal fun testScopeLifecycleWithTestScope() = runBlockingTest {
+  internal fun testScopeLifecycleWithTestScope() = runTest {
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.attach()
-    interactor.enableTestCoroutineScopeOverride()
+    interactor.enableTestScopeOverride()
 
     val job = interactor.coroutineScope.launch {
       while (isActive) {
@@ -81,8 +82,8 @@ internal class RibScopesTest {
   }
 
   @Test(expected = RuntimeException::class)
-  internal fun testUncaughtHandler() = runBlockingTest {
-    val handler = TestCoroutineExceptionHandler()
+  internal fun testUncaughtHandler() = runTest {
+    val handler = TestUncaughtExceptionCaptor()
     RibCoroutinesConfig.exceptionHandler = handler
 
     val interactor = FakeInteractor<Presenter, Router<*>>()
@@ -90,19 +91,18 @@ internal class RibScopesTest {
     interactor.coroutineScope.launch {
       throw RuntimeException("mainScope failed")
     }
-    handler.cleanupTestCoroutines()
+    throw(handler.exceptions.first())
   }
 
   @Test(expected = RuntimeException::class)
-  internal fun testException() = runBlockingTest {
+  internal fun testException() = runTest {
 
     val interactor = FakeInteractor<Presenter, Router<*>>()
-    interactor.enableTestCoroutineScopeOverride()
+    interactor.enableTestScopeOverride()
     interactor.attach()
     interactor.coroutineScope.launch {
       throw RuntimeException("mainScope failed")
     }
-    interactor.testCoroutineScopeOverride!!.cleanupTestCoroutines()
   }
 
   @Test()
@@ -111,19 +111,19 @@ internal class RibScopesTest {
     val interactor = FakeInteractor<Presenter, Router<*>>()
     interactor.attach()
 
-    assertThat(interactor.testCoroutineScopeOverride).isNull()
+    assertThat(interactor.testScopeOverride).isNull()
 
-    interactor.enableTestCoroutineScopeOverride()
-    val testScope = interactor.testCoroutineScopeOverride
+    interactor.enableTestScopeOverride()
+    val testScope = interactor.testScopeOverride
     val realScope = interactor.coroutineScope
-    assertThat(testScope).isInstanceOf(TestCoroutineScope::class.java)
+    assertThat(testScope).isInstanceOf(TestScope::class.java)
     assertThat(testScope).isEqualTo(realScope)
 
-    interactor.disableTestCoroutineScopeOverride()
-    val testScope2 = interactor.testCoroutineScopeOverride
+    interactor.disableTestScopeOverride()
+    val testScope2 = interactor.testScopeOverride
     val realScope2 = interactor.coroutineScope
     assertThat(testScope2).isNull()
-    assertThat(realScope2).isNotInstanceOf(TestCoroutineScope::class.java)
+    assertThat(realScope2).isNotInstanceOf(TestScope::class.java)
   }
 
   @Test()
@@ -132,18 +132,27 @@ internal class RibScopesTest {
     // Can use mock since all logic is in extension function.
     val application: Application = mock()
 
-    assertThat(application.testCoroutineScopeOverride).isNull()
+    assertThat(application.testScopeOverride).isNull()
 
-    application.enableTestCoroutineScopeOverride()
-    val testScope = application.testCoroutineScopeOverride
+    application.enableTestScopeOverride()
+    val testScope = application.testScopeOverride
     val realScope = application.coroutineScope
-    assertThat(testScope).isInstanceOf(TestCoroutineScope::class.java)
+    assertThat(testScope).isInstanceOf(TestScope::class.java)
     assertThat(testScope).isEqualTo(realScope)
 
-    application.disableTestCoroutineScopeOverride()
-    val testScope2 = application.testCoroutineScopeOverride
+    application.disableTestScopeOverride()
+    val testScope2 = application.testScopeOverride
     val realScope2 = application.coroutineScope
     assertThat(testScope2).isNull()
-    assertThat(realScope2).isNotInstanceOf(TestCoroutineScope::class.java)
+    assertThat(realScope2).isNotInstanceOf(TestScope::class.java)
+  }
+
+  private class TestUncaughtExceptionCaptor : CoroutineExceptionHandler {
+    var exceptions = mutableListOf<Throwable>()
+
+    override val key: CoroutineContext.Key<*> = CoroutineExceptionHandler
+    override fun handleException(context: CoroutineContext, exception: Throwable) {
+      exceptions.add(exception)
+    }
   }
 }
