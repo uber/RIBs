@@ -58,3 +58,6 @@
 * [Android] Add Window Focus Event API
 * [Android] Add open modifier to doOnRemoved()8
 * [Android] Deprecate mockitokotlin2
+
+### Version 0.13.2
+* [Android] Reverting binary breaking change from 0.13.1 on Basic Interactor
