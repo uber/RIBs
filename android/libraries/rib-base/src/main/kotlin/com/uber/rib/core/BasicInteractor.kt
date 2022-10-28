@@ -22,5 +22,5 @@ package com.uber.rib.core
  * @param <R> the type of [Router].
  */
 abstract class BasicInteractor<P : Any, R : Router<*>> protected constructor(
-  protected open var presenter: P
+  @JvmField protected var presenter: P
 ) : Interactor<P, R>(presenter)
