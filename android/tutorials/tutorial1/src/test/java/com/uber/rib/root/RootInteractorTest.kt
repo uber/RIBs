@@ -13,8 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib;
+package com.uber.rib.root
 
-import android.app.Application;
+import org.junit.Before
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 
-public class SampleApplication extends Application {}
+@SuppressWarnings("NullAway")
+class RootInteractorTest {
+    @Mock
+    var presenter: RootInteractor.RootPresenter? = null
+
+    @Mock
+    var router: RootRouter? = null
+    private var interactor: RootInteractor? = null
+    @Before
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        interactor = TestRootInteractor.create(presenter)
+    }
+}

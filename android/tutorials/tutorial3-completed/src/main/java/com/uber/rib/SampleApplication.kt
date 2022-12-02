@@ -13,23 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.root;
+package com.uber.rib
 
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import android.app.Application
 
-public class RootInteractorTest {
-
-  @Mock RootInteractor.RootPresenter presenter;
-  @Mock RootRouter router;
-
-  private RootInteractor interactor;
-
-  @Before
-  public void setup() {
-    MockitoAnnotations.initMocks(this);
-
-    interactor = TestRootInteractor.create(presenter);
-  }
-}
+class SampleApplication : Application()

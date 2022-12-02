@@ -13,8 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib;
+package com.uber.rib
 
-import android.app.Application;
+import android.view.ViewGroup
+import com.uber.rib.core.RibActivity
+import com.uber.rib.core.ViewRouter
+import com.uber.rib.root.RootBuilder
 
-public class SampleApplication extends Application {}
+/** The sample app's single activity.  */
+class RootActivity : RibActivity() {
+    @SuppressWarnings("unchecked")
+    @Override
+    protected fun createRouter(parentViewGroup: ViewGroup?): ViewRouter<*, *> {
+        val rootBuilder = RootBuilder(object : ParentComponent() {})
+        return rootBuilder.build(parentViewGroup)
+    }
+}

@@ -13,25 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.root;
+package com.uber.rib
 
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import android.view.ViewGroup
+import com.uber.rib.core.RibActivity
+import com.uber.rib.core.ViewRouter
+import com.uber.rib.root.RootBuilder
 
-@SuppressWarnings("NullAway")
-public class RootRouterTest {
-
-  @Mock RootBuilder.Component component;
-  @Mock RootInteractor interactor;
-  @Mock RootView view;
-
-  private RootRouter router;
-
-  @Before
-  public void setup() {
-    MockitoAnnotations.initMocks(this);
-
-    router = new RootRouter(view, interactor, component);
-  }
+/** The sample app's single activity.  */
+class RootActivity : RibActivity() {
+    @SuppressWarnings("unchecked")
+    @Override
+    protected fun createRouter(parentViewGroup: ViewGroup?): ViewRouter<*, *> {
+        val rootBuilder = RootBuilder(object : ParentComponent() {})
+        return rootBuilder.build(parentViewGroup)
+    }
 }

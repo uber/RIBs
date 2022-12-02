@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.root;
+package com.uber.rib.root
 
-import com.uber.rib.root.logged_in.LoggedInBuilder;
-import com.uber.rib.root.logged_out.LoggedOutBuilder;
-import org.junit.Before;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import com.uber.rib.root.logged_in.LoggedInBuilder
+import com.uber.rib.root.logged_out.LoggedOutBuilder
+import org.junit.Before
+import org.mockito.Mock
+import org.mockito.MockitoAnnotations
 
-public class RootRouterTest {
+class RootRouterTest {
+    @Mock
+    var component: RootBuilder.Component? = null
 
-  @Mock RootBuilder.Component component;
-  @Mock RootInteractor interactor;
-  @Mock RootView view;
+    @Mock
+    var interactor: RootInteractor? = null
 
-  private RootRouter router;
-
-  @Before
-  public void setup() {
-    MockitoAnnotations.initMocks(this);
-
-    router =
-        new RootRouter(
+    @Mock
+    var view: RootView? = null
+    private var router: RootRouter? = null
+    @Before
+    fun setup() {
+        MockitoAnnotations.initMocks(this)
+        router = RootRouter(
             view,
             interactor,
             component,
-            new LoggedOutBuilder(component),
-            new LoggedInBuilder(component));
-  }
+            LoggedOutBuilder(component),
+            LoggedInBuilder(component)
+        )
+    }
 }
