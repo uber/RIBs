@@ -22,7 +22,6 @@ import com.uber.rib.root.RootBuilder
 
 /** The sample app's single activity.  */
 class RootActivity : RibActivity() {
-    @SuppressWarnings("unchecked")
     @Override
     protected fun createRouter(parentViewGroup: ViewGroup?): ViewRouter<*, *> {
         val rootBuilder = RootBuilder(object : ParentComponent() {})

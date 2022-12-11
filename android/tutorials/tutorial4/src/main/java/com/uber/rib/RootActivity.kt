@@ -42,7 +42,7 @@ class RootActivity : RibActivity() {
         if (rootWorkflow != null) {
             rootWorkflow
                 .createSingle(rootInteractor)
-                .`as`(
+                .as(autoDisposable(this))(
                     AutoDispose.< Optional < RootReturnValue > > autoDisposable<Optional<RootReturnValue>>(
                         this
                     )
@@ -55,6 +55,7 @@ class RootActivity : RibActivity() {
                         }
                     })
         }
+
     }
 
     private inner class RootReturnValue
