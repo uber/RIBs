@@ -19,17 +19,17 @@ import org.junit.Before
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-@SuppressWarnings("NullAway")
 class RootRouterTest {
+    //nullable mocks to lateinit variable
     @Mock
-    var component: RootBuilder.Component? = null
+    lateinit var component: RootBuilder.Component? = null
 
     @Mock
-    var interactor: RootInteractor? = null
+    lateinit var interactor: RootInteractor? = null
 
     @Mock
-    var view: RootView? = null
-    private var router: RootRouter? = null
+    lateinit var view: RootView? = null
+    private lateinit var router: RootRouter? = null
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)

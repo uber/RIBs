@@ -20,12 +20,13 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 class RootInteractorTest {
-    @Mock
-    var presenter: RootInteractor.RootPresenter? = null
 
-    @Mock
+    lateinit var presenter: RootInteractor.RootPresenter? = null
+
+
     lateinit var router: RootRouter? = null
-    private var interactor: RootInteractor? = null
+    private lateinit var interactor: RootInteractor? = null
+
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)

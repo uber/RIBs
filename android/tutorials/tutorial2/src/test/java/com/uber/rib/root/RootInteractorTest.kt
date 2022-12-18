@@ -19,14 +19,15 @@ import org.junit.Before
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
-@SuppressWarnings("NullAway")
+
 class RootInteractorTest {
-    @Mock
-    var presenter: RootInteractor.RootPresenter? = null
 
     @Mock
-    var router: RootRouter? = null
-    private var interactor: RootInteractor? = null
+    lateinit var presenter: RootInteractor.RootPresenter? = null
+
+    @Mock
+    lateinit var router: RootRouter? = null
+    private lateinit var interactor: RootInteractor? = null
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)

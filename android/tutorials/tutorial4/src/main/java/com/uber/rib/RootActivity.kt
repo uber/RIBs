@@ -20,8 +20,7 @@ import android.content.Intent
 /** The sample app's single activity.  */
 class RootActivity : RibActivity() {
     private var rootInteractor: RootInteractor? = null
-    @SuppressWarnings("unchecked")
-    @Override
+
     protected fun createRouter(parentViewGroup: ViewGroup?): ViewRouter<*, *> {
         val rootBuilder = RootBuilder(object : ParentComponent() {})
         val router: RootRouter = rootBuilder.build(parentViewGroup)
@@ -29,8 +28,8 @@ class RootActivity : RibActivity() {
         return router
     }
 
-    @Override
-    protected fun onCreate(@Nullable savedInstanceState: Bundle?) {
+
+    protected fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (getIntent() != null) {
             handleDeepLink(getIntent())
