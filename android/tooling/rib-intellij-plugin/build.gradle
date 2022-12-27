@@ -79,4 +79,9 @@ afterEvaluate {
         archives sourcesJar
         archives project.tasks.getByName("buildPlugin")
     }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
 }
