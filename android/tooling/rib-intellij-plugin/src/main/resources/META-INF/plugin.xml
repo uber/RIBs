@@ -35,7 +35,7 @@
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.android</depends>
 
-    <idea-version since-build="201"/>
+    <idea-version since-build="213"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <backgroundPostStartupActivity implementation="com.uber.intellij.plugin.android.rib.AttachRibProjectServiceActivity"/>
