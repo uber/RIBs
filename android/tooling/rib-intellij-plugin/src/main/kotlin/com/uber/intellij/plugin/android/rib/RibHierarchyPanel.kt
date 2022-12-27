@@ -16,6 +16,7 @@
 package com.uber.intellij.plugin.android.rib
 
 import com.android.ddmlib.IDevice
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.psi.PsiElement
 import com.intellij.uiDesigner.core.GridConstraints
@@ -39,7 +40,7 @@ import com.uber.intellij.plugin.android.rib.RibViewBrowser.Model as ViewModel
 /** UI Component representing the panel including rib hierarchy. */
 class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
   JPanel(),
-  RibProjectComponent.Listener,
+  RibProjectService.Listener,
   ActionListener,
   RibHierarchyBrowser.Listener,
   RibViewBrowser.Listener {
@@ -51,6 +52,7 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
       RibViewBrowser.Model(EMPTY_RIB_NODE, EMPTY_RIB_VIEW, EMPTY_RIB_NODE)
   }
 
+  private val ribProjectService: RibProjectService = project.service()
   private val comboBox: JComboBox<IDevice>
   private val comboBoxModel: DefaultComboBoxModel<IDevice>
   private val splitPane: JSplitPane
@@ -124,7 +126,7 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
   /** Listbox callback. */
   override fun actionPerformed(e: ActionEvent) {
     if (e.actionCommand == "comboBoxChanged") {
-      RibProjectComponent.getInstance(project).selectDevice(comboBox.selectedItem as IDevice?)
+      ribProjectService.selectDevice(comboBox.selectedItem as IDevice?)
     }
   }
 
@@ -139,7 +141,7 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
   /** Notify panel that a new rib has been selected in rib hierarchy browser. */
   override fun onSelectedRibChanged(id: UUID) {
     if (model.selectedViewId.isEmpty()) {
-      RibProjectComponent.getInstance(project).highlightRib(id)
+      ribProjectService.highlightRib(id)
     }
 
     val rootElement: PsiElement = RibHierarchyUtils.buildRootElement(project)
@@ -171,6 +173,6 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
 
   /** Notify panel that a new view has been selected in rib hierarchy browser. */
   override fun onSelectedViewChanged(ribView: RibView) {
-    RibProjectComponent.getInstance(project).highlightView(UUID.fromString(ribView.id))
+    ribProjectService.highlightView(UUID.fromString(ribView.id))
   }
 }

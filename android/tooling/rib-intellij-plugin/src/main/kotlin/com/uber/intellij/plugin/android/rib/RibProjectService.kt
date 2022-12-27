@@ -18,8 +18,10 @@ package com.uber.intellij.plugin.android.rib
 import com.android.ddmlib.IDevice
 import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
+import com.intellij.openapi.Disposable
 import com.intellij.openapi.application.ApplicationManager
-import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.components.Service
+import com.intellij.openapi.components.Service.Level.PROJECT
 import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
@@ -45,8 +47,8 @@ import java.util.UUID
 import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
-class RibProjectComponent(val project: Project) :
-  ProjectComponent, AndroidDeviceRepository.Listener {
+@Service(PROJECT)
+class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener, Disposable {
 
   companion object {
     private const val TOOL_WINDOW_ID: String = "Ribs"
@@ -57,10 +59,6 @@ class RibProjectComponent(val project: Project) :
     private val EMPTY_MODEL: RibHierarchyBrowser.Model =
       RibHierarchyBrowser.Model(RibHost("", null), "", "")
     private val executor: Executor = Executors.newSingleThreadExecutor()
-
-    fun getInstance(project: Project): RibProjectComponent {
-      return project.getComponent(RibProjectComponent::class.java)
-    }
   }
 
   private val androidDeviceRepository = project.service<AndroidDeviceRepository>()
@@ -70,17 +68,14 @@ class RibProjectComponent(val project: Project) :
   private var selectedDevice: IDevice? = null
   private var isRefreshing: Boolean = false
   private var isLocating: Boolean = false
-  override fun projectOpened() {
+
+  fun attach() {
     DumbService.getInstance(project).runWhenSmart {
       ApplicationManager.getApplication().runReadAction {
         androidDeviceRepository.addListener(this)
         onModelUpdated(EMPTY_MODEL)
       }
     }
-  }
-
-  override fun projectClosed() {
-    androidDeviceRepository.removeListener(this)
   }
 
   fun refreshRibHierarchy() {
@@ -206,6 +201,10 @@ class RibProjectComponent(val project: Project) :
       val fallbackDevice: IDevice? = if (devices.isNotEmpty()) devices[0] else null
       selectDevice(fallbackDevice)
     }
+  }
+
+  override fun dispose() {
+    androidDeviceRepository.removeListener(this)
   }
 
   private fun onModelUpdated(model: RibHierarchyBrowser.Model) {

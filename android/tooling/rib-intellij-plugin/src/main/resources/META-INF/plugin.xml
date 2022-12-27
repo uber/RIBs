@@ -37,6 +37,10 @@
 
     <idea-version since-build="201"/>
 
+    <extensions defaultExtensionNs="com.intellij">
+        <backgroundPostStartupActivity implementation="com.uber.intellij.plugin.android.rib.AttachRibProjectServiceActivity"/>
+    </extensions>
+
     <actions>
         <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
             <separator/>
@@ -50,11 +54,4 @@
             </action>
         </group>
     </actions>
-
-    <project-components>
-        <component>
-            <implementation-class>com.uber.intellij.plugin.android.rib.RibProjectComponent</implementation-class>
-        </component>
-    </project-components>
-
 </idea-plugin>
