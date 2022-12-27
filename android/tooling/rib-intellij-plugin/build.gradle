@@ -81,4 +81,8 @@ afterEvaluate {
             jvmTarget = "11"
         }
     }
+    tasks.withType(JavaCompile).all {
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
+    }
 }
