@@ -33,6 +33,7 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.android</depends>
 
     <idea-version since-build="201"/>
 
