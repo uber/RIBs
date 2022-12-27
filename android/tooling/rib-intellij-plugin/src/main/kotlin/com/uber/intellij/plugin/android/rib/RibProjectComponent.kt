@@ -20,6 +20,7 @@ import com.google.common.util.concurrent.FutureCallback
 import com.google.common.util.concurrent.Futures
 import com.intellij.openapi.application.ApplicationManager
 import com.intellij.openapi.components.ProjectComponent
+import com.intellij.openapi.components.service
 import com.intellij.openapi.progress.ProgressIndicator
 import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
@@ -45,7 +46,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 class RibProjectComponent(val project: Project) :
-  ProjectComponent, AndroidDeviceRepositoryComponent.Listener {
+  ProjectComponent, AndroidDeviceRepository.Listener {
 
   companion object {
     private const val TOOL_WINDOW_ID: String = "Ribs"
@@ -62,24 +63,24 @@ class RibProjectComponent(val project: Project) :
     }
   }
 
+  private val androidDeviceRepository = project.service<AndroidDeviceRepository>()
   private var ribPanel: RibHierarchyPanel? = null
   private var ribContent: Content? = null
   private var devices: List<IDevice> = arrayListOf()
   private var selectedDevice: IDevice? = null
   private var isRefreshing: Boolean = false
   private var isLocating: Boolean = false
-
   override fun projectOpened() {
     DumbService.getInstance(project).runWhenSmart {
       ApplicationManager.getApplication().runReadAction {
-        AndroidDeviceRepositoryComponent.getInstance(project).addListener(this)
+        androidDeviceRepository.addListener(this)
         onModelUpdated(EMPTY_MODEL)
       }
     }
   }
 
   override fun projectClosed() {
-    AndroidDeviceRepositoryComponent.getInstance(project).removeListener(this)
+    androidDeviceRepository.removeListener(this)
   }
 
   fun refreshRibHierarchy() {

@@ -53,10 +53,6 @@
 
     <project-components>
         <component>
-            <implementation-class>com.uber.intellij.plugin.android.rib.AndroidDeviceRepositoryComponent
-            </implementation-class>
-        </component>
-        <component>
             <implementation-class>com.uber.intellij.plugin.android.rib.RibProjectComponent</implementation-class>
         </component>
     </project-components>
