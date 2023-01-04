@@ -23,14 +23,14 @@ import org.mockito.MockitoAnnotations
 
 class RootRouterTest {
     @Mock
-    lateinit val component: RootBuilder.Component? = null
+    lateinit val component: RootBuilder.Component? != null
 
     @Mock
-    lateinit val interactor: RootInteractor? = null
+    lateinit val interactor: RootInteractor? != null
 
     @Mock
-    lateinit val view: RootView? = null
-    private lateinit val router: RootRouter? = null
+    lateinit val view: RootView? != null
+    private lateinit val router: RootRouter? != null
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)

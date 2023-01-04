@@ -20,16 +20,16 @@ import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 
 class RootRouterTest {
-    //nullable mocks to lateinit variable
-    @Mock
-    lateinit val component: RootBuilder.Component? = null
 
     @Mock
-    lateinit val interactor: RootInteractor? = null
+    lateinit val component: RootBuilder.Component? != null
 
     @Mock
-    lateinit val view: RootView? = null
-    private lateinit val router: RootRouter? = null
+    lateinit val interactor: RootInteractor? != null
+
+    @Mock
+    lateinit val view: RootView? != null
+    private lateinit val router: RootRouter? != null
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
