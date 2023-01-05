@@ -21,11 +21,11 @@ import org.mockito.MockitoAnnotations
 
 class RootInteractorTest {
     @Mock
-    lateinit val presenter: RootInteractor.RootPresenter? != null
+    lateinit val presenter: RootInteractor.RootPresenter
 
     @Mock
-    lateinit val router: RootRouter? != null
-    private lateinit val interactor: RootInteractor? != null
+    lateinit val router: RootRouter
+    private lateinit val interactor: RootInteractor
     @Before
     fun setup() {
         MockitoAnnotations.initMocks(this)
