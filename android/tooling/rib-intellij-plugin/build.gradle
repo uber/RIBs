@@ -15,11 +15,6 @@ repositories {
 }
 
 dependencies {
-    implementation deps.apt.androidApi
-    implementation deps.build.commonsLang
-    implementation deps.external.ddms
-    implementation deps.external.guavaAndroid
-    implementation deps.androidx.annotations
 
     testImplementation(project(":libraries:rib-base")) {
         transitive = false
@@ -45,6 +40,8 @@ dependencies {
     testImplementation deps.test.truth
     testImplementation deps.test.compileTesting
     testImplementation deps.test.mockito
+    testImplementation deps.androidx.annotations
+    testImplementation deps.apt.androidApi
 }
 
 // Determines if the machine has Maven credentials.
@@ -61,7 +58,7 @@ ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.
 version = pluginXml.version
 
 intellij {
-    plugins = ['java', 'Kotlin' ]
+    plugins = ['java', 'Kotlin', 'android']
     version = deps.versions.intellij
     pluginName = "uber-ribs"
     updateSinceUntilBuild = false
@@ -78,5 +75,14 @@ afterEvaluate {
     artifacts {
         archives sourcesJar
         archives project.tasks.getByName("buildPlugin")
+    }
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+        kotlinOptions {
+            jvmTarget = "11"
+        }
+    }
+    tasks.withType(JavaCompile).all {
+        sourceCompatibility = "11"
+        targetCompatibility = "11"
     }
 }
