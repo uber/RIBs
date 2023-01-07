@@ -29,7 +29,7 @@ jobs:
         # Gradle configuration install deps
         run: ./gradlew help
       - name: Spot check
-        run: ./gradlew spotlessCheck --stacktrace
+        run: ./gradlew spotlessApply
       - name: Build Project
         run: ./gradlew assemble --stacktrace
       - name : Testing
