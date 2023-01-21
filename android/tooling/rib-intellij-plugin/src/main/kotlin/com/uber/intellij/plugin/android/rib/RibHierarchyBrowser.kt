@@ -28,6 +28,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageType
 import com.intellij.psi.PsiClass
@@ -96,6 +97,8 @@ class RibHierarchyBrowser(
     val selectedRibId: String = "",
     val selectedViewId: String = ""
   )
+
+  private val ribProjectService: RibProjectService = project.service()
 
   private var status: Status = Status.UNINITIALIZED
 
@@ -205,7 +208,7 @@ class RibHierarchyBrowser(
       else -> {}
     }
     ApplicationManager.getApplication().invokeLater {
-      RibProjectComponent.getInstance(project).refreshRibHierarchy()
+      ribProjectService.refreshRibHierarchy()
     }
   }
 
@@ -245,7 +248,7 @@ class RibHierarchyBrowser(
 
     override fun update(event: AnActionEvent) {
       val presentation = event.presentation
-      val hasDevices = RibProjectComponent.getInstance(project).hasSelectedDevice()
+      val hasDevices = ribProjectService.hasSelectedDevice()
       presentation.isEnabled = hasDevices && !isUpdating()
     }
   }
@@ -256,7 +259,7 @@ class RibHierarchyBrowser(
     private var popupDisplayed = false
 
     override fun actionPerformed(e: AnActionEvent) {
-      RibProjectComponent.getInstance(project).enableLocateMode()
+      ribProjectService.enableLocateMode()
 
       if (!popupDisplayed) {
         displayPopup(LOCATE_VIEW, RelativePoint.getSouthOf(this@RibHierarchyBrowser), MessageType.INFO)
@@ -265,7 +268,7 @@ class RibHierarchyBrowser(
     }
 
     override fun update(event: AnActionEvent) {
-      event.presentation.isEnabled = !RibProjectComponent.getInstance(project).isLocating()
+      event.presentation.isEnabled = !ribProjectService.isLocating()
     }
   }
 

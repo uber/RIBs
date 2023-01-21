@@ -15,6 +15,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+      <strong>0.1.5</strong><br/>
+      <ul>
+        <li>IntelliJ 2022.3 compatibility</li>
+      </ul>
       <strong>0.1.4</strong><br/>
       <ul>
         <li>IntelliJ 2022 compatibility</li>
@@ -33,8 +37,13 @@
 
     <depends>com.intellij.modules.platform</depends>
     <depends>com.intellij.java</depends>
+    <depends>org.jetbrains.android</depends>
 
-    <idea-version since-build="201"/>
+    <idea-version since-build="213"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <backgroundPostStartupActivity implementation="com.uber.intellij.plugin.android.rib.AttachRibProjectServiceActivity"/>
+    </extensions>
 
     <actions>
         <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
@@ -49,15 +58,4 @@
             </action>
         </group>
     </actions>
-
-    <project-components>
-        <component>
-            <implementation-class>com.uber.intellij.plugin.android.rib.AndroidDeviceRepositoryComponent
-            </implementation-class>
-        </component>
-        <component>
-            <implementation-class>com.uber.intellij.plugin.android.rib.RibProjectComponent</implementation-class>
-        </component>
-    </project-components>
-
 </idea-plugin>

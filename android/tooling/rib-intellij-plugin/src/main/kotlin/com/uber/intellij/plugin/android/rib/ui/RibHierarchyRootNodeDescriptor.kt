@@ -16,12 +16,13 @@
 package com.uber.intellij.plugin.android.rib.ui
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ui.util.CompositeAppearance
 import com.intellij.psi.PsiElement
-import com.uber.intellij.plugin.android.rib.AndroidDeviceRepositoryComponent
+import com.uber.intellij.plugin.android.rib.AndroidDeviceRepository
 import com.uber.intellij.plugin.android.rib.RibHierarchyBrowser
-import com.uber.intellij.plugin.android.rib.RibProjectComponent
+import com.uber.intellij.plugin.android.rib.RibProjectService
 import com.uber.intellij.plugin.android.rib.io.RibHost
 import javax.swing.Icon
 
@@ -32,6 +33,9 @@ class RibHierarchyRootNodeDescriptor(
   val ribHost: RibHost,
   private val status: RibHierarchyBrowser.Status
 ) : RibHierarchyDescriptor(project, null, element, true) {
+
+  private val deviceRepository: AndroidDeviceRepository = project.service()
+  private val ribProjectService: RibProjectService = project.service()
 
   companion object {
     /** Label used when android bridge is not connected */
@@ -50,12 +54,12 @@ class RibHierarchyRootNodeDescriptor(
   }
 
   override fun updateText(text: CompositeAppearance) {
-    if (!AndroidDeviceRepositoryComponent.getInstance(project).isBridgeConnected()) {
+    if (!deviceRepository.isBridgeConnected()) {
       text.ending.addText(LABEL_NO_BRIDGE)
       return
     }
 
-    if (!RibProjectComponent.getInstance(project).hasSelectedDevice()) {
+    if (!ribProjectService.hasSelectedDevice()) {
       text.ending.addText(LABEL_NO_DEVICE)
       return
     }
@@ -75,7 +79,7 @@ class RibHierarchyRootNodeDescriptor(
   }
 
   override fun getIcon(element: PsiElement): Icon? {
-    if (!RibProjectComponent.getInstance(project).hasSelectedDevice()) {
+    if (!ribProjectService.hasSelectedDevice()) {
       return AllIcons.General.BalloonInformation
     }
 
