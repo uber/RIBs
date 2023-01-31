@@ -97,6 +97,7 @@ subprojects {
     afterEvaluate {
         boolean isAndroidApp = project.plugins.hasPlugin("com.android.application")
         boolean isAndroidLibrary = project.plugins.hasPlugin("com.android.library")
+        boolean isIntelliJPlugin = project.plugins.hasPlugin("com.android.library")
         boolean usesErrorProne = project.name in useErrorProneProjects
         boolean isKotlinLibrary = project.plugins.hasPlugin("org.jetbrains.kotlin.jvm") || project.plugins.hasPlugin("org.jetbrains.kotlin.android")
 
@@ -177,7 +178,7 @@ subprojects {
                         jvmTarget = "1.8"
                     }
                 }
-            } else {
+            } else if(!isIntelliJPlugin) {
                 project.compileKotlin {
                     kotlinOptions {
                         freeCompilerArgs = extraCompilerArgs

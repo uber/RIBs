@@ -47,7 +47,6 @@ import com.intellij.refactoring.PackageWrapper;
 import com.intellij.refactoring.util.RefactoringUtil;
 import com.uber.presidio.intellij_plugin.generator.Generator;
 import java.util.List;
-import javax.swing.JOptionPane;
 import org.jetbrains.jps.model.java.JavaModuleSourceRootTypes;
 import org.jetbrains.jps.model.java.JavaSourceRootType;
 
@@ -116,11 +115,6 @@ public abstract class GenerateAction extends AnAction {
     final Module currentModule =
         Preconditions.checkNotNull(ModuleUtilCore.findModuleForPsiElement(directory));
     final SourceFolder testSourceFolder = suitableTestSourceFolders(project, currentModule);
-    if (null == testSourceFolder) {
-      JOptionPane.showMessageDialog(
-          null, "Cannot create a RIB in a module without a test source set.");
-      return;
-    }
 
     final PackageWrapper targetPackage =
         new PackageWrapper(PsiManager.getInstance(project), getPackageName());
@@ -140,11 +134,13 @@ public abstract class GenerateAction extends AnAction {
                               createSourceFile(project, generator, directory);
                             }
 
-                            PsiDirectory testDirectory =
-                                RefactoringUtil.createPackageDirectoryInSourceRoot(
-                                    targetPackage, testSourceFolder.getFile());
-                            for (Generator generator : testSourceGenerators) {
-                              createSourceFile(project, generator, testDirectory);
+                            if (testSourceFolder != null) {
+                              PsiDirectory testDirectory =
+                                  RefactoringUtil.createPackageDirectoryInSourceRoot(
+                                      targetPackage, testSourceFolder.getFile());
+                              for (Generator generator : testSourceGenerators) {
+                                createSourceFile(project, generator, testDirectory);
+                              }
                             }
                           }
                         },

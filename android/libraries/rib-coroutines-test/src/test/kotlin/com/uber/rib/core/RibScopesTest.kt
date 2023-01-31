@@ -147,6 +147,24 @@ internal class RibScopesTest {
     assertThat(realScope2).isNotInstanceOf(TestScope::class.java)
   }
 
+  @Test
+  fun testScopeReattaching() {
+    val interactor = object : BasicInteractor<Presenter, Router<*>>(mock()) {}
+    with(interactor) {
+      dispatchAttach(null)
+      with(coroutineScope) {
+        assertThat(isActive).isTrue()
+        dispatchDetach()
+        // after dispatching detach, we expect the same instance captured before to be inactive
+        assertThat(isActive).isFalse()
+      }
+      dispatchAttach(null)
+      // The previous instance of coroutineScope is permanently cancelled,
+      // but ScopeProvider.coroutineScope should now return a new, active instance.
+      assertThat(coroutineScope.isActive).isTrue()
+    }
+  }
+
   private class TestUncaughtExceptionCaptor : CoroutineExceptionHandler {
     var exceptions = mutableListOf<Throwable>()
 

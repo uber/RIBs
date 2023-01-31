@@ -21,6 +21,7 @@ import com.uber.autodispose.coroutinesinterop.asCoroutineScope
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.job
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -69,6 +70,14 @@ internal class LazyCoroutineScope<This : Any>(val initializer: This.() -> Corout
     }
   }
   operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope = synchronized(LazyCoroutineScope) {
-    return values.getOrPut(thisRef) { thisRef.initializer() }
+    return values.getOrPut(thisRef) {
+      thisRef.initializer().apply {
+        coroutineContext.job.invokeOnCompletion {
+          synchronized(LazyCoroutineScope) {
+            values.remove(thisRef)
+          }
+        }
+      }
+    }
   }
 }
