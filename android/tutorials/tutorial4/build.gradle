@@ -61,4 +61,5 @@ dependencies {
     compileOnly deps.apt.javax
     compileOnly deps.apt.autoValueAnnotations
     testImplementation project(":libraries:rib-test")
+
 }
