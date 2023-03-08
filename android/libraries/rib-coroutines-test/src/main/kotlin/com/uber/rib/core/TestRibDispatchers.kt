@@ -19,6 +19,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestDispatcher
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
@@ -26,10 +27,16 @@ import kotlinx.coroutines.test.setMain
 
 @ExperimentalCoroutinesApi
 public data class TestRibDispatchers(
-  override val Default: TestDispatcher = StandardTestDispatcher(),
-  override val IO: TestDispatcher = StandardTestDispatcher(),
-  override val Unconfined: TestDispatcher = UnconfinedTestDispatcher(),
-  val MainTestDelegate: TestDispatcher = StandardTestDispatcher()
+  /**
+   * [TestCoroutineScheduler] to be used by all other [TestDispatcher] when using the default constructor.
+   *
+   * Note that when passing in custom dispatchers, this test scheduler will not be used.
+   */
+  private val testScheduler: TestCoroutineScheduler? = TestCoroutineScheduler(),
+  override val Default: TestDispatcher = StandardTestDispatcher(testScheduler),
+  override val IO: TestDispatcher = StandardTestDispatcher(testScheduler),
+  override val Unconfined: TestDispatcher = UnconfinedTestDispatcher(testScheduler),
+  val MainTestDelegate: TestDispatcher = StandardTestDispatcher(testScheduler)
 ) : RibDispatchersProvider {
 
   public fun installTestDispatchers() {
