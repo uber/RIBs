@@ -61,3 +61,9 @@
 
 ### Version 0.13.2
 * [Android] Reverting binary breaking change from 0.13.1 on Basic Interactor
+
+### Version 0.13.3
+* [Intellij] Plugin 0.1.5 
+* [Android] Clear cached CoroutineScope instance once its job completes 
+* [Android] Make all TestDispatchers in TestRibDispatchers use the same TestCoroutineScheduler
+
