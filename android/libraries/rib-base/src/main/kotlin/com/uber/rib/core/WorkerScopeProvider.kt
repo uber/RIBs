@@ -19,12 +19,19 @@ import com.uber.autodispose.ScopeProvider
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.asFlowable
+import kotlinx.coroutines.rx2.asObservable
 
 /** [ScopeProvider] for [Worker] instances.  */
 open class WorkerScopeProvider internal constructor(
-  private val workerLifecycleObservable: Observable<WorkerEvent>
+        private val workerLifecycle : Flow<WorkerEvent>
 ) : ScopeProvider {
+  internal constructor(workerLifecycleObservable: Observable<WorkerEvent>) : this(workerLifecycleObservable.asFlow())
+
   override fun requestScope(): CompletableSource {
-    return workerLifecycleObservable.skip(1).firstElement().ignoreElement()
+    return workerLifecycle.drop(1).asObservable().firstElement().ignoreElement()
   }
 }

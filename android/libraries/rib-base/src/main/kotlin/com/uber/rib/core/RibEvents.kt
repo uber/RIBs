@@ -15,14 +15,16 @@
  */
 package com.uber.rib.core
 
-import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
 class RibEvents private constructor() {
 
-  private val eventRelay: PublishRelay<RibEvent> = PublishRelay.create()
+  private val eventFlow = MutableSharedFlow<RibEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
-  open val events: Observable<RibEvent> = eventRelay.hide()
+  open val events: Observable<RibEvent> = eventFlow.asObservable()
 
   /**
    * @param eventType [RibEventType]
@@ -31,7 +33,7 @@ class RibEvents private constructor() {
    * RibActivity/Fragment
    */
   open fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
-    eventRelay.accept(RibEvent(eventType, child, parent))
+    eventFlow.tryEmit(RibEvent(eventType, child, parent))
   }
 
   companion object {

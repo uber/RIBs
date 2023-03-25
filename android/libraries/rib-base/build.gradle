@@ -42,6 +42,10 @@ dependencies {
     api deps.uber.autodisposeLifecycle
     implementation deps.apt.javaxInject
 
+    implementation deps.uber.autodisposeCoroutines
+    implementation deps.kotlin.coroutinesAndroid
+    implementation deps.kotlin.coroutinesRx2
+
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi
