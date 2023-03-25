@@ -184,7 +184,7 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     super.onWindowFocusChanged(hasFocus)
 
     val result = callbacksFlow.tryEmit(createWindowFocusEvent(hasFocus))
-    val s =""
+    val s = ""
   }
 
   /**

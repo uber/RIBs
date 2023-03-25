@@ -22,7 +22,9 @@ import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.transformWhile
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
 
@@ -88,11 +90,11 @@ object WorkerBinder {
   @JvmStatic
   @VisibleForTesting
   open fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
-    val unbindFlow = MutableSharedFlow<WorkerEvent>(0 ,1, BufferOverflow.DROP_OLDEST)
+    val unbindFlow = MutableSharedFlow<WorkerEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
-    val workerLifecycle = merge( mappedLifecycle.asFlow(), unbindFlow)
-            .transformWhile { emit(it) ; it != WorkerEvent.STOP  }
-            .asObservable()
+    val workerLifecycle = merge(mappedLifecycle.asFlow(), unbindFlow)
+      .transformWhile { emit(it) ; it != WorkerEvent.STOP }
+      .asObservable()
 
     bindToWorkerLifecycle(workerLifecycle, worker)
     return WorkerUnbinder { unbindFlow.tryEmit(WorkerEvent.STOP) }
