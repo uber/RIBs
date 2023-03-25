@@ -19,10 +19,13 @@ import androidx.annotation.CallSuper
 import com.uber.autodispose.ScopeProvider
 import com.uber.rib.core.lifecycle.PresenterEvent
 import io.reactivex.CompletableSource
-import io.reactivex.Observable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.drop
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.take
 import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.rx2.rxCompletable
 import org.checkerframework.checker.guieffect.qual.UIEffect
 
 /**
@@ -33,7 +36,8 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * it becomes unclear where you should write your bussiness logic.
  */
 abstract class Presenter : ScopeProvider {
-  private val lifecycleFlow = MutableSharedFlow<PresenterEvent>()
+  private val lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val lifecycleObservable = lifecycleFlow.asObservable()
 
   /** @return `true` if the presenter is loaded, `false` if not. */
   protected var isLoaded = false
@@ -66,11 +70,9 @@ abstract class Presenter : ScopeProvider {
   }
 
   /** @return an observable of this controller's lifecycle events. */
-  open fun lifecycle(): Observable<PresenterEvent> {
-    return lifecycleFlow.asObservable()
-  }
+  open fun lifecycle() = lifecycleObservable
 
   override fun requestScope(): CompletableSource {
-    return lifecycleFlow.drop(1).asObservable().firstElement().ignoreElement()
+    return rxCompletable(Dispatchers.Unconfined) { lifecycleFlow.take(2).collect() }
   }
 }

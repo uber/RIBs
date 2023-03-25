@@ -22,9 +22,9 @@ import kotlinx.coroutines.rx2.asObservable
 
 class RibEvents private constructor() {
 
-  private val eventFlow = MutableSharedFlow<RibEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+  private val _events = MutableSharedFlow<RibEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
-  open val events: Observable<RibEvent> = eventFlow.asObservable()
+  val events: Observable<RibEvent> = _events.asObservable()
 
   /**
    * @param eventType [RibEventType]
@@ -32,8 +32,8 @@ class RibEvents private constructor() {
    * @param parent [Router] and null for the root ribs that are directly attached to
    * RibActivity/Fragment
    */
-  open fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
-    eventFlow.tryEmit(RibEvent(eventType, child, parent))
+  fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
+    _events.tryEmit(RibEvent(eventType, child, parent))
   }
 
   companion object {

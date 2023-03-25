@@ -37,7 +37,6 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.createOnCreateEvent
 import io.reactivex.CompletableSource
-import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -47,16 +46,14 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   private var router: ViewRouter<*, *>? = null
   private val lifecycleFlow = MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
   private val callbacksFlow = MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+  private val lifecycleObservable = lifecycleFlow.asObservable()
+  private val callbacksObservable = callbacksFlow.asObservable()
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun lifecycle(): Observable<ActivityLifecycleEvent> {
-    return lifecycleFlow.asObservable()
-  }
+  override fun lifecycle() = lifecycleObservable
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun callbacks(): Observable<ActivityCallbackEvent> {
-    return callbacksFlow.asObservable()
-  }
+  override fun callbacks() = callbacksObservable
 
   override fun correspondingEvents(): CorrespondingEventsFunction<ActivityLifecycleEvent> {
     return ACTIVITY_LIFECYCLE

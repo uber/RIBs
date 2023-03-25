@@ -23,7 +23,6 @@ import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopes
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
-import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -42,6 +41,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
   private val lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val lifecycleObservable = lifecycleFlow.asObservable()
 
   private val routerDelegate = InitOnceProperty<R>()
   /** @return the router for this interactor. */
@@ -55,9 +55,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   }
 
   /** @return an observable of this controller's lifecycle events. */
-  override fun lifecycle(): Observable<InteractorEvent> {
-    return lifecycleFlow.asObservable()
-  }
+  override fun lifecycle() = lifecycleObservable
 
   /** @return true if the controller is attached, false if not. */
   override fun isAttached() = lifecycleFlow.replayCache.last() == InteractorEvent.ACTIVE
