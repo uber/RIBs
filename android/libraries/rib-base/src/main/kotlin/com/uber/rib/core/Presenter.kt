@@ -20,7 +20,6 @@ import com.uber.autodispose.ScopeProvider
 import com.uber.rib.core.lifecycle.PresenterEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.collect
