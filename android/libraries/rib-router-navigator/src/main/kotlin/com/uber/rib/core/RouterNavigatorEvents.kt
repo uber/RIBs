@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -25,7 +26,7 @@ class RouterNavigatorEvents private constructor() {
   private val _events = MutableSharedFlow<RouterNavigatorEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
   /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
-  val events = _events.asObservable()
+  val events: Observable<RouterNavigatorEvent> = _events.asObservable()
 
   /**
    * Emits a new [RouterNavigatorEvent] on the stream.

@@ -19,6 +19,7 @@ import androidx.annotation.CallSuper
 import com.uber.autodispose.ScopeProvider
 import com.uber.rib.core.lifecycle.PresenterEvent
 import io.reactivex.CompletableSource
+import io.reactivex.Observable
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -70,7 +71,7 @@ abstract class Presenter : ScopeProvider {
   }
 
   /** @return an observable of this controller's lifecycle events. */
-  open fun lifecycle() = lifecycleObservable
+  open fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
   override fun requestScope(): CompletableSource {
     return rxCompletable(Dispatchers.Unconfined) { lifecycleFlow.take(2).collect() }

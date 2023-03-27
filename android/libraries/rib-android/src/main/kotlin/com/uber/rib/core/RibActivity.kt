@@ -37,6 +37,7 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.createOnCreateEvent
 import io.reactivex.CompletableSource
+import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -50,17 +51,17 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   private val callbacksObservable = callbacksFlow.asObservable()
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun lifecycle() = lifecycleObservable
+  override fun lifecycle(): Observable<ActivityLifecycleEvent> = lifecycleObservable
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun callbacks() = callbacksObservable
+  override fun callbacks(): Observable<ActivityCallbackEvent> = callbacksObservable
 
   override fun correspondingEvents(): CorrespondingEventsFunction<ActivityLifecycleEvent> {
     return ACTIVITY_LIFECYCLE
   }
 
-  override fun peekLifecycle(): ActivityLifecycleEvent {
-    return lifecycleFlow.replayCache.last()
+  override fun peekLifecycle(): ActivityLifecycleEvent? {
+    return lifecycleFlow.replayCache.lastOrNull()
   }
 
   override fun requestScope(): CompletableSource {

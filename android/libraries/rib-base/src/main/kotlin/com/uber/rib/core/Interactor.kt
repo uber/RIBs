@@ -23,6 +23,7 @@ import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopes
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
+import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -55,7 +56,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   }
 
   /** @return an observable of this controller's lifecycle events. */
-  override fun lifecycle() = lifecycleObservable
+  override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
 
   /** @return true if the controller is attached, false if not. */
   override fun isAttached() = lifecycleFlow.replayCache.last() == InteractorEvent.ACTIVE
@@ -139,7 +140,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   }
 
   override fun peekLifecycle(): InteractorEvent? {
-    return lifecycleFlow.replayCache.last()
+    return lifecycleFlow.replayCache.lastOrNull()
   }
 
   final override fun requestScope(): CompletableSource {
