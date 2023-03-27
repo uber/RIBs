@@ -102,7 +102,6 @@ class InteractorAndRouterTest {
     }
     val router = TestRouterA(parentInteractor, component)
     val parentObserver = RecordingObserver<InteractorEvent>()
-    parentInteractor.lifecycle()
     parentInteractor.lifecycle().subscribe(parentObserver)
     router.dispatchAttach(null)
     Truth.assertThat(parentObserver.takeNext()).isEqualTo(InteractorEvent.ACTIVE)
