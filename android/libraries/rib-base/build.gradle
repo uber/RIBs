@@ -46,6 +46,8 @@ dependencies {
     implementation deps.kotlin.coroutinesAndroid
     implementation deps.kotlin.coroutinesRx2
 
+    implementation project(":libraries:rib-coroutines")
+
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.androidApi

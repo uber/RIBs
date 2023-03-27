@@ -74,6 +74,6 @@ abstract class Presenter : ScopeProvider {
   open fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
   override fun requestScope(): CompletableSource {
-    return rxCompletable(Dispatchers.Unconfined) { lifecycleFlow.take(2).collect() }
+    return rxCompletable(RibDispatchers.Unconfined) { lifecycleFlow.take(2).collect() }
   }
 }
