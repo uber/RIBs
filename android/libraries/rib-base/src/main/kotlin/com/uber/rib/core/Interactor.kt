@@ -59,7 +59,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
 
   /** @return true if the controller is attached, false if not. */
-  override fun isAttached() = lifecycleFlow.replayCache.last() == InteractorEvent.ACTIVE
+  override fun isAttached() = lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   /**
    * Called when attached. The presenter will automatically be added when this happens.
