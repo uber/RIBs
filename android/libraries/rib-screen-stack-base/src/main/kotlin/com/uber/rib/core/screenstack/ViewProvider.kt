@@ -18,16 +18,18 @@ package com.uber.rib.core.screenstack
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.rib.core.screenstack.lifecycle.ScreenStackEvent
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
 /** Interface to provide [View] instances to [ScreenStackBase].  */
 abstract class ViewProvider {
-  private val lifecycleRelay = BehaviorRelay.create<ScreenStackEvent>().toSerialized()
+  private val lifecycleFlow = MutableSharedFlow<ScreenStackEvent>(1, 0, BufferOverflow.DROP_OLDEST)
 
   open fun buildViewInternal(parentView: ViewGroup): View {
-    lifecycleRelay.accept(ScreenStackEvent.BUILT)
+    lifecycleFlow.tryEmit(ScreenStackEvent.BUILT)
     return buildView(parentView)
   }
 
@@ -42,7 +44,7 @@ abstract class ViewProvider {
   /** @return an observable that emits events for this view provider's lifecycle.
    */
   open fun lifecycle(): Observable<ScreenStackEvent> {
-    return lifecycleRelay.hide()
+    return lifecycleFlow.asObservable()
   }
 
   /**
@@ -52,7 +54,7 @@ abstract class ViewProvider {
 
   /** Notifies the view provider that the view has been popped from the stack.  */
   fun onViewRemoved() {
-    lifecycleRelay.accept(ScreenStackEvent.REMOVED)
+    lifecycleFlow.tryEmit(ScreenStackEvent.REMOVED)
     doOnViewRemoved()
   }
 
@@ -68,12 +70,12 @@ abstract class ViewProvider {
   /** Notifies the view provider that view is at the top of the stack and visible.  */
   @CallSuper
   open fun onViewAppeared() {
-    lifecycleRelay.accept(ScreenStackEvent.APPEARED)
+    lifecycleFlow.tryEmit(ScreenStackEvent.APPEARED)
   }
 
   /** Notifies the view provider that the view is no longer at the top of the stack.  */
   @CallSuper
   open fun onViewHidden() {
-    lifecycleRelay.accept(ScreenStackEvent.HIDDEN)
+    lifecycleFlow.tryEmit(ScreenStackEvent.HIDDEN)
   }
 }

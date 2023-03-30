@@ -16,12 +16,17 @@
 package com.uber.rib.core
 
 import androidx.annotation.VisibleForTesting
-import com.jakewharton.rxrelay2.PublishRelay
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.merge
+import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.rx2.asFlow
+import kotlinx.coroutines.rx2.asObservable
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
 object WorkerBinder {
@@ -85,12 +90,14 @@ object WorkerBinder {
   @JvmStatic
   @VisibleForTesting
   open fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
-    val unbindSubject = PublishRelay.create<WorkerEvent>()
-    val workerLifecycle = mappedLifecycle
-      .mergeWith(unbindSubject)
-      .takeUntil { workerEvent: WorkerEvent -> workerEvent === WorkerEvent.STOP }
+    val unbindFlow = MutableSharedFlow<WorkerEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+
+    val workerLifecycle = merge(mappedLifecycle.asFlow(), unbindFlow)
+      .transformWhile { emit(it) ; it != WorkerEvent.STOP }
+      .asObservable()
+
     bindToWorkerLifecycle(workerLifecycle, worker)
-    return WorkerUnbinder { unbindSubject.accept(WorkerEvent.STOP) }
+    return WorkerUnbinder { unbindFlow.tryEmit(WorkerEvent.STOP) }
   }
 
   @JvmStatic

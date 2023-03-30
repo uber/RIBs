@@ -21,9 +21,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import com.jakewharton.rxrelay2.BehaviorRelay
-import com.jakewharton.rxrelay2.PublishRelay
-import com.jakewharton.rxrelay2.Relay
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
@@ -41,30 +38,30 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.create
 import com.uber.rib.core.lifecycle.ActivityLifecycleEvent.Companion.createOnCreateEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
 /** Base implementation for all VIP [android.app.Activity]s. */
 abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {
   private var router: ViewRouter<*, *>? = null
-  private val lifecycleBehaviorRelay = BehaviorRelay.create<ActivityLifecycleEvent>()
-  private val lifecycleRelay: Relay<ActivityLifecycleEvent> = lifecycleBehaviorRelay.toSerialized()
-  private val callbacksRelay = PublishRelay.create<ActivityCallbackEvent>().toSerialized()
+  private val lifecycleFlow = MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val callbacksFlow = MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+  private val lifecycleObservable = lifecycleFlow.asObservable()
+  private val callbacksObservable = callbacksFlow.asObservable()
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun lifecycle(): Observable<ActivityLifecycleEvent> {
-    return lifecycleRelay.hide()
-  }
+  override fun lifecycle(): Observable<ActivityLifecycleEvent> = lifecycleObservable
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun callbacks(): Observable<ActivityCallbackEvent> {
-    return callbacksRelay.hide()
-  }
+  override fun callbacks(): Observable<ActivityCallbackEvent> = callbacksObservable
 
   override fun correspondingEvents(): CorrespondingEventsFunction<ActivityLifecycleEvent> {
     return ACTIVITY_LIFECYCLE
   }
 
-  override fun peekLifecycle(): ActivityLifecycleEvent {
-    return lifecycleBehaviorRelay.value!!
+  override fun peekLifecycle(): ActivityLifecycleEvent? {
+    return lifecycleFlow.replayCache.lastOrNull()
   }
 
   override fun requestScope(): CompletableSource {
@@ -76,7 +73,7 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     super.onCreate(savedInstanceState)
     val rootViewGroup = findViewById<ViewGroup>(R.id.content)
-    lifecycleRelay.accept(createOnCreateEvent(savedInstanceState))
+    lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
     val wrappedBundle: Bundle? = if (savedInstanceState != null) Bundle(savedInstanceState) else null
     router = createRouter(rootViewGroup)
     router?.let {
@@ -89,49 +86,49 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   @CallSuper
   override fun onSaveInstanceState(outState: android.os.Bundle) {
     super.onSaveInstanceState(outState)
-    callbacksRelay.accept(createOnSaveInstanceStateEvent(outState))
+    callbacksFlow.tryEmit(createOnSaveInstanceStateEvent(outState))
     router?.saveInstanceStateInternal(Bundle(outState)) ?: throw NullPointerException("Router should not be null")
   }
 
   @CallSuper
   override fun onStart() {
     super.onStart()
-    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.START))
+    lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.START))
   }
 
   @CallSuper
   override fun onResume() {
     super.onResume()
-    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.RESUME))
+    lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.RESUME))
   }
 
   @CallSuper
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
-    callbacksRelay.accept(createNewIntent(intent))
+    callbacksFlow.tryEmit(createNewIntent(intent))
   }
 
   @CallSuper
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    callbacksRelay.accept(createOnActivityResultEvent(requestCode, resultCode, data))
+    callbacksFlow.tryEmit(createOnActivityResultEvent(requestCode, resultCode, data))
   }
 
   @CallSuper
   override fun onPause() {
-    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.PAUSE))
+    lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.PAUSE))
     super.onPause()
   }
 
   @CallSuper
   override fun onStop() {
-    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.STOP))
+    lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.STOP))
     super.onStop()
   }
 
   @CallSuper
   override fun onDestroy() {
-    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.DESTROY))
+    lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.DESTROY))
     router?.let {
       it.dispatchDetach()
       RibEvents.getInstance().emitEvent(RibEventType.DETACHED, it, null)
@@ -143,20 +140,20 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   @CallSuper
   override fun onLowMemory() {
     super.onLowMemory()
-    callbacksRelay.accept(create(ActivityCallbackEvent.Type.LOW_MEMORY))
+    callbacksFlow.tryEmit(create(ActivityCallbackEvent.Type.LOW_MEMORY))
   }
 
   @CallSuper
   override fun onTrimMemory(level: Int) {
     super.onTrimMemory(level)
-    callbacksRelay.accept(createTrimMemoryEvent(level))
+    callbacksFlow.tryEmit(createTrimMemoryEvent(level))
   }
 
   override fun onPictureInPictureModeChanged(
     isInPictureInPictureMode: Boolean,
     newConfig: Configuration
   ) {
-    callbacksRelay.accept(
+    callbacksFlow.tryEmit(
       createPictureInPictureMode(isInPictureInPictureMode)
     )
   }
@@ -177,13 +174,13 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   }
 
   override fun onUserLeaveHint() {
-    lifecycleRelay.accept(create(ActivityLifecycleEvent.Type.USER_LEAVING))
+    lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.USER_LEAVING))
     super.onUserLeaveHint()
   }
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
     super.onWindowFocusChanged(hasFocus)
-    callbacksRelay.accept(createWindowFocusEvent(hasFocus))
+    callbacksFlow.tryEmit(createWindowFocusEvent(hasFocus))
   }
 
   /**

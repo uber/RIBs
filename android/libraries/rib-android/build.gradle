@@ -49,6 +49,9 @@ dependencies {
     implementation deps.androidx.annotations
     implementation deps.androidx.appcompat
     implementation deps.external.guavaAndroid
+    implementation deps.uber.autodisposeCoroutines
+    implementation deps.kotlin.coroutinesAndroid
+    implementation deps.kotlin.coroutinesRx2
     testImplementation deps.external.roboelectricBase
     testImplementation deps.androidx.appcompat
     testImplementation deps.test.mockitoKotlin

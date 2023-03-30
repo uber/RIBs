@@ -38,4 +38,7 @@ dependencies {
     api deps.external.rxrelay2
     api deps.external.rxbinding
     implementation deps.androidx.annotations
+    implementation deps.uber.autodisposeCoroutines
+    implementation deps.kotlin.coroutinesAndroid
+    implementation deps.kotlin.coroutinesRx2
 }

@@ -15,18 +15,18 @@
  */
 package com.uber.rib.core
 
-import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
 /** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent]  */
 class RouterNavigatorEvents private constructor() {
 
-  private val events: PublishRelay<RouterNavigatorEvent> = PublishRelay.create()
+  private val _events = MutableSharedFlow<RouterNavigatorEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
   /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
-  open fun getEvents(): Observable<RouterNavigatorEvent> {
-    return events.hide()
-  }
+  val events: Observable<RouterNavigatorEvent> = _events.asObservable()
 
   /**
    * Emits a new [RouterNavigatorEvent] on the stream.
@@ -35,8 +35,8 @@ class RouterNavigatorEvents private constructor() {
    * @param parent router instance to which child will attach to.
    * @param child router instance which getting attached.
    */
-  open fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
-    events.accept(RouterNavigatorEvent(eventType, parent, child))
+  fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
+    _events.tryEmit(RouterNavigatorEvent(eventType, parent, child))
   }
 
   companion object {

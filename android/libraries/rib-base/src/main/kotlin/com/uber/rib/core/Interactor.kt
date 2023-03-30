@@ -17,7 +17,6 @@ package com.uber.rib.core
 
 import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
-import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
@@ -25,6 +24,9 @@ import com.uber.autodispose.lifecycle.LifecycleScopes
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
@@ -39,8 +41,8 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   @Inject
   lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
-  private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
-  private val lifecycleRelay = behaviorRelay.toSerialized()
+  private val lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val lifecycleObservable = lifecycleFlow.asObservable()
 
   private val routerDelegate = InitOnceProperty<R>()
   /** @return the router for this interactor. */
@@ -54,12 +56,10 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   }
 
   /** @return an observable of this controller's lifecycle events. */
-  override fun lifecycle(): Observable<InteractorEvent> {
-    return lifecycleRelay.hide()
-  }
+  override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
 
   /** @return true if the controller is attached, false if not. */
-  override fun isAttached() = behaviorRelay.value === InteractorEvent.ACTIVE
+  override fun isAttached() = lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   /**
    * Called when attached. The presenter will automatically be added when this happens.
@@ -97,7 +97,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   protected open fun onSaveInstanceState(outState: Bundle) {}
 
   public open fun dispatchAttach(savedInstanceState: Bundle?) {
-    lifecycleRelay.accept(InteractorEvent.ACTIVE)
+    lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
     (getPresenter() as? Presenter)?.dispatchLoad()
     didBecomeActive(savedInstanceState)
   }
@@ -105,7 +105,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   public open fun dispatchDetach(): P {
     (getPresenter() as? Presenter)?.dispatchUnload()
     willResignActive()
-    lifecycleRelay.accept(InteractorEvent.INACTIVE)
+    lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
     return getPresenter()
   }
 
@@ -140,7 +140,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   }
 
   override fun peekLifecycle(): InteractorEvent? {
-    return behaviorRelay.value
+    return lifecycleFlow.replayCache.lastOrNull()
   }
 
   final override fun requestScope(): CompletableSource {
