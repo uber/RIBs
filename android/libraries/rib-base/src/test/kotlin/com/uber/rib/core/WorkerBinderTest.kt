@@ -30,18 +30,27 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import org.mockito.kotlin.any
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class WorkerBinderTest {
-
+@RunWith(Parameterized::class)
+class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @get:Rule val ribCoroutinesRule = RibCoroutinesRule()
 
-  private val worker: Worker = mock()
+  private val worker = mock<Worker>().run {
+    if (adaptFromRibCoroutineWorker) {
+      spy(this.asRibCoroutineWorker().asWorker())
+    } else {
+      this
+    }
+  }
   private val workerBinderListener: WorkerBinderListener = mock()
 
   private val fakeWorker = FakeWorker()
@@ -202,6 +211,12 @@ class WorkerBinderTest {
     assertThat(workerName).contains(expectedWorkerClassName)
     assertThat(workerEvent).isEqualTo(expectedWorkerEvent)
     assertThat(coroutineDispatcher).isEqualTo(expectedWorkerBinderThreadingType)
+  }
+
+  companion object {
+    @JvmStatic
+    @Parameterized.Parameters(name = "adaptFromRibCoroutineWorker = {0}")
+    fun data() = listOf(arrayOf(true), arrayOf(false))
   }
 }
 

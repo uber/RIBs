@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import com.uber.autodispose.coroutinesinterop.asScopeProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,6 +29,7 @@ import kotlinx.coroutines.ensureActive
 import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
+import kotlinx.coroutines.withContext
 import kotlin.coroutines.ContinuationInterceptor
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -150,3 +152,45 @@ private fun CompletableJob.cancelOrCompleteExceptionally(throwable: Throwable) {
     else -> completeExceptionally(throwable)
   }
 }
+
+// ---- RibCoroutineWorker <-> Worker adapters ---- //
+
+/** Converts a [Worker] to a [RibCoroutineWorker]. */
+public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker = WorkerToRibCoroutineWorkerAdapter(this)
+
+/** Converts a [RibCoroutineWorker] to a [Worker]. */
+@JvmOverloads
+public fun RibCoroutineWorker.asWorker(
+  dispatcher: CoroutineDispatcher? = null,
+): Worker = RibCoroutineWorkerToWorkerAdapter(this, dispatcher)
+
+internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) : RibCoroutineWorker {
+  override suspend fun onStart(scope: CoroutineScope) {
+    withContext(worker.coroutineDispatcher) {
+      worker.onStart(scope.asWorkerScopeProvider())
+    }
+  }
+
+  override fun onStop(cause: Throwable): Unit = worker.onStop()
+}
+
+internal open class RibCoroutineWorkerToWorkerAdapter(
+  private val ribCoroutineWorker: RibCoroutineWorker,
+  private val dispatcher: CoroutineDispatcher?,
+) : Worker {
+  override val coroutineDispatcher: CoroutineDispatcher get() = dispatcher ?: super.coroutineDispatcher
+
+  override fun onStart(lifecycle: WorkerScopeProvider) {
+    // We can start it undispatched because Worker binder will already call `onStart` in correct context,
+    // but we still want to pass in `coroutineDispatcher` to resume from suspensions in `onStart` in correct context.
+    lifecycle.coroutineScope.launch(coroutineDispatcher, start = CoroutineStart.UNDISPATCHED) {
+      supervisorScope {
+        ribCoroutineWorker.onStart(this)
+      }
+    }
+  }
+
+  override fun onStop(): Unit = ribCoroutineWorker.onStop(CancellationException("Worker is unbinding."))
+}
+
+private fun CoroutineScope.asWorkerScopeProvider() = WorkerScopeProvider(asScopeProvider())
