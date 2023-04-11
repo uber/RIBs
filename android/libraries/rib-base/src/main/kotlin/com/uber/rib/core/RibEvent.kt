@@ -21,8 +21,8 @@ package com.uber.rib.core
  * @param parentRouter [Router] and null for the root ribs that are directly attached to
  * RibActivity/Fragment
  */
-open class RibEvent(
-  open val eventType: RibEventType,
-  open val router: Router<*>,
-  open val parentRouter: Router<*>?
+public open class RibEvent(
+  public open val eventType: RibEventType,
+  public open val router: Router<*>,
+  public open val parentRouter: Router<*>?
 )

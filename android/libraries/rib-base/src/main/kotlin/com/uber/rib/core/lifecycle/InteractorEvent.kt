@@ -16,6 +16,6 @@
 package com.uber.rib.core.lifecycle
 
 /** Controller lifecycle events.  */
-enum class InteractorEvent {
+public enum class InteractorEvent {
   ACTIVE, INACTIVE
 }

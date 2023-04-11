@@ -27,9 +27,9 @@ import java.util.concurrent.CopyOnWriteArrayList
  *
  * @param <I> type of interactor this router routes.
  */
-abstract class Router<I : InteractorType> protected constructor(
+public abstract class Router<I : InteractorType> protected constructor(
   component: InteractorBaseComponent<*>?,
-  open val interactor: I,
+  public open val interactor: I,
   private val ribRefWatcher: RibRefWatcher,
   private val mainThread: Thread
 ) {
@@ -60,7 +60,7 @@ abstract class Router<I : InteractorType> protected constructor(
    *
    * @return TRUE if the interactor handles the back press.
    */
-  open fun handleBackPress(): Boolean {
+  public open fun handleBackPress(): Boolean {
     ribRefWatcher.logBreadcrumb("BACKPRESS", null, null)
     return interactorGeneric.handleBackPress()
   }
@@ -220,15 +220,15 @@ abstract class Router<I : InteractorType> protected constructor(
     }
   }
 
-  companion object {
+  public companion object {
     @VisibleForTesting
-    val KEY_CHILD_ROUTERS = "Router.childRouters"
+    public val KEY_CHILD_ROUTERS: String = "Router.childRouters"
 
     @JvmField
     @VisibleForTesting
-    val KEY_INTERACTOR = "Router.interactor"
+    public val KEY_INTERACTOR: String = "Router.interactor"
     @JvmStatic
-    fun getMainThread(): Thread {
+    public fun getMainThread(): Thread {
       return try {
         Looper.getMainLooper().thread
       } catch (e: Exception) {

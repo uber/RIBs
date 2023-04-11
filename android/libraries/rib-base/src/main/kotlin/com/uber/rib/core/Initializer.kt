@@ -25,4 +25,4 @@ package com.uber.rib.core
  */
 @Retention(AnnotationRetention.BINARY)
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
-annotation class Initializer
+public annotation class Initializer
