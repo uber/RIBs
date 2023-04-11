@@ -29,7 +29,7 @@ import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
-object WorkerBinder {
+public object WorkerBinder {
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events. Inject this class into your interactor and call this method on
@@ -40,7 +40,7 @@ object WorkerBinder {
    * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
   @JvmStatic
-  open fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder {
+  public fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder {
     return bind(mapInteractorLifecycleToWorker(interactor.lifecycle()), worker)
   }
 
@@ -53,7 +53,7 @@ object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  open fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
+  public fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker)
     }
@@ -68,7 +68,7 @@ object WorkerBinder {
    * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
   @JvmStatic
-  open fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder {
+  public fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder {
     return bind(mapPresenterLifecycleToWorker(presenter.lifecycle()), worker)
   }
 
@@ -81,7 +81,7 @@ object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  open fun bind(presenter: Presenter, workers: List<Worker>) {
+  public fun bind(presenter: Presenter, workers: List<Worker>) {
     for (worker in workers) {
       bind(presenter, worker)
     }
@@ -89,7 +89,7 @@ object WorkerBinder {
 
   @JvmStatic
   @VisibleForTesting
-  open fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
+  public fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
     val unbindFlow = MutableSharedFlow<WorkerEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
     val workerLifecycle = merge(mappedLifecycle.asFlow(), unbindFlow)
@@ -101,7 +101,7 @@ object WorkerBinder {
   }
 
   @JvmStatic
-  fun mapInteractorLifecycleToWorker(
+  public fun mapInteractorLifecycleToWorker(
     interactorEventObservable: Observable<InteractorEvent>
   ): Observable<WorkerEvent> {
     return interactorEventObservable.map { interactorEvent: InteractorEvent ->
@@ -113,7 +113,7 @@ object WorkerBinder {
   }
 
   @JvmStatic
-  fun mapPresenterLifecycleToWorker(
+  public fun mapPresenterLifecycleToWorker(
     presenterEventObservable: Observable<PresenterEvent>
   ): Observable<WorkerEvent> {
     return presenterEventObservable.map { presenterEvent: PresenterEvent ->
@@ -136,7 +136,7 @@ object WorkerBinder {
     """this method uses {@code LifecycleScopeProvider} for purposes other than
         AutoDispose. Usage is strongly discouraged as this method may be removed in the future."""
   )
-  open fun bindTo(
+  public fun bindTo(
     lifecycle: LifecycleScopeProvider<InteractorEvent>,
     worker: Worker
   ) {
@@ -150,7 +150,7 @@ object WorkerBinder {
    * @param worker the class that wants to be informed when to start and stop doing work
    */
   @JvmStatic
-  fun bindToWorkerLifecycle(
+  public fun bindToWorkerLifecycle(
     workerLifecycle: Observable<WorkerEvent>,
     worker: Worker
   ) {

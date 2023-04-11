@@ -26,7 +26,7 @@ import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.rxCompletable
 
 /** [ScopeProvider] for [Worker] instances.  */
-open class WorkerScopeProvider internal constructor(
+public open class WorkerScopeProvider internal constructor(
   private val workerLifecycle: Flow<WorkerEvent>,
 ) : ScopeProvider {
   internal constructor(workerLifecycleObservable: Observable<WorkerEvent>) : this(workerLifecycleObservable.asFlow())

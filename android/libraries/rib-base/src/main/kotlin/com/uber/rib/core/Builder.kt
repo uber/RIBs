@@ -25,4 +25,4 @@ package com.uber.rib.core
  * @param <D> type of dependency required to build the interactor.
  * @param dependency required to build the router.
  */
-abstract class Builder<T : Router<*>, D>(protected val dependency: D)
+public abstract class Builder<T : Router<*>, D>(protected val dependency: D)

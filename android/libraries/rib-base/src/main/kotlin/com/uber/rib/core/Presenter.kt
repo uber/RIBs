@@ -35,12 +35,12 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * practice this caused confusion: if both a presenter and interactor can perform complex rx logic
  * it becomes unclear where you should write your bussiness logic.
  */
-abstract class Presenter : ScopeProvider {
+public abstract class Presenter : ScopeProvider {
   private val lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
   private val lifecycleObservable = lifecycleFlow.asObservable()
 
   /** @return `true` if the presenter is loaded, `false` if not. */
-  protected var isLoaded = false
+  protected var isLoaded: Boolean = false
     private set
 
   public open fun dispatchLoad() {
@@ -70,7 +70,7 @@ abstract class Presenter : ScopeProvider {
   }
 
   /** @return an observable of this controller's lifecycle events. */
-  open fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
+  public open fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
   override fun requestScope(): CompletableSource {
     return rxCompletable(RibDispatchers.Unconfined) { lifecycleFlow.take(2).collect() }

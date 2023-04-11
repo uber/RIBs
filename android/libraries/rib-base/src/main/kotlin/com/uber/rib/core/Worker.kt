@@ -21,16 +21,16 @@ package com.uber.rib.core
  * interactor's actual lifecycle so that we're not stuck moving these classes around if there are
  * other lifecycles we're interested in.
  */
-interface Worker {
+public interface Worker {
   /**
    * Called when worker is started.
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
   @JvmDefault
-  fun onStart(lifecycle: WorkerScopeProvider) {}
+  public fun onStart(lifecycle: WorkerScopeProvider) {}
 
   /** Called when the worker is stopped.  */
   @JvmDefault
-  fun onStop() {}
+  public fun onStop() {}
 }

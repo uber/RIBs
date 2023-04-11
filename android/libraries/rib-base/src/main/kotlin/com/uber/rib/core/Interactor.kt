@@ -37,19 +37,19 @@ import kotlin.reflect.KProperty
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
-abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<InteractorEvent>, InteractorType {
+public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<InteractorEvent>, InteractorType {
   @Inject
-  lateinit var injectedPresenter: P
+  public lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
   private val lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
   private val lifecycleObservable = lifecycleFlow.asObservable()
 
   private val routerDelegate = InitOnceProperty<R>()
   /** @return the router for this interactor. */
-  open var router: R by routerDelegate
+  public open var router: R by routerDelegate
     protected set
 
-  constructor()
+  public constructor()
 
   protected constructor(presenter: P) {
     this.actualPresenter = presenter
@@ -59,7 +59,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
 
   /** @return true if the controller is attached, false if not. */
-  override fun isAttached() = lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+  override fun isAttached(): Boolean = lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   /**
    * Called when attached. The presenter will automatically be added when this happens.
@@ -75,9 +75,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
    *
    * @return whether this interactor took action in response to a back press.
    */
-  open override fun handleBackPress(): Boolean {
-    return false
-  }
+  override fun handleBackPress(): Boolean = false
 
   /**
    * Called when detached. The [Interactor] should do its cleanup here. Note: View will be
@@ -166,7 +164,7 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
     }
   }
 
-  companion object {
+  public companion object {
     private val LIFECYCLE_MAP_FUNCTION = CorrespondingEventsFunction { interactorEvent: InteractorEvent ->
       when (interactorEvent) {
         InteractorEvent.ACTIVE -> return@CorrespondingEventsFunction InteractorEvent.INACTIVE

@@ -18,7 +18,7 @@ package com.uber.rib.core
 import android.os.Parcelable
 
 /** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies.  */
-open class Bundle @JvmOverloads constructor(
+public open class Bundle @JvmOverloads constructor(
   private val androidBundle: android.os.Bundle = android.os.Bundle()
 ) {
 
@@ -31,7 +31,7 @@ open class Bundle @JvmOverloads constructor(
    * @return the boolean value associated with the given key or null if there is no string value in
    * the bundle.
    */
-  open fun getBoolean(key: String, defaultValue: Boolean): Boolean {
+  public open fun getBoolean(key: String, defaultValue: Boolean): Boolean {
     return androidBundle.getBoolean(key, defaultValue)
   }
 
@@ -42,7 +42,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to insert.
    * @param value to insert.
    */
-  open fun putBoolean(key: String, value: Boolean) {
+  public open fun putBoolean(key: String, value: Boolean) {
     androidBundle.putBoolean(key, value)
   }
 
@@ -52,7 +52,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to fetch.
    * @return a [Bundle] or `null`
    */
-  open fun getBundleExtra(key: String): Bundle? {
+  public open fun getBundleExtra(key: String): Bundle? {
     val value = androidBundle.getParcelable<Parcelable>(key)
     return if (value != null) {
       Bundle(value as android.os.Bundle)
@@ -68,7 +68,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to insert.
    * @param bundle to insert.
    */
-  open fun putBundleExtra(key: String, bundle: Bundle?) {
+  public open fun putBundleExtra(key: String, bundle: Bundle?) {
     if (bundle != null) {
       androidBundle.putParcelable(key, bundle.androidBundle)
     } else {
@@ -83,7 +83,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to get.
    * @return the value, or `null`.
    */
-  open fun getParcelable(key: String): Parcelable? {
+  public open fun getParcelable(key: String): Parcelable? {
     return androidBundle.getParcelable(key)
   }
 
@@ -94,7 +94,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to insert.
    * @param value to insert.
    */
-  open fun putParcelable(key: String, value: Parcelable?) {
+  public open fun putParcelable(key: String, value: Parcelable?) {
     androidBundle.putParcelable(key, value)
   }
 
@@ -106,7 +106,7 @@ open class Bundle @JvmOverloads constructor(
    * @return the String value associated with the given key or null if there is no string value in
    * the bundle.
    */
-  open fun getString(key: String): String? {
+  public open fun getString(key: String): String? {
     return androidBundle.getString(key)
   }
 
@@ -117,7 +117,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to insert.
    * @param value to insert.
    */
-  open fun putString(key: String, value: String?) {
+  public open fun putString(key: String, value: String?) {
     androidBundle.putString(key, value)
   }
 
@@ -128,7 +128,7 @@ open class Bundle @JvmOverloads constructor(
    * @param key to insert.
    * @param value to insert.
    */
-  open fun putInt(key: String, value: Int) {
+  public open fun putInt(key: String, value: Int) {
     androidBundle.putInt(key, value)
   }
 
@@ -140,7 +140,7 @@ open class Bundle @JvmOverloads constructor(
    * @return the int value associated with the given key or defaultValue if there is no int value in
    * the bundle.
    */
-  open fun getInt(key: String, defaultValue: Int): Int {
+  public open fun getInt(key: String, defaultValue: Int): Int {
     return androidBundle.getInt(key, defaultValue)
   }
 }

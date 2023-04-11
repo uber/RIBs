@@ -16,10 +16,10 @@
 package com.uber.rib.core
 
 /** Holds configuration and settings for riblets.  */
-open class Rib {
+public open class Rib {
 
   /** Responsible for app-specific riblet configuration.  */
-  interface Configuration {
+  public interface Configuration {
     /**
      * Called when there is a non-fatal error in the RIB framework. Consumers should route this data
      * to a place where it can be monitored (crash reporting, monitoring, etc.).
@@ -31,7 +31,7 @@ open class Rib {
      * @param errorMessage an error message that describes the error.
      * @param throwable an optional throwable.
      */
-    fun handleNonFatalError(errorMessage: String, throwable: Throwable?)
+    public fun handleNonFatalError(errorMessage: String, throwable: Throwable?)
 
     /**
      * Called when there is a non-fatal warning in the RIB framework. Consumers should route this
@@ -44,7 +44,7 @@ open class Rib {
      * @param warningMessage an error message that describes the error.
      * @param throwable an optional throwable.
      */
-    fun handleNonFatalWarning(warningMessage: String, throwable: Throwable?)
+    public fun handleNonFatalWarning(warningMessage: String, throwable: Throwable?)
 
     /**
      * Called when there is a message that should be logged for debugging. Consumers should route
@@ -56,7 +56,7 @@ open class Rib {
      * @param format Message format - See [String.format]
      * @param args Arguments to use for printing the message.
      */
-    fun handleDebugMessage(format: String, vararg args: Any?)
+    public fun handleDebugMessage(format: String, vararg args: Any?)
   }
 
   /** Default, internal implementation that is used when host app does not set a configuration.  */
@@ -69,17 +69,17 @@ open class Rib {
     override fun handleDebugMessage(format: String, vararg args: Any?) {}
   }
 
-  companion object {
+  public companion object {
+    private var configuration: Configuration? = null
+
     /**
      * Sets the configuration to use in the application. This can only be called once before any RIB
      * code is used. Calling it twice, or calling it after using RIB code will throw an exception.
      *
      * @param configurationToSet to set.
      */
-    private var configuration: Configuration? = null
-
     @JvmStatic
-    fun setConfiguration(configurationToSet: Configuration) {
+    public fun setConfiguration(configurationToSet: Configuration) {
       if (configuration == null) {
         configuration = configurationToSet
       } else {
@@ -94,7 +94,7 @@ open class Rib {
     }
 
     @JvmStatic
-    fun getConfiguration(): Configuration {
+    public fun getConfiguration(): Configuration {
       if (configuration == null) {
         configuration = DefaultConfiguration()
       }

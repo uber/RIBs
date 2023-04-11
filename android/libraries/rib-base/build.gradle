@@ -64,3 +64,7 @@ dependencies {
         transitive = false
     }
 }
+
+kotlin {
+    explicitApi()
+}

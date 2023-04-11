@@ -18,4 +18,4 @@ package com.uber.rib.core
 /** The annotation to mark that some object is an Builder.  */
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.BINARY)
-annotation class RibBuilder
+public annotation class RibBuilder

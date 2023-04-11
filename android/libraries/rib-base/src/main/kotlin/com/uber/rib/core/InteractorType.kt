@@ -19,7 +19,7 @@ import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 
 /** An interface used as the upper bound of the generic used by [Router]s to avoid cyclic generic types */
-interface InteractorType : LifecycleScopeProvider<InteractorEvent> {
-  fun isAttached(): Boolean
-  fun handleBackPress(): Boolean
+public interface InteractorType : LifecycleScopeProvider<InteractorEvent> {
+  public fun isAttached(): Boolean
+  public fun handleBackPress(): Boolean
 }
