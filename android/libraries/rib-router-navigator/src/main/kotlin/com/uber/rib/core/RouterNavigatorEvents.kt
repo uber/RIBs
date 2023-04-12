@@ -28,6 +28,14 @@ class RouterNavigatorEvents private constructor() {
   /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
   val events: Observable<RouterNavigatorEvent> = _events.asObservable()
 
+  @JvmSynthetic // Hide from Java consumers. In Java, `getEvents` resolves to the `events` property.
+  @JvmName("_getEvents")
+  @Deprecated( // Deprecate for Kotlin consumers.
+    message = "Use the 'events' property",
+    replaceWith = ReplaceWith("events")
+  )
+  public fun getEvents(): Observable<RouterNavigatorEvent> = events
+
   /**
    * Emits a new [RouterNavigatorEvent] on the stream.
    *
