@@ -21,15 +21,41 @@ import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.merge
 import kotlinx.coroutines.flow.transformWhile
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 import kotlinx.coroutines.rx2.asObservable
+import kotlin.system.measureTimeMillis
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
 object WorkerBinder {
+
+  @JvmStatic
+  fun bindWithCoroutines(
+    workerLifecycle: Observable<WorkerEvent>,
+    coroutineScope: CoroutineScope,
+    worker: Worker,
+    coroutineDispatcher: CoroutineDispatcher = RibDispatchers.Default,
+    monitoringListener: MonitoringListener?
+  ) {
+    val totalBindingTimeMillis = measureTimeMillis {
+      coroutineScope.launch(coroutineDispatcher) {
+        bindToWorkerLifecycle(workerLifecycle, worker)
+      }
+    }
+
+    monitoringListener?.onWorkerStartCompleted(
+      worker.javaClass.simpleName,
+      coroutineDispatcher.javaClass.simpleName,
+      totalBindingTimeMillis
+    )
+  }
+
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events. Inject this class into your interactor and call this method on
@@ -39,6 +65,7 @@ object WorkerBinder {
    * @param worker The class that wants to be informed when to start and stop doing work.
    * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
+  @Deprecated("Use bindWithCoroutines instead")
   @JvmStatic
   open fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder {
     return bind(mapInteractorLifecycleToWorker(interactor.lifecycle()), worker)
@@ -52,10 +79,45 @@ object WorkerBinder {
    * @param interactor The interactor that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
+  @Deprecated("Use bindWithCoroutines instead")
   @JvmStatic
   open fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker)
+    }
+  }
+
+  @JvmStatic
+  open fun bindWithCoroutines(
+    interactor: Interactor<*, *>,
+    worker: Worker,
+    coroutineDispatcher: CoroutineDispatcher = RibDispatchers.Default,
+    monitoringListener: MonitoringListener? = null
+  ) {
+
+    bindWithCoroutines(
+      mapInteractorLifecycleToWorker(interactor.lifecycle()),
+      interactor.coroutineScope,
+      worker,
+      coroutineDispatcher,
+      monitoringListener
+    )
+  }
+
+  @JvmStatic
+  open fun bindWithCoroutines(interactor: Interactor<*, *>,
+                             workers: List<Worker>,
+                             coroutineDispatcher: CoroutineDispatcher= RibDispatchers.Default,
+                             monitoringListener: MonitoringListener? = null
+                             ) {
+    for (interactorWorker in workers) {
+      bindWithCoroutines(
+        mapInteractorLifecycleToWorker(interactor.lifecycle()),
+        interactor.coroutineScope,
+        interactorWorker,
+        coroutineDispatcher,
+        monitoringListener
+      )
     }
   }
 
@@ -67,6 +129,7 @@ object WorkerBinder {
    * @param worker The class that wants to be informed when to start and stop doing work.
    * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
+  @Deprecated("Use bindWithCoroutines instead")
   @JvmStatic
   open fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder {
     return bind(mapPresenterLifecycleToWorker(presenter.lifecycle()), worker)
@@ -80,6 +143,7 @@ object WorkerBinder {
    * @param presenter The presenter that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
+  @Deprecated("Use bindWithCoroutines instead")
   @JvmStatic
   open fun bind(presenter: Presenter, workers: List<Worker>) {
     for (worker in workers) {
@@ -87,6 +151,30 @@ object WorkerBinder {
     }
   }
 
+  fun bindWithCoroutines(presenter: Presenter,
+           worker: Worker,
+           coroutineDispatcher: CoroutineDispatcher = RibDispatchers.Default,
+           monitoringListener: MonitoringListener? = null) {
+    bindWithCoroutines(
+      mapPresenterLifecycleToWorker(presenter.lifecycle()),
+      presenter.coroutineScope,
+      worker,
+      coroutineDispatcher,
+      monitoringListener
+    )
+  }
+
+  @JvmStatic
+  fun bindWithCoroutines(presenter: Presenter,
+           workers: List<Worker>,
+           coroutineDispatcher: CoroutineDispatcher = RibDispatchers.Default,
+           monitoringListener: MonitoringListener? = null) {
+    for (worker in workers) {
+      bindWithCoroutines(presenter, worker, coroutineDispatcher, monitoringListener)
+    }
+  }
+
+  @Deprecated("Use bindWithCoroutines instead")
   @JvmStatic
   @VisibleForTesting
   open fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
@@ -152,13 +240,20 @@ object WorkerBinder {
   @JvmStatic
   fun bindToWorkerLifecycle(
     workerLifecycle: Observable<WorkerEvent>,
-    worker: Worker
-  ) {
+    worker: Worker) {
     workerLifecycle.subscribe { workerEvent: WorkerEvent ->
       when (workerEvent) {
         WorkerEvent.START -> worker.onStart(WorkerScopeProvider(workerLifecycle.hide()))
         else -> worker.onStop()
       }
     }
+  }
+
+  interface MonitoringListener {
+    fun onWorkerStartCompleted(
+      workerName: String,
+      coroutineDispatcherName: String,
+      totalBindingTimeMillis: Long
+    )
   }
 }
