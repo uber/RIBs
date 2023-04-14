@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import com.google.common.truth.Truth.assertThat
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.rib.core.WorkerBinder.bind
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
@@ -105,6 +106,32 @@ class WorkerBinderTest {
   }
 
   @Test
+  fun bind_onStartIsCalledEagerly() {
+    val interactor = object : Interactor<Any, Router<*>>() {}
+    var onStartCalled = false
+    val worker = Worker { onStartCalled = true }
+    InteractorHelper.attach(interactor, Unit, mock(), null)
+    bind(interactor, worker)
+    assertThat(onStartCalled).isTrue()
+  }
+
+  @Test
+  fun bind_whenSubscribeToLifecycleInWorker_observerIsCalledEagerly() {
+    val interactor = object : Interactor<Any, Router<*>>() {}
+    var enteredUnconfined = false
+    val worker = Worker {
+      val subscription = interactor.lifecycle().subscribe {
+        enteredUnconfined = true
+      }
+      assertThat(enteredUnconfined).isTrue()
+      subscription.dispose()
+    }
+    InteractorHelper.attach(interactor, Unit, mock(), null)
+    bind(interactor, worker)
+    assertThat(enteredUnconfined).isTrue()
+  }
+
+  @Test
   fun unbind_whenPresenterAttached_shouldStopWorker() {
     val lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED)
     val unbinder = bind(mapPresenterLifecycleToWorker(lifecycle), worker)
@@ -119,5 +146,11 @@ class WorkerBinderTest {
     verify(worker, times(1)).onStop()
     unbinder.unbind()
     verify(worker, times(1)).onStop()
+  }
+}
+
+private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) = object : Worker {
+  override fun onStart(lifecycle: WorkerScopeProvider) {
+    onStartBlock(lifecycle)
   }
 }
