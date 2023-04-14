@@ -43,7 +43,7 @@ dependencies {
     implementation deps.apt.javaxInject
 
     implementation deps.uber.autodisposeCoroutines
-    implementation deps.kotlin.coroutinesAndroid
+    implementation deps.kotlin.coroutines
     implementation deps.kotlin.coroutinesRx2
 
     implementation project(":libraries:rib-coroutines")

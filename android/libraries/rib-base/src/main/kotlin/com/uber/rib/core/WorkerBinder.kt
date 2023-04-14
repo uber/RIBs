@@ -21,12 +21,13 @@ import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.merge
-import kotlinx.coroutines.flow.transformWhile
-import kotlinx.coroutines.rx2.asFlow
-import kotlinx.coroutines.rx2.asObservable
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
 public object WorkerBinder {
@@ -40,9 +41,8 @@ public object WorkerBinder {
    * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
   @JvmStatic
-  public fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder {
-    return bind(mapInteractorLifecycleToWorker(interactor.lifecycle()), worker)
-  }
+  public fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder =
+    worker.bind(interactor.lifecycleFlow, Interactor.lifecycleRange)
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -68,9 +68,8 @@ public object WorkerBinder {
    * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
    */
   @JvmStatic
-  public fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder {
-    return bind(mapPresenterLifecycleToWorker(presenter.lifecycle()), worker)
-  }
+  public fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder =
+    worker.bind(presenter.lifecycleFlow, Presenter.lifecycleRange)
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -90,14 +89,11 @@ public object WorkerBinder {
   @JvmStatic
   @VisibleForTesting
   public fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
-    val unbindFlow = MutableSharedFlow<WorkerEvent>(0, 1, BufferOverflow.DROP_OLDEST)
-
-    val workerLifecycle = merge(mappedLifecycle.asFlow(), unbindFlow)
-      .transformWhile { emit(it) ; it != WorkerEvent.STOP }
-      .asObservable()
-
-    bindToWorkerLifecycle(workerLifecycle, worker)
-    return WorkerUnbinder { unbindFlow.tryEmit(WorkerEvent.STOP) }
+    val disposable = mappedLifecycle
+      .takeWhile { it != WorkerEvent.STOP }
+      .doFinally { worker.onStop() }
+      .subscribe { worker.onStart(WorkerScopeProvider(mappedLifecycle)) }
+    return WorkerUnbinder(disposable::dispose)
   }
 
   @JvmStatic
@@ -150,6 +146,13 @@ public object WorkerBinder {
    * @param worker the class that wants to be informed when to start and stop doing work
    */
   @JvmStatic
+  @Deprecated(
+    message = """
+      This method is unsafe because it assumes that the 'workerLifecycle' Observable completes after it
+      emits 'WorkerEvent.STOP'. If it does not complete, the subscription will leak.
+    """,
+    replaceWith = ReplaceWith("bind(workerLifecycle, worker)")
+  )
   public fun bindToWorkerLifecycle(
     workerLifecycle: Observable<WorkerEvent>,
     worker: Worker
@@ -161,4 +164,25 @@ public object WorkerBinder {
       }
     }
   }
+}
+
+private fun <T : Comparable<T>> Worker.bind(
+  lifecycle: SharedFlow<T>,
+  lifecycleRange: ClosedRange<T>,
+): WorkerUnbinder {
+  /*
+   * We need `Dispatchers.Unconfined` to react immediately to lifecycle flow emissions, and we need
+   * `CoroutineStart.Undispatched` to prevent coroutines launched in `onStart` with `Dispatchers.Unconfined`
+   * from forming an event loop instead of starting eagerly.
+   *
+   * GlobalScope won't leak the job, because the flow completes when lifecycle completes.
+   */
+  @OptIn(DelicateCoroutinesApi::class)
+  val job = GlobalScope.launch(RibDispatchers.Unconfined, start = CoroutineStart.UNDISPATCHED) {
+    lifecycle
+      .takeWhile { it < lifecycleRange.endInclusive }
+      .onCompletion { onStop() }
+      .collect { onStart(WorkerScopeProvider(lifecycle.asScopeProvider(lifecycleRange))) }
+  }
+  return WorkerUnbinder(job::cancel)
 }

@@ -22,10 +22,8 @@ import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.take
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.rx2.asObservable
-import kotlinx.coroutines.rx2.rxCompletable
 import org.checkerframework.checker.guieffect.qual.UIEffect
 
 /**
@@ -36,7 +34,10 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * it becomes unclear where you should write your bussiness logic.
  */
 public abstract class Presenter : ScopeProvider {
-  private val lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val _lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  // We expose lifecycleFlow internally to avoid some unnecessary Rx-Coroutine interop. Use it instead of `lifecycle()`.
+  @get:JvmSynthetic
+  internal val lifecycleFlow: SharedFlow<PresenterEvent> get() = _lifecycleFlow
   private val lifecycleObservable = lifecycleFlow.asObservable()
 
   /** @return `true` if the presenter is loaded, `false` if not. */
@@ -45,14 +46,14 @@ public abstract class Presenter : ScopeProvider {
 
   public open fun dispatchLoad() {
     isLoaded = true
-    lifecycleFlow.tryEmit(PresenterEvent.LOADED)
+    _lifecycleFlow.tryEmit(PresenterEvent.LOADED)
     didLoad()
   }
 
   public open fun dispatchUnload() {
     isLoaded = false
     willUnload()
-    lifecycleFlow.tryEmit(PresenterEvent.UNLOADED)
+    _lifecycleFlow.tryEmit(PresenterEvent.UNLOADED)
   }
 
   /** Tells the presenter that it has finished loading.  */
@@ -72,7 +73,10 @@ public abstract class Presenter : ScopeProvider {
   /** @return an observable of this controller's lifecycle events. */
   public open fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
-  override fun requestScope(): CompletableSource {
-    return rxCompletable(RibDispatchers.Unconfined) { lifecycleFlow.take(2).collect() }
+  override fun requestScope(): CompletableSource = _lifecycleFlow.asScopeCompletable(lifecycleRange)
+
+  internal companion object {
+    @get:JvmSynthetic
+    internal val lifecycleRange = PresenterEvent.LOADED..PresenterEvent.UNLOADED
   }
 }
