@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core
 
+import kotlinx.coroutines.CoroutineDispatcher
+
 /**
  * Interface used when creating a manager or helper class that should be bound to an interactor's
  * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the
@@ -22,6 +24,16 @@ package com.uber.rib.core
  * other lifecycles we're interested in.
  */
 public interface Worker {
+
+  /**
+   * Specifies in which [CoroutineDispatcher] WorkerBind.bind will be operating on
+   *
+   * NOTE: Default implementation will be using RibDispatchers.Unconfined to keep "caller" backward compatibility on existing usages
+   */
+  @JvmDefault
+  public val coroutineDispatcher: CoroutineDispatcher
+    get() = RibDispatchers.Unconfined
+
   /**
    * Called when worker is started.
    *

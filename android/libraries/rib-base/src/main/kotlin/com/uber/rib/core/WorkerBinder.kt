@@ -21,6 +21,7 @@ import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
+import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
@@ -28,9 +29,27 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
+import kotlin.system.measureTimeMillis
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
 public object WorkerBinder {
+
+  private var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
+
+  /**
+   * Initializes reporting of [WorkerBinderInfo] via [WorkerBinderListener]
+   *
+   * IMPORTANT: This should be called only once at early app scope to get proper monitoring of early worker
+   * being bound
+   *
+   */
+  @JvmStatic
+  public fun initializeMonitoring(workerBinderListener: WorkerBinderListener) {
+    this.workerBinderListenerWeakRef =
+      WeakReference<WorkerBinderListener>(workerBinderListener)
+  }
+
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events. Inject this class into your interactor and call this method on
@@ -42,7 +61,7 @@ public object WorkerBinder {
    */
   @JvmStatic
   public fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder =
-    worker.bind(interactor.lifecycleFlow, Interactor.lifecycleRange)
+    worker.bind(interactor.lifecycleFlow, Interactor.lifecycleRange, workerBinderListenerWeakRef)
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -69,7 +88,7 @@ public object WorkerBinder {
    */
   @JvmStatic
   public fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder =
-    worker.bind(presenter.lifecycleFlow, Presenter.lifecycleRange)
+    worker.bind(presenter.lifecycleFlow, Presenter.lifecycleRange, workerBinderListenerWeakRef)
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -88,6 +107,14 @@ public object WorkerBinder {
 
   @JvmStatic
   @VisibleForTesting
+  @Deprecated(
+    message = """
+      This method doesn't support the [WorkerBinderThreadingType] defined at Worker. Due to this, the binding
+      will happen on the caller thread without a possibility to change the threading (even specifying a different WorkerThreadingType other than CALLER_THREAD)
+      It also doesn't provide information for WorkerBinderDuration when a [WorkerDurationMonitoringListener] is added
+    """,
+    replaceWith = ReplaceWith("bind(interactor, worker) or bind(presenter, worker)")
+  )
   public fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
     val disposable = mappedLifecycle
       .takeWhile { it != WorkerEvent.STOP }
@@ -166,10 +193,63 @@ public object WorkerBinder {
   }
 }
 
+/**
+ * Holds all relevant information for completed Worker.onStart/onStop actions.
+ * (e.g. Name of the Worker bound, duration of total onStart/onStop, thread name where onStart/onStop happens,etc)
+ */
+public data class WorkerBinderInfo(
+  /**
+   * Worker class name
+   */
+  val workerName: String,
+
+  /**
+   * Worker event type (START/STOP)
+   */
+  val workerEvent: WorkerEvent,
+
+  /**
+   * [CoroutineDispatcher] where [WorkerBinder.bind] will be operating upon
+   */
+  val coroutineDispatcher: CoroutineDispatcher,
+
+  /**
+   * Thread name where Worker.onStart/onStop was called.
+   *
+   * e.g. When [CoroutineDispatcher] is set as [RibDispatchers.Default] a sample threadName value would be similar to `DefaultDispatcher-worker-2`
+   */
+  val threadName: String,
+
+  /**
+   * Total binding duration in milliseconds of Worker.onStart/onStop
+   */
+  val totalBindingDurationMilli: Long
+)
+
+/**
+ * Reports total binding duration of Worker.onStart/onStop
+ */
+public fun interface WorkerBinderListener {
+
+  /**
+   * Reports all related Worker information via [WorkerBinderInfo] when onStart/onStop methods are completed
+   */
+  public fun onBindCompleted(
+    workerBinderInfo: WorkerBinderInfo
+  )
+}
+
 private fun <T : Comparable<T>> Worker.bind(
   lifecycle: SharedFlow<T>,
   lifecycleRange: ClosedRange<T>,
+  workerDurationListenerWeakRef: WeakReference<WorkerBinderListener>?
 ): WorkerUnbinder {
+
+  val coroutineStart = if (coroutineDispatcher == RibDispatchers.Unconfined) {
+    CoroutineStart.UNDISPATCHED
+  } else {
+    CoroutineStart.DEFAULT
+  }
   /*
    * We need `Dispatchers.Unconfined` to react immediately to lifecycle flow emissions, and we need
    * `CoroutineStart.Undispatched` to prevent coroutines launched in `onStart` with `Dispatchers.Unconfined`
@@ -178,11 +258,50 @@ private fun <T : Comparable<T>> Worker.bind(
    * GlobalScope won't leak the job, because the flow completes when lifecycle completes.
    */
   @OptIn(DelicateCoroutinesApi::class)
-  val job = GlobalScope.launch(RibDispatchers.Unconfined, start = CoroutineStart.UNDISPATCHED) {
+  val job = GlobalScope.launch(
+    coroutineDispatcher,
+    start = coroutineStart
+  ) {
     lifecycle
       .takeWhile { it < lifecycleRange.endInclusive }
-      .onCompletion { onStop() }
-      .collect { onStart(WorkerScopeProvider(lifecycle.asScopeProvider(lifecycleRange))) }
+      .onCompletion {
+        bindAndReportWorkerInfo(workerDurationListenerWeakRef, WorkerEvent.STOP) { onStop() }
+      }
+      .collect {
+        bindAndReportWorkerInfo(workerDurationListenerWeakRef, WorkerEvent.START) {
+          val workerScopeProvider = WorkerScopeProvider(lifecycle.asScopeProvider(lifecycleRange))
+          onStart(workerScopeProvider)
+        }
+      }
   }
   return WorkerUnbinder(job::cancel)
+}
+
+private inline fun Worker.bindAndReportWorkerInfo(
+  workerBinderListeners: WeakReference<WorkerBinderListener>?,
+  event: WorkerEvent,
+  workerBinderAction: Worker.() -> Unit
+) {
+  val duration = measureTimeMillis { workerBinderAction() }
+  workerBinderListeners?.reportWorkerBinderInfo(this, event, duration)
+}
+
+private fun WeakReference<WorkerBinderListener>.reportWorkerBinderInfo(
+  worker: Worker,
+  workerEvent: WorkerEvent,
+  totalBindingEventMilli: Long
+) {
+
+  val workerClassName = worker.javaClass.name
+  val currentThreadName = Thread.currentThread().name
+
+  val workerBinderInfo = WorkerBinderInfo(
+    workerClassName,
+    workerEvent,
+    worker.coroutineDispatcher,
+    currentThreadName,
+    totalBindingEventMilli
+  )
+
+  this@reportWorkerBinderInfo.get()?.onBindCompleted(workerBinderInfo)
 }

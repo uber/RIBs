@@ -53,6 +53,7 @@ dependencies {
     compileOnly deps.apt.androidApi
     compileOnly deps.external.checkerQual
 
+    testImplementation project(":libraries:rib-coroutines-test")
     testImplementation deps.androidx.annotations
     testImplementation deps.apt.androidApi
     testImplementation deps.kotlin.stdlib
