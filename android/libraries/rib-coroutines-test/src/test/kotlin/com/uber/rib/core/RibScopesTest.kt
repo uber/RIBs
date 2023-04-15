@@ -27,7 +27,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
-import java.lang.RuntimeException
 import kotlin.coroutines.CoroutineContext
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -81,6 +80,7 @@ internal class RibScopesTest {
     assertThat(interactor1mainScope1).isNotEqualTo(interactor2mainScope1)
   }
 
+  // Bad test: The RuntimeException thrown is actually NoSuchElementException (handler exceptions is empty).
   @Test(expected = RuntimeException::class)
   internal fun testUncaughtHandler() = runTest {
     val handler = TestUncaughtExceptionCaptor()
@@ -94,6 +94,8 @@ internal class RibScopesTest {
     throw(handler.exceptions.first())
   }
 
+  // Bad test: The RuntimeException is actually thrown by Interactor.requestScope(), because it is called before
+  // attaching the interactor.
   @Test(expected = RuntimeException::class)
   internal fun testException() = runTest {
 
