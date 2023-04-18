@@ -17,21 +17,28 @@ package com.uber.rib.core.lifecycle
 
 import android.os.Bundle
 
-/** Lifecycle events that can be emitted by Activities.  */
-open class ActivityLifecycleEvent private constructor(
+/** Lifecycle events that can be emitted by Activities. */
+open class ActivityLifecycleEvent
+private constructor(
   /** @return this event's type. */
-  override val type: Type
+  override val type: Type,
 ) : ActivityEvent {
 
-  /** Types of activity events that can occur.  */
+  /** Types of activity events that can occur. */
   enum class Type : ActivityEvent.BaseType {
-    CREATE, START, RESUME, USER_LEAVING, PAUSE, STOP, DESTROY
+    CREATE,
+    START,
+    RESUME,
+    USER_LEAVING,
+    PAUSE,
+    STOP,
+    DESTROY,
   }
 
   /** An [ActivityLifecycleEvent] that encapsulates information from [Activity.onCreate]. */
   open class Create(
     /** @return this event's savedInstanceState data. */
-    open val savedInstanceState: Bundle?
+    open val savedInstanceState: Bundle?,
   ) : ActivityLifecycleEvent(Type.CREATE)
 
   companion object {
@@ -68,9 +75,10 @@ open class ActivityLifecycleEvent private constructor(
         Type.PAUSE -> PAUSE_EVENT
         Type.STOP -> STOP_EVENT
         Type.DESTROY -> DESTROY_EVENT
-        else -> throw IllegalArgumentException(
-          "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!"
-        )
+        else ->
+          throw IllegalArgumentException(
+            "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!",
+          )
       }
     }
   }

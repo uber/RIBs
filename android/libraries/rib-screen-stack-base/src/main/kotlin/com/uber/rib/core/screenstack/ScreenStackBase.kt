@@ -17,12 +17,11 @@ package com.uber.rib.core.screenstack
 
 import androidx.annotation.IntRange
 
-/** Implementation of a view based screen stack.  */
+/** Implementation of a view based screen stack. */
 interface ScreenStackBase {
   /**
    * Pushes a new screen into the stack. The new screen view will have its type inspected in order
    * to manipulate the status bar background and icon colors.
-   *
    *
    * This will use the default animation.
    *
@@ -36,11 +35,11 @@ interface ScreenStackBase {
    *
    * @param viewProvider to create a new view to be displayed.
    * @param shouldAnimate whether the addition of the screen should be animated using the default
-   * transition.
+   *   transition.
    */
   fun pushScreen(viewProvider: ViewProvider, shouldAnimate: Boolean)
 
-  /** Removes the current screen from the stack. This will use animations.  */
+  /** Removes the current screen from the stack. This will use animations. */
   fun popScreen()
 
   /**
@@ -54,12 +53,11 @@ interface ScreenStackBase {
   /**
    * Pops back to the specified index. (Starting at 0).
    *
-   *
    * -1 will clear the entire stack, and restore any original content (if supported).
    *
    * @param index Index to pop back to.
    * @param shouldAnimate If true, we should animate to the final entry that we are popping to. If
-   * false, no animations will be used.
+   *   false, no animations will be used.
    */
   fun popBackTo(@IntRange(from = -1) index: Int, shouldAnimate: Boolean)
 
@@ -85,6 +83,5 @@ interface ScreenStackBase {
    *
    * @return Size.
    */
-  @IntRange(from = 0)
-  fun size(): Int
+  @IntRange(from = 0) fun size(): Int
 }

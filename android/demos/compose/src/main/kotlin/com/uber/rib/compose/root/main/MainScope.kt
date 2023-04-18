@@ -21,8 +21,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.uber.rib.compose.root.main.logged_in.LoggedInScope
-import com.uber.rib.compose.root.main.logged_out.LoggedOutScope
+import com.uber.rib.compose.root.main.loggedIn.LoggedInScope
+import com.uber.rib.compose.root.main.loggedOut.LoggedOutScope
 import com.uber.rib.compose.util.AnalyticsClient
 import com.uber.rib.compose.util.ExperimentClient
 import com.uber.rib.compose.util.LoggerClient
@@ -36,8 +36,7 @@ interface MainScope {
 
   fun loggedOutScope(slot: MutableState<(@Composable () -> Unit)>): LoggedOutScope
 
-  fun loggedInScope(slot: MutableState<(@Composable () -> Unit)>, authInfo: AuthInfo):
-    LoggedInScope
+  fun loggedInScope(slot: MutableState<(@Composable () -> Unit)>, authInfo: AuthInfo): LoggedInScope
 
   @motif.Objects
   abstract class Objects {
@@ -49,19 +48,17 @@ interface MainScope {
       childContent: MainRouter.ChildContent,
       analyticsClient: AnalyticsClient,
       experimentClient: ExperimentClient,
-      loggerClient: LoggerClient
+      loggerClient: LoggerClient,
     ): ComposePresenter {
       return object : ComposePresenter() {
-        override val composable = @Composable {
-          MainView(childContent)
-        }
+        override val composable = @Composable { MainView(childContent) }
       }
     }
 
     fun view(
       parentViewGroup: ViewGroup,
       activity: RibActivity,
-      presenter: ComposePresenter
+      presenter: ComposePresenter,
     ): ComposeView {
       return ComposeView(parentViewGroup.context).apply {
         ViewTreeLifecycleOwner.set(this, activity)
@@ -71,7 +68,6 @@ interface MainScope {
 
     abstract fun childContent(): MainRouter.ChildContent
 
-    @Expose
-    abstract fun authStream(): AuthStream
+    @Expose abstract fun authStream(): AuthStream
   }
 }

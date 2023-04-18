@@ -16,10 +16,10 @@
 package com.uber.rib.core
 
 /**
- * API for unbinding a [Worker] before currently bound lifecycle has ended. Use this if you
- * need to stop your [Worker] before the [Interactor] becomes inactive for example.
+ * API for unbinding a [Worker] before currently bound lifecycle has ended. Use this if you need to
+ * stop your [Worker] before the [Interactor] becomes inactive for example.
  */
 public fun interface WorkerUnbinder {
-  /** Unbind from bound lifecycle and end worker's lifecycle.  */
+  /** Unbind from bound lifecycle and end worker's lifecycle. */
   public fun unbind()
 }

@@ -38,7 +38,7 @@ data class RibNode(
   val id: String,
   val name: String,
   val children: List<RibNode>,
-  val view: RibView
+  val view: RibView,
 )
 
 /**
@@ -55,7 +55,7 @@ data class RibView(
   val name: String,
   val viewId: String,
   val layoutId: String,
-  val children: List<RibView>
+  val children: List<RibView>,
 )
 
 /** Data class representing the response of the Rib hierarchy request. */

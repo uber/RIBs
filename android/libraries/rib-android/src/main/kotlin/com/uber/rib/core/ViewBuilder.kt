@@ -28,7 +28,7 @@ import android.view.ViewGroup
  * @param <DependencyT> dependency required to create this router.
  */
 abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
-  dependency: DependencyT
+  dependency: DependencyT,
 ) : Builder<RouterT, DependencyT>(dependency) {
   /**
    * Utility method to create the view for this router.
@@ -43,8 +43,7 @@ abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
 
   /**
    * Inflates the router's view with knowledge of its parent. This should never be called directly,
-   * instead use [ViewBuilder.createView] which will automatically pass the correct
-   * context.
+   * instead use [ViewBuilder.createView] which will automatically pass the correct context.
    *
    * @param inflater to inflate view with.
    * @param parentViewGroup to use for layout parameters.
@@ -57,7 +56,7 @@ abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
    * potentially different one before view creation, such as with [ ].
    *
    * @param parentContext the original parent context, and default used if this method isn't
-   * overridden.
+   *   overridden.
    * @return the possibly themed context.
    */
   protected open fun onThemeContext(parentContext: Context): Context {

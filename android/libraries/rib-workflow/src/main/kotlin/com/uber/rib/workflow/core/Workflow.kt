@@ -23,7 +23,8 @@ import io.reactivex.Single
  *
  * @param <TReturnValue> expected return value for the entire workflow.
  * @param <TRootActionableItem> initial [ActionableItem] type for this workflow.
-</TRootActionableItem></TReturnValue> */
+ *   </TRootActionableItem></TReturnValue>
+ */
 abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
   /**
    * Creates a single to execute a workflow.
@@ -41,6 +42,6 @@ abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
    * @return steps to be performed for this workflow.
    */
   protected abstract fun getSteps(
-    rootActionableItem: TRootActionableItem
+    rootActionableItem: TRootActionableItem,
   ): Step<TReturnValue, out ActionableItem>
 }

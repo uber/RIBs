@@ -21,7 +21,7 @@ import com.uber.rib.core.BasicViewRouter
 class RootRouter(
   view: RootView,
   interactor: RootInteractor,
-  private val scope: RootScope
+  private val scope: RootScope,
 ) : BasicViewRouter<RootView, RootInteractor>(view, interactor) {
 
   private var mainRouter: MainRouter? = null
@@ -36,15 +36,11 @@ class RootRouter(
 
   private fun attachMain() {
     if (mainRouter == null) {
-      mainRouter = scope.mainScope(view).router().also {
-        attachChild(it)
-      }
+      mainRouter = scope.mainScope(view).router().also { attachChild(it) }
     }
   }
 
   private fun detachMain() {
-    mainRouter?.let {
-      detachChild(it)
-    }
+    mainRouter?.let { detachChild(it) }
   }
 }

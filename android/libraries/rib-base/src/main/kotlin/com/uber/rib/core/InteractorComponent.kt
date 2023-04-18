@@ -22,7 +22,8 @@ package com.uber.rib.core
  * @param <T> type of interactor that is injected.
  * @param <P> type of presenter.
  */
-public interface InteractorComponent<P : Presenter, T : Interactor<P, *>> : InteractorBaseComponent<T> {
+public interface InteractorComponent<P : Presenter, T : Interactor<P, *>> :
+  InteractorBaseComponent<T> {
   /**
    * Inject the interactor.
    *

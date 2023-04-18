@@ -58,7 +58,7 @@ class RibHierarchyBrowser(
   project: Project,
   initialModel: Model,
   private val rootElement: PsiElement,
-  private val selectionListener: Listener?
+  private val selectionListener: Listener?,
 ) : HierarchyBrowserBase(project, rootElement) {
 
   companion object {
@@ -95,7 +95,7 @@ class RibHierarchyBrowser(
   data class Model(
     val host: RibHost,
     val selectedRibId: String = "",
-    val selectedViewId: String = ""
+    val selectedViewId: String = "",
   )
 
   private val ribProjectService: RibProjectService = project.service()
@@ -169,12 +169,15 @@ class RibHierarchyBrowser(
 
   override fun createHierarchyTreeStructure(
     typeName: String,
-    psiElement: PsiElement
+    psiElement: PsiElement,
   ): HierarchyTreeStructure? {
     if (psiElement == rootElement) {
       val rootDescriptor =
         RibHierarchyRootNodeDescriptor(
-          project, getPsiClass(project, model.host.name), model.host, status
+          project,
+          getPsiClass(project, model.host.name),
+          model.host,
+          status,
         )
       return RibHierarchyTreeStructure(project, rootDescriptor)
     }
@@ -207,9 +210,7 @@ class RibHierarchyBrowser(
       }
       else -> {}
     }
-    ApplicationManager.getApplication().invokeLater {
-      ribProjectService.refreshRibHierarchy()
-    }
+    ApplicationManager.getApplication().invokeLater { ribProjectService.refreshRibHierarchy() }
   }
 
   /** Request to update hierarchy with provided model */
@@ -239,7 +240,7 @@ class RibHierarchyBrowser(
     com.intellij.ide.actions.RefreshAction(
       IdeBundle.message("action.refresh"),
       IdeBundle.message("action.refresh"),
-      AllIcons.Actions.Refresh
+      AllIcons.Actions.Refresh,
     ) {
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -262,7 +263,11 @@ class RibHierarchyBrowser(
       ribProjectService.enableLocateMode()
 
       if (!popupDisplayed) {
-        displayPopup(LOCATE_VIEW, RelativePoint.getSouthOf(this@RibHierarchyBrowser), MessageType.INFO)
+        displayPopup(
+          LOCATE_VIEW,
+          RelativePoint.getSouthOf(this@RibHierarchyBrowser),
+          MessageType.INFO,
+        )
         popupDisplayed = true
       }
     }
@@ -276,11 +281,13 @@ class RibHierarchyBrowser(
     AnAction(
       IdeBundle.message("action.help"),
       IdeBundle.message("action.help"),
-      AllIcons.General.TodoQuestion
+      AllIcons.General.TodoQuestion,
     ) {
 
     override fun actionPerformed(e: AnActionEvent) {
-      BrowserUtil.open("https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android")
+      BrowserUtil.open(
+        "https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android",
+      )
     }
 
     override fun update(event: AnActionEvent) {

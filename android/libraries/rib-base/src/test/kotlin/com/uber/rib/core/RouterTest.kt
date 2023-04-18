@@ -16,9 +16,9 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import java.util.concurrent.atomic.AtomicBoolean
 import org.junit.Test
 import org.mockito.kotlin.mock
-import java.util.concurrent.atomic.AtomicBoolean
 
 class RouterTest {
 
@@ -29,21 +29,23 @@ class RouterTest {
   @Test
   fun didLoad_shouldBeCalledAfterInstantiation() {
     val didLoad = AtomicBoolean(false)
-    val router: Router<*> = object : Router<Interactor<*, *>>(
-      component,
-      interactor,
-      ribRefWatcher,
-      Thread.currentThread()
-    ) {
-      override fun attachToInteractor() {
-        // ignore the Interactor since we're only testing the Router
-      }
+    val router: Router<*> =
+      object :
+        Router<Interactor<*, *>>(
+          component,
+          interactor,
+          ribRefWatcher,
+          Thread.currentThread(),
+        ) {
+        override fun attachToInteractor() {
+          // ignore the Interactor since we're only testing the Router
+        }
 
-      override fun didLoad() {
-        super.didLoad()
-        didLoad.set(true)
+        override fun didLoad() {
+          super.didLoad()
+          didLoad.set(true)
+        }
       }
-    }
     router.dispatchAttach(null)
     assertThat(didLoad.get()).isTrue()
   }

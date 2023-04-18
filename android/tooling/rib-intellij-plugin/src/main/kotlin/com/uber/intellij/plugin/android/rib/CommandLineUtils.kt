@@ -56,9 +56,8 @@ object CommandLineUtils {
   fun executeWithLineOutput(
     project: Project,
     command: String,
-    vararg params: String
+    vararg params: String,
   ): ProcessOutput {
-
     val commandLine = GeneralCommandLine(command)
     for (p in params) {
       commandLine.addParameter(p)
@@ -69,7 +68,8 @@ object CommandLineUtils {
     process.waitFor()
 
     return ProcessOutput(
-      consumeInputStream(process.inputStream), consumeInputStream(process.errorStream)
+      consumeInputStream(process.inputStream),
+      consumeInputStream(process.errorStream),
     )
   }
 

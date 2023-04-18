@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
 
-/** Utility class that shows riblets name in its background.  */
+/** Utility class that shows riblets name in its background. */
 class XRay private constructor() {
   private var isEnabled = false
   private var textPaint: Paint? = null
@@ -38,10 +38,11 @@ class XRay private constructor() {
 
   private fun getTextPaint(): Paint {
     if (textPaint == null) {
-      textPaint = Paint().apply {
-        textSize = TEXT_SIZE.toFloat()
-        color = TEXT_COLOR
-      }
+      textPaint =
+        Paint().apply {
+          textSize = TEXT_SIZE.toFloat()
+          color = TEXT_COLOR
+        }
     }
     return textPaint!!
   }
@@ -54,7 +55,7 @@ class XRay private constructor() {
     private const val TEXT_SIZE = 30
     private const val TEXT_COLOR = Color.RED
 
-    /** Toggles state of XRay.  */
+    /** Toggles state of XRay. */
     @JvmStatic
     fun toggle() {
       INSTANCE.isEnabled = !INSTANCE.isEnabled
@@ -75,11 +76,12 @@ class XRay private constructor() {
     @JvmStatic
     fun apply(viewRouter: ViewRouter<*, *>, view: View) {
       val oldBackground = view.background
-      val bitmap: Bitmap = if (oldBackground != null) {
-        drawableToBitmap(oldBackground)
-      } else {
-        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
-      }
+      val bitmap: Bitmap =
+        if (oldBackground != null) {
+          drawableToBitmap(oldBackground)
+        } else {
+          Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
+        }
       INSTANCE.writeOnBitmap(bitmap, getRibletName(viewRouter))
       val newBackground = BitmapDrawable(view.context.resources, bitmap)
       newBackground.gravity = Gravity.CENTER
@@ -93,13 +95,16 @@ class XRay private constructor() {
           return drawable.bitmap
         }
       }
-      val bitmap: Bitmap = if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
-        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
-      } else {
-        Bitmap.createBitmap(
-          drawable.intrinsicWidth, drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
-        )
-      }
+      val bitmap: Bitmap =
+        if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+          Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
+        } else {
+          Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight,
+            Bitmap.Config.ARGB_8888,
+          )
+        }
       val canvas = Canvas(bitmap)
       drawable.draw(canvas)
       return bitmap

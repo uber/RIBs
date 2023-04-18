@@ -31,7 +31,7 @@ internal class RibEventPayload(
   private val routerId: String,
   private val router: Router<*>,
   private val parentRouterId: String,
-  private val parentRouter: Router<*>?
+  private val parentRouter: Router<*>?,
 ) {
 
   companion object {
@@ -50,17 +50,27 @@ internal class RibEventPayload(
     get() = eventType.toString()
 
   val flipperPayload: FlipperObject
-    get() = FlipperObject.Builder()
-      .put(EVENT_PARAMETER_SESSION_ID, sessionId)
-      .put(EVENT_PARAMETER_ROUTER, RibEventRouterPayload(routerId, router).flipperPayload)
-      .put(EVENT_PARAMETER_PARENT, RibEventRouterPayload(parentRouterId, parentRouter).flipperPayload)
-      .build()
+    get() =
+      FlipperObject.Builder()
+        .put(EVENT_PARAMETER_SESSION_ID, sessionId)
+        .put(EVENT_PARAMETER_ROUTER, RibEventRouterPayload(routerId, router).flipperPayload)
+        .put(
+          EVENT_PARAMETER_PARENT,
+          RibEventRouterPayload(parentRouterId, parentRouter).flipperPayload,
+        )
+        .build()
 
-  internal class RibEventRouterPayload constructor(private val id: String, private val router: Router<*>?) {
+  internal class RibEventRouterPayload
+  constructor(private val id: String, private val router: Router<*>?) {
 
     val flipperPayload: FlipperObject
       get() {
-        val name = if (router is Router<*>) router.javaClass.simpleName.replace(ROUTER_NAME_PREFIX, "") else ""
+        val name =
+          if (router is Router<*>) {
+            router.javaClass.simpleName.replace(ROUTER_NAME_PREFIX, "")
+          } else {
+            ""
+          }
         val routerClassName = if (router is Router<*>) router.javaClass.simpleName else ""
         val hasView = router is ViewRouter<*, *>
         val activityClassName = if (router is ViewRouter<*, *>) getActivityClassName(router) else ""

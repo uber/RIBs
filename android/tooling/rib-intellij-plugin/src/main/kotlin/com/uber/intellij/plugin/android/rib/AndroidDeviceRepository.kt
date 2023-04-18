@@ -26,7 +26,8 @@ import org.jetbrains.android.sdk.AndroidSdkUtils
 
 /** IntelliJ Project component responsible for exposing connected Android devices. */
 @Service(PROJECT)
-class AndroidDeviceRepository(val project: Project) : AndroidDebugBridge.IDeviceChangeListener, Disposable {
+class AndroidDeviceRepository(val project: Project) :
+  AndroidDebugBridge.IDeviceChangeListener, Disposable {
 
   private val devices: ArrayList<IDevice> = arrayListOf()
   private val listeners: ArrayList<Listener> = arrayListOf()

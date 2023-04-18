@@ -31,7 +31,7 @@ open class RibHierarchyDescriptor(
   project: Project,
   val parentDescriptor: HierarchyNodeDescriptor?,
   val element: PsiElement,
-  isBase: Boolean
+  isBase: Boolean,
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
 
   /** Method to set text of the node entry. */
@@ -59,8 +59,11 @@ open class RibHierarchyDescriptor(
   /** Return default text attributes. */
   fun getDefaultTextAttributes(isError: Boolean = false): TextAttributes {
     val font: Int = if (myIsBase) Font.BOLD else Font.PLAIN
-    return if (isError) TextAttributes(myColor, null, Color.red, EffectType.WAVE_UNDERSCORE, font)
-    else TextAttributes(myColor, null, null, null, font)
+    return if (isError) {
+      TextAttributes(myColor, null, Color.red, EffectType.WAVE_UNDERSCORE, font)
+    } else {
+      TextAttributes(myColor, null, null, null, font)
+    }
   }
 
   /** Return icon to display. */

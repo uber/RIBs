@@ -107,15 +107,21 @@ public abstract class Generator {
     }
   }
 
-  /** @return the class name for the generated file. */
+  /**
+   * @return the class name for the generated file.
+   */
   public abstract String getClassName();
 
-  /** @return the package name for the generated file. */
+  /**
+   * @return the package name for the generated file.
+   */
   public final String getPackageName() {
     return packageName;
   }
 
-  /** @return the rib name for the generator. */
+  /**
+   * @return the rib name for the generator.
+   */
   public final String getRibName() {
     return ribName;
   }
@@ -129,12 +135,16 @@ public abstract class Generator {
     return ".java";
   }
 
-  /** @return the template values map, to add more template paramters. */
+  /**
+   * @return the template values map, to add more template paramters.
+   */
   protected final Map<String, String> getTemplateValuesMap() {
     return templateValuesMap;
   }
 
-  /** @return the source for the generated file. */
+  /**
+   * @return the source for the generated file.
+   */
   public final String generate() {
     StrSubstitutor substitutor = new StrSubstitutor(templateValuesMap);
     String newFile = substitutor.replace(templateString);

@@ -54,7 +54,9 @@ public abstract class RootWorkflow<TWorkflowReturnType, TDeepLinkModel extends R
     return getSteps(rootActionableItem, deepLinkModel);
   }
 
-  /** @return the model for the workflow. */
+  /**
+   * @return the model for the workflow.
+   */
   public TDeepLinkModel getDeepLinkModel() {
     return deepLinkModel;
   }

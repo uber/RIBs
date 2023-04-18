@@ -21,15 +21,16 @@ import io.reactivex.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
-class DelegatingScheduler private constructor(
-  @get:VisibleForTesting val schedulerType: SchedulerType
+class DelegatingScheduler
+private constructor(
+  @get:VisibleForTesting val schedulerType: SchedulerType,
 ) : Scheduler() {
 
   private val activeScheduler = AtomicReference(Schedulers.trampoline())
 
   @VisibleForTesting
   enum class SchedulerType {
-    MAIN_THREAD
+    MAIN_THREAD,
   }
 
   override fun createWorker(): Worker {

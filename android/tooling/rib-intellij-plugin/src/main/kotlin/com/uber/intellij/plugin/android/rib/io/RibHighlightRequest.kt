@@ -27,5 +27,5 @@ class RibHighlightRequest(device: IDevice, id: UUID) :
     device,
     "RIB_HIGHLIGHT",
     RibHighlightResponse::class.java,
-    listOf(Pair("ID", id), Pair("VISIBLE", true))
+    listOf(Pair("ID", id), Pair("VISIBLE", true)),
   )

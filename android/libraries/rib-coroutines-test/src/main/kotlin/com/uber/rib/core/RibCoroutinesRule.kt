@@ -20,10 +20,13 @@ import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
 /**
- * RibCoroutinesRule is a Junit TestRule to act as a managed TestCoroutineScope in test and to facilitate install and cleanup of Test Dispatchers
+ * RibCoroutinesRule is a Junit TestRule to act as a managed TestCoroutineScope in test and to
+ * facilitate install and cleanup of Test Dispatchers
  */
 @ExperimentalCoroutinesApi
-public class RibCoroutinesRule(public val ribDispatchers: TestRibDispatchers = TestRibDispatchers()) : TestWatcher() {
+public class RibCoroutinesRule(
+  public val ribDispatchers: TestRibDispatchers = TestRibDispatchers(),
+) : TestWatcher() {
 
   override fun starting(description: Description) {
     ribDispatchers.installTestDispatchers()

@@ -110,11 +110,12 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
                       isRefreshing = false
                     }
                   },
-                  executor
+                  executor,
                 )
               }
             }
-          })
+          },
+        )
     }
   }
 
@@ -157,7 +158,7 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
                       RibHierarchyBrowser.Model(
                         RibHost(payload.name, payload.application),
                         payload.selectedRibId,
-                        payload.selectedViewId
+                        payload.selectedViewId,
                       )
                     onModelUpdated(model)
                   }
@@ -167,11 +168,12 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
                     LogcatRequestProcessor().execute(EnableLocateModeRequest(device, false))
                   }
                 },
-                executor
+                executor,
               )
             }
           }
-        })
+        },
+      )
   }
 
   fun selectDevice(device: IDevice?) {

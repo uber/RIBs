@@ -19,9 +19,9 @@ import kotlinx.coroutines.CoroutineDispatcher
 
 /**
  * Interface used when creating a manager or helper class that should be bound to an interactor's
- * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the
- * interactor's actual lifecycle so that we're not stuck moving these classes around if there are
- * other lifecycles we're interested in.
+ * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the interactor's
+ * actual lifecycle so that we're not stuck moving these classes around if there are other
+ * lifecycles we're interested in.
  */
 public interface Worker {
 
@@ -39,10 +39,8 @@ public interface Worker {
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
-  @JvmDefault
-  public fun onStart(lifecycle: WorkerScopeProvider) {}
+  @JvmDefault public fun onStart(lifecycle: WorkerScopeProvider) {}
 
-  /** Called when the worker is stopped.  */
-  @JvmDefault
-  public fun onStop() {}
+  /** Called when the worker is stopped. */
+  @JvmDefault public fun onStop() {}
 }

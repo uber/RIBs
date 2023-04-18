@@ -43,7 +43,7 @@ class InteractorAnnotationVerifierTest : InteractorProcessorTestBase() {
   fun verify_whenTypeElementIsNotInteractor_shouldWriteErrorMessage() {
     addResourceToSources("fixtures/AnnotatedNonInteractor.java")
     assertFailsWithError(
-      "test.AnnotatedNonInteractor is annotated with @RibInteractor but is not an Interactor subclass"
+      "test.AnnotatedNonInteractor is annotated with @RibInteractor but is not an Interactor subclass",
     )
   }
 

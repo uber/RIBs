@@ -33,5 +33,5 @@ open class Request<T>(
   val clazz: Class<T>,
   val params: List<Pair<String, Any>> = emptyList(),
   val timeoutMs: Int = 2000,
-  val numRetries: Int = 1
+  val numRetries: Int = 1,
 )

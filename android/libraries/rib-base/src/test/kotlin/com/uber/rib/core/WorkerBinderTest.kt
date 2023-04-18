@@ -139,9 +139,7 @@ class WorkerBinderTest {
     val interactor = object : Interactor<Any, Router<*>>() {}
     var enteredUnconfined = false
     val worker = Worker {
-      val subscription = interactor.lifecycle().subscribe {
-        enteredUnconfined = true
-      }
+      val subscription = interactor.lifecycle().subscribe { enteredUnconfined = true }
       assertThat(enteredUnconfined).isTrue()
       subscription.dispose()
     }
@@ -205,8 +203,9 @@ class WorkerBinderTest {
   }
 }
 
-private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) = object : Worker {
-  override fun onStart(lifecycle: WorkerScopeProvider) {
-    onStartBlock(lifecycle)
+private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
+  object : Worker {
+    override fun onStart(lifecycle: WorkerScopeProvider) {
+      onStartBlock(lifecycle)
+    }
   }
-}

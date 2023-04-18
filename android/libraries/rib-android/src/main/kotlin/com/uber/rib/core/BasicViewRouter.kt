@@ -24,5 +24,5 @@ import android.view.View
  */
 abstract class BasicViewRouter<V : View, I : Interactor<*, *>>(
   view: V,
-  interactor: I
+  interactor: I,
 ) : ViewRouter<V, I>(view, interactor)

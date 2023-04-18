@@ -24,5 +24,5 @@ import android.view.View
  */
 abstract class ViewPresenter<V : View>(
   /** @return the view fronted by the page. */
-  val view: V
+  val view: V,
 ) : Presenter()

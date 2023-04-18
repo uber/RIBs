@@ -24,7 +24,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
-/** Interface to provide [View] instances to [ScreenStackBase].  */
+/** Interface to provide [View] instances to [ScreenStackBase]. */
 abstract class ViewProvider {
   private val lifecycleFlow = MutableSharedFlow<ScreenStackEvent>(1, 0, BufferOverflow.DROP_OLDEST)
 
@@ -41,18 +41,18 @@ abstract class ViewProvider {
    */
   abstract fun buildView(parentView: ViewGroup): View
 
-  /** @return an observable that emits events for this view provider's lifecycle.
-   */
+  /** @return an observable that emits events for this view provider's lifecycle. */
   open fun lifecycle(): Observable<ScreenStackEvent> {
     return lifecycleFlow.asObservable()
   }
 
   /**
-   * Callers can implement this in order to complete additional work when a call to [ ][.onViewRemoved] is performed.
+   * Callers can implement this in order to complete additional work when a call to
+   * [ ][.onViewRemoved] is performed.
    */
   protected open fun doOnViewRemoved() {}
 
-  /** Notifies the view provider that the view has been popped from the stack.  */
+  /** Notifies the view provider that the view has been popped from the stack. */
   fun onViewRemoved() {
     lifecycleFlow.tryEmit(ScreenStackEvent.REMOVED)
     doOnViewRemoved()
@@ -67,13 +67,13 @@ abstract class ViewProvider {
     return false
   }
 
-  /** Notifies the view provider that view is at the top of the stack and visible.  */
+  /** Notifies the view provider that view is at the top of the stack and visible. */
   @CallSuper
   open fun onViewAppeared() {
     lifecycleFlow.tryEmit(ScreenStackEvent.APPEARED)
   }
 
-  /** Notifies the view provider that the view is no longer at the top of the stack.  */
+  /** Notifies the view provider that the view is no longer at the top of the stack. */
   @CallSuper
   open fun onViewHidden() {
     lifecycleFlow.tryEmit(ScreenStackEvent.HIDDEN)

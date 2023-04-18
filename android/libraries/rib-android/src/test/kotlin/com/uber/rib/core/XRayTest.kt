@@ -34,9 +34,7 @@ class XRayTest {
   fun apply_changesViewBackground() {
     XRay.toggle()
     val viewRouter: ViewRouter<*, *> = mock()
-    val view: View = mock {
-      on { context } doReturn(RuntimeEnvironment.application.baseContext)
-    }
+    val view: View = mock { on { context } doReturn (RuntimeEnvironment.application.baseContext) }
     apply(viewRouter, view)
     verify(view).background = any()
     verifyNoMoreInteractions(viewRouter)

@@ -43,7 +43,8 @@ class RibTreePlugin : FlipperPlugin {
   private var disposable: Disposable? = null
   private val events: ReplaySubject<RibEventPayload> = ReplaySubject.create(EVENTS_CAPACITY)
   private val sessionId: String = UUID.randomUUID().toString()
-  private val idsToOverlay: MutableMap<String, WeakReference<RibDebugOverlay>> = HashMap<String, WeakReference<RibDebugOverlay>>()
+  private val idsToOverlay: MutableMap<String, WeakReference<RibDebugOverlay>> =
+    HashMap<String, WeakReference<RibDebugOverlay>>()
   private val routersToId: WeakHashMap<Router<*>, String> = WeakHashMap<Router<*>, String>()
 
   companion object {
@@ -73,9 +74,10 @@ class RibTreePlugin : FlipperPlugin {
   override fun onConnect(connection: FlipperConnection) {
     android.util.Log.d("RibTreeFlipperPlugin", "onConnect()")
     this.connection = connection
-    disposable = events.subscribe { e: RibEventPayload ->
-      this.connection?.send(e.eventName, e.flipperPayload)
-    }
+    disposable =
+      events.subscribe { e: RibEventPayload ->
+        this.connection?.send(e.eventName, e.flipperPayload)
+      }
     connection.receive(SHOW_HIGHLIGHT.toString()) { params: FlipperObject, _: FlipperResponder? ->
       val id: String = params.getString(EVENT_PARAMETER_ID)
       val router: Router<*>? = getRouterById(id)

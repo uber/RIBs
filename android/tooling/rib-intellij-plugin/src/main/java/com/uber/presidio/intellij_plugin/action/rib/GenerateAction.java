@@ -150,7 +150,9 @@ public abstract class GenerateAction extends AnAction {
             });
   }
 
-  /** @return gets the current package name for an executing action. */
+  /**
+   * @return gets the current package name for an executing action.
+   */
   protected final String getPackageName() {
     /** Preconditions have been validated by {@link GenerateAction#isAvailable(DataContext)}. */
     final Project project = Preconditions.checkNotNull(CommonDataKeys.PROJECT.getData(dataContext));

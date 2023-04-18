@@ -31,7 +31,7 @@ class RibHierarchyActivityDescriptor(
   project: Project,
   parentDescriptor: HierarchyNodeDescriptor?,
   private val clazz: PsiClass,
-  val ribActivity: RibActivity
+  val ribActivity: RibActivity,
 ) : RibHierarchyDescriptor(project, parentDescriptor, clazz, false) {
 
   override fun updateText(text: CompositeAppearance) {

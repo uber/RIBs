@@ -16,5 +16,6 @@
 package com.uber.rib.core
 
 public enum class RibEventType {
-  ATTACHED, DETACHED
+  ATTACHED,
+  DETACHED,
 }

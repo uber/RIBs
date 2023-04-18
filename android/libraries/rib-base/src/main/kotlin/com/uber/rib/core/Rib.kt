@@ -15,18 +15,17 @@
  */
 package com.uber.rib.core
 
-/** Holds configuration and settings for riblets.  */
+/** Holds configuration and settings for riblets. */
 public open class Rib {
 
-  /** Responsible for app-specific riblet configuration.  */
+  /** Responsible for app-specific riblet configuration. */
   public interface Configuration {
     /**
      * Called when there is a non-fatal error in the RIB framework. Consumers should route this data
      * to a place where it can be monitored (crash reporting, monitoring, etc.).
      *
-     *
-     * If no configuration is set, the default implementation of this will crash the app when
-     * there is a non-fatal error.
+     * If no configuration is set, the default implementation of this will crash the app when there
+     * is a non-fatal error.
      *
      * @param errorMessage an error message that describes the error.
      * @param throwable an optional throwable.
@@ -37,9 +36,9 @@ public open class Rib {
      * Called when there is a non-fatal warning in the RIB framework. Consumers should route this
      * data to a place where it can be monitored (crash reporting, monitoring, etc.).
      *
-     *
-     * NOTE: This API is used in a slightly different way than the [ ][Configuration.handleNonFatalError] error method. Non-fatal errors should
-     * never happen, warnings however can happen in certain conditions.
+     * NOTE: This API is used in a slightly different way than the
+     * [ ][Configuration.handleNonFatalError] error method. Non-fatal errors should never happen,
+     * warnings however can happen in certain conditions.
      *
      * @param warningMessage an error message that describes the error.
      * @param throwable an optional throwable.
@@ -50,7 +49,6 @@ public open class Rib {
      * Called when there is a message that should be logged for debugging. Consumers should route
      * this data to a debug logging location.
      *
-     *
      * If no configuration is set, the default implementation of this will drop the messages.
      *
      * @param format Message format - See [String.format]
@@ -59,7 +57,7 @@ public open class Rib {
     public fun handleDebugMessage(format: String, vararg args: Any?)
   }
 
-  /** Default, internal implementation that is used when host app does not set a configuration.  */
+  /** Default, internal implementation that is used when host app does not set a configuration. */
   private class DefaultConfiguration : Configuration {
     override fun handleNonFatalError(errorMessage: String, throwable: Throwable?) {
       throw RuntimeException(errorMessage, throwable)
@@ -87,7 +85,7 @@ public open class Rib {
           throw IllegalStateException("Attempting to set a configuration after using RIB code.")
         } else {
           throw IllegalStateException(
-            "Attempting to set a configuration after one has previously been set."
+            "Attempting to set a configuration after one has previously been set.",
           )
         }
       }

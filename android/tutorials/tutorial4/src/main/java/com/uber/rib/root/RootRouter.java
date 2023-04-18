@@ -19,11 +19,11 @@ import androidx.annotation.Nullable;
 import com.google.common.base.Optional;
 import com.jakewharton.rxrelay2.BehaviorRelay;
 import com.uber.rib.core.ViewRouter;
-import com.uber.rib.root.logged_in.LoggedInActionableItem;
-import com.uber.rib.root.logged_in.LoggedInBuilder;
-import com.uber.rib.root.logged_in.LoggedInRouter;
-import com.uber.rib.root.logged_out.LoggedOutBuilder;
-import com.uber.rib.root.logged_out.LoggedOutRouter;
+import com.uber.rib.root.loggedIn.LoggedInActionableItem;
+import com.uber.rib.root.loggedIn.LoggedInBuilder;
+import com.uber.rib.root.loggedIn.LoggedInRouter;
+import com.uber.rib.root.loggedOut.LoggedOutBuilder;
+import com.uber.rib.root.loggedOut.LoggedOutRouter;
 
 /** Adds and removes children of {@link RootBuilder.RootScope}. */
 public class RootRouter extends ViewRouter<RootView, RootInteractor> {

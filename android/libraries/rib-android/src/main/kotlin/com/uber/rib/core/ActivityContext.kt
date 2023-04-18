@@ -19,7 +19,5 @@ import java.lang.annotation.Retention
 import java.lang.annotation.RetentionPolicy.RUNTIME
 import javax.inject.Qualifier
 
-/** Injection qualifier for an Activity Context.  */
-@Qualifier
-@Retention(RUNTIME)
-annotation class ActivityContext
+/** Injection qualifier for an Activity Context. */
+@Qualifier @Retention(RUNTIME) annotation class ActivityContext

@@ -28,8 +28,9 @@ import io.reactivex.functions.BiFunction
  * @param <T> type of return value (if any) for this step.
  * @param <A> type of [ActionableItem] this step returns when finished.
  */
-open class Step<T, A : ActionableItem> private constructor(
-  private val stepDataSingle: Single<Optional<Data<T, A>>>
+open class Step<T, A : ActionableItem>
+private constructor(
+  private val stepDataSingle: Single<Optional<Data<T, A>>>,
 ) {
 
   /**
@@ -38,7 +39,7 @@ open class Step<T, A : ActionableItem> private constructor(
    * called.
    *
    * @param func to return the next step when this current step completes. This function will
-   * receive the result of the previous step and the next actionable item to take an action on.
+   *   receive the result of the previous step and the next actionable item to take an action on.
    * @param <T2> the value type returned by the next step.
    * @param <A2> the actionable item type returned by the next step.
    * @return a [Step] to chain more calls to.
@@ -54,7 +55,7 @@ open class Step<T, A : ActionableItem> private constructor(
             Observable.just(Optional.absent())
           }
         }
-        .singleOrError()
+        .singleOrError(),
     )
   }
 
@@ -63,12 +64,12 @@ open class Step<T, A : ActionableItem> private constructor(
   }
 
   internal open fun asObservable(): Observable<Optional<Data<T, A>>> {
-    val cachedObservable: Observable<Optional<Data<T, A>>> = stepDataSingle.toObservable()
-      .observeOn(AndroidSchedulers.mainThread())
-      .cache()
+    val cachedObservable: Observable<Optional<Data<T, A>>> =
+      stepDataSingle.toObservable().observeOn(AndroidSchedulers.mainThread()).cache()
     return cachedObservable.flatMap { dataOptional: Optional<Data<T, A>> ->
       if (dataOptional.isPresent) {
-        dataOptional.get()
+        dataOptional
+          .get()
           .actionableItem
           .lifecycle()
           .filter { interactorEvent -> interactorEvent === InteractorEvent.ACTIVE }
@@ -98,8 +99,8 @@ open class Step<T, A : ActionableItem> private constructor(
        *
        * @param actionableItem to advance to.
        * @param <A> type of actionable item.
-       * @return a new [Step.Data] instance.
-       </A> */
+       * @return a new [Step.Data] instance. </A>
+       */
       @JvmStatic
       fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> {
         return Data(NoValueHolder.INSTANCE, actionableItem)
@@ -107,10 +108,10 @@ open class Step<T, A : ActionableItem> private constructor(
     }
   }
 
-  /** Used to indicate that a step has no return value.  */
+  /** Used to indicate that a step has no return value. */
   open class NoValue
 
-  /** Initialization On Demand Singleton for [NoValue].  */
+  /** Initialization On Demand Singleton for [NoValue]. */
   private object NoValueHolder {
     val INSTANCE = NoValue()
   }
@@ -142,7 +143,7 @@ open class Step<T, A : ActionableItem> private constructor(
      */
     @JvmStatic
     fun <T, A : ActionableItem> fromOptional(
-      stepDataSingle: Single<Optional<Data<T, A>>>
+      stepDataSingle: Single<Optional<Data<T, A>>>,
     ): Step<T, A> = Step(stepDataSingle)
   }
 }
