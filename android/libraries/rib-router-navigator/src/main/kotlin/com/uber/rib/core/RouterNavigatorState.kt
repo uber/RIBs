@@ -27,4 +27,18 @@ interface RouterNavigatorState {
       throw java.lang.AssertionError("Must be implemented by enum or override stateName()")
     }
   }
+
+  /**
+   * @return Boolean flag configure router caching behavior between transactions.
+   *
+   * TRUE - same instance of router will be reused in all [RouterNavigator.AttachTransition] (not
+   * recommended as might produce memory leak. Usage of [Router.dispatchAttach] and
+   * [Router.saveInstanceState] is preferred option)
+   *
+   * FALSE - router instance will be destroyed after
+   * [RouterNavigator.DetachCallback.onPostDetachFromHost] and will be recreated for next
+   * [RouterNavigator.AttachTransition]
+   */
+  @JvmDefault
+  fun isCacheable(): Boolean = false
 }
