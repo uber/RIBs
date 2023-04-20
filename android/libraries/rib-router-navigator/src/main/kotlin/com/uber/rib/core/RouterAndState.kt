@@ -16,6 +16,8 @@
 package com.uber.rib.core
 
 import androidx.annotation.VisibleForTesting
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 /**
  * Internal class for keeping track of a navigation stack.
@@ -31,45 +33,37 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
   detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   @get:VisibleForTesting val forceRouterCaching: Boolean = false
 ) {
-  @get:Synchronized
-  @set:Synchronized
-  private var _router: R? = null
+  private val routerAccessor = SafeRouterAccessor(attachTransition::buildRouter)
 
   /**
    * Gets or creates the [Router] associated with this state. Router will be destroyed after
    * [RouterNavigator.DetachCallback.onPostDetachFromHost] and if [StateT] is cacheable.
-   *
-   * @return [Router]
    */
-  internal val router: R
-    @Synchronized
-    get() =
-      _router
-        ?: attachTransition.buildRouter().apply {
-          log("Router ${this@apply.javaClass.simpleName} was created")
-          _router = this@apply
-        }
+  internal val router: R by routerAccessor::router
 
   internal fun willAttachToHost(previousState: StateT?, isPush: Boolean) =
-    attachTransition.willAttachToHost(router, previousState, state, isPush)
+    routerAccessor.safeOperation { safeRouter ->
+      attachTransition.willAttachToHost(safeRouter, previousState, state, isPush)
+    }
 
-  internal fun willDetachFromHost(
-    newState: StateT?,
-    isPush: Boolean
-  ) = detachCallback.willDetachFromHost(router, state, newState, isPush)
+  internal fun willDetachFromHost(newState: StateT?, isPush: Boolean) =
+    routerAccessor.safeOperation { safeRouter ->
+      detachCallback.willDetachFromHost(safeRouter, state, newState, isPush)
+    }
 
   internal fun onPostDetachFromHost(newState: StateT?, isPush: Boolean) =
-    detachCallback.onPostDetachFromHost(router, newState, isPush)
+    routerAccessor.safeOperation { safeRouter ->
+      detachCallback.onPostDetachFromHost(safeRouter, newState, isPush)
+    }
 
-  /**
-   * Gets the [RouterNavigator.DetachCallback] associated with this state.
-   *
-   * @return [RouterNavigator.DetachCallback]
-   */
   private val detachCallback: RouterNavigator.DetachCallback<R, StateT> by lazy {
     RouterDestroyerCallbackWrapper(
       baseCallback = wrapDetachTransitionIfNeed(detachTransition),
-      onDestroy = ::destroyRouterIfNeed
+      onDestroy = {
+        routerAccessor.safeConditionalDestroy(state) {
+          !forceRouterCaching && !state.isCacheable()
+        }
+      }
     )
   }
 
@@ -80,23 +74,9 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
       ?: detachTransition?.let { DetachCallbackWrapper(it) }
   }
 
-  private fun destroyRouterIfNeed() {
-    if (!forceRouterCaching && !state.isCacheable()) {
-      val routerName = _router?.javaClass?.simpleName
-      _router = null
-      if (routerName != null) {
-        log("Destroying router $routerName was destroyed")
-      } else {
-        log("Router of ${state.stateName()} state already destroyed")
-      }
-    }
-  }
-
   /**
-   * Wrapper class to wrap [RouterNavigator.DetachTransition] calls into the new
-   * [RouterNavigator.DetachCallback] format.
-   *
-   * @param transitionCallback Base transaction
+   * Wrapper class to wrap [transitionCallback] calls into the new [RouterNavigator.DetachCallback]
+   * format.
    */
   private inner class DetachCallbackWrapper(
     private val transitionCallback: RouterNavigator.DetachTransition<R, StateT>
@@ -107,11 +87,13 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
       previousState: StateT,
       newState: StateT?,
       isPush: Boolean
-    ) {
-      transitionCallback.willDetachFromHost(router, previousState, newState, isPush)
-    }
+    ) = transitionCallback.willDetachFromHost(router, previousState, newState, isPush)
   }
 
+  /**
+   * Wrapper class to wrap [RouterNavigator.DetachCallback] and call [onDestroy] after
+   * [RouterNavigator.DetachCallback.onPostDetachFromHost]
+   */
   private inner class RouterDestroyerCallbackWrapper(
     private val baseCallback: RouterNavigator.DetachCallback<R, StateT>?,
     private val onDestroy: () -> Unit
@@ -129,6 +111,37 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
     override fun onPostDetachFromHost(router: R, newState: StateT?, isPush: Boolean) {
       baseCallback?.onPostDetachFromHost(router, newState, isPush)
       onDestroy.invoke()
+    }
+  }
+
+  private class SafeRouterAccessor<R : Router<*>>(
+    private val routerBuilder: () -> R
+  ) {
+    private val lock = ReentrantLock()
+    private var _router: R? = null
+
+    val router: R
+      get() = lock.withLock {
+        _router ?: routerBuilder().let { newRouter ->
+          log("Router ${newRouter.javaClass.simpleName} was created")
+          _router = newRouter
+          newRouter
+        }
+      }
+
+    fun safeOperation(operation: (R) -> Unit) = lock.withLock {
+      operation(router)
+    }
+
+    fun safeConditionalDestroy(state: RouterNavigatorState, condition: () -> Boolean) = lock.withLock {
+      if (condition.invoke()) {
+        _router?.javaClass?.simpleName?.let { routerName ->
+          log("Destroying router $routerName was destroyed")
+          _router = null
+        } ?: run {
+          log("Router of ${state.stateName()} state already destroyed")
+        }
+      }
     }
   }
 
