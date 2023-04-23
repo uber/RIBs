@@ -28,7 +28,7 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
 interface RouterNavigator<StateT : RouterNavigatorState> {
   /** Determine how pushes will affect the stack  */
   enum class Flag {
-    /** Push a new state to the top of the stack.  */
+    /** Push a new state to the top of the navigation stack.  */
     DEFAULT,
 
     /** Push a state that will not be retained when the next state is pushed.  */
@@ -79,7 +79,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * state already.
    *
    *
-   * NOTE: This will retain the Riblet in memory until it is popped or detached by a push with
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped or detached by a push with
    * certain flags.
    *
    * @param newState to switch to.
@@ -99,7 +99,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * provided.
    *
    *
-   * NOTE: This will retain the Riblet in memory until it is popped or detached by a push with
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped or detached by a push with
    * certain flags.
    *
    * @param newState to switch to.
@@ -119,7 +119,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * state already.
    *
    *
-   * NOTE: This will retain the Riblet in memory until it is popped. To push transient, riblets,
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped. To push transient, riblets,
    * use [RouterNavigator.pushTransientState]
    *
    *
@@ -142,7 +142,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * state already.
    *
    *
-   * NOTE: This will retain the Riblet in memory until it is popped. To push transient, riblets,
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped. To push transient, riblets,
    * use [RouterNavigator.pushTransientState]
    *
    *
@@ -306,70 +306,5 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
       newState: StateT?,
       isPush: Boolean
     )
-  }
-
-  /** Internal class for keeping track of a navigation stack.  */
-  class RouterAndState<StateT : RouterNavigatorState?> internal constructor(
-    /**
-     * Gets the [Router] associated with this state.
-     *
-     * @return [Router]
-     */
-    open val router: Router<*>,
-    /**
-     * Gets the state.
-     *
-     * @return [StateT]
-     */
-    open val state: StateT,
-    /**
-     * Gets the [AttachTransition] associated with this state.
-     *
-     * @return [AttachTransition]
-     */
-    internal open val attachTransition: AttachTransition<*, *>,
-    detachTransition: DetachTransition<*, *>?
-  ) {
-    /**
-     * Gets the [DetachCallback] associated with this state.
-     *
-     * @return [DetachCallback]
-     */
-    internal open var detachCallback: DetachCallback<*, *>? = null
-
-    init {
-      detachCallback = if (detachTransition != null) {
-        if (detachTransition is DetachCallback<*, *>) {
-          detachTransition
-        } else {
-          DetachCallbackWrapper(detachTransition)
-        }
-      } else {
-        null
-      }
-    }
-  }
-
-  /**
-   * Wrapper class to wrap [DetachTransition] calls into the new [DetachCallback]
-   * format.
-   *
-   * @param <RouterT> [RouterT]
-   * @param <StateT> [StateT]
-   </StateT></RouterT> */
-  class DetachCallbackWrapper<RouterT : Router<*>, StateT : RouterNavigatorState> internal constructor(
-    transitionCallback: DetachTransition<RouterT, StateT>
-  ) : DetachCallback<RouterT, StateT>() {
-
-    private val transitionCallback: DetachTransition<RouterT, StateT> = transitionCallback
-
-    override fun willDetachFromHost(
-      router: RouterT,
-      previousState: StateT,
-      newState: StateT?,
-      isPush: Boolean
-    ) {
-      transitionCallback.willDetachFromHost(router, previousState, newState, isPush)
-    }
   }
 }

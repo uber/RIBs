@@ -16,6 +16,7 @@
 package com.uber.rib.core
 
 import androidx.annotation.IntRange
+import androidx.annotation.VisibleForTesting
 import com.uber.rib.core.RouterNavigatorEvents.Companion.instance
 import java.util.ArrayDeque
 import java.util.Locale
@@ -23,17 +24,25 @@ import java.util.Locale
 /**
  * Simple utility for switching a child router based on a state.
  *
- * @param <StateT> type of state to switch on.
+ * @param hostRouter Host router
+ * @param forceRouterCaching Override [RouterNavigatorState.isCacheable] behavior
  */
-open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostRouter: Router<*>) : RouterNavigator<StateT> {
+open class StackRouterNavigator<StateT : RouterNavigatorState>
+@JvmOverloads
+constructor(
+  private val hostRouter: Router<*>,
+  // Enabled by default for safe migration to newer lib version
+  private val forceRouterCaching: Boolean = true
+) : RouterNavigator<StateT> {
 
-  private val navigationStack = ArrayDeque<RouterNavigator.RouterAndState<StateT>>()
+  @VisibleForTesting
+  internal val navigationStack = ArrayDeque<RouterAndState<*, StateT>>()
   private val hostRouterName: String = hostRouter.javaClass.simpleName
-  private var currentTransientRouterAndState: RouterNavigator.RouterAndState<StateT>? = null
+  private var currentTransientRouterAndState: RouterAndState<*, StateT>? = null
 
   override fun popState() {
     // If we are in a transient state, go ahead and pop that state.
-    var fromState: RouterNavigator.RouterAndState<StateT>? = null
+    var fromState: RouterAndState<*, StateT>? = null
     if (currentTransientRouterAndState != null) {
       fromState = currentTransientRouterAndState
       val fromRouterName = fromState?.router?.javaClass?.simpleName
@@ -60,11 +69,11 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
     }
     if (fromState != null) {
       // Pull the incoming state (So we can restore it.)
-      var toState: RouterNavigator.RouterAndState<StateT>? = null
+      var toState: RouterAndState<*, StateT>? = null
       if (!navigationStack.isEmpty()) {
         toState = navigationStack.peek()
       }
-      detachInternal(fromState, toState, false)
+      detachInternal(fromState, toState?.state, false)
       if (toState != null) {
         attachInternal(fromState, toState, false)
       }
@@ -100,7 +109,7 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
         currentTransientRouterAndState = null
       }
     }
-    val newRouterAndState: RouterNavigator.RouterAndState<StateT>
+    val newRouterAndState: RouterAndState<*, StateT>
     when (flag) {
       RouterNavigator.Flag.DEFAULT -> {
         if (newStateIsTop) {
@@ -198,13 +207,17 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
     navigationStack.clear()
   }
 
-  private fun buildNewState(
+  private fun <R : Router<*>> buildNewState(
     newState: StateT,
-    attachTransition: RouterNavigator.AttachTransition<out Router<*>, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<out Router<*>, StateT>?
-  ): RouterNavigator.RouterAndState<StateT> {
-    val newRouter = attachTransition.buildRouter()
-    return RouterNavigator.RouterAndState(newRouter, newState, attachTransition, detachTransition)
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+  ): RouterAndState<R, StateT> {
+    return RouterAndState(
+      newState,
+      attachTransition,
+      detachTransition,
+      forceRouterCaching = forceRouterCaching
+    )
   }
 
   /**
@@ -215,23 +228,16 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
    * @param isPush True if this is from a push.
    */
   private fun attachInternal(
-    fromRouterState: RouterNavigator.RouterAndState<StateT>?,
-    toRouterState: RouterNavigator.RouterAndState<StateT>,
+    fromRouterState: RouterAndState<*, StateT>?,
+    toRouterState: RouterAndState<*, StateT>,
     isPush: Boolean
   ) {
     val toRouterName: String = toRouterState.router.javaClass.simpleName
-    val attachCallback: RouterNavigator.AttachTransition<Router<*>, StateT> = toRouterState.attachTransition as RouterNavigator.AttachTransition<Router<*>, StateT>
     log(String.format(Locale.getDefault(), "Calling willAttachToHost for %s", toRouterName))
-    instance
-      .emitEvent(
-        RouterNavigatorEventType.WILL_ATTACH_TO_HOST, hostRouter, toRouterState.router
-      )
-    attachCallback.willAttachToHost(
-      toRouterState.router,
-      fromRouterState?.state,
-      toRouterState.state,
-      isPush
+    instance.emitEvent(
+      RouterNavigatorEventType.WILL_ATTACH_TO_HOST, hostRouter, toRouterState.router
     )
+    toRouterState.willAttachToHost(fromRouterState?.state, isPush)
     log(
       String.format(
         Locale.getDefault(), "Attaching %s as a child of %s", toRouterName, hostRouterName
@@ -244,28 +250,11 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
    * Handles the detachment of a router.
    *
    * @param fromRouterState Previous state
-   * @param toRouterState New state
-   * @param isPush True if this is caused by a push
-   */
-  private fun detachInternal(
-    fromRouterState: RouterNavigator.RouterAndState<StateT>?,
-    toRouterState: RouterNavigator.RouterAndState<StateT>?,
-    isPush: Boolean
-  ) {
-    detachInternal(
-      fromRouterState, toRouterState?.state, isPush
-    )
-  }
-
-  /**
-   * Handles the detachment of a router.
-   *
-   * @param fromRouterState Previous state
    * @param toState New state
    * @param isPush True if this is caused by a push
    */
   private fun detachInternal(
-    fromRouterState: RouterNavigator.RouterAndState<StateT>?,
+    fromRouterState: RouterAndState<*, StateT>?,
     toState: StateT?,
     isPush: Boolean
   ) {
@@ -273,27 +262,18 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
       log("No router to transition from. Call to detach will be dropped.")
       return
     }
-    val callback: RouterNavigator.DetachCallback<Router<*>, StateT>? = fromRouterState.detachCallback as RouterNavigator.DetachCallback<Router<*>, StateT>?
     val fromRouterName: String = fromRouterState.router.javaClass.simpleName
-    if (callback != null) {
-      log(String.format(Locale.getDefault(), "Calling willDetachFromHost for %s", fromRouterName))
-      callback.willDetachFromHost(
-        fromRouterState.router, fromRouterState.state, toState, isPush
-      )
-    }
+    log(String.format(Locale.getDefault(), "Calling willDetachFromHost for %s", fromRouterName))
+    fromRouterState.willDetachFromHost(toState, isPush)
+
     log(String.format(Locale.getDefault(), "Detaching %s from %s", fromRouterName, hostRouterName))
     hostRouter.detachChild(fromRouterState.router)
-    if (callback != null) {
-      log(
-        String.format(
-          Locale.getDefault(), "Calling onPostDetachFromHost for %s", fromRouterName
-        )
-      )
-      callback.onPostDetachFromHost(fromRouterState.router, toState, isPush)
-    }
+
+    log(String.format(Locale.getDefault(), "Calling onPostDetachFromHost for %s", fromRouterName))
+    fromRouterState.onPostDetachFromHost(toState, isPush)
   }
 
-  private fun peekCurrentRouterAndState(): RouterNavigator.RouterAndState<StateT>? {
+  private fun peekCurrentRouterAndState(): RouterAndState<*, StateT>? {
     return if (currentTransientRouterAndState != null) {
       currentTransientRouterAndState
     } else {
@@ -301,11 +281,11 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
     }
   }
 
-  private fun clearTop(
-    currentRouterAndState: RouterNavigator.RouterAndState<StateT>?,
+  private fun <R : Router<*>> clearTop(
+    currentRouterAndState: RouterAndState<*, StateT>?,
     newState: StateT,
-    attachTransition: RouterNavigator.AttachTransition<out Router<*>, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<out Router<*>, StateT>?
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
   ) {
     var found = false
     var navigationIterator = navigationStack.iterator()
@@ -333,11 +313,11 @@ open class StackRouterNavigator<StateT : RouterNavigatorState>(private val hostR
     }
   }
 
-  private fun reorderTop(
-    currentRouterAndState: RouterNavigator.RouterAndState<StateT>?,
+  private fun <R : Router<*>> reorderTop(
+    currentRouterAndState: RouterAndState<*, StateT>?,
     newState: StateT,
-    attachTransition: RouterNavigator.AttachTransition<out Router<*>, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<out Router<*>, StateT>?
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
   ) {
     var found = false
     val navigationIterator = navigationStack.iterator()

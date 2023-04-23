@@ -596,4 +596,22 @@ class StackRouterNavigatorTest {
     routerNavigator.popState()
     Truth.assertThat(routerNavigator.peekState()).isNull()
   }
+
+  @Test
+  fun buildNewState_whenForceRouterCachingDisabled_shouldPassCorrectConfigInConstructor() {
+    routerNavigator = StackRouterNavigator(hostRouter, forceRouterCaching = false)
+    routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
+    routerNavigator.navigationStack.forEach { routerAndState ->
+      Truth.assertThat(routerAndState.forceRouterCaching).isEqualTo(false)
+    }
+  }
+
+  @Test
+  fun buildNewState_whenForceRouterCachingEnabled_shouldPassCorrectConfigInConstructor() {
+    routerNavigator = StackRouterNavigator(hostRouter, forceRouterCaching = true)
+    routerNavigator.pushState(TestState.STATE_1, attachTransition1, detachTransition1)
+    routerNavigator.navigationStack.forEach { routerAndState ->
+      Truth.assertThat(routerAndState.forceRouterCaching).isEqualTo(true)
+    }
+  }
 }
