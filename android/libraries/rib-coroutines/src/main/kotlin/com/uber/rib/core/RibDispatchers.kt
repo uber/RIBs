@@ -25,10 +25,22 @@ import kotlinx.coroutines.MainScope
 import kotlin.coroutines.ContinuationInterceptor
 
 public object RibDispatchers : RibDispatchersProvider {
-  override val Default: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Default
-  override val Main: MainCoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Main
-  override val IO: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.IO
-  override val Unconfined: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Unconfined
+  @get:JvmSynthetic override val Default: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Default
+  @get:JvmSynthetic override val Main: MainCoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Main
+  @get:JvmSynthetic override val IO: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.IO
+  @get:JvmSynthetic override val Unconfined: CoroutineDispatcher get() = RibCoroutinesConfig.dispatchers.Unconfined
+
+  /*
+   * For Java interop (e.g. accessing with RibDispatchers.getDefault() instead of RibDispatchers.INSTANCE.getDefault()).
+   *
+   * Unfortunately we cannot mark overridden properties as @JvmStatic, so we mark them as synthetic instead and
+   * provide proper @JvmStatic methods.
+   */
+
+  @JvmStatic public fun getDefault(): CoroutineDispatcher = Default
+  @JvmStatic public fun getMain(): MainCoroutineDispatcher = Main
+  @JvmStatic public fun getIO(): CoroutineDispatcher = IO
+  @JvmStatic public fun getUnconfined(): CoroutineDispatcher = Unconfined
 }
 
 public data class DefaultRibDispatchers(
