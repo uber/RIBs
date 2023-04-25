@@ -15,4 +15,4 @@
  */
 package com.uber.rib.core
 
-open class RibTestBasePlaceholder
+public open class RibTestBasePlaceholder

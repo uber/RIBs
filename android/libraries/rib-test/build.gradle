@@ -29,3 +29,7 @@ dependencies {
     api deps.test.mockito
     implementation deps.test.mockitoKotlin
 }
+
+kotlin {
+    explicitApi()
+}
