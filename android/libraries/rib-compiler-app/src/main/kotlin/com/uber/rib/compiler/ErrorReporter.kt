@@ -20,7 +20,7 @@ import javax.lang.model.element.Element
 import javax.tools.Diagnostic
 
 /** Holds utilities for reporting errors.  */
-open class ErrorReporter(private val messager: Messager) {
+public open class ErrorReporter(private val messager: Messager) {
   @JvmOverloads
   internal open fun reportError(message: CharSequence, element: Element? = null) {
     messager.printMessage(Diagnostic.Kind.ERROR, message, element)

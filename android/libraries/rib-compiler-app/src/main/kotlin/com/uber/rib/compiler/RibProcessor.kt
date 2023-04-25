@@ -25,7 +25,7 @@ import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
 /** Process the annotations with [ProcessorPipeline].  */
-abstract class RibProcessor : AbstractProcessor(), ProcessContext {
+public abstract class RibProcessor : AbstractProcessor(), ProcessContext {
 
   override var errorReporter: ErrorReporter? = null
     protected set
@@ -34,7 +34,7 @@ abstract class RibProcessor : AbstractProcessor(), ProcessContext {
   override var typesUtils: Types? = null
     protected set
 
-  var processorPipelines: MutableList<ProcessorPipeline> = ArrayList()
+  public var processorPipelines: MutableList<ProcessorPipeline> = ArrayList()
 
   @Synchronized
   override fun init(processingEnv: ProcessingEnvironment) {
