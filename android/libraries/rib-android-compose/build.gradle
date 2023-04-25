@@ -53,3 +53,7 @@ dependencies {
     testImplementation deps.test.mockitoKotlin
     testImplementation project(":libraries:rib-test")
 }
+
+kotlin {
+    explicitApi()
+}

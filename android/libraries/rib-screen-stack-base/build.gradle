@@ -42,3 +42,7 @@ dependencies {
     implementation deps.kotlin.coroutinesAndroid
     implementation deps.kotlin.coroutinesRx2
 }
+
+kotlin {
+    explicitApi()
+}
