@@ -33,3 +33,7 @@ dependencies {
     testImplementation deps.test.mockitoKotlin
     testImplementation deps.test.truth
 }
+
+kotlin {
+    explicitApi()
+}

@@ -25,9 +25,9 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  *
  * @param <StateT> type of state to switch on.
  */
-interface RouterNavigator<StateT : RouterNavigatorState> {
+public interface RouterNavigator<StateT : RouterNavigatorState> {
   /** Determine how pushes will affect the stack  */
-  enum class Flag {
+  public enum class Flag {
     /** Push a new state to the top of the navigation stack.  */
     DEFAULT,
 
@@ -72,7 +72,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
   }
 
   /** Pop the current state and rewind to the previous state (if there is a previous state).  */
-  fun popState()
+  public fun popState()
 
   /**
    * Switch to a new state - this will switch out children if the state is not the current active
@@ -87,7 +87,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param detachTransition method to clean up child router when removed.
    * @param <R> router type to detach.
    </R> */
-  fun <R : Router<*>> pushState(
+  public fun <R : Router<*>> pushState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>,
     detachTransition: DetachTransition<R, StateT>?
@@ -107,7 +107,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param detachTransition method to clean up child router when removed.
    * @param <R> router type to detach.
    </R> */
-  fun <R : Router<*>> pushState(
+  public fun <R : Router<*>> pushState(
     newState: StateT,
     flag: Flag,
     attachTransition: AttachTransition<R, StateT>,
@@ -131,7 +131,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param <R> router type to detach.
    </R> */
   @Deprecated("")
-  fun <R : Router<*>> pushRetainedState(
+  public fun <R : Router<*>> pushRetainedState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>,
     detachTransition: DetachTransition<R, StateT>?
@@ -153,7 +153,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param <R> [Router] type.
    </R> */
   @Deprecated("")
-  fun <R : Router<*>> pushRetainedState(
+  public fun <R : Router<*>> pushRetainedState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>
   )
@@ -174,7 +174,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param <R> router type to detach.
    </R> */
   @Deprecated("")
-  fun <R : Router<*>> pushTransientState(
+  public fun <R : Router<*>> pushTransientState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>,
     detachTransition: DetachTransition<R, StateT>?
@@ -195,7 +195,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param <R> [Router] type.
    </R> */
   @Deprecated("")
-  fun <R : Router<*>> pushTransientState(
+  public fun <R : Router<*>> pushTransientState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>
   )
@@ -205,14 +205,14 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    *
    * @return the top [Router] on the stack.
    */
-  fun peekRouter(): Router<*>?
+  public fun peekRouter(): Router<*>?
 
   /**
    * Peek the top [StateT] on the stack.
    *
    * @return the top [StateT] on the stack.
    */
-  fun peekState(): StateT?
+  public fun peekState(): StateT?
 
   /**
    * Gets the size of the navigation stack.
@@ -220,26 +220,26 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @return Size of the navigation stack.
    */
   @IntRange(from = 0)
-  fun size(): Int
+  public fun size(): Int
 
   /**
    * Must be called when host interactor is going to detach. This will pop the current active router
    * and clear the entire stack.
    */
-  fun hostWillDetach()
+  public fun hostWillDetach()
 
   /**
    * Allows consumers to write custom attachment logic when switching states.
    *
    * @param <StateT> state type.
    </StateT> */
-  interface AttachTransition<RouterT : Router<*>, StateT : RouterNavigatorState> {
+  public interface AttachTransition<RouterT : Router<*>, StateT : RouterNavigatorState> {
     /**
      * Constructs a new [RouterT] instance. This will only be called once.
      *
      * @return the newly attached child router.
      */
-    fun buildRouter(): RouterT
+    public fun buildRouter(): RouterT
 
     /**
      * Prepares the router for a state transition. [StackRouterNavigator] will handling
@@ -250,7 +250,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
      * @param newState state the navigator is transitioning to.
      */
     @UIEffect
-    fun willAttachToHost(
+    public fun willAttachToHost(
       router: RouterT,
       previousState: StateT?,
       newState: StateT,
@@ -265,7 +265,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param <RouterT> [RouterT]
    * @param <StateT> [StateT]
    </StateT></RouterT> */
-  abstract class DetachCallback<RouterT : Router<*>, StateT : RouterNavigatorState> : DetachTransition<RouterT, StateT> {
+  public abstract class DetachCallback<RouterT : Router<*>, StateT : RouterNavigatorState> : DetachTransition<RouterT, StateT> {
     override fun willDetachFromHost(
       router: RouterT,
       previousState: StateT,
@@ -280,7 +280,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
      * @param router [Router]
      * @param newState [StateT]
      */
-    open fun onPostDetachFromHost(router: RouterT, newState: StateT?, isPush: Boolean) {}
+    public open fun onPostDetachFromHost(router: RouterT, newState: StateT?, isPush: Boolean) {}
   }
 
   /**
@@ -290,7 +290,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
    * @param <StateT> state type.
    </StateT></RouterT> */
   @PolyUIType
-  interface DetachTransition<RouterT : Router<*>, StateT : RouterNavigatorState> {
+  public interface DetachTransition<RouterT : Router<*>, StateT : RouterNavigatorState> {
     /**
      * Notifies consumer that [StackRouterNavigator] is going to detach this router. Consumers
      * should remove any views and perform any required cleanup.
@@ -300,7 +300,7 @@ interface RouterNavigator<StateT : RouterNavigatorState> {
      * @param newState state the navigator is transition in to (if any).
      */
     @PolyUIEffect
-    fun willDetachFromHost(
+    public fun willDetachFromHost(
       router: RouterT,
       previousState: StateT,
       newState: StateT?,
