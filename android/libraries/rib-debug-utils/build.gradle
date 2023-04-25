@@ -23,3 +23,7 @@ targetCompatibility = deps.build.javaVersion.toString()
 dependencies {
     implementation project(":libraries:rib-base")
 }
+
+kotlin {
+    explicitApi()
+}
