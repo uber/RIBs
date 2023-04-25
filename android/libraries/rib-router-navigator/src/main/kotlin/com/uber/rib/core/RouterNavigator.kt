@@ -26,12 +26,12 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * @param <StateT> type of state to switch on.
  */
 public interface RouterNavigator<StateT : RouterNavigatorState> {
-  /** Determine how pushes will affect the stack  */
+  /** Determine how pushes will affect the stack */
   public enum class Flag {
-    /** Push a new state to the top of the navigation stack.  */
+    /** Push a new state to the top of the navigation stack. */
     DEFAULT,
 
-    /** Push a state that will not be retained when the next state is pushed.  */
+    /** Push a state that will not be retained when the next state is pushed. */
     TRANSIENT,
 
     /**
@@ -55,12 +55,12 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
      */
     REORDER_TO_TOP,
 
-    /** Clears the previous stack (no back stack) and pushes the state on to the top of the stack  */
+    /** Clears the previous stack (no back stack) and pushes the state on to the top of the stack */
     NEW_TASK,
 
     /**
-     * Clears the previous stack (no back stack) and pushes the state on to the top of the stack.
-     * If the state is already on the top of the stack, it is detached and replaced.
+     * Clears the previous stack (no back stack) and pushes the state on to the top of the stack. If
+     * the state is already on the top of the stack, it is detached and replaced.
      */
     NEW_TASK_REPLACE,
 
@@ -71,133 +71,122 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
     REPLACE_TOP,
   }
 
-  /** Pop the current state and rewind to the previous state (if there is a previous state).  */
+  /** Pop the current state and rewind to the previous state (if there is a previous state). */
   public fun popState()
 
   /**
    * Switch to a new state - this will switch out children if the state is not the current active
    * state already.
    *
-   *
-   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped or detached by a push with
-   * certain flags.
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE)
+   * until it is popped or detached by a push with certain flags.
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param detachTransition method to clean up child router when removed.
-   * @param <R> router type to detach.
-   </R> */
+   * @param <R> router type to detach. </R>
+   */
   public fun <R : Router<*>> pushState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>,
-    detachTransition: DetachTransition<R, StateT>?
+    detachTransition: DetachTransition<R, StateT>?,
   )
 
   /**
    * Switch to a new state - this will switch out children if the state is not the current active
-   * state already. The transition will be controlled by the [StackRouterNavigator.Flag]
-   * provided.
+   * state already. The transition will be controlled by the [StackRouterNavigator.Flag] provided.
    *
-   *
-   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped or detached by a push with
-   * certain flags.
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE)
+   * until it is popped or detached by a push with certain flags.
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param detachTransition method to clean up child router when removed.
-   * @param <R> router type to detach.
-   </R> */
+   * @param <R> router type to detach. </R>
+   */
   public fun <R : Router<*>> pushState(
     newState: StateT,
     flag: Flag,
     attachTransition: AttachTransition<R, StateT>,
-    detachTransition: DetachTransition<R, StateT>?
+    detachTransition: DetachTransition<R, StateT>?,
   )
 
   /**
    * Switch to a new state - this will switch out children if the state is not the current active
    * state already.
    *
-   *
-   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped. To push transient, riblets,
-   * use [RouterNavigator.pushTransientState]
-   *
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE)
+   * until it is popped. To push transient, riblets, use [RouterNavigator.pushTransientState]
    *
    * Deprecated: Use pushState(newState, attachTransition, detachTransition)
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param detachTransition method to clean up child router when removed.
-   * @param <R> router type to detach.
-   </R> */
+   * @param <R> router type to detach. </R>
+   */
   @Deprecated("")
   public fun <R : Router<*>> pushRetainedState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>,
-    detachTransition: DetachTransition<R, StateT>?
+    detachTransition: DetachTransition<R, StateT>?,
   )
 
   /**
    * Switch to a new state - this will switch out children if the state is not the current active
    * state already.
    *
-   *
-   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE) until it is popped. To push transient, riblets,
-   * use [RouterNavigator.pushTransientState]
-   *
+   * NOTE: This will retain the Riblet in memory (if [RouterNavigatorState.isCacheable] is TRUE)
+   * until it is popped. To push transient, riblets, use [RouterNavigator.pushTransientState]
    *
    * Deprecated: Use pushState(newState, attachTransition, null)
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
-   * @param <R> [Router] type.
-   </R> */
+   * @param <R> [Router] type. </R>
+   */
   @Deprecated("")
   public fun <R : Router<*>> pushRetainedState(
     newState: StateT,
-    attachTransition: AttachTransition<R, StateT>
+    attachTransition: AttachTransition<R, StateT>,
   )
 
   /**
    * Switch to a new transient state - this will switch out children if the state is not the current
    * active state already.
    *
-   *
    * NOTE: Transient states do not live in the back navigation stack.
-   *
    *
    * Deprecated: Use pushState(newState, Flag.TRANSIENT, attachTransition, detachTransition)
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
    * @param detachTransition method to clean up child router when removed.
-   * @param <R> router type to detach.
-   </R> */
+   * @param <R> router type to detach. </R>
+   */
   @Deprecated("")
   public fun <R : Router<*>> pushTransientState(
     newState: StateT,
     attachTransition: AttachTransition<R, StateT>,
-    detachTransition: DetachTransition<R, StateT>?
+    detachTransition: DetachTransition<R, StateT>?,
   )
 
   /**
    * Switch to a new transient state - this will switch out children if the state is not the current
    * active state already.
    *
-   *
    * NOTE: Transient states do not live in the back navigation stack.
-   *
    *
    * Deprecated: Use pushState(newState, Flag.TRANSIENT, attachTransition, null)
    *
    * @param newState to switch to.
    * @param attachTransition method to attach child router.
-   * @param <R> [Router] type.
-   </R> */
+   * @param <R> [Router] type. </R>
+   */
   @Deprecated("")
   public fun <R : Router<*>> pushTransientState(
     newState: StateT,
-    attachTransition: AttachTransition<R, StateT>
+    attachTransition: AttachTransition<R, StateT>,
   )
 
   /**
@@ -219,8 +208,7 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
    *
    * @return Size of the navigation stack.
    */
-  @IntRange(from = 0)
-  public fun size(): Int
+  @IntRange(from = 0) public fun size(): Int
 
   /**
    * Must be called when host interactor is going to detach. This will pop the current active router
@@ -231,8 +219,8 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
   /**
    * Allows consumers to write custom attachment logic when switching states.
    *
-   * @param <StateT> state type.
-   </StateT> */
+   * @param <StateT> state type. </StateT>
+   */
   public interface AttachTransition<RouterT : Router<*>, StateT : RouterNavigatorState> {
     /**
      * Constructs a new [RouterT] instance. This will only be called once.
@@ -242,8 +230,8 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
     public fun buildRouter(): RouterT
 
     /**
-     * Prepares the router for a state transition. [StackRouterNavigator] will handling
-     * attaching the router, but consumers of this should handle adding any views.
+     * Prepares the router for a state transition. [StackRouterNavigator] will handling attaching
+     * the router, but consumers of this should handle adding any views.
      *
      * @param router [RouterT] that is being attached.
      * @param previousState state the navigator is transition from (if any).
@@ -254,7 +242,7 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
       router: RouterT,
       previousState: StateT?,
       newState: StateT,
-      isPush: Boolean
+      isPush: Boolean,
     )
   }
 
@@ -263,19 +251,20 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
    * custom state prior to and immediately post detach.
    *
    * @param <RouterT> [RouterT]
-   * @param <StateT> [StateT]
-   </StateT></RouterT> */
-  public abstract class DetachCallback<RouterT : Router<*>, StateT : RouterNavigatorState> : DetachTransition<RouterT, StateT> {
+   * @param <StateT> [StateT] </StateT></RouterT>
+   */
+  public abstract class DetachCallback<RouterT : Router<*>, StateT : RouterNavigatorState> :
+    DetachTransition<RouterT, StateT> {
     override fun willDetachFromHost(
       router: RouterT,
       previousState: StateT,
       newState: StateT?,
-      isPush: Boolean
-    ) {
-    }
+      isPush: Boolean,
+    ) {}
 
     /**
-     * Notifies the consumer that the [StackRouterNavigator] has detached the supplied [ ]. Consumers can complete any post detachment behavior here.
+     * Notifies the consumer that the [StackRouterNavigator] has detached the supplied [ ].
+     * Consumers can complete any post detachment behavior here.
      *
      * @param router [Router]
      * @param newState [StateT]
@@ -287,8 +276,8 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
    * Allows consumers to write custom detachment logic wen switching states.
    *
    * @param <RouterT> router type to detach.
-   * @param <StateT> state type.
-   </StateT></RouterT> */
+   * @param <StateT> state type. </StateT></RouterT>
+   */
   @PolyUIType
   public interface DetachTransition<RouterT : Router<*>, StateT : RouterNavigatorState> {
     /**
@@ -304,7 +293,7 @@ public interface RouterNavigator<StateT : RouterNavigatorState> {
       router: RouterT,
       previousState: StateT,
       newState: StateT?,
-      isPush: Boolean
+      isPush: Boolean,
     )
   }
 }

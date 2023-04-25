@@ -24,5 +24,5 @@ public open class RouterNavigatorEvent(
   public open val parentRouter: Router<*>,
 
   /** @return the instance of child [Router] */
-  public open val router: Router<*>
+  public open val router: Router<*>,
 )

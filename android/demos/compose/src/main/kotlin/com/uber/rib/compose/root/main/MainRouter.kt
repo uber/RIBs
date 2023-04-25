@@ -20,8 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
-import com.uber.rib.compose.root.main.loggedIn.LoggedInRouter
-import com.uber.rib.compose.root.main.loggedOut.LoggedOutRouter
+import com.uber.rib.compose.root.main.loggedin.LoggedInRouter
+import com.uber.rib.compose.root.main.loggedout.LoggedOutRouter
 import com.uber.rib.core.BasicViewRouter
 
 class MainRouter(

@@ -32,11 +32,10 @@ public open class StackRouterNavigator<StateT : RouterNavigatorState>
 constructor(
   private val hostRouter: Router<*>,
   // Enabled by default for safe migration to newer lib version
-  private val forceRouterCaching: Boolean = true
+  private val forceRouterCaching: Boolean = true,
 ) : RouterNavigator<StateT> {
 
-  @VisibleForTesting
-  internal val navigationStack = ArrayDeque<RouterAndState<*, StateT>>()
+  @VisibleForTesting internal val navigationStack = ArrayDeque<RouterAndState<*, StateT>>()
   private val hostRouterName: String = hostRouter.javaClass.simpleName
   private var currentTransientRouterAndState: RouterAndState<*, StateT>? = null
 
@@ -51,8 +50,8 @@ constructor(
         String.format(
           Locale.getDefault(),
           "Preparing to pop existing transient state for router: %s",
-          fromRouterName
-        )
+          fromRouterName,
+        ),
       )
     } else {
       if (!navigationStack.isEmpty()) {
@@ -62,8 +61,8 @@ constructor(
           String.format(
             Locale.getDefault(),
             "Preparing to pop existing state for router: %s",
-            fromRouterName
-          )
+            fromRouterName,
+          ),
         )
       }
     }
@@ -85,7 +84,7 @@ constructor(
   override fun <R : Router<*>> pushState(
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ) {
     pushState(newState, RouterNavigator.Flag.DEFAULT, attachTransition, detachTransition)
   }
@@ -94,7 +93,7 @@ constructor(
     newState: StateT,
     flag: RouterNavigator.Flag,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ) {
     val fromState = peekState()
     val currentRouterAndState = peekCurrentRouterAndState()
@@ -148,15 +147,16 @@ constructor(
         }
         reorderTop(currentRouterAndState, newState, attachTransition, detachTransition)
       }
-      RouterNavigator.Flag.NEW_TASK -> if (currentRouterAndState != null && newStateIsTop) {
-        navigationStack.clear()
-        navigationStack.push(currentRouterAndState)
-      } else {
-        detachAll()
-        newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
-        attachInternal(currentRouterAndState, newRouterAndState, true)
-        navigationStack.push(newRouterAndState)
-      }
+      RouterNavigator.Flag.NEW_TASK ->
+        if (currentRouterAndState != null && newStateIsTop) {
+          navigationStack.clear()
+          navigationStack.push(currentRouterAndState)
+        } else {
+          detachAll()
+          newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
+          attachInternal(currentRouterAndState, newRouterAndState, true)
+          navigationStack.push(newRouterAndState)
+        }
       RouterNavigator.Flag.NEW_TASK_REPLACE -> {
         detachAll()
         newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
@@ -192,14 +192,15 @@ constructor(
   /**
    * This will pop the current active router and clear the entire stack.
    *
-   *
    * NOTE: This must be called when host interactor is going to detach.
    */
   public open fun detachAll() {
     log(
       String.format(
-        Locale.getDefault(), "Detaching RouterNavigator from host -> %s", hostRouterName
-      )
+        Locale.getDefault(),
+        "Detaching RouterNavigator from host -> %s",
+        hostRouterName,
+      ),
     )
     val currentRouterAndState = peekCurrentRouterAndState()
     detachInternal(currentRouterAndState, null as StateT?, false)
@@ -210,13 +211,13 @@ constructor(
   private fun <R : Router<*>> buildNewState(
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ): RouterAndState<R, StateT> {
     return RouterAndState(
       newState,
       attachTransition,
       detachTransition,
-      forceRouterCaching = forceRouterCaching
+      forceRouterCaching = forceRouterCaching,
     )
   }
 
@@ -230,18 +231,23 @@ constructor(
   private fun attachInternal(
     fromRouterState: RouterAndState<*, StateT>?,
     toRouterState: RouterAndState<*, StateT>,
-    isPush: Boolean
+    isPush: Boolean,
   ) {
     val toRouterName: String = toRouterState.router.javaClass.simpleName
     log(String.format(Locale.getDefault(), "Calling willAttachToHost for %s", toRouterName))
     instance.emitEvent(
-      RouterNavigatorEventType.WILL_ATTACH_TO_HOST, hostRouter, toRouterState.router
+      RouterNavigatorEventType.WILL_ATTACH_TO_HOST,
+      hostRouter,
+      toRouterState.router,
     )
     toRouterState.willAttachToHost(fromRouterState?.state, isPush)
     log(
       String.format(
-        Locale.getDefault(), "Attaching %s as a child of %s", toRouterName, hostRouterName
-      )
+        Locale.getDefault(),
+        "Attaching %s as a child of %s",
+        toRouterName,
+        hostRouterName,
+      ),
     )
     hostRouter.attachChild(toRouterState.router)
   }
@@ -256,7 +262,7 @@ constructor(
   private fun detachInternal(
     fromRouterState: RouterAndState<*, StateT>?,
     toState: StateT?,
-    isPush: Boolean
+    isPush: Boolean,
   ) {
     if (fromRouterState == null) {
       log("No router to transition from. Call to detach will be dropped.")
@@ -285,7 +291,7 @@ constructor(
     currentRouterAndState: RouterAndState<*, StateT>?,
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ) {
     var found = false
     var navigationIterator = navigationStack.iterator()
@@ -317,7 +323,7 @@ constructor(
     currentRouterAndState: RouterAndState<*, StateT>?,
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ) {
     var found = false
     val navigationIterator = navigationStack.iterator()
@@ -354,7 +360,7 @@ constructor(
   override fun <R : Router<*>> pushRetainedState(
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ) {
     pushState(newState, attachTransition, detachTransition)
   }
@@ -362,7 +368,7 @@ constructor(
   @Deprecated("")
   override fun <R : Router<*>> pushRetainedState(
     newState: StateT,
-    attachTransition: RouterNavigator.AttachTransition<R, StateT>
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
   ) {
     pushState(newState, attachTransition, null)
   }
@@ -371,7 +377,7 @@ constructor(
   override fun <R : Router<*>> pushTransientState(
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ) {
     pushState(newState, RouterNavigator.Flag.TRANSIENT, attachTransition, detachTransition)
   }
@@ -379,7 +385,7 @@ constructor(
   @Deprecated("")
   override fun <R : Router<*>> pushTransientState(
     newState: StateT,
-    attachTransition: RouterNavigator.AttachTransition<R, StateT>
+    attachTransition: RouterNavigator.AttachTransition<R, StateT>,
   ) {
     pushState(newState, RouterNavigator.Flag.TRANSIENT, attachTransition, null)
   }
@@ -390,7 +396,7 @@ constructor(
   }
 
   public companion object {
-    /** Writes out to the debug log.  */
+    /** Writes out to the debug log. */
     private fun log(text: String) {
       Rib.getConfiguration().handleDebugMessage("%s: $text", "RouterNavigator")
     }
@@ -406,8 +412,8 @@ constructor(
       String.format(
         Locale.getDefault(),
         "Installed new RouterNavigator: Hosting Router -> %s",
-        hostRouterName
-      )
+        hostRouterName,
+      ),
     )
   }
 }

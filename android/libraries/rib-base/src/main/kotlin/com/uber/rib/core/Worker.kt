@@ -28,7 +28,8 @@ public interface Worker {
   /**
    * Specifies in which [CoroutineDispatcher] WorkerBind.bind will be operating on
    *
-   * NOTE: Default implementation will be using RibDispatchers.Unconfined to keep "caller" backward compatibility on existing usages
+   * NOTE: Default implementation will be using RibDispatchers.Unconfined to keep "caller" backward
+   * compatibility on existing usages
    */
   @JvmDefault
   public val coroutineDispatcher: CoroutineDispatcher

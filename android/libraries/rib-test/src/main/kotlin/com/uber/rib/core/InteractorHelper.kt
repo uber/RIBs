@@ -20,7 +20,7 @@ import org.mockito.kotlin.isA
 import org.mockito.kotlin.isNull
 import org.mockito.kotlin.verify
 
-/** The helper to test [Interactor].  */
+/** The helper to test [Interactor]. */
 public object InteractorHelper {
   /**
    * Attaches the [Interactor] using a mock router.
@@ -37,7 +37,7 @@ public object InteractorHelper {
     interactor: Interactor<P, R>,
     presenter: P,
     router: R,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) {
     interactor.actualPresenter = presenter
     interactor.setRouterInternal(router)

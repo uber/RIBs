@@ -20,7 +20,7 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
-/** The processor pipeline that processes one specific annotation.  */
+/** The processor pipeline that processes one specific annotation. */
 public abstract class ProcessorPipeline(protected var processContext: ProcessContext) {
   protected var errorReporter: ErrorReporter? = processContext.errorReporter
   protected var elementUtils: Elements? = processContext.elementUtils
@@ -40,6 +40,6 @@ public abstract class ProcessorPipeline(protected var processContext: ProcessCon
   @Throws(Throwable::class)
   protected abstract fun processAnnotations(
     annotations: Set<TypeElement>,
-    roundEnv: RoundEnvironment
+    roundEnv: RoundEnvironment,
   )
 }

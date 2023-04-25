@@ -22,8 +22,8 @@ public open class InteractorAnnotatedClass(
   typeElement: TypeElement,
   /** @return the list of dependencies. */
   public open val dependencies: List<VariableElement>,
-  /** @return Whether this interactor extends BasicInteractor.  */
-  public open val isBasic: Boolean
+  /** @return Whether this interactor extends BasicInteractor. */
+  public open val isBasic: Boolean,
 ) : AnnotatedClass(typeElement) {
 
   open override val nameSuffix: String

@@ -20,7 +20,7 @@ import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
-/** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent]  */
+/** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent] */
 public class RouterNavigatorEvents private constructor() {
 
   private val _events = MutableSharedFlow<RouterNavigatorEvent>(0, 1, BufferOverflow.DROP_OLDEST)
@@ -32,7 +32,7 @@ public class RouterNavigatorEvents private constructor() {
   @JvmName("_getEvents")
   @Deprecated( // Deprecate for Kotlin consumers.
     message = "Use the 'events' property",
-    replaceWith = ReplaceWith("events")
+    replaceWith = ReplaceWith("events"),
   )
   public fun getEvents(): Observable<RouterNavigatorEvent> = events
 
@@ -49,7 +49,6 @@ public class RouterNavigatorEvents private constructor() {
 
   public companion object {
     /** @return the singleton instance */
-    @JvmStatic
-    public val instance: RouterNavigatorEvents = RouterNavigatorEvents()
+    @JvmStatic public val instance: RouterNavigatorEvents = RouterNavigatorEvents()
   }
 }

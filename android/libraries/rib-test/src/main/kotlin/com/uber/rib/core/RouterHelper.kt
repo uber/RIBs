@@ -26,7 +26,7 @@ import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.verification.VerificationMode
 
-/** The helper to test [Router].  */
+/** The helper to test [Router]. */
 public object RouterHelper {
   /**
    * Dispatches attachment to a router.
@@ -110,8 +110,7 @@ public object RouterHelper {
    */
   @JvmStatic
   public fun verifyNotAttached(router: Router<*>) {
-    verify(router, never())
-      .dispatchAttach(or(isNull(), isA<Bundle>()), any())
+    verify(router, never()).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**

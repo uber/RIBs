@@ -171,7 +171,9 @@ class WorkerBinderTest {
     bindFakeWorker()
     verify(workerBinderListener).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.firstValue.assertWorkerDuration(
-      "FakeWorker", WorkerEvent.START, RibDispatchers.Unconfined
+      "FakeWorker",
+      WorkerEvent.START,
+      RibDispatchers.Unconfined,
     )
   }
 
@@ -182,7 +184,9 @@ class WorkerBinderTest {
     unbinder.unbind()
     verify(workerBinderListener, times(2)).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.secondValue.assertWorkerDuration(
-      "FakeWorker", WorkerEvent.STOP, RibDispatchers.Unconfined
+      "FakeWorker",
+      WorkerEvent.STOP,
+      RibDispatchers.Unconfined,
     )
   }
 
@@ -195,7 +199,7 @@ class WorkerBinderTest {
   private fun WorkerBinderInfo.assertWorkerDuration(
     expectedWorkerClassName: String,
     expectedWorkerEvent: WorkerEvent,
-    expectedWorkerBinderThreadingType: CoroutineDispatcher
+    expectedWorkerBinderThreadingType: CoroutineDispatcher,
   ) {
     assertThat(workerName).contains(expectedWorkerClassName)
     assertThat(workerEvent).isEqualTo(expectedWorkerEvent)

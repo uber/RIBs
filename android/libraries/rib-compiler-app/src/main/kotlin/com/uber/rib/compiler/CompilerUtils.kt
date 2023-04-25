@@ -18,7 +18,7 @@ package com.uber.rib.compiler
 import javax.lang.model.element.Element
 import javax.lang.model.element.PackageElement
 
-/** Handy functions for generating code.  */
+/** Handy functions for generating code. */
 public open class CompilerUtils {
   public companion object {
     /**
@@ -29,8 +29,9 @@ public open class CompilerUtils {
     public fun packageNameOf(type: Element): String {
       var type = type
       while (true) {
-        val enclosing = type.enclosingElement
-          ?: throw RuntimeException("null value from type.getEnclosingElement()")
+        val enclosing =
+          type.enclosingElement
+            ?: throw RuntimeException("null value from type.getEnclosingElement()")
         if (enclosing is PackageElement) {
           return enclosing.qualifiedName.toString()
         }

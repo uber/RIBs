@@ -21,8 +21,8 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
-import com.uber.rib.compose.root.main.loggedIn.LoggedInScope
-import com.uber.rib.compose.root.main.loggedOut.LoggedOutScope
+import com.uber.rib.compose.root.main.loggedin.LoggedInScope
+import com.uber.rib.compose.root.main.loggedout.LoggedOutScope
 import com.uber.rib.compose.util.AnalyticsClient
 import com.uber.rib.compose.util.ExperimentClient
 import com.uber.rib.compose.util.LoggerClient
