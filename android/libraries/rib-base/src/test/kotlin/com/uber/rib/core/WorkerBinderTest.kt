@@ -24,14 +24,33 @@ import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class WorkerBinderTest {
+
+  @get:Rule val ribCoroutinesRule = RibCoroutinesRule()
+
   private val worker: Worker = mock()
+  private val workerBinderListener: WorkerBinderListener = mock()
+
+  private val fakeWorker = FakeWorker()
+  private val interactor = FakeInteractor<Presenter, Router<*>>()
+
+  @Before
+  fun setUp() {
+    WorkerBinder.initializeMonitoring(workerBinderListener)
+  }
 
   @Test
   fun bind_whenInteractorAttached_shouldStartWorker() {
@@ -146,6 +165,43 @@ class WorkerBinderTest {
     verify(worker, times(1)).onStop()
     unbinder.unbind()
     verify(worker, times(1)).onStop()
+  }
+
+  @Test
+  fun bind_withUnconfinedCoroutineDispatchers_shouldReportBinderInformationForOnStart() = runTest {
+    val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
+    bindFakeWorker()
+    verify(workerBinderListener).onBindCompleted(binderDurationCaptor.capture())
+    binderDurationCaptor.firstValue.assertWorkerDuration(
+      "FakeWorker", WorkerEvent.START, RibDispatchers.Unconfined
+    )
+  }
+
+  @Test
+  fun unbind_withUnconfinedCoroutineDispatchers_shouldReportBinderDurationForOnStop() = runTest {
+    val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
+    val unbinder = bindFakeWorker()
+    unbinder.unbind()
+    verify(workerBinderListener, times(2)).onBindCompleted(binderDurationCaptor.capture())
+    binderDurationCaptor.secondValue.assertWorkerDuration(
+      "FakeWorker", WorkerEvent.STOP, RibDispatchers.Unconfined
+    )
+  }
+
+  private fun bindFakeWorker(): WorkerUnbinder {
+    interactor.attach()
+    interactor.enableTestScopeOverride()
+    return bind(interactor, fakeWorker)
+  }
+
+  private fun WorkerBinderInfo.assertWorkerDuration(
+    expectedWorkerClassName: String,
+    expectedWorkerEvent: WorkerEvent,
+    expectedWorkerBinderThreadingType: CoroutineDispatcher
+  ) {
+    assertThat(workerName).contains(expectedWorkerClassName)
+    assertThat(workerEvent).isEqualTo(expectedWorkerEvent)
+    assertThat(coroutineDispatcher).isEqualTo(expectedWorkerBinderThreadingType)
   }
 }
 
