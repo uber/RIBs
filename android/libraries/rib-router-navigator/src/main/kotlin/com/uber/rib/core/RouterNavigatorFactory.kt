@@ -24,7 +24,7 @@ package com.uber.rib.core
  *
  * @param creationStrategy [Strategy] `null` for the default strategy.
  */
-class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
+public class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
   /**
    * Generate a new [RouterNavigator].
    *
@@ -32,12 +32,12 @@ class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
    * @param <StateT> [StateT] type for the [RouterNavigator]
    * @return A new [RouterNavigator]
    */
-  open fun <StateT : RouterNavigatorState> create(hostRouter: Router<*>): RouterNavigator<StateT> {
+  public open fun <StateT : RouterNavigatorState> create(hostRouter: Router<*>): RouterNavigator<StateT> {
     return creationStrategy?.create(hostRouter) ?: StackRouterNavigator(hostRouter)
   }
 
   /** Strategy to employ when using this factory to generate new [RouterNavigator]s.  */
-  interface Strategy {
+  public interface Strategy {
     /**
      * Generate a new [RouterNavigator].
      *
@@ -45,6 +45,6 @@ class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
      * @param <StateT> [StateT] type for the [RouterNavigator]
      * @return A new [RouterNavigator]
      */
-    fun <StateT : RouterNavigatorState> create(hostRouter: Router<*>): RouterNavigator<StateT>
+    public fun <StateT : RouterNavigatorState> create(hostRouter: Router<*>): RouterNavigator<StateT>
   }
 }

@@ -21,7 +21,7 @@ import java.util.ArrayList
 import javax.lang.model.element.TypeElement
 
 /** The processor pipeline for [RibInteractor]  */
-open class RibInteractorProcessorPipeline(
+public open class RibInteractorProcessorPipeline(
   processContext: ProcessContext,
   private var interactorGenerator: Generator<InteractorAnnotatedClass>?
 ) : TypeProcessorPipeline(processContext) {
@@ -68,9 +68,9 @@ open class RibInteractorProcessorPipeline(
     }
   }
 
-  companion object {
+  public companion object {
     @JvmField
-    val SUPPORT_ANNOTATION_TYPE: Class<RibInteractor> = RibInteractor::class.java
+    public val SUPPORT_ANNOTATION_TYPE: Class<RibInteractor> = RibInteractor::class.java
   }
 
   /**

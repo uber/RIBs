@@ -16,9 +16,9 @@
 package com.uber.rib.compiler
 
 /** Constant values used by the annotation processor.  */
-open class Constants {
-  companion object {
+public open class Constants {
+  public companion object {
     /** {@inheritDoc}  */
-    const val INTERACTOR_SUFFIX = "Interactor"
+    public const val INTERACTOR_SUFFIX: String = "Interactor"
   }
 }

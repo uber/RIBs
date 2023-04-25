@@ -16,11 +16,11 @@
 package com.uber.rib.core
 
 /** Represents states for [StackRouterNavigator]. Most often implemented with an enum. */
-interface RouterNavigatorState {
+public interface RouterNavigatorState {
 
   /** @return identifier for a [StackRouterNavigator] state. */
   @JvmDefault
-  fun stateName(): String {
+  public fun stateName(): String {
     return if (this.javaClass.isEnum) {
       (this as Enum<*>).name
     } else {
@@ -40,5 +40,5 @@ interface RouterNavigatorState {
    * [RouterNavigator.AttachTransition]
    */
   @JvmDefault
-  fun isCacheable(): Boolean = false
+  public fun isCacheable(): Boolean = false
 }

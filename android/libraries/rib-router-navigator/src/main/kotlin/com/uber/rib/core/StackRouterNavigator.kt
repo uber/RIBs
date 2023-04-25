@@ -27,7 +27,7 @@ import java.util.Locale
  * @param hostRouter Host router
  * @param forceRouterCaching Override [RouterNavigatorState.isCacheable] behavior
  */
-open class StackRouterNavigator<StateT : RouterNavigatorState>
+public open class StackRouterNavigator<StateT : RouterNavigatorState>
 @JvmOverloads
 constructor(
   private val hostRouter: Router<*>,
@@ -195,7 +195,7 @@ constructor(
    *
    * NOTE: This must be called when host interactor is going to detach.
    */
-  open fun detachAll() {
+  public open fun detachAll() {
     log(
       String.format(
         Locale.getDefault(), "Detaching RouterNavigator from host -> %s", hostRouterName
@@ -389,7 +389,7 @@ constructor(
     detachAll()
   }
 
-  companion object {
+  public companion object {
     /** Writes out to the debug log.  */
     private fun log(text: String) {
       Rib.getConfiguration().handleDebugMessage("%s: $text", "RouterNavigator")

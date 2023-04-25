@@ -15,4 +15,4 @@
  */
 package com.uber.rib.core
 
-class FakeWorker : Worker
+public class FakeWorker : Worker

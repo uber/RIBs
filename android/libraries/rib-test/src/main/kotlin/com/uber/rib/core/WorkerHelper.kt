@@ -19,7 +19,7 @@ import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
 
 /** Helper to unit test [Worker] instances.  */
-object WorkerHelper {
+public object WorkerHelper {
   /**
    * Creates a [WorkerScopeProvider] that can be driven by a test observable.
    *
@@ -27,7 +27,7 @@ object WorkerHelper {
    * @return a [WorkerScopeProvider].
    */
   @JvmStatic
-  open fun createScopeProvider(lifecycle: Observable<WorkerEvent>): WorkerScopeProvider {
+  public fun createScopeProvider(lifecycle: Observable<WorkerEvent>): WorkerScopeProvider {
     return WorkerScopeProvider(lifecycle)
   }
 }

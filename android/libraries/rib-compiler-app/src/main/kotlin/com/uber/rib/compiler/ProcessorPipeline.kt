@@ -21,20 +21,20 @@ import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
 /** The processor pipeline that processes one specific annotation.  */
-abstract class ProcessorPipeline(protected var processContext: ProcessContext) {
+public abstract class ProcessorPipeline(protected var processContext: ProcessContext) {
   protected var errorReporter: ErrorReporter? = processContext.errorReporter
   protected var elementUtils: Elements? = processContext.elementUtils
   protected var typesUtils: Types? = processContext.typesUtils
 
   /** Process the annotation that is the same as processor */
   @Throws(Throwable::class)
-  fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
+  public fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
     processAnnotations(annotations, roundEnv)
     return false
   }
 
   /** @return the annotation that this Processor pipeline works on. */
-  abstract val annotationType: Class<out Annotation>
+  public abstract val annotationType: Class<out Annotation>
 
   /** Processes the annotation. */
   @Throws(Throwable::class)

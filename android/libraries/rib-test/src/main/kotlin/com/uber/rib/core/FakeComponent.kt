@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core
 
-class FakeComponent<P : Presenter, T : Interactor<P, *>> private constructor(
+public class FakeComponent<P : Presenter, T : Interactor<P, *>> private constructor(
   private val presenter: P
 ) : InteractorComponent<P, T> {
 
@@ -25,9 +25,9 @@ class FakeComponent<P : Presenter, T : Interactor<P, *>> private constructor(
     return presenter
   }
 
-  companion object {
+  public companion object {
     @JvmStatic
-    fun <T : Interactor<FakePresenter, *>> withFakePresenterFor(interactorClass: Class<T>): FakeComponent<FakePresenter, T> {
+    public fun <T : Interactor<FakePresenter, *>> withFakePresenterFor(interactorClass: Class<T>): FakeComponent<FakePresenter, T> {
       return FakeComponent(FakePresenter())
     }
   }

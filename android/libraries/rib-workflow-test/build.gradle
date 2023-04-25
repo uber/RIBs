@@ -48,3 +48,7 @@ dependencies {
     implementation deps.kotlin.stdlib
     implementation deps.test.truth
 }
+
+kotlin {
+    explicitApi()
+}

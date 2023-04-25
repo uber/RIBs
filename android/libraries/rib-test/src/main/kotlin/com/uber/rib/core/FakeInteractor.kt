@@ -16,14 +16,14 @@
 package com.uber.rib.core
 
 @SuppressWarnings("RibInteractorOnIteractor")
-open class FakeInteractor<P : Any, R : Router<*>> : Interactor<P, R>() {
-  open fun attach() {
+public open class FakeInteractor<P : Any, R : Router<*>> : Interactor<P, R>() {
+  public open fun attach() {
     actualPresenter = FakePresenter() as P
     router = FakeRouter(this) as R
     dispatchAttach(null)
   }
 
-  open fun detach() {
+  public open fun detach() {
     dispatchDetach()
   }
 }

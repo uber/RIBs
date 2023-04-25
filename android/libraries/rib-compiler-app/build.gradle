@@ -35,6 +35,10 @@ dependencies {
     testImplementation deps.test.compileTesting
 }
 
+kotlin {
+    explicitApi()
+}
+
 // https://code.google.com/p/android/issues/detail?id=64887
 task copyTestResources(type: Copy) {
     from "${projectDir}/src/test/resources"

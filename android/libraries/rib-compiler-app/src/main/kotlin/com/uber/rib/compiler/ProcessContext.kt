@@ -22,13 +22,13 @@ import javax.lang.model.util.Types
  * The interface defines the context that shared across [ProcessorPipeline] during annotation
  * processing.
  */
-interface ProcessContext {
+public interface ProcessContext {
   /** @return the [ErrorReporter] */
-  val errorReporter: ErrorReporter?
+  public val errorReporter: ErrorReporter?
 
   /** @return the [Elements] */
-  val elementUtils: Elements?
+  public val elementUtils: Elements?
 
   /** @return the [Types] */
-  val typesUtils: Types?
+  public val typesUtils: Types?
 }

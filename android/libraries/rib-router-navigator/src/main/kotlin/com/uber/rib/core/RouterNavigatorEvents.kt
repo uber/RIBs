@@ -21,12 +21,12 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
 /** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent]  */
-class RouterNavigatorEvents private constructor() {
+public class RouterNavigatorEvents private constructor() {
 
   private val _events = MutableSharedFlow<RouterNavigatorEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
   /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
-  val events: Observable<RouterNavigatorEvent> = _events.asObservable()
+  public val events: Observable<RouterNavigatorEvent> = _events.asObservable()
 
   @JvmSynthetic // Hide from Java consumers. In Java, `getEvents` resolves to the `events` property.
   @JvmName("_getEvents")
@@ -43,13 +43,13 @@ class RouterNavigatorEvents private constructor() {
    * @param parent router instance to which child will attach to.
    * @param child router instance which getting attached.
    */
-  fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
+  public fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
     _events.tryEmit(RouterNavigatorEvent(eventType, parent, child))
   }
 
-  companion object {
+  public companion object {
     /** @return the singleton instance */
     @JvmStatic
-    val instance = RouterNavigatorEvents()
+    public val instance: RouterNavigatorEvents = RouterNavigatorEvents()
   }
 }
