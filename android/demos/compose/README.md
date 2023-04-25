@@ -14,7 +14,7 @@ Here's a summary of the key differences this demo offers:
 
 - Coroutines: The Compose Demo uses coroutines to handle asynchronous tasks. Integrated into the RIBs architecture by extending the BasicInteractor with a coroutineScope property, coroutines enable non-blocking, concurrent, and readable asynchronous code while automatically managing their lifecycle.
 
-- Flow: Flow, a Kotlin library for reactive data streams, is used in the Compose Demo to observe and manage state changes. For example, AuthStream employs MutableStateFlow and StateFlow to handle authentication state changes. Integrated with coroutines, Flow allows launching and consuming flows within a coroutine scope. 
+- Flow: Flow, a Kotlin library for reactive data streams, is used in the Compose Demo to observe and manage state changes. For example, AuthStream employs MutableStateFlow and StateFlow to handle authentication state changes. Integrated with coroutines, Flow allows launching and consuming flows within a coroutine scope.
   - For example, The MainInteractor observes authStream with the onEach and launchIn functions, reacting to state changes and updating the UI.
 
 In conclusion, the demo offers an innovative way to build mobile apps using RIBs architecture, effectively creating a SIRs (Scope, Interactor, Router) Architecture.
