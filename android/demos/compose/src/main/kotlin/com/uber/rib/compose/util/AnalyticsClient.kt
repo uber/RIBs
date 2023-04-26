@@ -34,7 +34,10 @@ class AnalyticsClientImpl(private val application: Application) : AnalyticsClien
     Log.d(this::class.java.simpleName, message)
   }
 
-  enum class EventType { CLICK, IMPRESSION }
+  enum class EventType {
+    CLICK,
+    IMPRESSION,
+  }
 }
 
 object NoOpAnalyticsClient : AnalyticsClient {

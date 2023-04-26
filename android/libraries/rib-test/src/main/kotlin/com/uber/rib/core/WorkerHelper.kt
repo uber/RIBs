@@ -18,7 +18,7 @@ package com.uber.rib.core
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
 
-/** Helper to unit test [Worker] instances.  */
+/** Helper to unit test [Worker] instances. */
 public object WorkerHelper {
   /**
    * Creates a [WorkerScopeProvider] that can be driven by a test observable.

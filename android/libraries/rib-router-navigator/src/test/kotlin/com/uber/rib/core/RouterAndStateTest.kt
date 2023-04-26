@@ -16,6 +16,8 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import java.util.concurrent.CountDownLatch
+import kotlin.concurrent.thread
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.anyOrNull
@@ -26,8 +28,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.same
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import java.util.concurrent.CountDownLatch
-import kotlin.concurrent.thread
 
 class RouterAndStateTest {
 
@@ -99,7 +99,6 @@ class RouterAndStateTest {
 
   @Test
   fun willAttachToHost_shouldCallProvidedAttachCallback() {
-
     val routerAndState = RouterAndState(state, attachTransition, detachTransition)
 
     routerAndState.willAttachToHost(null, false)

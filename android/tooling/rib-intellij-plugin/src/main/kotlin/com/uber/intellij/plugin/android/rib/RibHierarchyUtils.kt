@@ -168,7 +168,7 @@ class RibHierarchyUtils {
     fun displayPopup(
       message: String,
       location: RelativePoint,
-      type: MessageType = MessageType.WARNING
+      type: MessageType = MessageType.WARNING,
     ) {
       JBPopupFactory.getInstance()
         .createHtmlTextBalloonBuilder(message, type, null)

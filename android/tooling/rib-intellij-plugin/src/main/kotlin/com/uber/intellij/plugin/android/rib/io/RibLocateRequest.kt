@@ -29,7 +29,7 @@ data class RibHostWithSelection(
   val name: String,
   val application: RibApplication?,
   val selectedRibId: String,
-  val selectedViewId: String
+  val selectedViewId: String,
 )
 
 /**
@@ -48,7 +48,7 @@ class EnableLocateModeRequest(device: IDevice, enabled: Boolean) :
     RibHierarchyWithSelectionResponse::class.java,
     listOf(Pair("VISIBLE", enabled)),
     TIMEOUT_MS,
-    NUM_RETRIES
+    NUM_RETRIES,
   ) {
   companion object {
     private const val TIMEOUT_MS = 1000

@@ -15,7 +15,7 @@
  */
 package com.uber.rib.compiler
 
-/** Constant values used by the annotation processor.  */
+/** Constant values used by the annotation processor. */
 open class Constants {
   companion object {
     const val INTERACTOR_TEST_CREATOR_PREFIX = "Test"

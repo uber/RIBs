@@ -65,32 +65,32 @@ public open class RibRefWatcher {
     }
   }
 
-  /** Enables Breadcrumb logging.  */
+  /** Enables Breadcrumb logging. */
   public open fun enableBreadcrumbLogging() {
     breadcrumbsEnabled = true
   }
 
-  /** Enables LeakCanary.  */
+  /** Enables LeakCanary. */
   public open fun enableLeakCanary() {
     isLeakCanaryEnabled = true
   }
 
-  /** Disables LeakCanary.  */
+  /** Disables LeakCanary. */
   public open fun disableLeakCanary() {
     isLeakCanaryEnabled = false
   }
 
-  /** Enables ULeak's Lifecycle tracking functionality. ULeak itself is behind a plugin.  */
+  /** Enables ULeak's Lifecycle tracking functionality. ULeak itself is behind a plugin. */
   public open fun enableULeakLifecycleTracking() {
     uLeakEnabled = true
   }
 
-  /** Disables ULeak's Lifecycle Tracking.  */
+  /** Disables ULeak's Lifecycle Tracking. */
   public open fun disableULeakLifecycleTracking() {
     uLeakEnabled = false
   }
 
-  /** Interface for classes that watch objects.  */
+  /** Interface for classes that watch objects. */
   public interface ReferenceWatcher {
     /**
      * Watch this object to verify it has no inbound references.

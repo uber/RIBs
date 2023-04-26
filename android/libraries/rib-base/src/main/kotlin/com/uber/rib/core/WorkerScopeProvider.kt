@@ -20,8 +20,9 @@ import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
 
-/** [ScopeProvider] for [Worker] instances.  */
-public open class WorkerScopeProvider internal constructor(delegate: ScopeProvider) : ScopeProvider by delegate {
+/** [ScopeProvider] for [Worker] instances. */
+public open class WorkerScopeProvider internal constructor(delegate: ScopeProvider) :
+  ScopeProvider by delegate {
   internal constructor(lifecycle: Observable<WorkerEvent>) : this(lifecycle.asScopeProvider())
 }
 

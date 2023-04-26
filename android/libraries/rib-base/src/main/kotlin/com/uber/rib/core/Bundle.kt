@@ -17,9 +17,11 @@ package com.uber.rib.core
 
 import android.os.Parcelable
 
-/** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies.  */
-public open class Bundle @JvmOverloads constructor(
-  private val androidBundle: android.os.Bundle = android.os.Bundle()
+/** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies. */
+public open class Bundle
+@JvmOverloads
+constructor(
+  private val androidBundle: android.os.Bundle = android.os.Bundle(),
 ) {
 
   /**
@@ -29,7 +31,7 @@ public open class Bundle @JvmOverloads constructor(
    * @param key to fetch.
    * @param defaultValue if no value is present.
    * @return the boolean value associated with the given key or null if there is no string value in
-   * the bundle.
+   *   the bundle.
    */
   public open fun getBoolean(key: String, defaultValue: Boolean): Boolean {
     return androidBundle.getBoolean(key, defaultValue)
@@ -104,7 +106,7 @@ public open class Bundle @JvmOverloads constructor(
    *
    * @param key to fetch.
    * @return the String value associated with the given key or null if there is no string value in
-   * the bundle.
+   *   the bundle.
    */
   public open fun getString(key: String): String? {
     return androidBundle.getString(key)
@@ -138,7 +140,7 @@ public open class Bundle @JvmOverloads constructor(
    *
    * @param key to fetch.
    * @return the int value associated with the given key or defaultValue if there is no int value in
-   * the bundle.
+   *   the bundle.
    */
   public open fun getInt(key: String, defaultValue: Int): Int {
     return androidBundle.getInt(key, defaultValue)

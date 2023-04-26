@@ -43,10 +43,16 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
 /** Base implementation for all VIP [android.app.Activity]s. */
-abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, LifecycleScopeProvider<ActivityLifecycleEvent>, RxActivityEvents {
+abstract class RibActivity :
+  CoreAppCompatActivity(),
+  ActivityStarter,
+  LifecycleScopeProvider<ActivityLifecycleEvent>,
+  RxActivityEvents {
   private var router: ViewRouter<*, *>? = null
-  private val lifecycleFlow = MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-  private val callbacksFlow = MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+  private val lifecycleFlow =
+    MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val callbacksFlow =
+    MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
   private val lifecycleObservable = lifecycleFlow.asObservable()
   private val callbacksObservable = callbacksFlow.asObservable()
 
@@ -74,7 +80,8 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     super.onCreate(savedInstanceState)
     val rootViewGroup = findViewById<ViewGroup>(R.id.content)
     lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
-    val wrappedBundle: Bundle? = if (savedInstanceState != null) Bundle(savedInstanceState) else null
+    val wrappedBundle: Bundle? =
+      if (savedInstanceState != null) Bundle(savedInstanceState) else null
     router = createRouter(rootViewGroup)
     router?.let {
       it.dispatchAttach(wrappedBundle)
@@ -87,7 +94,8 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
   override fun onSaveInstanceState(outState: android.os.Bundle) {
     super.onSaveInstanceState(outState)
     callbacksFlow.tryEmit(createOnSaveInstanceStateEvent(outState))
-    router?.saveInstanceStateInternal(Bundle(outState)) ?: throw NullPointerException("Router should not be null")
+    router?.saveInstanceStateInternal(Bundle(outState))
+      ?: throw NullPointerException("Router should not be null")
   }
 
   @CallSuper
@@ -151,10 +159,10 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
 
   override fun onPictureInPictureModeChanged(
     isInPictureInPictureMode: Boolean,
-    newConfig: Configuration
+    newConfig: Configuration,
   ) {
     callbacksFlow.tryEmit(
-      createPictureInPictureMode(isInPictureInPictureMode)
+      createPictureInPictureMode(isInPictureInPictureMode),
     )
   }
 
@@ -163,8 +171,10 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
       onUnhandledBackPressed()
 
       // https://issuetracker.google.com/issues/139738913
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q && isTaskRoot &&
-        supportFragmentManager.backStackEntryCount == 0
+      if (
+        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+          isTaskRoot &&
+          supportFragmentManager.backStackEntryCount == 0
       ) {
         super.finishAfterTransition()
       } else {
@@ -194,13 +204,14 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
    * @throws IllegalStateException if the activity has not been created or has been destroyed.
    */
   open val interactor: Interactor<*, *>
-    get() = if (router != null) {
-      router?.interactor as Interactor<*, *>
-    } else {
-      throw IllegalStateException(
-        "Attempting to get a router when activity is not created or has been destroyed."
-      )
-    }
+    get() =
+      if (router != null) {
+        router?.interactor as Interactor<*, *>
+      } else {
+        throw IllegalStateException(
+          "Attempting to get a router when activity is not created or has been destroyed.",
+        )
+      }
 
   /**
    * Creates the [Interactor].
@@ -213,18 +224,20 @@ abstract class RibActivity : CoreAppCompatActivity(), ActivityStarter, Lifecycle
     /**
      * Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities.
      */
-    private val ACTIVITY_LIFECYCLE = CorrespondingEventsFunction { lastEvent: ActivityLifecycleEvent ->
-      return@CorrespondingEventsFunction when (lastEvent.type) {
-        ActivityLifecycleEvent.Type.CREATE -> create(ActivityLifecycleEvent.Type.DESTROY)
-        ActivityLifecycleEvent.Type.START -> create(ActivityLifecycleEvent.Type.STOP)
-        ActivityLifecycleEvent.Type.RESUME -> create(ActivityLifecycleEvent.Type.PAUSE)
-        ActivityLifecycleEvent.Type.USER_LEAVING -> create(ActivityLifecycleEvent.Type.DESTROY)
-        ActivityLifecycleEvent.Type.PAUSE -> create(ActivityLifecycleEvent.Type.STOP)
-        ActivityLifecycleEvent.Type.STOP -> create(ActivityLifecycleEvent.Type.DESTROY)
-        ActivityLifecycleEvent.Type.DESTROY -> throw LifecycleEndedException(
-          "Cannot bind to Activity lifecycle when outside of it."
-        )
+    private val ACTIVITY_LIFECYCLE =
+      CorrespondingEventsFunction { lastEvent: ActivityLifecycleEvent ->
+        return@CorrespondingEventsFunction when (lastEvent.type) {
+          ActivityLifecycleEvent.Type.CREATE -> create(ActivityLifecycleEvent.Type.DESTROY)
+          ActivityLifecycleEvent.Type.START -> create(ActivityLifecycleEvent.Type.STOP)
+          ActivityLifecycleEvent.Type.RESUME -> create(ActivityLifecycleEvent.Type.PAUSE)
+          ActivityLifecycleEvent.Type.USER_LEAVING -> create(ActivityLifecycleEvent.Type.DESTROY)
+          ActivityLifecycleEvent.Type.PAUSE -> create(ActivityLifecycleEvent.Type.STOP)
+          ActivityLifecycleEvent.Type.STOP -> create(ActivityLifecycleEvent.Type.DESTROY)
+          ActivityLifecycleEvent.Type.DESTROY ->
+            throw LifecycleEndedException(
+              "Cannot bind to Activity lifecycle when outside of it.",
+            )
+        }
       }
-    }
   }
 }

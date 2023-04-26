@@ -21,34 +21,36 @@ import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.autodispose.lifecycle.LifecycleNotStartedException
 import io.reactivex.CompletableSource
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.rx2.rxCompletable
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
-/** Converts a [SharedFlow] of lifecycle events into a [ScopeProvider]. See [asScopeCompletable] for constraints. */
+/**
+ * Converts a [SharedFlow] of lifecycle events into a [ScopeProvider]. See [asScopeCompletable] for
+ * constraints.
+ */
 internal fun <T : Comparable<T>> SharedFlow<T>.asScopeProvider(
   range: ClosedRange<T>,
   context: CoroutineContext = EmptyCoroutineContext,
 ): ScopeProvider = asScopeCompletable(range, context).asScopeProvider()
 
 /**
- * Converts a [SharedFlow] of lifecycle events into a [CompletableSource] that completes once the flow emits the ending
- * event.
+ * Converts a [SharedFlow] of lifecycle events into a [CompletableSource] that completes once the
+ * flow emits the ending event.
  *
  * The lifecycle start and end events are defined by [range], and this function will throw either:
  * 1. [LifecycleNotStartedException], if the last emitted event is not in range, or
- * 2. [LifecycleEndedException], if the last emitted event is in the end (inclusive) or beyond [range].
+ * 2. [LifecycleEndedException], if the last emitted event is in the end (inclusive) or beyond
+ *    [range].
  */
 internal fun <T : Comparable<T>> SharedFlow<T>.asScopeCompletable(
   range: ClosedRange<T>,
   context: CoroutineContext = EmptyCoroutineContext,
 ): CompletableSource {
   ensureAlive(range)
-  return rxCompletable(RibDispatchers.Unconfined + context) {
-    first { it == range.endInclusive }
-  }
+  return rxCompletable(RibDispatchers.Unconfined + context) { first { it == range.endInclusive } }
 }
 
 private fun <T : Comparable<T>> SharedFlow<T>.ensureAlive(range: ClosedRange<T>) {

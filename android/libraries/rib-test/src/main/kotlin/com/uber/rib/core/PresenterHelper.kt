@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core
 
-/** The helper to test [Presenter].  */
+/** The helper to test [Presenter]. */
 public object PresenterHelper {
   /**
    * Loads the given [Presenter].

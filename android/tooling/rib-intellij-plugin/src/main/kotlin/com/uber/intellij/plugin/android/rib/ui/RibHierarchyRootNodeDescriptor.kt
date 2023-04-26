@@ -31,7 +31,7 @@ class RibHierarchyRootNodeDescriptor(
   project: Project,
   element: PsiElement,
   val ribHost: RibHost,
-  private val status: RibHierarchyBrowser.Status
+  private val status: RibHierarchyBrowser.Status,
 ) : RibHierarchyDescriptor(project, null, element, true) {
 
   private val deviceRepository: AndroidDeviceRepository = project.service()

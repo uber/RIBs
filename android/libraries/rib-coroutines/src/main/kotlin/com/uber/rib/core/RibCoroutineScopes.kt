@@ -18,46 +18,50 @@ package com.uber.rib.core
 import android.app.Application
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.coroutinesinterop.asCoroutineScope
-import kotlinx.coroutines.CoroutineName
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.job
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.CoroutineName
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.job
 
 /**
- * [CoroutineScope] tied to this [ScopeProvider].
- * This scope will be canceled when ScopeProvider is completed
+ * [CoroutineScope] tied to this [ScopeProvider]. This scope will be canceled when ScopeProvider is
+ * completed
  *
  * This scope is bound to
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
-public val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope<ScopeProvider> {
-  val context: CoroutineContext = SupervisorJob() +
-    RibDispatchers.Main.immediate +
-    CoroutineName("${this::class.simpleName}:coroutineScope") +
-    (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+public val ScopeProvider.coroutineScope: CoroutineScope by
+  LazyCoroutineScope<ScopeProvider> {
+    val context: CoroutineContext =
+      SupervisorJob() +
+        RibDispatchers.Main.immediate +
+        CoroutineName("${this::class.simpleName}:coroutineScope") +
+        (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
 
-  asCoroutineScope(context)
-}
+    asCoroutineScope(context)
+  }
 
 /**
- * [CoroutineScope] tied to this [Application].
- * This scope will not be cancelled, it lives for the full application process.
+ * [CoroutineScope] tied to this [Application]. This scope will not be cancelled, it lives for the
+ * full application process.
  *
  * This scope is bound to
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
-public val Application.coroutineScope: CoroutineScope by LazyCoroutineScope<Application> {
-  val context: CoroutineContext = SupervisorJob() +
-    RibDispatchers.Main.immediate +
-    CoroutineName("${this::class.simpleName}:coroutineScope") +
-    (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+public val Application.coroutineScope: CoroutineScope by
+  LazyCoroutineScope<Application> {
+    val context: CoroutineContext =
+      SupervisorJob() +
+        RibDispatchers.Main.immediate +
+        CoroutineName("${this::class.simpleName}:coroutineScope") +
+        (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
 
-  CoroutineScope(context)
-}
+    CoroutineScope(context)
+  }
 
 internal class LazyCoroutineScope<This : Any>(val initializer: This.() -> CoroutineScope) {
   companion object {
@@ -69,15 +73,14 @@ internal class LazyCoroutineScope<This : Any>(val initializer: This.() -> Corout
       values[provider] = scope
     }
   }
-  operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope = synchronized(LazyCoroutineScope) {
-    return values.getOrPut(thisRef) {
-      thisRef.initializer().apply {
-        coroutineContext.job.invokeOnCompletion {
-          synchronized(LazyCoroutineScope) {
-            values.remove(thisRef)
+  operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope =
+    synchronized(LazyCoroutineScope) {
+      return values.getOrPut(thisRef) {
+        thisRef.initializer().apply {
+          coroutineContext.job.invokeOnCompletion {
+            synchronized(LazyCoroutineScope) { values.remove(thisRef) }
           }
         }
       }
     }
-  }
 }

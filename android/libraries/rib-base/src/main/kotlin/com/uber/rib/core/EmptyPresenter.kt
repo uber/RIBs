@@ -15,5 +15,5 @@
  */
 package com.uber.rib.core
 
-/** No-op [Presenter]  */
+/** No-op [Presenter] */
 public open class EmptyPresenter : Presenter()

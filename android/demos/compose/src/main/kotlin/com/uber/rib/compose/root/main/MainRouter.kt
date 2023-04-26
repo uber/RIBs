@@ -20,8 +20,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.platform.ComposeView
-import com.uber.rib.compose.root.main.logged_in.LoggedInRouter
-import com.uber.rib.compose.root.main.logged_out.LoggedOutRouter
+import com.uber.rib.compose.root.main.loggedin.LoggedInRouter
+import com.uber.rib.compose.root.main.loggedout.LoggedOutRouter
 import com.uber.rib.core.BasicViewRouter
 
 class MainRouter(
@@ -29,7 +29,7 @@ class MainRouter(
   interactor: MainInteractor,
   private val parentView: ViewGroup,
   private val scope: MainScope,
-  private val childContent: ChildContent
+  private val childContent: ChildContent,
 ) : BasicViewRouter<ComposeView, MainInteractor>(view, interactor) {
 
   private var loggedOutRouter: LoggedOutRouter? = null
@@ -47,32 +47,25 @@ class MainRouter(
 
   internal fun attachLoggedOut() {
     if (loggedOutRouter == null) {
-      loggedOutRouter = scope.loggedOutScope(childContent.fullScreenSlot).router().also {
-        attachChild(it)
-      }
+      loggedOutRouter =
+        scope.loggedOutScope(childContent.fullScreenSlot).router().also { attachChild(it) }
     }
   }
 
   internal fun attachLoggedIn(authInfo: AuthInfo) {
     if (loggedInRouter == null) {
       loggedInRouter =
-        scope.loggedInScope(childContent.fullScreenSlot, authInfo).router().also {
-          attachChild(it)
-        }
+        scope.loggedInScope(childContent.fullScreenSlot, authInfo).router().also { attachChild(it) }
     }
   }
 
   internal fun detachLoggedOut() {
-    loggedOutRouter?.let {
-      detachChild(it)
-    }
+    loggedOutRouter?.let { detachChild(it) }
     loggedOutRouter = null
   }
 
   internal fun detachLoggedIn() {
-    loggedInRouter?.let {
-      detachChild(it)
-    }
+    loggedInRouter?.let { detachChild(it) }
     loggedInRouter = null
   }
 

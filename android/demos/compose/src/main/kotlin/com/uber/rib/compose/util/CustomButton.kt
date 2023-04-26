@@ -28,7 +28,7 @@ fun CustomButton(
   onClick: () -> Unit,
   modifier: Modifier = Modifier,
   analyticsId: String? = null,
-  content: @Composable RowScope.() -> Unit
+  content: @Composable RowScope.() -> Unit,
 ) {
   val analyticsClient = AnalyticsLocal.current
   val onClickWrapper: () -> Unit = {
@@ -39,9 +39,7 @@ fun CustomButton(
     onClick = onClickWrapper,
     modifier = modifier,
     colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
-    content = content
+    content = content,
   )
-  LaunchedEffect(null) {
-    analyticsId?.let { analyticsClient.trackImpression(it) }
-  }
+  LaunchedEffect(null) { analyticsId?.let { analyticsClient.trackImpression(it) } }
 }

@@ -39,6 +39,5 @@ public interface RouterNavigatorState {
    * [RouterNavigator.DetachCallback.onPostDetachFromHost] and will be recreated for next
    * [RouterNavigator.AttachTransition]
    */
-  @JvmDefault
-  public fun isCacheable(): Boolean = false
+  @JvmDefault public fun isCacheable(): Boolean = false
 }

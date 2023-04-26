@@ -18,11 +18,11 @@ package com.uber.rib.workflow.core
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.Observable
 
-/** Represents an item that [Step] operations can be performed on.  */
+/** Represents an item that [Step] operations can be performed on. */
 fun interface ActionableItem {
   /**
    * @return a lifecycle observable that can be observed so a workflow knows when to start a step
-   * for this actionable item.
+   *   for this actionable item.
    */
   fun lifecycle(): Observable<InteractorEvent>
 }

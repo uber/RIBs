@@ -56,11 +56,12 @@ public open class AndroidRecordingRx2Observer<T : Any> : Observer<T> {
   }
 
   private inline fun <E> takeEvent(wanted: Class<E>): E {
-    val event: Any = try {
-      events.pollFirst(1, TimeUnit.SECONDS)
-    } catch (e: InterruptedException) {
-      throw RuntimeException(e)
-    } ?: throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
+    val event: Any =
+      try {
+        events.pollFirst(1, TimeUnit.SECONDS)
+      } catch (e: InterruptedException) {
+        throw RuntimeException(e)
+      } ?: throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
     assertThat(event).isInstanceOf(wanted)
     return event as E
   }

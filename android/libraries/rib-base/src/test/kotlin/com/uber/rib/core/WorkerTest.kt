@@ -24,8 +24,7 @@ class WorkerTest {
   @Test
   fun threadingType_withDefaultWorker_shouldUseUnconfinedDispatchers() {
     val defaultWorker = DefaultWorker()
-    Truth.assertThat(defaultWorker.coroutineDispatcher)
-      .isEqualTo(RibDispatchers.Unconfined)
+    Truth.assertThat(defaultWorker.coroutineDispatcher).isEqualTo(RibDispatchers.Unconfined)
   }
 
   @Test

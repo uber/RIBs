@@ -31,7 +31,7 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
   val state: StateT,
   private val attachTransition: RouterNavigator.AttachTransition<R, StateT>,
   detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
-  @get:VisibleForTesting val forceRouterCaching: Boolean = false
+  @get:VisibleForTesting val forceRouterCaching: Boolean = false,
 ) {
   private val routerAccessor = SafeRouterAccessor(attachTransition::buildRouter)
 
@@ -60,15 +60,13 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
     RouterDestroyerCallbackWrapper(
       baseCallback = wrapDetachTransitionIfNeed(detachTransition),
       onDestroy = {
-        routerAccessor.safeConditionalDestroy(state) {
-          !forceRouterCaching && !state.isCacheable()
-        }
-      }
+        routerAccessor.safeConditionalDestroy(state) { !forceRouterCaching && !state.isCacheable() }
+      },
     )
   }
 
   private fun wrapDetachTransitionIfNeed(
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
   ): RouterNavigator.DetachCallback<R, StateT>? {
     return (detachTransition as? RouterNavigator.DetachCallback)
       ?: detachTransition?.let { DetachCallbackWrapper(it) }
@@ -79,14 +77,14 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
    * format.
    */
   private inner class DetachCallbackWrapper(
-    private val transitionCallback: RouterNavigator.DetachTransition<R, StateT>
+    private val transitionCallback: RouterNavigator.DetachTransition<R, StateT>,
   ) : RouterNavigator.DetachCallback<R, StateT>() {
 
     override fun willDetachFromHost(
       router: R,
       previousState: StateT,
       newState: StateT?,
-      isPush: Boolean
+      isPush: Boolean,
     ) = transitionCallback.willDetachFromHost(router, previousState, newState, isPush)
   }
 
@@ -96,14 +94,14 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
    */
   private inner class RouterDestroyerCallbackWrapper(
     private val baseCallback: RouterNavigator.DetachCallback<R, StateT>?,
-    private val onDestroy: () -> Unit
+    private val onDestroy: () -> Unit,
   ) : RouterNavigator.DetachCallback<R, StateT>() {
 
     override fun willDetachFromHost(
       router: R,
       previousState: StateT,
       newState: StateT?,
-      isPush: Boolean
+      isPush: Boolean,
     ) {
       baseCallback?.willDetachFromHost(router, previousState, newState, isPush)
     }
@@ -115,34 +113,34 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
   }
 
   private class SafeRouterAccessor<R : Router<*>>(
-    private val routerBuilder: () -> R
+    private val routerBuilder: () -> R,
   ) {
     private val lock = ReentrantLock()
     private var _router: R? = null
 
     val router: R
-      get() = lock.withLock {
-        _router ?: routerBuilder().let { newRouter ->
-          log("Router ${newRouter.javaClass.simpleName} was created")
-          _router = newRouter
-          newRouter
+      get() =
+        lock.withLock {
+          _router
+            ?: routerBuilder().let { newRouter ->
+              log("Router ${newRouter.javaClass.simpleName} was created")
+              _router = newRouter
+              newRouter
+            }
+        }
+
+    fun safeOperation(operation: (R) -> Unit) = lock.withLock { operation(router) }
+
+    fun safeConditionalDestroy(state: RouterNavigatorState, condition: () -> Boolean) =
+      lock.withLock {
+        if (condition.invoke()) {
+          _router?.javaClass?.simpleName?.let { routerName ->
+            log("Destroying router $routerName was destroyed")
+            _router = null
+          }
+            ?: run { log("Router of ${state.stateName()} state already destroyed") }
         }
       }
-
-    fun safeOperation(operation: (R) -> Unit) = lock.withLock {
-      operation(router)
-    }
-
-    fun safeConditionalDestroy(state: RouterNavigatorState, condition: () -> Boolean) = lock.withLock {
-      if (condition.invoke()) {
-        _router?.javaClass?.simpleName?.let { routerName ->
-          log("Destroying router $routerName was destroyed")
-          _router = null
-        } ?: run {
-          log("Router of ${state.stateName()} state already destroyed")
-        }
-      }
-    }
   }
 
   companion object {

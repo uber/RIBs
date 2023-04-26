@@ -35,9 +35,12 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  */
 public abstract class Presenter : ScopeProvider {
   private val _lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-  // We expose lifecycleFlow internally to avoid some unnecessary Rx-Coroutine interop. Use it instead of `lifecycle()`.
+
+  // We expose lifecycleFlow internally to avoid some unnecessary Rx-Coroutine interop. Use it
+  // instead of `lifecycle()`.
   @get:JvmSynthetic
-  internal val lifecycleFlow: SharedFlow<PresenterEvent> get() = _lifecycleFlow
+  internal val lifecycleFlow: SharedFlow<PresenterEvent>
+    get() = _lifecycleFlow
   private val lifecycleObservable = lifecycleFlow.asObservable()
 
   /** @return `true` if the presenter is loaded, `false` if not. */
@@ -56,19 +59,14 @@ public abstract class Presenter : ScopeProvider {
     _lifecycleFlow.tryEmit(PresenterEvent.UNLOADED)
   }
 
-  /** Tells the presenter that it has finished loading.  */
-  @CallSuper
-  protected open fun didLoad() {
-  }
+  /** Tells the presenter that it has finished loading. */
+  @CallSuper protected open fun didLoad() {}
 
   /**
    * Tells the presenter that it will be destroyed. Presenter subclasses should perform any required
    * cleanup here.
    */
-  @UIEffect
-  @CallSuper
-  protected open fun willUnload() {
-  }
+  @UIEffect @CallSuper protected open fun willUnload() {}
 
   /** @return an observable of this controller's lifecycle events. */
   public open fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
@@ -76,7 +74,6 @@ public abstract class Presenter : ScopeProvider {
   override fun requestScope(): CompletableSource = _lifecycleFlow.asScopeCompletable(lifecycleRange)
 
   internal companion object {
-    @get:JvmSynthetic
-    internal val lifecycleRange = PresenterEvent.LOADED..PresenterEvent.UNLOADED
+    @get:JvmSynthetic internal val lifecycleRange = PresenterEvent.LOADED..PresenterEvent.UNLOADED
   }
 }

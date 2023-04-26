@@ -28,7 +28,7 @@ class RibHierarchyNodeDescriptor(
   project: Project,
   parentDescriptor: HierarchyNodeDescriptor?,
   private val clazz: PsiClass,
-  val ribNode: RibNode
+  val ribNode: RibNode,
 ) : RibHierarchyDescriptor(project, parentDescriptor, clazz, false) {
 
   override fun updateText(text: CompositeAppearance) {

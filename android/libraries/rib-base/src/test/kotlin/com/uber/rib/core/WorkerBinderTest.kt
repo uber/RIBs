@@ -148,9 +148,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     val interactor = object : Interactor<Any, Router<*>>() {}
     var enteredUnconfined = false
     val worker = Worker {
-      val subscription = interactor.lifecycle().subscribe {
-        enteredUnconfined = true
-      }
+      val subscription = interactor.lifecycle().subscribe { enteredUnconfined = true }
       assertThat(enteredUnconfined).isTrue()
       subscription.dispose()
     }
@@ -182,7 +180,9 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     bindFakeWorker()
     verify(workerBinderListener).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.firstValue.assertWorkerDuration(
-      "FakeWorker", WorkerEvent.START, RibDispatchers.Unconfined
+      "FakeWorker",
+      WorkerEvent.START,
+      RibDispatchers.Unconfined,
     )
   }
 
@@ -193,7 +193,9 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     unbinder.unbind()
     verify(workerBinderListener, times(2)).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.secondValue.assertWorkerDuration(
-      "FakeWorker", WorkerEvent.STOP, RibDispatchers.Unconfined
+      "FakeWorker",
+      WorkerEvent.STOP,
+      RibDispatchers.Unconfined,
     )
   }
 
@@ -206,7 +208,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   private fun WorkerBinderInfo.assertWorkerDuration(
     expectedWorkerClassName: String,
     expectedWorkerEvent: WorkerEvent,
-    expectedWorkerBinderThreadingType: CoroutineDispatcher
+    expectedWorkerBinderThreadingType: CoroutineDispatcher,
   ) {
     assertThat(workerName).contains(expectedWorkerClassName)
     assertThat(workerEvent).isEqualTo(expectedWorkerEvent)
@@ -220,8 +222,9 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 }
 
-private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) = object : Worker {
-  override fun onStart(lifecycle: WorkerScopeProvider) {
-    onStartBlock(lifecycle)
+private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
+  object : Worker {
+    override fun onStart(lifecycle: WorkerScopeProvider) {
+      onStartBlock(lifecycle)
+    }
   }
-}

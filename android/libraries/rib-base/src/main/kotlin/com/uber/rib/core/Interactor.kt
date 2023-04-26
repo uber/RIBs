@@ -23,13 +23,13 @@ import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
+import javax.inject.Inject
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.rx2.asObservable
-import javax.inject.Inject
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 /**
  * The base implementation for all [Interactor]s.
@@ -37,17 +37,21 @@ import kotlin.reflect.KProperty
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
-public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<InteractorEvent>, InteractorType {
-  @Inject
-  public lateinit var injectedPresenter: P
+public abstract class Interactor<P : Any, R : Router<*>> :
+  LifecycleScopeProvider<InteractorEvent>, InteractorType {
+  @Inject public lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
   private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-  // We expose lifecycleFlow internally to avoid some unnecessary Rx-Coroutine interop. Use it instead of `lifecycle()`.
+
+  // We expose lifecycleFlow internally to avoid some unnecessary Rx-Coroutine interop. Use it
+  // instead of `lifecycle()`.
   @get:JvmSynthetic
-  internal val lifecycleFlow: SharedFlow<InteractorEvent> get() = _lifecycleFlow
+  internal val lifecycleFlow: SharedFlow<InteractorEvent>
+    get() = _lifecycleFlow
   private val lifecycleObservable = _lifecycleFlow.asObservable()
 
   private val routerDelegate = InitOnceProperty<R>()
+
   /** @return the router for this interactor. */
   public open var router: R by routerDelegate
     protected set
@@ -62,16 +66,15 @@ public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvide
   override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
 
   /** @return true if the controller is attached, false if not. */
-  override fun isAttached(): Boolean = _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+  override fun isAttached(): Boolean =
+    _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   /**
    * Called when attached. The presenter will automatically be added when this happens.
    *
    * @param savedInstanceState the saved [Bundle].
    */
-  @CallSuper
-  protected open fun didBecomeActive(savedInstanceState: Bundle?) {
-  }
+  @CallSuper protected open fun didBecomeActive(savedInstanceState: Bundle?) {}
 
   /**
    * Handle an activity back press.
@@ -81,8 +84,8 @@ public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvide
   override fun handleBackPress(): Boolean = false
 
   /**
-   * Called when detached. The [Interactor] should do its cleanup here. Note: View will be
-   * removed automatically so [Interactor] doesn't have to remove its view here.
+   * Called when detached. The [Interactor] should do its cleanup here. Note: View will be removed
+   * automatically so [Interactor] doesn't have to remove its view here.
    */
   protected open fun willResignActive() {}
 
@@ -119,14 +122,16 @@ public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvide
   /** @return the currently attached presenter if there is one */
   @VisibleForTesting
   private fun getPresenter(): P {
-    val presenter: P? = try {
-      if (actualPresenter != null)
+    val presenter: P? =
+      try {
+        if (actualPresenter != null) {
+          actualPresenter
+        } else {
+          injectedPresenter
+        }
+      } catch (e: UninitializedPropertyAccessException) {
         actualPresenter
-      else
-        injectedPresenter
-    } catch (e: UninitializedPropertyAccessException) {
-      actualPresenter
-    }
+      }
     checkNotNull(presenter) { "Attempting to get interactor's presenter before being set." }
     return presenter
   }
@@ -142,7 +147,8 @@ public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvide
 
   override fun peekLifecycle(): InteractorEvent? = _lifecycleFlow.replayCache.lastOrNull()
 
-  final override fun requestScope(): CompletableSource = _lifecycleFlow.asScopeCompletable(lifecycleRange)
+  final override fun requestScope(): CompletableSource =
+    _lifecycleFlow.asScopeCompletable(lifecycleRange)
 
   private inner class InitOnceProperty<T> : ReadWriteProperty<Any, T> {
     private var backingField: T? = null
@@ -164,14 +170,14 @@ public abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvide
   }
 
   public companion object {
-    @get:JvmSynthetic
-    internal val lifecycleRange = InteractorEvent.ACTIVE..InteractorEvent.INACTIVE
+    @get:JvmSynthetic internal val lifecycleRange = InteractorEvent.ACTIVE..InteractorEvent.INACTIVE
 
-    private val LIFECYCLE_MAP_FUNCTION = CorrespondingEventsFunction { interactorEvent: InteractorEvent ->
-      when (interactorEvent) {
-        InteractorEvent.ACTIVE -> return@CorrespondingEventsFunction InteractorEvent.INACTIVE
-        else -> throw LifecycleEndedException()
+    private val LIFECYCLE_MAP_FUNCTION =
+      CorrespondingEventsFunction { interactorEvent: InteractorEvent ->
+        when (interactorEvent) {
+          InteractorEvent.ACTIVE -> return@CorrespondingEventsFunction InteractorEvent.INACTIVE
+          else -> throw LifecycleEndedException()
+        }
       }
-    }
   }
 }

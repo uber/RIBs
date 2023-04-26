@@ -25,7 +25,7 @@ import javax.annotation.processing.ProcessingEnvironment
  */
 public abstract class Generator<T : AnnotatedClass>(
   protected val processingEnvironment: ProcessingEnvironment,
-  protected val errorReporter: ErrorReporter
+  protected val errorReporter: ErrorReporter,
 ) {
 
   /**
@@ -34,6 +34,5 @@ public abstract class Generator<T : AnnotatedClass>(
    * @param builder metadata.
    * @throws IOException when something goes wrong.
    */
-  @Throws(IOException::class)
-  public abstract fun generate(builder: T)
+  @Throws(IOException::class) public abstract fun generate(builder: T)
 }

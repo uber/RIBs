@@ -49,7 +49,7 @@ class RibViewBrowser(
   project: Project,
   private val model: Model,
   private val rootElement: PsiElement,
-  private val selectionListener: Listener?
+  private val selectionListener: Listener?,
 ) : HierarchyBrowserBase(project, rootElement) {
 
   companion object {
@@ -77,7 +77,7 @@ class RibViewBrowser(
     val ribView: RibView,
     val rootRib: RibNode,
     val selectedRibId: String = "",
-    val selectedViewId: String = ""
+    val selectedViewId: String = "",
   )
 
   private var hasFocus: Boolean = false
@@ -130,7 +130,7 @@ class RibViewBrowser(
 
   override fun createHierarchyTreeStructure(
     typeName: String,
-    psiElement: PsiElement
+    psiElement: PsiElement,
   ): HierarchyTreeStructure? {
     val rootDescriptor =
       RibViewRootNodeDescriptor(project, psiElement, model.ribNode, model.ribView)
@@ -150,7 +150,8 @@ class RibViewBrowser(
           hasFocus = true
           notifySelectedViewChanged()
         }
-      })
+      },
+    )
 
     tree.addTreeSelectionListener { notifySelectedViewChanged() }
 
@@ -160,7 +161,8 @@ class RibViewBrowser(
       if (model.selectedViewId.isNotEmpty() && this.model.ribNode.id == this.model.selectedRibId) {
         val ribView: RibView =
           RibHierarchyUtils.findRibViewRecursive(
-            this.model.rootRib.view, UUID.fromString(model.selectedViewId)
+            this.model.rootRib.view,
+            UUID.fromString(model.selectedViewId),
           )
             ?: return@invokeLater
         selectionListener?.onSelectedViewChanged(ribView)
@@ -175,9 +177,10 @@ class RibViewBrowser(
     val node: Any? = currentTree.lastSelectedPathComponent
     if (node is DefaultMutableTreeNode && hasFocus) {
       val descriptor = node.userObject
-      if (descriptor is RibViewNodeDescriptor &&
-        descriptor.ribView != null &&
-        descriptor.ribView.id.isNotEmpty()
+      if (
+        descriptor is RibViewNodeDescriptor &&
+          descriptor.ribView != null &&
+          descriptor.ribView.id.isNotEmpty()
       ) {
         selectionListener?.onSelectedViewChanged(descriptor.ribView)
       }

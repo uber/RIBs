@@ -29,14 +29,14 @@ def versions = [
     coroutines: '1.6.4',
     dagger: "2.43.2",
     errorProne: '2.3.3',
-    gjf: '1.7',
+    gjf: '1.16.0',
     intellij: "2022.2.4",
     kotlin: "1.7.10",
-    ktfmt: '0.23',
-    ktlint: '0.41.0',
+    ktfmt: '0.43',
+    ktlint: '0.48.2',
     motif: '0.3.4',
     robolectric: "4.4",
-    spotless: '5.11.0'
+    spotless: '6.18.0'
 ]
 
 def apt = [

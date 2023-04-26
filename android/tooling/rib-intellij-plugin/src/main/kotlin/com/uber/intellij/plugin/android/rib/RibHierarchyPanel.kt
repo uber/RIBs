@@ -24,6 +24,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager
 import com.uber.intellij.plugin.android.rib.RibHierarchyBrowser.Model
 import com.uber.intellij.plugin.android.rib.RibHierarchyUtils.Companion.findRibNodeRecursive
 import com.uber.intellij.plugin.android.rib.RibHierarchyUtils.Companion.findRibViewRecursive
+import com.uber.intellij.plugin.android.rib.RibViewBrowser.Model as ViewModel
 import com.uber.intellij.plugin.android.rib.io.RibNode
 import com.uber.intellij.plugin.android.rib.io.RibView
 import java.awt.Insets
@@ -35,7 +36,6 @@ import javax.swing.JComboBox
 import javax.swing.JPanel
 import javax.swing.JSplitPane
 import javax.swing.JSplitPane.RIGHT
-import com.uber.intellij.plugin.android.rib.RibViewBrowser.Model as ViewModel
 
 /** UI Component representing the panel including rib hierarchy. */
 class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
@@ -85,8 +85,8 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
         null,
         null,
         0,
-        false
-      )
+        false,
+      ),
     )
 
     ribBrowser = RibHierarchyBrowser(project, model, rootElement, this)
@@ -107,8 +107,8 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
         null,
         null,
         0,
-        false
-      )
+        false,
+      ),
     )
   }
 
@@ -148,15 +148,23 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
     val rootRibNode: RibNode = this.model.host.application?.activities?.first()?.rootRib ?: return
     val ribNode: RibNode? = findRibNodeRecursive(rootRibNode, id)
     val ribView: RibView? =
-      if (ribNode?.view?.id?.isNotEmpty() == true)
+      if (ribNode?.view?.id?.isNotEmpty() == true) {
         findRibViewRecursive(rootRibNode.view, UUID.fromString(ribNode?.view?.id))
-      else null
+      } else {
+        null
+      }
     val model =
-      if (ribNode != null && ribView != null)
+      if (ribNode != null && ribView != null) {
         ViewModel(
-          ribNode, ribView, rootRibNode, this.model.selectedRibId, this.model.selectedViewId
+          ribNode,
+          ribView,
+          rootRibNode,
+          this.model.selectedRibId,
+          this.model.selectedViewId,
         )
-      else EMPTY_VIEW_MODEL
+      } else {
+        EMPTY_VIEW_MODEL
+      }
 
     val previousDividerLocation = splitPane.dividerLocation
     viewBrowser = RibViewBrowser(project, model, rootElement, this)

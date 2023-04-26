@@ -38,8 +38,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               descriptor,
               RibHierarchyUtils.getPsiClass(project, descriptor.ribHost.name),
-              it
-            )
+              it,
+            ),
           )
         }
       }
@@ -50,8 +50,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               descriptor,
               RibHierarchyUtils.getPsiClass(project, activity.name),
-              activity
-            )
+              activity,
+            ),
           )
         }
       }
@@ -61,8 +61,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
             myProject,
             descriptor,
             RibHierarchyUtils.getPsiClass(project, descriptor.ribActivity.name),
-            descriptor.ribActivity.rootRib
-          )
+            descriptor.ribActivity.rootRib,
+          ),
         )
       }
       is RibHierarchyNodeDescriptor -> {
@@ -72,8 +72,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               descriptor,
               RibHierarchyUtils.getPsiClass(project, childRibNode.name),
-              childRibNode
-            )
+              childRibNode,
+            ),
           )
         }
       }
@@ -84,8 +84,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               RibHierarchyUtils.getPsiClass(project, view.id),
               descriptor.ribNode,
-              view
-            )
+              view,
+            ),
           )
         }
       }
@@ -96,8 +96,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               RibHierarchyUtils.getPsiClass(project, view.id),
               descriptor.ribNode,
-              view
-            )
+              view,
+            ),
           )
         }
       }

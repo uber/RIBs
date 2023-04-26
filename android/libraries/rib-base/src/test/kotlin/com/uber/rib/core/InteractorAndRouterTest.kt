@@ -41,7 +41,7 @@ class InteractorAndRouterTest {
   fun setup() {
     val presenter: TestPresenter = mock()
     val component: InteractorComponent<TestPresenter, TestInteractor> = mock {
-      on { presenter() } doReturn(presenter)
+      on { presenter() } doReturn (presenter)
     }
     interactor = TestInteractor(childInteractor)
     router = TestRouter(interactor, component)
@@ -94,24 +94,26 @@ class InteractorAndRouterTest {
   @Test
   fun childControllers_shouldHaveRightLifecycle() {
     val parentInteractor = TestInteractorA()
-    val component: InteractorComponent<TestPresenter, TestInteractorA> = object : InteractorComponent<TestPresenter, TestInteractorA> {
-      override fun inject(interactor: TestInteractorA) {}
-      override fun presenter(): TestPresenter {
-        return TestPresenter()
+    val component: InteractorComponent<TestPresenter, TestInteractorA> =
+      object : InteractorComponent<TestPresenter, TestInteractorA> {
+        override fun inject(interactor: TestInteractorA) {}
+        override fun presenter(): TestPresenter {
+          return TestPresenter()
+        }
       }
-    }
     val router = TestRouterA(parentInteractor, component)
     val parentObserver = RecordingObserver<InteractorEvent>()
     parentInteractor.lifecycle().subscribe(parentObserver)
     router.dispatchAttach(null)
     Truth.assertThat(parentObserver.takeNext()).isEqualTo(InteractorEvent.ACTIVE)
     val childA = TestChildInteractor()
-    val childComponent: InteractorComponent<TestPresenter, TestChildInteractor> = object : InteractorComponent<TestPresenter, TestChildInteractor> {
-      override fun inject(interactor: TestChildInteractor) {}
-      override fun presenter(): TestPresenter {
-        return TestPresenter()
+    val childComponent: InteractorComponent<TestPresenter, TestChildInteractor> =
+      object : InteractorComponent<TestPresenter, TestChildInteractor> {
+        override fun inject(interactor: TestChildInteractor) {}
+        override fun presenter(): TestPresenter {
+          return TestPresenter()
+        }
       }
-    }
     val childRouter = TestChildRouter(childA, childComponent)
     val childObserverA = RecordingObserver<InteractorEvent>()
     childA.lifecycle().subscribe(childObserverA)
@@ -132,12 +134,13 @@ class InteractorAndRouterTest {
   @Test
   fun detachChild_whenOneChild_shouldWatchOneDeletedInteractor() {
     val rootInteractor = TestInteractorB()
-    val component: InteractorComponent<TestPresenter, TestInteractorB> = object : InteractorComponent<TestPresenter, TestInteractorB> {
-      override fun inject(interactor: TestInteractorB) {}
-      override fun presenter(): TestPresenter {
-        return TestPresenter()
+    val component: InteractorComponent<TestPresenter, TestInteractorB> =
+      object : InteractorComponent<TestPresenter, TestInteractorB> {
+        override fun inject(interactor: TestInteractorB) {}
+        override fun presenter(): TestPresenter {
+          return TestPresenter()
+        }
       }
-    }
     val router = TestRouterB(component, rootInteractor, ribRefWatcher)
     router.dispatchAttach(null)
     val childInteractor = TestInteractorB()
@@ -154,12 +157,13 @@ class InteractorAndRouterTest {
 
   @Test
   fun detachChild_whenTwoNestedChildren_shouldWatchTwoNestedDeletions() {
-    val component: InteractorComponent<TestPresenter, TestInteractorB> = object : InteractorComponent<TestPresenter, TestInteractorB> {
-      override fun inject(interactor: TestInteractorB) {}
-      override fun presenter(): TestPresenter {
-        return TestPresenter()
+    val component: InteractorComponent<TestPresenter, TestInteractorB> =
+      object : InteractorComponent<TestPresenter, TestInteractorB> {
+        override fun inject(interactor: TestInteractorB) {}
+        override fun presenter(): TestPresenter {
+          return TestPresenter()
+        }
       }
-    }
     val rootRouter = TestRouterB(component, TestInteractorB(), ribRefWatcher)
     val child = addTwoNestedChildInteractors()
     verify(ribRefWatcher, never()).watchDeletedObject(any())
@@ -172,12 +176,13 @@ class InteractorAndRouterTest {
   }
 
   private fun addTwoNestedChildInteractors(): Router<TestInteractorB> {
-    val component: InteractorComponent<TestPresenter, TestInteractorB> = object : InteractorComponent<TestPresenter, TestInteractorB> {
-      override fun inject(interactor: TestInteractorB) {}
-      override fun presenter(): TestPresenter {
-        return TestPresenter()
+    val component: InteractorComponent<TestPresenter, TestInteractorB> =
+      object : InteractorComponent<TestPresenter, TestInteractorB> {
+        override fun inject(interactor: TestInteractorB) {}
+        override fun presenter(): TestPresenter {
+          return TestPresenter()
+        }
       }
-    }
     router.dispatchAttach(null)
     val childRouter1 = TestRouterB(component, TestInteractorB(), ribRefWatcher)
     val childRouter2 = TestRouterB(component, TestInteractorB(), ribRefWatcher)
@@ -186,7 +191,8 @@ class InteractorAndRouterTest {
     return childRouter1
   }
 
-  private class TestInteractor(private val mChildInteractor: Interactor<*, *>) : Interactor<TestPresenter, Router<TestInteractor>>() {
+  private class TestInteractor(private val mChildInteractor: Interactor<*, *>) :
+    Interactor<TestPresenter, Router<TestInteractor>>() {
     override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
       val router: Router<*> = FakeRouter(mChildInteractor, getInstance(), Thread.currentThread())
@@ -201,7 +207,7 @@ class InteractorAndRouterTest {
 
   private class TestRouter(
     interactor: TestInteractor,
-    component: InteractorComponent<TestPresenter, TestInteractor>
+    component: InteractorComponent<TestPresenter, TestInteractor>,
   ) : Router<TestInteractor>(component, interactor, getInstance(), Thread.currentThread()) {
     init {
       interactor.setPresenter(component.presenter())
@@ -212,7 +218,7 @@ class InteractorAndRouterTest {
 
   private class TestRouterA(
     interactor: TestInteractorA,
-    component: InteractorComponent<TestPresenter, TestInteractorA>
+    component: InteractorComponent<TestPresenter, TestInteractorA>,
   ) : Router<TestInteractorA>(component, interactor, getInstance(), Thread.currentThread()) {
     private var savedInstanceState: Bundle? = null
     override fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
@@ -230,7 +236,7 @@ class InteractorAndRouterTest {
   private class TestRouterB : Router<TestInteractorB> {
     constructor(
       interactor: TestInteractorB,
-      component: InteractorComponent<TestPresenter, TestInteractorB>
+      component: InteractorComponent<TestPresenter, TestInteractorB>,
     ) : super(component, interactor, getInstance(), Thread.currentThread()) {
       interactor.setPresenter(component.presenter())
     }
@@ -238,7 +244,7 @@ class InteractorAndRouterTest {
     constructor(
       component: InteractorComponent<TestPresenter, TestInteractorB>,
       interactor: TestInteractorB,
-      ribRefWatcher: RibRefWatcher
+      ribRefWatcher: RibRefWatcher,
     ) : super(component, interactor, ribRefWatcher, Thread.currentThread()) {
       interactor.setPresenter(component.presenter())
     }
@@ -247,7 +253,7 @@ class InteractorAndRouterTest {
   private class TestChildInteractor : Interactor<TestPresenter, Router<TestChildInteractor>>()
   private class TestChildRouter(
     interactor: TestChildInteractor,
-    component: InteractorComponent<TestPresenter, TestChildInteractor>
+    component: InteractorComponent<TestPresenter, TestChildInteractor>,
   ) : Router<TestChildInteractor>(component, interactor, getInstance(), Thread.currentThread()) {
     init {
       interactor.setPresenter(component.presenter())

@@ -18,21 +18,24 @@ package com.uber.rib.workflow.core
 import io.reactivex.Scheduler
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.functions.Function
+import java.util.concurrent.Callable
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
-import java.util.concurrent.Callable
 
 /**
  * JUnit rule to set AndroidSchedulers for tests. Inlined into this module to facilitate testing.
  *
  * @param restoreHandlers if true, the rule will save off the original schedulers and restore them
- * after. Almost always want this to be false and is so by default.
+ *   after. Almost always want this to be false and is so by default.
  */
-class AndroidSchedulersRule @JvmOverloads constructor(
-  private val restoreHandlers: Boolean = false
+class AndroidSchedulersRule
+@JvmOverloads
+constructor(
+  private val restoreHandlers: Boolean = false,
 ) : TestWatcher() {
 
-  private val delegatingMainThreadScheduler = DelegatingScheduler.forType(DelegatingScheduler.SchedulerType.MAIN_THREAD)
+  private val delegatingMainThreadScheduler =
+    DelegatingScheduler.forType(DelegatingScheduler.SchedulerType.MAIN_THREAD)
   private val originalInitMainThreadInitHandler: Function<Callable<Scheduler>, Scheduler>? = null
   private val originalMainThreadHandler: Function<Scheduler, Scheduler>? = null
 

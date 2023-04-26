@@ -34,7 +34,7 @@ interface ActivityStarter {
    *
    * @param intent The intent to open a new activity.
    * @param requestCode The code unique to your current activity to know which activity result is
-   * from this request.
+   *   from this request.
    */
   @Deprecated("""use plain Activity instead""")
   fun startActivityForResult(intent: Intent, requestCode: Int)

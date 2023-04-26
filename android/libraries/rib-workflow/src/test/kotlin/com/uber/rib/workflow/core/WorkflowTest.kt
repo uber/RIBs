@@ -34,7 +34,8 @@ class WorkflowTest {
   @get:Rule var androidSchedulersRuleRx2 = AndroidSchedulersRule()
 
   private val interactorLifecycleSubject = BehaviorSubject.create<InteractorEvent>()
-  private val returnValueSubject: PublishSubject<Data<Any, ActionableItem>> = PublishSubject.create()
+  private val returnValueSubject: PublishSubject<Data<Any, ActionableItem>> =
+    PublishSubject.create()
 
   @Before
   fun setup() {
@@ -50,11 +51,12 @@ class WorkflowTest {
   fun createSingle_shouldReturnASingleThatRunsTheWorkflow() {
     val actionableItem = ActionableItem { interactorLifecycleSubject }
 
-    val workflow: Workflow<Any, ActionableItem> = object : Workflow<Any, ActionableItem>() {
-      override fun getSteps(rootActionableItem: ActionableItem): Step<Any, ActionableItem> {
-        return from(returnValueSubject.singleOrError())
+    val workflow: Workflow<Any, ActionableItem> =
+      object : Workflow<Any, ActionableItem>() {
+        override fun getSteps(rootActionableItem: ActionableItem): Step<Any, ActionableItem> {
+          return from(returnValueSubject.singleOrError())
+        }
       }
-    }
 
     val testSubscriber = TestObserver<Optional<Any>>()
     workflow.createSingle(actionableItem).subscribe(testSubscriber)

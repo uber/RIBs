@@ -17,10 +17,10 @@ package com.uber.rib.compiler
 
 import com.google.common.collect.ImmutableSet
 import com.google.testing.compile.JavaFileObjects
-import org.junit.Before
 import java.util.ArrayList
 import javax.annotation.processing.ProcessingEnvironment
 import javax.tools.JavaFileObject
+import org.junit.Before
 
 abstract class InteractorTestGeneratorProcessorTestBase {
   protected lateinit var ribInteractorProcessor: RibProcessor
@@ -28,27 +28,31 @@ abstract class InteractorTestGeneratorProcessorTestBase {
 
   @Before
   fun setup() {
-    ribInteractorProcessor = object : RibProcessor() {
-      var interactorTestGenerator: InteractorTestGenerator? = null
+    ribInteractorProcessor =
+      object : RibProcessor() {
+        var interactorTestGenerator: InteractorTestGenerator? = null
 
-      @Synchronized
-      override fun init(processingEnv: ProcessingEnvironment) {
-        interactorTestGenerator = InteractorTestGenerator(processingEnv, ErrorReporter(processingEnv.messager))
-        super.init(processingEnv)
-      }
+        @Synchronized
+        override fun init(processingEnv: ProcessingEnvironment) {
+          interactorTestGenerator =
+            InteractorTestGenerator(processingEnv, ErrorReporter(processingEnv.messager))
+          super.init(processingEnv)
+        }
 
-      override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
-        return listOf(
-          RibInteractorProcessorPipeline(processContext, interactorTestGenerator)
-        )
-      }
+        override fun getProcessorPipelines(
+          processContext: ProcessContext,
+        ): List<ProcessorPipeline> {
+          return listOf(
+            RibInteractorProcessorPipeline(processContext, interactorTestGenerator),
+          )
+        }
 
-      override fun getSupportedAnnotationTypes(): Set<String> {
-        return ImmutableSet.of(
-          RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName
-        )
+        override fun getSupportedAnnotationTypes(): Set<String> {
+          return ImmutableSet.of(
+            RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName,
+          )
+        }
       }
-    }
     sources = ArrayList()
   }
 

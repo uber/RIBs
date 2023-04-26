@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 import net.ltgt.gradle.errorprone.CheckSeverity
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
-apply from: 'gradle/dependencies.gradle'
+
 
 buildscript {
     apply from: rootProject.file('gradle/dependencies.gradle')
@@ -72,9 +73,8 @@ subprojects {
         }
         kotlin {
             target "**/*.kt"
-            ktlint(deps.versions.ktlint).userData(['indent_size': '2', 'continuation_indent_size' : '4'])
-            // TODO: enable when ktfmt depends on google-java-format < v1.8
-            // ktfmt(deps.versions.ktfmt)
+            ktlint(deps.versions.ktlint).editorConfigOverride(['indent_size': '2', 'continuation_indent_size' : '4'])
+            ktfmt(deps.versions.ktfmt).googleStyle()
             licenseHeaderFile rootProject.file('config/spotless/copyright.kt')
             trimTrailingWhitespace()
             endWithNewline()
@@ -172,7 +172,7 @@ subprojects {
                     androidTest.java.srcDirs += 'src/androidTest/kotlin'
                 }
 
-                tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
+                tasks.withType(KotlinCompile).configureEach {
                     kotlinOptions {
                         freeCompilerArgs = extraCompilerArgs
                         jvmTarget = "1.8"
@@ -196,7 +196,7 @@ subprojects {
     }
 }
 
-task clean(type: Delete) {
+tasks.register('clean', Delete) {
     delete rootProject.buildDir
 }
 

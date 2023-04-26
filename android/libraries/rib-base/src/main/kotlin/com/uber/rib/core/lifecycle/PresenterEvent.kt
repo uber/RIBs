@@ -15,7 +15,8 @@
  */
 package com.uber.rib.core.lifecycle
 
-/** Presenter lifecycle events.  */
+/** Presenter lifecycle events. */
 public enum class PresenterEvent {
-  LOADED, UNLOADED
+  LOADED,
+  UNLOADED,
 }

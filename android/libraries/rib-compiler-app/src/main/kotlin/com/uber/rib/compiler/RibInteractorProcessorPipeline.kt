@@ -20,10 +20,10 @@ import java.io.IOException
 import java.util.ArrayList
 import javax.lang.model.element.TypeElement
 
-/** The processor pipeline for [RibInteractor]  */
+/** The processor pipeline for [RibInteractor] */
 public open class RibInteractorProcessorPipeline(
   processContext: ProcessContext,
-  private var interactorGenerator: Generator<InteractorAnnotatedClass>?
+  private var interactorGenerator: Generator<InteractorAnnotatedClass>?,
 ) : TypeProcessorPipeline(processContext) {
   private val annotationVerifier: AnnotationVerifier<InteractorAnnotatedClass>
   private val builderAnnotatedClassesList: MutableList<InteractorAnnotatedClass?> = ArrayList()
@@ -44,7 +44,7 @@ public open class RibInteractorProcessorPipeline(
     generateSource()
   }
 
-  /** Generate the source code.  */
+  /** Generate the source code. */
   @Throws(IOException::class)
   protected fun generateSource() {
     if (interactorGenerator == null) {
@@ -69,8 +69,7 @@ public open class RibInteractorProcessorPipeline(
   }
 
   public companion object {
-    @JvmField
-    public val SUPPORT_ANNOTATION_TYPE: Class<RibInteractor> = RibInteractor::class.java
+    @JvmField public val SUPPORT_ANNOTATION_TYPE: Class<RibInteractor> = RibInteractor::class.java
   }
 
   /**

@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core
 
-/** Debugging utilities when working with Routers.  */
+/** Debugging utilities when working with Routers. */
 public object RouterDebugUtils {
   private const val ARM_RIGHT = "└── "
   private const val INTERSECTION = "├── "

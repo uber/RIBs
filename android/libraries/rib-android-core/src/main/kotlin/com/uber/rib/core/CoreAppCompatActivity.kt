@@ -21,7 +21,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
 
-/** Core Support v7 AppCompat Activity.  */
+/** Core Support v7 AppCompat Activity. */
 abstract class CoreAppCompatActivity : AppCompatActivity() {
 
   private var activityDelegate: ActivityDelegate? = null
@@ -70,7 +70,7 @@ abstract class CoreAppCompatActivity : AppCompatActivity() {
   override fun onRequestPermissionsResult(
     @IntRange(from = 0, to = 255) requestCode: Int,
     permissions: Array<String>,
-    grantResults: IntArray
+    grantResults: IntArray,
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     activityDelegate?.onRequestPermissionsResult(this, requestCode, permissions, grantResults)

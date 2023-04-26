@@ -15,7 +15,7 @@
  */
 package os
 
-/** Stub class to have pure Java unit tests.  */
+/** Stub class to have pure Java unit tests. */
 class Bundle : Parcelable {
   private val testData: MutableMap<String, Any> = HashMap()
 

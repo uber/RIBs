@@ -29,7 +29,7 @@ public class RibEvents private constructor() {
    * @param eventType [RibEventType]
    * @param child [Router]
    * @param parent [Router] and null for the root ribs that are directly attached to
-   * RibActivity/Fragment
+   *   RibActivity/Fragment
    */
   public fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
     _events.tryEmit(RibEvent(eventType, child, parent))
@@ -38,7 +38,6 @@ public class RibEvents private constructor() {
   public companion object {
     private val instance: RibEvents = RibEvents()
 
-    @JvmStatic
-    public fun getInstance(): RibEvents = instance
+    @JvmStatic public fun getInstance(): RibEvents = instance
   }
 }

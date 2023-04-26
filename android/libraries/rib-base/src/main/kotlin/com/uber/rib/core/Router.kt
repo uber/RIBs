@@ -27,11 +27,12 @@ import java.util.concurrent.CopyOnWriteArrayList
  *
  * @param <I> type of interactor this router routes.
  */
-public abstract class Router<I : InteractorType> protected constructor(
+public abstract class Router<I : InteractorType>
+protected constructor(
   component: InteractorBaseComponent<*>?,
   public open val interactor: I,
   private val ribRefWatcher: RibRefWatcher,
-  private val mainThread: Thread
+  private val mainThread: Thread,
 ) {
   private val children: MutableList<Router<*>> = CopyOnWriteArrayList()
   private val interactorGeneric: Interactor<*, *>
@@ -43,8 +44,13 @@ public abstract class Router<I : InteractorType> protected constructor(
   private var savedInstanceState: Bundle? = null
   private var isLoaded = false
 
-  protected constructor(interactor: I, component: InteractorBaseComponent<*>?) : this(component, interactor, RibRefWatcher.getInstance(), getMainThread())
-  protected constructor(interactor: I) : this(null, interactor, RibRefWatcher.getInstance(), getMainThread())
+  protected constructor(
+    interactor: I,
+    component: InteractorBaseComponent<*>?,
+  ) : this(component, interactor, RibRefWatcher.getInstance(), getMainThread())
+  protected constructor(
+    interactor: I,
+  ) : this(null, interactor, RibRefWatcher.getInstance(), getMainThread())
 
   @Suppress("UNCHECKED_CAST")
   protected fun inject(component: InteractorBaseComponent<*>?) {
@@ -65,10 +71,8 @@ public abstract class Router<I : InteractorType> protected constructor(
     return interactorGeneric.handleBackPress()
   }
 
-  /** Called after the router has been loaded and initialized.  */
-  @Initializer
-  protected open fun didLoad() {
-  }
+  /** Called after the router has been loaded and initialized. */
+  @Initializer protected open fun didLoad() {}
 
   /**
    * Called when a router is being attached. Router subclasses can perform setup here for anything
@@ -98,17 +102,22 @@ public abstract class Router<I : InteractorType> protected constructor(
   public open fun attachChild(childRouter: Router<*>, tag: String) {
     for (child in children) {
       if (tag == child.tag) {
-        Rib.getConfiguration().handleNonFatalWarning(
-          String.format(
-            Locale.getDefault(), "There is already a child router with tag: %s", tag
-          ),
-          null
-        )
+        Rib.getConfiguration()
+          .handleNonFatalWarning(
+            String.format(
+              Locale.getDefault(),
+              "There is already a child router with tag: %s",
+              tag,
+            ),
+            null,
+          )
       }
     }
     children.add(childRouter)
     ribRefWatcher.logBreadcrumb(
-      "ATTACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
+      "ATTACHED",
+      childRouter.javaClass.simpleName,
+      this.javaClass.simpleName,
     )
     RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, childRouter, this)
     var childBundle: Bundle? = null
@@ -120,10 +129,9 @@ public abstract class Router<I : InteractorType> protected constructor(
   }
 
   /**
-   * Detaches the {@param childFactory} from the current [Interactor]. NOTE: No consumers of
-   * this API should ever keep a reference to the detached child router, leak canary will enforce
-   * that it gets garbage collected.
-   *
+   * Detaches the {@param childFactory} from the current [Interactor]. NOTE: No consumers of this
+   * API should ever keep a reference to the detached child router, leak canary will enforce that it
+   * gets garbage collected.
    *
    * If you need to keep references to previous routers, use RouterNavigator.
    *
@@ -135,7 +143,9 @@ public abstract class Router<I : InteractorType> protected constructor(
     val interactor = childRouter.interactor
     ribRefWatcher.watchDeletedObject(interactor)
     ribRefWatcher.logBreadcrumb(
-      "DETACHED", childRouter.javaClass.simpleName, this.javaClass.simpleName
+      "DETACHED",
+      childRouter.javaClass.simpleName,
+      this.javaClass.simpleName,
     )
     if (savedInstanceState != null) {
       val childrenBundles = savedInstanceState?.getBundleExtra(KEY_CHILD_ROUTERS)
@@ -221,12 +231,10 @@ public abstract class Router<I : InteractorType> protected constructor(
   }
 
   public companion object {
-    @VisibleForTesting
-    public val KEY_CHILD_ROUTERS: String = "Router.childRouters"
+    @VisibleForTesting public val KEY_CHILD_ROUTERS: String = "Router.childRouters"
 
-    @JvmField
-    @VisibleForTesting
-    public val KEY_INTERACTOR: String = "Router.interactor"
+    @JvmField @VisibleForTesting public val KEY_INTERACTOR: String = "Router.interactor"
+
     @JvmStatic
     public fun getMainThread(): Thread {
       return try {

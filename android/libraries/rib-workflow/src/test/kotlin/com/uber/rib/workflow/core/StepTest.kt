@@ -32,7 +32,8 @@ class StepTest {
   @get:Rule var androidSchedulersRuleRx2 = AndroidSchedulersRule()
 
   private val interactorLifecycleSubject = BehaviorSubject.create<InteractorEvent>()
-  private val returnValueSubject: PublishSubject<Optional<Data<Any, ActionableItem>>> = PublishSubject.create()
+  private val returnValueSubject: PublishSubject<Optional<Data<Any, ActionableItem>>> =
+    PublishSubject.create()
   private lateinit var step: Step<Any, ActionableItem>
 
   @Before
@@ -43,12 +44,15 @@ class StepTest {
   @Test
   fun asObservable_withInactiveLifecycle_shouldWaitForActiveLifecycleBeforeEmitting() {
     val returnValue = Any()
-    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> = TestObserver<Optional<Data<Any, ActionableItem>>>()
+    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> =
+      TestObserver<Optional<Data<Any, ActionableItem>>>()
     step.asObservable().subscribe(testSubscriber)
     testSubscriber.assertNoValues()
     testSubscriber.assertNoErrors()
     testSubscriber.assertNotComplete()
-    returnValueSubject.onNext(Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })))
+    returnValueSubject.onNext(
+      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })),
+    )
     returnValueSubject.onComplete()
     testSubscriber.assertNoValues()
     testSubscriber.assertNoErrors()
@@ -63,13 +67,16 @@ class StepTest {
   @Test
   fun asObservable_withActiveLifecycle_shouldEmitWithoutWaiting() {
     val returnValue = Any()
-    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> = TestObserver<Optional<Data<Any, ActionableItem>>>()
+    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> =
+      TestObserver<Optional<Data<Any, ActionableItem>>>()
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE)
     step.asObservable().subscribe(testSubscriber)
     testSubscriber.assertNoValues()
     testSubscriber.assertNoErrors()
     testSubscriber.assertNotComplete()
-    returnValueSubject.onNext(Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })))
+    returnValueSubject.onNext(
+      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })),
+    )
     returnValueSubject.onComplete()
     testSubscriber.assertValueCount(1)
     assertThat(testSubscriber.values()[0].get().getValue()).isEqualTo(returnValue)
@@ -81,17 +88,20 @@ class StepTest {
   fun onStep_withASuccessFullFirstAction_shouldProperlyChainTheNextStep() {
     val returnValue = Any()
     val secondReturnValue = Any()
-    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> = TestObserver<Optional<Data<Any, ActionableItem>>>()
+    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> =
+      TestObserver<Optional<Data<Any, ActionableItem>>>()
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE)
-    step.onStep { o, actionableItem ->
-      Step.from(
-        Observable.just(Data(secondReturnValue, actionableItem))
-          .singleOrError()
-      )
-    }
+    step
+      .onStep { o, actionableItem ->
+        Step.from(
+          Observable.just(Data(secondReturnValue, actionableItem)).singleOrError(),
+        )
+      }
       .asObservable()
       .subscribe(testSubscriber)
-    returnValueSubject.onNext(Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })))
+    returnValueSubject.onNext(
+      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })),
+    )
     returnValueSubject.onComplete()
     testSubscriber.assertValueCount(1)
     assertThat(testSubscriber.values()[0].get().getValue()).isEqualTo(secondReturnValue)
@@ -101,14 +111,16 @@ class StepTest {
 
   @Test
   fun onStep_withAnUnsuccessfulFirstAction_shouldTerminateTheWholeChain() {
-    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> = TestObserver<Optional<Data<Any, ActionableItem>>>()
+    val testSubscriber: TestObserver<Optional<Data<Any, ActionableItem>>> =
+      TestObserver<Optional<Data<Any, ActionableItem>>>()
     val secondReturnValue = Any()
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE)
-    step.onStep { _, actionableItem ->
-      Step.from(
-        Observable.just(Data(secondReturnValue, actionableItem)).singleOrError()
-      )
-    }
+    step
+      .onStep { _, actionableItem ->
+        Step.from(
+          Observable.just(Data(secondReturnValue, actionableItem)).singleOrError(),
+        )
+      }
       .asObservable()
       .subscribe(testSubscriber)
     returnValueSubject.onNext(Optional.absent())

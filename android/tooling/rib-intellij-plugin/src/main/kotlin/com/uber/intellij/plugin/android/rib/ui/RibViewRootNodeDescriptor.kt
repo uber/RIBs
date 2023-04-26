@@ -36,7 +36,7 @@ class RibViewRootNodeDescriptor(
   private val nonNullProject: Project,
   element: PsiElement,
   ribNode: RibNode,
-  ribView: RibView?
+  ribView: RibView?,
 ) : RibViewNodeDescriptor(nonNullProject, element, ribNode, ribView) {
 
   override fun updateText(text: CompositeAppearance) {
@@ -46,7 +46,7 @@ class RibViewRootNodeDescriptor(
     }
     text.ending.addText(
       RibHierarchyUtils.formatSimpleName(ribNode.name).replace("Router", "View"),
-      getDefaultTextAttributes()
+      getDefaultTextAttributes(),
     )
     if (ribView != null && ribView.layoutId.isNotEmpty()) {
       val boldFont = TextAttributes(myColor, null, null, null, Font.BOLD)

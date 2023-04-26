@@ -15,8 +15,8 @@
  */
 package com.uber.rib.root;
 
-import com.uber.rib.root.logged_in.LoggedInBuilder;
-import com.uber.rib.root.logged_out.LoggedOutBuilder;
+import com.uber.rib.root.loggedin.LoggedInBuilder;
+import com.uber.rib.root.loggedout.LoggedOutBuilder;
 import org.junit.Before;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;

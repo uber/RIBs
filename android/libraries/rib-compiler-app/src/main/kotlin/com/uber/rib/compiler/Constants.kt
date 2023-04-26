@@ -15,10 +15,10 @@
  */
 package com.uber.rib.compiler
 
-/** Constant values used by the annotation processor.  */
+/** Constant values used by the annotation processor. */
 public open class Constants {
   public companion object {
-    /** {@inheritDoc}  */
+    /** {@inheritDoc} */
     public const val INTERACTOR_SUFFIX: String = "Interactor"
   }
 }
