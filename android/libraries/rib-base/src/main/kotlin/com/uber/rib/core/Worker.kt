@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core
 
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -22,18 +24,28 @@ import kotlinx.coroutines.CoroutineDispatcher
  * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the interactor's
  * actual lifecycle so that we're not stuck moving these classes around if there are other
  * lifecycles we're interested in.
+ *
+ * By default a [Worker] will be bound on the [CoroutineDispatcher] defined at [WorkerBinder.bind]
+ * call, except when the [Worker]'s [coroutineContext] is overriden with any other value than the
+ * default [EmptyCoroutineContext]. The new resulting binding dispatcher (e.g.
+ * RibDispatchers.Default) from [Worker] will take priority over the one passed via a
+ * [WorkerBinder.bind] call
  */
 public interface Worker {
 
   /**
-   * Specifies in which [CoroutineDispatcher] WorkerBind.bind will be operating on
+   * When overriden, will specify on which [CoroutineContext] the [Worker] will be bound via
+   * [WorkerBinder] (ignoring any [CoroutineDispatcher] being passed via [WorkerBinder])
    *
-   * NOTE: Default implementation will be using RibDispatchers.Unconfined to keep "caller" backward
-   * compatibility on existing usages
+   * For example given list of workers:
+   * 1) workers = listOf(defaultWorker, uiWorker)
+   * 2) Where [uiWorker] overrides [coroutinesContext] with [RibDispatchers.Main]
+   * 3) After calling WorkerBinder.bind(interactor, workers, RibDispatchers.IO). [uiWorker] will be
+   *    guaranteed to be called on RibDispatchers.Main
    */
   @JvmDefault
-  public val coroutineDispatcher: CoroutineDispatcher
-    get() = RibDispatchers.Unconfined
+  public val coroutineContext: CoroutineContext
+    get() = EmptyCoroutineContext
 
   /**
    * Called when worker is started.

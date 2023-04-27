@@ -192,13 +192,13 @@ public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker =
 /** Converts a [RibCoroutineWorker] to a [Worker]. */
 @JvmOverloads
 public fun RibCoroutineWorker.asWorker(
-  dispatcher: CoroutineDispatcher? = null,
-): Worker = RibCoroutineWorkerToWorkerAdapter(this, dispatcher)
+  coroutineContext: CoroutineContext = EmptyCoroutineContext,
+): Worker = RibCoroutineWorkerToWorkerAdapter(this, coroutineContext)
 
 internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) :
   RibCoroutineWorker {
   override suspend fun onStart(scope: CoroutineScope) {
-    withContext(worker.coroutineDispatcher) { worker.onStart(scope.asWorkerScopeProvider()) }
+    withContext(worker.coroutineContext) { worker.onStart(scope.asWorkerScopeProvider()) }
   }
 
   override fun onStop(cause: Throwable): Unit = worker.onStop()
@@ -206,17 +206,17 @@ internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker
 
 internal open class RibCoroutineWorkerToWorkerAdapter(
   private val ribCoroutineWorker: RibCoroutineWorker,
-  private val dispatcher: CoroutineDispatcher?,
+  coroutineContext: CoroutineContext,
 ) : Worker {
-  override val coroutineDispatcher: CoroutineDispatcher
-    get() = dispatcher ?: super.coroutineDispatcher
+
+  override val coroutineContext: CoroutineContext = coroutineContext + super.coroutineContext
 
   override fun onStart(lifecycle: WorkerScopeProvider) {
     // We can start it undispatched because Worker binder will already call `onStart` in correct
     // context,
     // but we still want to pass in `coroutineDispatcher` to resume from suspensions in `onStart` in
     // correct context.
-    lifecycle.coroutineScope.launch(coroutineDispatcher, start = CoroutineStart.UNDISPATCHED) {
+    lifecycle.coroutineScope.launch(coroutineContext, start = CoroutineStart.UNDISPATCHED) {
       supervisorScope { ribCoroutineWorker.onStart(this) }
     }
   }

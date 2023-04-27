@@ -16,26 +16,27 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth
-import kotlinx.coroutines.CoroutineDispatcher
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import org.junit.Test
 
 class WorkerTest {
 
   @Test
-  fun threadingType_withDefaultWorker_shouldUseUnconfinedDispatchers() {
+  fun threadingType_withDefaultWorker_shouldHaveEmptyCoroutineContextAsDefault() {
     val defaultWorker = DefaultWorker()
-    Truth.assertThat(defaultWorker.coroutineDispatcher).isEqualTo(RibDispatchers.Unconfined)
+    Truth.assertThat(defaultWorker.coroutineContext).isEqualTo(EmptyCoroutineContext)
   }
 
   @Test
   fun threadingType_withBackgroundWorker_shouldUseDefaultDispatchers() {
     val backgroundWorker = BackgroundWorker()
-    Truth.assertThat(backgroundWorker.coroutineDispatcher).isEqualTo(RibDispatchers.Default)
+    Truth.assertThat(backgroundWorker.coroutineContext).isEqualTo(RibDispatchers.Default)
   }
 
   private class DefaultWorker : Worker
 
   private class BackgroundWorker : Worker {
-    override val coroutineDispatcher: CoroutineDispatcher = RibDispatchers.Default
+    override val coroutineContext: CoroutineContext = RibDispatchers.Default
   }
 }
