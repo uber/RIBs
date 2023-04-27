@@ -16,6 +16,8 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -44,15 +46,12 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
 
 private const val ON_START_DELAY_DURATION_MILLIS = 100L
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class RibCoroutineWorkerTest {
-  @get:Rule
-  val coroutineRule = RibCoroutinesRule()
+  @get:Rule val coroutineRule = RibCoroutinesRule()
   private val worker = TestRibCoroutineWorker()
 
   @Test
@@ -130,9 +129,7 @@ class RibCoroutineWorkerTest {
 
   @Test
   fun onBindingJobCancelledBeforeBinding_parentScopeCanCompleteNormally() = runTest {
-    launch {
-      bind(worker).cancel("Cancelling bind work")
-    }
+    launch { bind(worker).cancel("Cancelling bind work") }
     // if test fails to finish, there are unfinished jobs.
   }
 
@@ -186,7 +183,7 @@ class RibCoroutineWorkerTest {
 @OptIn(ExperimentalCoroutinesApi::class, InternalCoroutinesApi::class)
 private class ImmediateDispatcher(
   scheduler: TestCoroutineScheduler,
-  private val delegate: TestDispatcher = StandardTestDispatcher(scheduler)
+  private val delegate: TestDispatcher = StandardTestDispatcher(scheduler),
 ) : CoroutineDispatcher(), Delay by delegate {
   private var threadId: Long? = null
   var dispatchCount = 0
