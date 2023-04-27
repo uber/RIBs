@@ -44,13 +44,14 @@ import org.mockito.kotlin.verify
 class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @get:Rule val ribCoroutinesRule = RibCoroutinesRule()
 
-  private val worker = mock<Worker>().run {
-    if (adaptFromRibCoroutineWorker) {
-      spy(this.asRibCoroutineWorker().asWorker())
-    } else {
-      this
+  private val worker =
+    mock<Worker>().run {
+      if (adaptFromRibCoroutineWorker) {
+        spy(this.asRibCoroutineWorker().asWorker())
+      } else {
+        this
+      }
     }
-  }
   private val workerBinderListener: WorkerBinderListener = mock()
 
   private val fakeWorker = FakeWorker()
