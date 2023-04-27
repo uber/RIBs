@@ -15,6 +15,8 @@
  */
 package com.uber.rib.core
 
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 
 /**
@@ -26,14 +28,18 @@ import kotlinx.coroutines.CoroutineDispatcher
 public interface Worker {
 
   /**
-   * Specifies in which [CoroutineDispatcher] WorkerBind.bind will be operating on
+   * When overriden, will specify on which [CoroutineContext] WorkerBind.bind will be operating on
+   * ignoring any [CoroutineDispatcher] being passed via [WorkerBinder]
    *
-   * NOTE: Default implementation will be using RibDispatchers.Unconfined to keep "caller" backward
-   * compatibility on existing usages
+   * For example given list of workers:
+   * 1) workers = listOf(defaultWorker, uiWorker)
+   * 2) Where uiWorker overrides [coroutinesContext] with [RibDispatchers.Main]
+   * 3) After calling WorkerBinder.bind(interactor, workers, RibDispatchers.IO). uiWorker will be
+   *    guaranteed to be called on RibDispatchers.Main
    */
   @JvmDefault
-  public val coroutineDispatcher: CoroutineDispatcher
-    get() = RibDispatchers.Unconfined
+  public val coroutineContext: CoroutineContext
+    get() = EmptyCoroutineContext
 
   /**
    * Called when worker is started.

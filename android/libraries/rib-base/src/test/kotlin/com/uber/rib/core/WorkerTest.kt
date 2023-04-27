@@ -24,18 +24,18 @@ class WorkerTest {
   @Test
   fun threadingType_withDefaultWorker_shouldUseUnconfinedDispatchers() {
     val defaultWorker = DefaultWorker()
-    Truth.assertThat(defaultWorker.coroutineDispatcher).isEqualTo(RibDispatchers.Unconfined)
+    Truth.assertThat(defaultWorker.coroutineContext).isEqualTo(RibDispatchers.Unconfined)
   }
 
   @Test
   fun threadingType_withBackgroundWorker_shouldUseDefaultDispatchers() {
     val backgroundWorker = BackgroundWorker()
-    Truth.assertThat(backgroundWorker.coroutineDispatcher).isEqualTo(RibDispatchers.Default)
+    Truth.assertThat(backgroundWorker.coroutineContext).isEqualTo(RibDispatchers.Default)
   }
 
   private class DefaultWorker : Worker
 
   private class BackgroundWorker : Worker {
-    override val coroutineDispatcher: CoroutineDispatcher = RibDispatchers.Default
+    override val coroutineContext: CoroutineDispatcher = RibDispatchers.Default
   }
 }

@@ -22,6 +22,8 @@ import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
 import java.lang.ref.WeakReference
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
@@ -55,11 +57,24 @@ public object WorkerBinder {
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
+   * @param binderCoroutineDispatcher CoroutineDispatcher to be apply only when
+   *   [Worker.coroutineContext] is not overriden with a value different that
+   *   [EmptyCoroutineContext]
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder =
-    worker.bind(interactor.lifecycleFlow, Interactor.lifecycleRange, workerBinderListenerWeakRef)
+  @JvmOverloads
+  public fun bind(
+    interactor: Interactor<*, *>,
+    worker: Worker,
+    binderCoroutineDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ): WorkerUnbinder =
+    worker.bind(
+      interactor.lifecycleFlow,
+      Interactor.lifecycleRange,
+      binderCoroutineDispatcher,
+      workerBinderListenerWeakRef
+    )
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -68,11 +83,19 @@ public object WorkerBinder {
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
+   * @param binderCoroutineDispatcher CoroutineDispatcher to be apply only when
+   *   [Worker.coroutineContext] is not overriden with a value different that
+   *   [EmptyCoroutineContext] [RibDispatchers.Unconfined]
    */
   @JvmStatic
-  public fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
+  @JvmOverloads
+  public fun bind(
+    interactor: Interactor<*, *>,
+    workers: List<Worker>,
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ) {
     for (interactorWorker in workers) {
-      bind(interactor, interactorWorker)
+      bind(interactor, interactorWorker, dispatcherAtBinder)
     }
   }
 
@@ -82,11 +105,24 @@ public object WorkerBinder {
    *
    * @param presenter The presenter that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
+   * @param binderCoroutineDispatcher CoroutineDispatcher to be apply only when
+   *   [Worker.coroutineContext] is not overriden with a value different that
+   *   [EmptyCoroutineContext] [RibDispatchers.Unconfined]
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder =
-    worker.bind(presenter.lifecycleFlow, Presenter.lifecycleRange, workerBinderListenerWeakRef)
+  @JvmOverloads
+  public fun bind(
+    presenter: Presenter,
+    worker: Worker,
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ): WorkerUnbinder =
+    worker.bind(
+      presenter.lifecycleFlow,
+      Presenter.lifecycleRange,
+      dispatcherAtBinder,
+      workerBinderListenerWeakRef
+    )
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -95,11 +131,18 @@ public object WorkerBinder {
    *
    * @param presenter The presenter that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
+   * @param dispatcherAtBinder Optional dispatcher to force binding of a list of all Workers (unless
+   *   there is a [Worker] in the list with [coroutineDispatcher] other than
+   *   [RibDispatchers.Unconfined]
    */
   @JvmStatic
-  public fun bind(presenter: Presenter, workers: List<Worker>) {
+  public fun bind(
+    presenter: Presenter,
+    workers: List<Worker>,
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ) {
     for (worker in workers) {
-      bind(presenter, worker)
+      bind(presenter, worker, dispatcherAtBinder)
     }
   }
 
@@ -195,6 +238,16 @@ public object WorkerBinder {
 }
 
 /**
+ * Holds relevant information for [dispatcherAtBinder] [workerCoroutineWorker] and resulting
+ * [jobCoroutineWorker]
+ */
+public data class CoroutineContextInfo(
+  val dispatcherAtBinder: CoroutineDispatcher,
+  val workerCoroutineWorker: CoroutineContext,
+  val jobCoroutineWorker: CoroutineContext,
+)
+
+/**
  * Holds all relevant information for completed Worker.onStart/onStop actions. (e.g. Name of the
  * Worker bound, duration of total onStart/onStop, thread name where onStart/onStop happens,etc)
  */
@@ -205,8 +258,8 @@ public data class WorkerBinderInfo(
   /** Worker event type (START/STOP) */
   val workerEvent: WorkerEvent,
 
-  /** [CoroutineDispatcher] where [WorkerBinder.bind] will be operating upon */
-  val coroutineDispatcher: CoroutineDispatcher,
+  /** [CoroutineContextInfo] contains all relevant WorkerBinding CoroutineContext information */
+  val coroutineContextInfo: CoroutineContextInfo,
 
   /**
    * Thread name where Worker.onStart/onStop was called.
@@ -232,13 +285,32 @@ public fun interface WorkerBinderListener {
   )
 }
 
+private fun getCoroutineContextInfo(
+  dispatcherAtBinder: CoroutineDispatcher,
+  workerCoroutineContext: CoroutineContext,
+): CoroutineContextInfo {
+  val jobCoroutineContext =
+    if (workerCoroutineContext != EmptyCoroutineContext) {
+      workerCoroutineContext
+    } else {
+      dispatcherAtBinder
+    }
+  return CoroutineContextInfo(dispatcherAtBinder, workerCoroutineContext, jobCoroutineContext)
+}
+
 private fun <T : Comparable<T>> Worker.bind(
   lifecycle: SharedFlow<T>,
   lifecycleRange: ClosedRange<T>,
+  binderCoroutineDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
   workerDurationListenerWeakRef: WeakReference<WorkerBinderListener>?,
 ): WorkerUnbinder {
+  val coroutineContextInfo =
+    getCoroutineContextInfo(
+      binderCoroutineDispatcher,
+      workerCoroutineContext = this.coroutineContext,
+    )
   val coroutineStart =
-    if (coroutineDispatcher == RibDispatchers.Unconfined) {
+    if (coroutineContextInfo.jobCoroutineWorker == RibDispatchers.Unconfined) {
       CoroutineStart.UNDISPATCHED
     } else {
       CoroutineStart.DEFAULT
@@ -254,16 +326,26 @@ private fun <T : Comparable<T>> Worker.bind(
   @OptIn(DelicateCoroutinesApi::class)
   val job =
     GlobalScope.launch(
-      coroutineDispatcher,
+      coroutineContextInfo.jobCoroutineWorker,
       start = coroutineStart,
     ) {
       lifecycle
         .takeWhile { it < lifecycleRange.endInclusive }
         .onCompletion {
-          bindAndReportWorkerInfo(workerDurationListenerWeakRef, WorkerEvent.STOP) { onStop() }
+          bindAndReportWorkerInfo(
+            workerDurationListenerWeakRef,
+            WorkerEvent.STOP,
+            coroutineContextInfo
+          ) {
+            onStop()
+          }
         }
         .collect {
-          bindAndReportWorkerInfo(workerDurationListenerWeakRef, WorkerEvent.START) {
+          bindAndReportWorkerInfo(
+            workerDurationListenerWeakRef,
+            WorkerEvent.START,
+            coroutineContextInfo,
+          ) {
             val workerScopeProvider = WorkerScopeProvider(lifecycle.asScopeProvider(lifecycleRange))
             onStart(workerScopeProvider)
           }
@@ -275,14 +357,16 @@ private fun <T : Comparable<T>> Worker.bind(
 private inline fun Worker.bindAndReportWorkerInfo(
   workerBinderListeners: WeakReference<WorkerBinderListener>?,
   event: WorkerEvent,
+  coroutineContextInfo: CoroutineContextInfo,
   workerBinderAction: Worker.() -> Unit,
 ) {
   val duration = measureTimeMillis { workerBinderAction() }
-  workerBinderListeners?.reportWorkerBinderInfo(this, event, duration)
+  workerBinderListeners?.reportWorkerBinderInfo(this, coroutineContextInfo, event, duration)
 }
 
 private fun WeakReference<WorkerBinderListener>.reportWorkerBinderInfo(
   worker: Worker,
+  coroutineContextInfo: CoroutineContextInfo,
   workerEvent: WorkerEvent,
   totalBindingEventMilli: Long,
 ) {
@@ -293,7 +377,7 @@ private fun WeakReference<WorkerBinderListener>.reportWorkerBinderInfo(
     WorkerBinderInfo(
       workerClassName,
       workerEvent,
-      worker.coroutineDispatcher,
+      coroutineContextInfo,
       currentThreadName,
       totalBindingEventMilli,
     )

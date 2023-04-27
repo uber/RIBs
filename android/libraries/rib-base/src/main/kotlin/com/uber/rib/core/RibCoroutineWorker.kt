@@ -16,6 +16,14 @@
 package com.uber.rib.core
 
 import com.uber.autodispose.coroutinesinterop.asScopeProvider
+import kotlin.coroutines.ContinuationInterceptor
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlin.coroutines.coroutineContext
+import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
+import kotlin.coroutines.intrinsics.intercepted
+import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
+import kotlin.coroutines.resume
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineDispatcher
@@ -30,32 +38,26 @@ import kotlinx.coroutines.job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
-import kotlin.coroutines.ContinuationInterceptor
-import kotlin.coroutines.CoroutineContext
-import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.coroutines.coroutineContext
-import kotlin.coroutines.intrinsics.COROUTINE_SUSPENDED
-import kotlin.coroutines.intrinsics.intercepted
-import kotlin.coroutines.intrinsics.suspendCoroutineUninterceptedOrReturn
-import kotlin.coroutines.resume
 
 /** A manager or helper class bound to a [CoroutineScope] by using a binder like [bind]. */
 public fun interface RibCoroutineWorker {
   /** Called when worker is started. Children coroutines can be launched in [scope]. */
   public suspend fun onStart(scope: CoroutineScope)
 
-  /** Called when the worker is stopped with the given [cause]. Should be fast, non-blocking and should not throw. */
-  @JvmDefault
-  public fun onStop(cause: Throwable) {}
+  /**
+   * Called when the worker is stopped with the given [cause]. Should be fast, non-blocking and
+   * should not throw.
+   */
+  @JvmDefault public fun onStop(cause: Throwable) {}
 }
 
 // ---- Binder ---- //
 
 /**
- * A handle to interact with [RibCoroutineWorker] binding job. This handle implements [Job], which refers to the
- * completion of [RibCoroutineWorker.onStart]. It can be [joined][join] to make sure `onStart` finished. Note that
- * children coroutines launched in the [CoroutineScope] passed on to `onStart` are not waited: worker is considered
- * bound when `onStart` finishes.
+ * A handle to interact with [RibCoroutineWorker] binding job. This handle implements [Job], which
+ * refers to the completion of [RibCoroutineWorker.onStart]. It can be [joined][join] to make sure
+ * `onStart` finished. Note that children coroutines launched in the [CoroutineScope] passed on to
+ * `onStart` are not waited: worker is considered bound when `onStart` finishes.
  */
 public sealed interface BindWorkerHandle : Job {
   /** Unbinds the worker. */
@@ -75,18 +77,19 @@ private class BindWorkerHandleImpl(
 /**
  * Binds [worker] in a scope that is a child of the [CoroutineScope] receiver.
  *
- * The binding operation runs [RibCoroutineWorker.onStart] in a context inherited from the [CoroutineScope] receiver, but
- * with additional [context] elements that is, by default, [RibDispatchers.Default]. This makes the worker run on the
- * default dispatcher by default. Pass in [EmptyCoroutineContext] instead if you want the worker to not override the
- * dispatcher in the scope (if any), or pass in a custom dispatcher as [context] to specify a different dispatcher. If
+ * The binding operation runs [RibCoroutineWorker.onStart] in a context inherited from the
+ * [CoroutineScope] receiver, but with additional [context] elements that is, by default,
+ * [RibDispatchers.Default]. This makes the worker run on the default dispatcher by default. Pass in
+ * [EmptyCoroutineContext] instead if you want the worker to not override the dispatcher in the
+ * scope (if any), or pass in a custom dispatcher as [context] to specify a different dispatcher. If
  * there is no dispatcher in [CoroutineScope] nor in [context], [RibDispatchers.Default] is used.
  *
- * The scope passed on to [RibCoroutineWorker.onStart] as a parameter is a child scope of the [CoroutineScope] receiver,
- * but with the additional [context] elements and a [SupervisorJob].
+ * The scope passed on to [RibCoroutineWorker.onStart] as a parameter is a child scope of the
+ * [CoroutineScope] receiver, but with the additional [context] elements and a [SupervisorJob].
  *
- * Binding a worker is an asynchronous operation. To ensure [RibCoroutineWorker.onStart] is finished, callers can
- * [join][BindWorkerHandle.join] the resulting [BindWorkerHandle] when in a coroutine:
- *
+ * Binding a worker is an asynchronous operation. To ensure [RibCoroutineWorker.onStart] is
+ * finished, callers can [join][BindWorkerHandle.join] the resulting [BindWorkerHandle] when in a
+ * coroutine:
  * ```
  * val handle = coroutineScope.bind(worker)
  * handle.join() // wait for onStart to finish
@@ -100,19 +103,27 @@ public fun CoroutineScope.bind(
   // A job that completes once worker's onStart completes
   var bindJob: CompletableJob? = null
   // Start the bind coroutine undispatched to make sure we set bindJob synchronously.
-  val unbindJob = launch(context, start = CoroutineStart.UNDISPATCHED) {
-    bindJob = Job(coroutineContext.job).also {
-      // Cancel `unbindJob` if `bindJob` has cancelled. This is important to abort `onStart` if `bindJob`
-      // gets cancelled externally.
-      // Note that in case of `bindJob` failure (e.g. `onStart` throws), `unbindJob` will already fail by means of
-      // structured concurrency, but that does not happen on normal cancellation.
-      // This `bindJob` cancellation upon the `unbindJob` cancellation is also already set through structured concurrency.
-      it.invokeOnCompletion { throwable -> if (throwable is CancellationException) cancel(throwable) }
+  val unbindJob =
+    launch(context, start = CoroutineStart.UNDISPATCHED) {
+      bindJob =
+        Job(coroutineContext.job).also {
+          // Cancel `unbindJob` if `bindJob` has cancelled. This is important to abort `onStart` if
+          // `bindJob`
+          // gets cancelled externally.
+          // Note that in case of `bindJob` failure (e.g. `onStart` throws), `unbindJob` will
+          // already fail by means of
+          // structured concurrency, but that does not happen on normal cancellation.
+          // This `bindJob` cancellation upon the `unbindJob` cancellation is also already set
+          // through structured concurrency.
+          it.invokeOnCompletion { throwable ->
+            if (throwable is CancellationException) cancel(throwable)
+          }
+        }
+      // Verify cancellation and dispatch (if needed) using dispatcher in context instead of
+      // continuing on current thread.
+      dispatchIfNeeded()
+      bindAndAwaitCancellation(worker, bindJob!!)
     }
-    // Verify cancellation and dispatch (if needed) using dispatcher in context instead of continuing on current thread.
-    dispatchIfNeeded()
-    bindAndAwaitCancellation(worker, bindJob!!)
-  }
   // We know deferred is non-null because binding coroutine was started undispatched.
   return BindWorkerHandleImpl(bindJob!!, unbindJob)
 }
@@ -127,7 +138,8 @@ private suspend inline fun dispatchIfNeeded() {
     cont.intercepted().resume(Unit)
     COROUTINE_SUSPENDED
   }
-  coroutineContext.ensureActive() // Don't continue if coroutine was cancelled after returning from dispatch.
+  coroutineContext
+    .ensureActive() // Don't continue if coroutine was cancelled after returning from dispatch.
 }
 
 @Suppress("TooGenericExceptionCaught") // Exception is not swallowed
@@ -135,7 +147,8 @@ private suspend fun bindAndAwaitCancellation(worker: RibCoroutineWorker, bindJob
   try {
     supervisorScope {
       worker.onStart(this)
-      ensureActive() // Before completing the binding deferred, make sure the binding coroutine is active.
+      ensureActive() // Before completing the binding deferred, make sure the binding coroutine is
+      // active.
       bindJob.complete()
       awaitCancellation() // Never returns normally, so we are sure an exception will be caught.
     }
@@ -145,7 +158,10 @@ private suspend fun bindAndAwaitCancellation(worker: RibCoroutineWorker, bindJob
   }
 }
 
-/** Cancel the deferred if [throwable] is a [CancellationException], otherwise completes it exceptionally. */
+/**
+ * Cancel the deferred if [throwable] is a [CancellationException], otherwise completes it
+ * exceptionally.
+ */
 private fun CompletableJob.cancelOrCompleteExceptionally(throwable: Throwable) {
   when (throwable) {
     is CancellationException -> cancel(throwable)
@@ -156,7 +172,8 @@ private fun CompletableJob.cancelOrCompleteExceptionally(throwable: Throwable) {
 // ---- RibCoroutineWorker <-> Worker adapters ---- //
 
 /** Converts a [Worker] to a [RibCoroutineWorker]. */
-public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker = WorkerToRibCoroutineWorkerAdapter(this)
+public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker =
+  WorkerToRibCoroutineWorkerAdapter(this)
 
 /** Converts a [RibCoroutineWorker] to a [Worker]. */
 @JvmOverloads
@@ -164,11 +181,10 @@ public fun RibCoroutineWorker.asWorker(
   dispatcher: CoroutineDispatcher? = null,
 ): Worker = RibCoroutineWorkerToWorkerAdapter(this, dispatcher)
 
-internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) : RibCoroutineWorker {
+internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) :
+  RibCoroutineWorker {
   override suspend fun onStart(scope: CoroutineScope) {
-    withContext(worker.coroutineDispatcher) {
-      worker.onStart(scope.asWorkerScopeProvider())
-    }
+    withContext(worker.coroutineContext) { worker.onStart(scope.asWorkerScopeProvider()) }
   }
 
   override fun onStop(cause: Throwable): Unit = worker.onStop()
@@ -178,19 +194,21 @@ internal open class RibCoroutineWorkerToWorkerAdapter(
   private val ribCoroutineWorker: RibCoroutineWorker,
   private val dispatcher: CoroutineDispatcher?,
 ) : Worker {
-  override val coroutineDispatcher: CoroutineDispatcher get() = dispatcher ?: super.coroutineDispatcher
+  override val coroutineContext: CoroutineDispatcher
+    get() = dispatcher ?: super.coroutineContext
 
   override fun onStart(lifecycle: WorkerScopeProvider) {
-    // We can start it undispatched because Worker binder will already call `onStart` in correct context,
-    // but we still want to pass in `coroutineDispatcher` to resume from suspensions in `onStart` in correct context.
-    lifecycle.coroutineScope.launch(coroutineDispatcher, start = CoroutineStart.UNDISPATCHED) {
-      supervisorScope {
-        ribCoroutineWorker.onStart(this)
-      }
+    // We can start it undispatched because Worker binder will already call `onStart` in correct
+    // context,
+    // but we still want to pass in `coroutineDispatcher` to resume from suspensions in `onStart` in
+    // correct context.
+    lifecycle.coroutineScope.launch(coroutineContext, start = CoroutineStart.UNDISPATCHED) {
+      supervisorScope { ribCoroutineWorker.onStart(this) }
     }
   }
 
-  override fun onStop(): Unit = ribCoroutineWorker.onStop(CancellationException("Worker is unbinding."))
+  override fun onStop(): Unit =
+    ribCoroutineWorker.onStop(CancellationException("Worker is unbinding."))
 }
 
 private fun CoroutineScope.asWorkerScopeProvider() = WorkerScopeProvider(asScopeProvider())
