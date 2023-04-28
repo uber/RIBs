@@ -37,7 +37,6 @@ dependencies {
     implementation deps.external.reactiveStreams
     implementation deps.external.rxrelay2
     implementation deps.external.rxjava2
-    implementation deps.kotlin.stdlib
     implementation deps.uber.autodispose
     api deps.uber.autodisposeLifecycle
     implementation deps.apt.javaxInject
@@ -56,7 +55,6 @@ dependencies {
     testImplementation project(":libraries:rib-coroutines-test")
     testImplementation deps.androidx.annotations
     testImplementation deps.apt.androidApi
-    testImplementation deps.kotlin.stdlib
     testImplementation deps.test.junit
     testImplementation deps.test.mockito
     testImplementation deps.test.mockitoKotlin

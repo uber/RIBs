@@ -3,12 +3,12 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: "org.jetbrains.kotlin.kapt"
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.compose"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
+        minSdk deps.build.minSdkVersion
+        targetSdk deps.build.targetSdkVersion
         applicationId "com.uber.rib.compose"
         versionCode 1
         versionName "1.0"
@@ -52,7 +52,6 @@ dependencies {
     implementation deps.kotlin.coroutines
     implementation deps.kotlin.coroutinesAndroid
     implementation deps.kotlin.coroutinesRx2
-    implementation deps.kotlin.stdlib
     implementation deps.uber.autodisposeCoroutines
     implementation deps.uber.motif
 

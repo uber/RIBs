@@ -19,8 +19,8 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: "com.vanniktech.maven.publish"
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.debug.broadcast.rib"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
         minSdkVersion deps.build.minSdkVersion
@@ -30,6 +30,10 @@ android {
     compileOptions {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
+    }
+
+    buildFeatures {
+        buildConfig false
     }
 
     testOptions {

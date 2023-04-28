@@ -16,7 +16,7 @@
 package com.uber.rib.compose.root
 
 import android.view.ViewGroup
-import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.setViewTreeLifecycleOwner
 import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.uber.rib.compose.root.main.MainScope
 import com.uber.rib.compose.util.AnalyticsClient
@@ -45,7 +45,7 @@ interface RootScope {
 
     fun view(parentViewGroup: ViewGroup, activity: RibActivity): RootView {
       return RootView(parentViewGroup.context).apply {
-        ViewTreeLifecycleOwner.set(this, activity)
+        setViewTreeLifecycleOwner(activity)
         setViewTreeSavedStateRegistryOwner(activity)
       }
     }

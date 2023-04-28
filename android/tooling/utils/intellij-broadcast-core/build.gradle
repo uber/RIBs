@@ -18,17 +18,20 @@ apply plugin: 'com.android.library'
 apply plugin: "com.vanniktech.maven.publish"
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.debug.broadcast.core"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
+        minSdk deps.build.minSdkVersion
     }
 
     compileOptions {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
+    }
+
+    buildFeatures {
+        buildConfig false
     }
 
     testOptions {

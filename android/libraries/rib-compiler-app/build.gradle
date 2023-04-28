@@ -26,7 +26,6 @@ dependencies {
     implementation deps.apt.autoCommon
     implementation deps.apt.javapoet
     implementation deps.external.dagger
-    implementation deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.autoService

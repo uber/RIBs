@@ -124,11 +124,6 @@ subprojects {
             // TODO replace with https://issuetracker.google.com/issues/72050365 once released.
             project.android {
                 if (isAndroidLibrary) {
-                    libraryVariants.all {
-                        it.generateBuildConfigProvider.configure {
-                            it.enabled = false
-                        }
-                    }
                     variantFilter { variant ->
                         if (variant.buildType.name == 'debug') {
                             variant.setIgnore(true)
@@ -154,7 +149,7 @@ subprojects {
             def extraCompilerArgs = [
                     // See https://github.com/bazelbuild/bazel/issues/15144
                     "-Xjvm-default=enable",
-                    "-Xopt-in=kotlin.RequiresOptIn"
+                    "-opt-in=kotlin.RequiresOptIn",
             ]
             if (project.name in moduleFriends.keySet()) {
                 def friendName = moduleFriends[project.name]
@@ -175,20 +170,20 @@ subprojects {
                 tasks.withType(KotlinCompile).configureEach {
                     kotlinOptions {
                         freeCompilerArgs = extraCompilerArgs
-                        jvmTarget = "1.8"
+                        jvmTarget = "11"
                     }
                 }
             } else if(!isIntelliJPlugin) {
                 project.compileKotlin {
                     kotlinOptions {
                         freeCompilerArgs = extraCompilerArgs
-                        jvmTarget = "1.8"
+                        jvmTarget = "11"
                     }
                 }
                 project.compileTestKotlin {
                     kotlinOptions {
                         freeCompilerArgs = extraCompilerArgs
-                        jvmTarget = "1.8"
+                        jvmTarget = "11"
                     }
                 }
             }

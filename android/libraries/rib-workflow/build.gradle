@@ -19,17 +19,20 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: "com.vanniktech.maven.publish"
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.workflow"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
+        minSdk deps.build.minSdkVersion
     }
 
     compileOptions {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
+    }
+
+    buildFeatures {
+        buildConfig false
     }
 }
 
@@ -37,7 +40,6 @@ dependencies {
     implementation deps.androidx.annotations
     implementation deps.external.rxandroid2
     implementation deps.external.rxkotlin
-    implementation deps.kotlin.stdlib
     api deps.external.guavaAndroid
     api deps.external.rxjava2
     api project(":libraries:rib-android")
