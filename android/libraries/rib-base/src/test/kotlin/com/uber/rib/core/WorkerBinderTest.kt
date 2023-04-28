@@ -24,8 +24,10 @@ import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
+import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -188,6 +190,27 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 
   @Test
+  fun bind_multipleWorkers_shouldReportBinderTwice() = runTest {
+    val uiWorker = UiWorker()
+    val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
+    prepareInteractor()
+    val workers = listOf(fakeWorker, fakeWorker, uiWorker)
+    bind(interactor, workers)
+    advanceUntilIdle()
+    verify(workerBinderListener, times(3)).onBindCompleted(binderDurationCaptor.capture())
+    binderDurationCaptor.firstValue.assertWorkerDuration(
+      "FakeWorker",
+      WorkerEvent.START,
+      RibDispatchers.Unconfined,
+    )
+    binderDurationCaptor.thirdValue.assertWorkerDuration(
+      "UiWorker",
+      WorkerEvent.START,
+      RibDispatchers.Main,
+    )
+  }
+
+  @Test
   fun unbind_withUnconfinedCoroutineDispatchers_shouldReportBinderDurationForOnStop() = runTest {
     val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
     val unbinder = bindFakeWorker()
@@ -201,19 +224,23 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 
   private fun bindFakeWorker(): WorkerUnbinder {
+    prepareInteractor()
+    return bind(interactor, fakeWorker)
+  }
+
+  private fun prepareInteractor() {
     interactor.attach()
     interactor.enableTestScopeOverride()
-    return bind(interactor, fakeWorker)
   }
 
   private fun WorkerBinderInfo.assertWorkerDuration(
     expectedWorkerClassName: String,
     expectedWorkerEvent: WorkerEvent,
-    expectedWorkerBinderThreadingType: CoroutineDispatcher,
+    expectedCoroutineContext: CoroutineContext,
   ) {
     assertThat(workerName).contains(expectedWorkerClassName)
     assertThat(workerEvent).isEqualTo(expectedWorkerEvent)
-    assertThat(coroutineDispatcher).isEqualTo(expectedWorkerBinderThreadingType)
+    assertThat(expectedCoroutineContext).isEqualTo(expectedCoroutineContext)
   }
 
   companion object {
@@ -229,3 +256,7 @@ private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
       onStartBlock(lifecycle)
     }
   }
+
+class UiWorker : Worker {
+  override val coroutineContext: CoroutineDispatcher = RibDispatchers.Main
+}
