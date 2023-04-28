@@ -204,12 +204,11 @@ internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker
   override fun onStop(cause: Throwable): Unit = worker.onStop()
 }
 
-internal open class RibCoroutineWorkerToWorkerAdapter(
+internal open class RibCoroutineWorkerToWorkerAdapter
+internal constructor(
   private val ribCoroutineWorker: RibCoroutineWorker,
-  coroutineContext: CoroutineContext,
+  override val coroutineContext: CoroutineContext,
 ) : Worker {
-
-  override val coroutineContext: CoroutineContext = coroutineContext + super.coroutineContext
 
   override fun onStart(lifecycle: WorkerScopeProvider) {
     // We can start it undispatched because Worker binder will already call `onStart` in correct
