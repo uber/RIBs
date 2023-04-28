@@ -23,12 +23,12 @@ buildscript {
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.tutorial1"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
+        minSdk deps.build.minSdkVersion
+        targetSdk deps.build.targetSdkVersion
         applicationId "com.uber.tutorial3"
         versionCode 1
         versionName "1.0"

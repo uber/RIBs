@@ -19,12 +19,11 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.vanniktech.maven.publish'
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.android"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
+        minSdk deps.build.minSdkVersion
     }
 
     compileOptions {

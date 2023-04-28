@@ -26,7 +26,6 @@ dependencies {
     api deps.uber.autodisposeCoroutines
     api deps.kotlin.coroutinesAndroid
     api deps.kotlin.coroutinesRx2
-    implementation deps.kotlin.stdlib
 
     compileOnly deps.external.android
 

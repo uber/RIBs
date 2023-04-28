@@ -19,17 +19,20 @@ apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: "com.vanniktech.maven.publish"
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.workflow.test"
+    compileSdk deps.build.compileSdkVersion
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
+        minSdk deps.build.minSdkVersion
     }
 
     compileOptions {
         sourceCompatibility deps.build.javaVersion
         targetCompatibility deps.build.javaVersion
+    }
+
+    buildFeatures {
+        buildConfig false
     }
 
     // This module is only testing utilities. Given this code isn't intended to be run inside a production
@@ -45,7 +48,6 @@ dependencies {
     api deps.external.guavaAndroid
     api deps.external.rxjava2
     implementation deps.androidx.annotations
-    implementation deps.kotlin.stdlib
     implementation deps.test.truth
 }
 

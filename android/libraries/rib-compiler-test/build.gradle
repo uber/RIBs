@@ -23,7 +23,6 @@ apply plugin: "com.vanniktech.maven.publish"
 dependencies {
     implementation project(":libraries:rib-compiler-app")
     implementation deps.apt.javapoet
-    implementation deps.kotlin.stdlib
 
     compileOnly deps.androidx.annotations
     compileOnly deps.apt.autoService
