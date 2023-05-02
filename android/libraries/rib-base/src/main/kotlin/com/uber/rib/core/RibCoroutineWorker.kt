@@ -198,7 +198,9 @@ public fun RibCoroutineWorker.asWorker(
 internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) :
   RibCoroutineWorker {
   override suspend fun onStart(scope: CoroutineScope) {
-    withContext(worker.coroutineContext) { worker.onStart(scope.asWorkerScopeProvider()) }
+    withContext(worker.coroutineContext ?: EmptyCoroutineContext) {
+      worker.onStart(scope.asWorkerScopeProvider())
+    }
   }
 
   override fun onStop(cause: Throwable): Unit = worker.onStop()
