@@ -44,6 +44,7 @@ dependencies {
     implementation deps.uber.autodisposeCoroutines
     implementation deps.kotlin.coroutines
     implementation deps.kotlin.coroutinesRx2
+    api deps.kotlin.stdlib
 
     implementation project(":libraries:rib-coroutines")
 

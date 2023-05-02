@@ -21,7 +21,7 @@ sourceCompatibility = deps.build.javaVersion.toString()
 targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
-    implementation project(":libraries:rib-base")
+    api project(":libraries:rib-base")
     implementation deps.external.rxjava2
     implementation deps.kotlin.stdlib
     api deps.test.junit
