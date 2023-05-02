@@ -193,9 +193,11 @@ class InteractorAndRouterTest {
 
   private class TestInteractor(private val mChildInteractor: Interactor<*, *>) :
     Interactor<TestPresenter, Router<TestInteractor>>() {
+    val mockedWorker: Worker = mock()
     override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
       val router: Router<*> = FakeRouter(mChildInteractor, getInstance(), Thread.currentThread())
+      WorkerBinder.bind(this, mockedWorker)
       this.router.attachChild(router)
     }
 
