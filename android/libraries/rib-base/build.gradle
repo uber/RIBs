@@ -42,11 +42,10 @@ dependencies {
     implementation deps.apt.javaxInject
 
     implementation deps.uber.autodisposeCoroutines
-    implementation deps.kotlin.coroutines
     implementation deps.kotlin.coroutinesRx2
     api deps.kotlin.stdlib
-
-    implementation project(":libraries:rib-coroutines")
+    api deps.kotlin.coroutines
+    api project(":libraries:rib-coroutines")
 
     compileOnly deps.apt.daggerCompiler
     compileOnly deps.androidx.annotations

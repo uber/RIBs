@@ -22,7 +22,7 @@ open class ActivityLifecycleEvent
 private constructor(
   /** @return this event's type. */
   override val type: Type,
-) : ActivityEvent {
+) : ActivityEvent, Comparable<ActivityLifecycleEvent> {
 
   /** Types of activity events that can occur. */
   enum class Type : ActivityEvent.BaseType {
@@ -34,6 +34,8 @@ private constructor(
     STOP,
     DESTROY,
   }
+
+  override fun compareTo(other: ActivityLifecycleEvent): Int = type.compareTo(other.type)
 
   /** An [ActivityLifecycleEvent] that encapsulates information from [Activity.onCreate]. */
   open class Create(
