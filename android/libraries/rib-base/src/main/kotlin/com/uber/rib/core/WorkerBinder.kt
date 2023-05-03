@@ -34,6 +34,13 @@ import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
 
+/**
+ * Resulting CoroutineContext defined at [Worker] that guards against potential nullable cases on
+ * tests that have a mocked Worker via Mockito
+ */
+private val Worker.bindingCoroutineContext: CoroutineContext
+  get() = this.coroutineContext ?: EmptyCoroutineContext
+
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
 public object WorkerBinder {
 
@@ -150,9 +157,9 @@ public object WorkerBinder {
   @Deprecated(
     message =
       """
-      This method doesn't support the [WorkerBinderThreadingType] defined at Worker. Due to this, the binding
-      will happen on the caller thread without a possibility to change the threading (even specifying a different WorkerThreadingType other than CALLER_THREAD)
-      It also doesn't provide information for WorkerBinderDuration when a [WorkerDurationMonitoringListener] is added
+      This method doesn't support binding on the [CoroutineContext] defined at Worker/WorkerBinder. Due to this, the binding
+      will happen on the caller thread without a possibility to change the threading
+      It also doesn't provide information for [WorkerBinderInfo] when a [WorkerBinderListener] is added
     """,
     replaceWith = ReplaceWith("bind(interactor, worker) or bind(presenter, worker)"),
   )
@@ -276,8 +283,9 @@ public fun interface WorkerBinderListener {
 
 private fun getJobCoroutineContext(
   dispatcherAtBinder: CoroutineDispatcher,
-  workerCoroutineContext: CoroutineContext,
+  worker: Worker,
 ): CoroutineContext {
+  val workerCoroutineContext = worker.bindingCoroutineContext
   return if (workerCoroutineContext != EmptyCoroutineContext) {
     workerCoroutineContext
   } else {
@@ -294,7 +302,7 @@ private fun <T : Comparable<T>> Worker.bind(
   val coroutineContext =
     getJobCoroutineContext(
       dispatcherAtBinder,
-      workerCoroutineContext = this.coroutineContext,
+      worker = this,
     )
   val coroutineStart =
     if (coroutineContext == RibDispatchers.Unconfined) {
