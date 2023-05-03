@@ -23,6 +23,13 @@ import com.uber.rib.core.lifecycle.InteractorEvent
  * types
  */
 public interface InteractorType : LifecycleScopeProvider<InteractorEvent> {
+  /** @return `true` if the controller is attached, `false` if not. */
   public fun isAttached(): Boolean
+
+  /**
+   * Handle an activity back press.
+   *
+   * @return whether this interactor took action in response to a back press.
+   */
   public fun handleBackPress(): Boolean
 }

@@ -15,8 +15,6 @@
  */
 package com.uber.rib.core.lifecycle
 
-import com.uber.rib.core.lifecycle.ActivityEvent.BaseType
-
 /**
  * Base class for Activity events, useful for when you want a stream of both lifecycle and callback
  * events.

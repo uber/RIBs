@@ -19,7 +19,6 @@ import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
-import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
@@ -37,18 +36,12 @@ import kotlinx.coroutines.rx2.asObservable
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
-public abstract class Interactor<P : Any, R : Router<*>> :
-  LifecycleScopeProvider<InteractorEvent>, InteractorType {
+public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
   @Inject public lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
   private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-
-  // We expose lifecycleFlow internally to avoid some unnecessary Rx-Coroutine interop. Use it
-  // instead of `lifecycle()`.
-  @get:JvmSynthetic
-  internal val lifecycleFlow: SharedFlow<InteractorEvent>
+  public open val lifecycleFlow: SharedFlow<InteractorEvent>
     get() = _lifecycleFlow
-  private val lifecycleObservable = _lifecycleFlow.asObservable()
 
   private val routerDelegate = InitOnceProperty<R>()
 
@@ -56,18 +49,28 @@ public abstract class Interactor<P : Any, R : Router<*>> :
   public open var router: R by routerDelegate
     protected set
 
-  public constructor()
-
-  protected constructor(presenter: P) {
+  protected constructor(presenter: P) : this() {
     this.actualPresenter = presenter
   }
 
-  /** @return an observable of this controller's lifecycle events. */
-  override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
+  // ---- LifecycleScopeProvider overrides ---- //
 
-  /** @return true if the controller is attached, false if not. */
+  final override fun lifecycle(): Observable<InteractorEvent> = lifecycleFlow.asObservable()
+
+  final override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> =
+    LIFECYCLE_MAP_FUNCTION
+
+  final override fun peekLifecycle(): InteractorEvent? = lifecycleFlow.replayCache.lastOrNull()
+
+  final override fun requestScope(): CompletableSource =
+    lifecycleFlow.asScopeCompletable(lifecycleRange)
+
+  // ---- InteractorType overrides ---- //
+
   override fun isAttached(): Boolean =
     _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+
+  override fun handleBackPress(): Boolean = false
 
   /**
    * Called when attached. The presenter will automatically be added when this happens.
@@ -75,13 +78,6 @@ public abstract class Interactor<P : Any, R : Router<*>> :
    * @param savedInstanceState the saved [Bundle].
    */
   @CallSuper protected open fun didBecomeActive(savedInstanceState: Bundle?) {}
-
-  /**
-   * Handle an activity back press.
-   *
-   * @return whether this interactor took action in response to a back press.
-   */
-  override fun handleBackPress(): Boolean = false
 
   /**
    * Called when detached. The [Interactor] should do its cleanup here. Note: View will be removed
@@ -140,15 +136,6 @@ public abstract class Interactor<P : Any, R : Router<*>> :
   internal fun setPresenter(presenter: P) {
     actualPresenter = presenter
   }
-
-  override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> {
-    return LIFECYCLE_MAP_FUNCTION
-  }
-
-  override fun peekLifecycle(): InteractorEvent? = _lifecycleFlow.replayCache.lastOrNull()
-
-  final override fun requestScope(): CompletableSource =
-    _lifecycleFlow.asScopeCompletable(lifecycleRange)
 
   private inner class InitOnceProperty<T> : ReadWriteProperty<Any, T> {
     private var backingField: T? = null
