@@ -52,20 +52,31 @@ abstract class RibActivity :
   LifecycleScopeProvider<ActivityLifecycleEvent>,
   RxActivityEvents {
   private var router: ViewRouter<*, *>? = null
+
   private val _lifecycleFlow =
     MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+
   open val lifecycleFlow: SharedFlow<ActivityLifecycleEvent>
     get() = _lifecycleFlow
+
+  @Volatile private var _lifecycleObservable: Observable<ActivityLifecycleEvent>? = null
+  private val lifecycleObservable
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+
   private val _callbacksFlow =
     MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
   open val callbacksFlow: SharedFlow<ActivityCallbackEvent>
     get() = _callbacksFlow
 
-  /** @return an observable of this activity's lifecycle events. */
-  final override fun lifecycle(): Observable<ActivityLifecycleEvent> = lifecycleFlow.asObservable()
+  @Volatile private var _callbacksObservable: Observable<ActivityCallbackEvent>? = null
+  private val callbacksObservable
+    get() = ::_callbacksObservable.setIfNullAndGet { callbacksFlow.asObservable() }
 
   /** @return an observable of this activity's lifecycle events. */
-  override fun callbacks(): Observable<ActivityCallbackEvent> = callbacksFlow.asObservable()
+  final override fun lifecycle(): Observable<ActivityLifecycleEvent> = lifecycleObservable
+
+  /** @return an observable of this activity's lifecycle events. */
+  override fun callbacks(): Observable<ActivityCallbackEvent> = callbacksObservable
 
   final override fun correspondingEvents(): CorrespondingEventsFunction<ActivityLifecycleEvent> =
     ACTIVITY_LIFECYCLE
