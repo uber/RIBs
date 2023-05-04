@@ -38,6 +38,10 @@ public abstract class Presenter : ScopeProvider {
   public open val lifecycleFlow: SharedFlow<PresenterEvent>
     get() = _lifecycleFlow
 
+  @Volatile private var _lifecycleObservable: Observable<PresenterEvent>? = null
+  private val lifecycleObservable
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+
   /** @return `true` if the presenter is loaded, `false` if not. */
   protected var isLoaded: Boolean = false
     private set
@@ -64,7 +68,7 @@ public abstract class Presenter : ScopeProvider {
   @UIEffect @CallSuper protected open fun willUnload() {}
 
   /** @return an observable of this controller's lifecycle events. */
-  public fun lifecycle(): Observable<PresenterEvent> = lifecycleFlow.asObservable()
+  public fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
   final override fun requestScope(): CompletableSource =
     lifecycleFlow.asScopeCompletable(lifecycleRange)

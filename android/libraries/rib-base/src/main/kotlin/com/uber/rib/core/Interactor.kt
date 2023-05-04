@@ -43,6 +43,10 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
   public open val lifecycleFlow: SharedFlow<InteractorEvent>
     get() = _lifecycleFlow
 
+  @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
+  private val lifecycleObservable
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+
   private val routerDelegate = InitOnceProperty<R>()
 
   /** @return the router for this interactor. */
@@ -55,7 +59,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
 
   // ---- LifecycleScopeProvider overrides ---- //
 
-  final override fun lifecycle(): Observable<InteractorEvent> = lifecycleFlow.asObservable()
+  final override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
 
   final override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> =
     LIFECYCLE_MAP_FUNCTION
