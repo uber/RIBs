@@ -49,9 +49,9 @@ To integrate the recommended minimum setup for RIBs add the following to your `b
 
 ```gradle
 dependencies {
-  annotationProcessor 'com.uber.rib:rib-compiler-test:0.14.0'
-  implementation 'com.uber.rib:rib-android:0.14.0'
-  testImplementation 'com.uber.rib:rib-test:0.14.0'
+  annotationProcessor 'com.uber.rib:rib-compiler-test:0.14.1'
+  implementation 'com.uber.rib:rib-android:0.14.1'
+  testImplementation 'com.uber.rib:rib-test:0.14.1'
 }
 ```
 There are a number of extension packages available as well including Kotlin extensions, Jetpack Compose support, Coroutines support
