@@ -49,7 +49,7 @@ public fun interface RibCoroutineWorker : RibActionEmitter {
   public suspend fun onStart(scope: CoroutineScope)
 
   /** Called when worker is stopped with [cause]. Should be fast, be non-blocking and not throw. */
-  @JvmDefault public fun onStop(cause: Throwable) {}
+  public fun onStop(cause: Throwable) {}
 }
 
 // ---- Binder ---- //

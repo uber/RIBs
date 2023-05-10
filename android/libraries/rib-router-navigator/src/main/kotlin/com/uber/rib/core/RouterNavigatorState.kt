@@ -19,7 +19,6 @@ package com.uber.rib.core
 public interface RouterNavigatorState {
 
   /** @return identifier for a [StackRouterNavigator] state. */
-  @JvmDefault
   public fun stateName(): String {
     return if (this.javaClass.isEnum) {
       (this as Enum<*>).name
@@ -39,5 +38,5 @@ public interface RouterNavigatorState {
    * [RouterNavigator.DetachCallback.onPostDetachFromHost] and will be recreated for next
    * [RouterNavigator.AttachTransition]
    */
-  @JvmDefault public fun isCacheable(): Boolean = false
+  public fun isCacheable(): Boolean = false
 }

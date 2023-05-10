@@ -72,7 +72,7 @@ androidComponents {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
-            "-Xjvm-default=enable",
+            "-Xjvm-default=all",
             "-opt-in=kotlin.RequiresOptIn",
         )
     }
