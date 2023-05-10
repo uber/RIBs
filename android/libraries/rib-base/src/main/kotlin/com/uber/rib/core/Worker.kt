@@ -50,7 +50,6 @@ public interface Worker : RibActionEmitter {
    * 3) After calling WorkerBinder.bind(interactor, workers, RibDispatchers.IO). [uiWorker] will be
    *    guaranteed to be called on RibDispatchers.Main
    */
-  @JvmDefault
   public val coroutineContext: CoroutineContext
     get() = EmptyCoroutineContext
 
@@ -59,8 +58,8 @@ public interface Worker : RibActionEmitter {
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
-  @JvmDefault public fun onStart(lifecycle: WorkerScopeProvider) {}
+  public fun onStart(lifecycle: WorkerScopeProvider) {}
 
   /** Called when the worker is stopped. */
-  @JvmDefault public fun onStop() {}
+  public fun onStop() {}
 }
