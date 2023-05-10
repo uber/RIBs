@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017. Uber Technologies
+ * Copyright (C) 2023. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,18 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-plugins {
-    id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
-}
+@file:Suppress("MatchingDeclarationName", "ktlint:filename")
 
-dependencies {
-    api(project(":libraries:rib-base"))
-    implementation(libs.rxjava2)
-    implementation(libs.kotlin.stdlib)
-    api(testLibs.junit)
-    api(testLibs.truth)
-    api(testLibs.mockito)
-    api(testLibs.coroutines.test)
-    implementation(testLibs.mockitoKotlin)
-}
+package com.uber.rib.core
+
+@Retention(value = AnnotationRetention.BINARY)
+@Target(
+  AnnotationTarget.CLASS,
+  AnnotationTarget.FUNCTION,
+  AnnotationTarget.TYPEALIAS,
+  AnnotationTarget.PROPERTY,
+)
+@RequiresOptIn(
+  level = RequiresOptIn.Level.ERROR,
+  message = "This is an internal RIBs API that should not be used by the public.",
+)
+public annotation class InternalRibsApi

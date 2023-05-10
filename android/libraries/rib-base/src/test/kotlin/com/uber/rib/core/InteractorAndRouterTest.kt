@@ -19,6 +19,16 @@ import com.google.common.truth.Truth
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
+import kotlin.coroutines.CoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.awaitCancellation
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -46,6 +56,23 @@ class InteractorAndRouterTest {
     interactor = TestInteractor(childInteractor)
     router = TestRouter(interactor, component)
   }
+
+  @Test
+  fun test() =
+    runTest(UnconfinedTestDispatcher()) {
+      val scope = CoroutineScope(coroutineContext + SupervisorJob(coroutineContext.job))
+      scope.launch(DirectDispatcher) {
+        try {
+          awaitCancellation()
+        } finally {
+          println("finishing")
+        }
+      }
+      launch {
+        scope.cancel()
+        println("cancelled")
+      }
+    }
 
   @Test
   fun attach_shouldAttachChildController() {
@@ -265,5 +292,11 @@ class InteractorAndRouterTest {
   companion object {
     private const val TEST_KEY = "test_key"
     private const val TEST_VALUE = "test_value"
+  }
+}
+
+private object DirectDispatcher : CoroutineDispatcher() {
+  override fun dispatch(context: CoroutineContext, block: Runnable) {
+    block.run()
   }
 }

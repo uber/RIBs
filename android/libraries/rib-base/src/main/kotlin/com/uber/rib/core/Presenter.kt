@@ -18,11 +18,13 @@ package com.uber.rib.core
 import androidx.annotation.CallSuper
 import com.uber.autodispose.ScopeProvider
 import com.uber.rib.core.lifecycle.PresenterEvent
+import com.uber.rib.core.lifecycle.RibLifecycle
+import com.uber.rib.core.lifecycle.RibLifecycleOwner
+import com.uber.rib.core.lifecycle.internal.InternalRibLifecycle
+import com.uber.rib.core.lifecycle.internal.actualRibLifecycle
+import com.uber.rib.core.lifecycle.internal.asScopeCompletable
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.rx2.asObservable
 import org.checkerframework.checker.guieffect.qual.UIEffect
 
@@ -33,14 +35,25 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * practice this caused confusion: if both a presenter and interactor can perform complex rx logic
  * it becomes unclear where you should write your bussiness logic.
  */
-public abstract class Presenter : ScopeProvider {
-  private val _lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-  public open val lifecycleFlow: SharedFlow<PresenterEvent>
-    get() = _lifecycleFlow
+@OptIn(InternalRibsApi::class)
+public abstract class Presenter : RibLifecycleOwner<PresenterEvent>, ScopeProvider {
+
+  private val _ribLifecycle = InternalRibLifecycle(LIFECYCLE_RANGE)
+  override val ribLifecycle: RibLifecycle<PresenterEvent>
+    get() = _ribLifecycle
+
+  @Volatile private var mockedRibLifecycleRef: RibLifecycle<PresenterEvent>? = null
+
+  @Deprecated("This field should never be used on real code", level = DeprecationLevel.ERROR)
+  final override val actualRibLifecycle: RibLifecycle<PresenterEvent>
+    get() = actualRibLifecycle(::mockedRibLifecycleRef, LIFECYCLE_RANGE)
 
   @Volatile private var _lifecycleObservable: Observable<PresenterEvent>? = null
+
+  @Suppress("DEPRECATION_ERROR")
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() =
+      ::_lifecycleObservable.setIfNullAndGet { actualRibLifecycle.lifecycleFlow.asObservable() }
 
   /** @return `true` if the presenter is loaded, `false` if not. */
   protected var isLoaded: Boolean = false
@@ -48,14 +61,14 @@ public abstract class Presenter : ScopeProvider {
 
   public open fun dispatchLoad() {
     isLoaded = true
-    _lifecycleFlow.tryEmit(PresenterEvent.LOADED)
+    _ribLifecycle.lifecycleFlow.tryEmit(PresenterEvent.LOADED)
     didLoad()
   }
 
   public open fun dispatchUnload() {
     isLoaded = false
     willUnload()
-    _lifecycleFlow.tryEmit(PresenterEvent.UNLOADED)
+    _ribLifecycle.lifecycleFlow.tryEmit(PresenterEvent.UNLOADED)
   }
 
   /** Tells the presenter that it has finished loading. */
@@ -71,9 +84,9 @@ public abstract class Presenter : ScopeProvider {
   public fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
   final override fun requestScope(): CompletableSource =
-    lifecycleFlow.asScopeCompletable(lifecycleRange)
+    lifecycleFlow.asScopeCompletable(LIFECYCLE_RANGE)
 
-  internal companion object {
-    @get:JvmSynthetic internal val lifecycleRange = PresenterEvent.LOADED..PresenterEvent.UNLOADED
+  private companion object {
+    private val LIFECYCLE_RANGE = PresenterEvent.LOADED..PresenterEvent.UNLOADED
   }
 }

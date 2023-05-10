@@ -17,12 +17,14 @@ package com.uber.rib.core
 
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.core.lifecycle.RibLifecycleOwner
 
 /**
  * An interface used as the upper bound of the generic used by [Router]s to avoid cyclic generic
  * types
  */
-public interface InteractorType : LifecycleScopeProvider<InteractorEvent> {
+public interface InteractorType :
+  RibLifecycleOwner<InteractorEvent>, LifecycleScopeProvider<InteractorEvent> {
   /** @return `true` if the controller is attached, `false` if not. */
   public fun isAttached(): Boolean
 

@@ -20,6 +20,7 @@ import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
+import com.uber.rib.core.lifecycle.RibLifecycleOwner
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
 import io.reactivex.subjects.CompletableSubject
@@ -31,7 +32,6 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
@@ -78,8 +78,7 @@ public object WorkerBinder {
     dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
   ): WorkerUnbinder =
     worker.bind(
-      interactor.lifecycleFlow,
-      Interactor.lifecycleRange,
+      interactor,
       dispatcherAtBinder,
       workerBinderListenerWeakRef,
     )
@@ -126,8 +125,7 @@ public object WorkerBinder {
     dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
   ): WorkerUnbinder =
     worker.bind(
-      presenter.lifecycleFlow,
-      Presenter.lifecycleRange,
+      presenter,
       dispatcherAtBinder,
       workerBinderListenerWeakRef,
     )
@@ -296,8 +294,7 @@ private fun getJobCoroutineContext(
 }
 
 private fun <T : Comparable<T>> Worker.bind(
-  lifecycle: SharedFlow<T>,
-  lifecycleRange: ClosedRange<T>,
+  lifecycleOwner: RibLifecycleOwner<T>,
   dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
   workerDurationListenerWeakRef: WeakReference<WorkerBinderListener>?,
 ): WorkerUnbinder {
@@ -330,8 +327,8 @@ private fun <T : Comparable<T>> Worker.bind(
       coroutineContext,
       start = coroutineStart,
     ) {
-      lifecycle
-        .takeWhile { it < lifecycleRange.endInclusive }
+      lifecycleOwner.ribLifecycle.lifecycleFlow
+        .takeWhile { it < lifecycleOwner.ribLifecycle.lifecycleRange.endInclusive }
         .onCompletion {
           bindAndReportWorkerInfo(
             workerDurationListenerWeakRef,
