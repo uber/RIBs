@@ -125,7 +125,7 @@ def external = [
     roboelectricBase: "org.robolectric:robolectric:${versions.robolectric}",
     rxbinding: 'com.jakewharton.rxbinding2:rxbinding:2.0.0',
     rxkotlin: 'io.reactivex.rxjava2:rxkotlin:2.2.0',
-    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:1.5.4',
+    leakcanaryDebug: 'com.squareup.leakcanary:leakcanary-android:2.10',
 
 ]
 

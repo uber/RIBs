@@ -16,12 +16,10 @@
 package com.uber.rib;
 
 import android.app.Application;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.uber.rib.core.ActivityDelegate;
 import com.uber.rib.core.HasActivityDelegate;
 import com.uber.rib.core.RibRefWatcher;
-import java.util.concurrent.TimeUnit;
+import leakcanary.AppWatcher;
 
 public class SampleApplication extends Application implements HasActivityDelegate {
 
@@ -31,24 +29,17 @@ public class SampleApplication extends Application implements HasActivityDelegat
   public void onCreate() {
     activityDelegate = new SampleActivityDelegate();
     super.onCreate();
-    if (!LeakCanary.isInAnalyzerProcess(this)) {
-      // This process is dedicated to LeakCanary for heap analysis. You should not init your app in
-      // this process.
-      installLeakCanary();
-    }
+    installLeakCanary();
   }
 
   /** Install leak canary for both activities and RIBs. */
   private void installLeakCanary() {
-    final RefWatcher refWatcher =
-        LeakCanary.refWatcher(this).watchDelay(2, TimeUnit.SECONDS).buildAndInstall();
-    LeakCanary.install(this);
     RibRefWatcher.getInstance()
         .setReferenceWatcher(
             new RibRefWatcher.ReferenceWatcher() {
               @Override
-              public void watch(Object object) {
-                refWatcher.watch(object);
+              public void watch(Object object, String description) {
+                AppWatcher.INSTANCE.getObjectWatcher().expectWeaklyReachable(object, description);
               }
 
               @Override
