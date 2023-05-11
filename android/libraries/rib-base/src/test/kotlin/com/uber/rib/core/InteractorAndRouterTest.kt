@@ -187,13 +187,13 @@ class InteractorAndRouterTest {
     val childInteractor = TestInteractorB()
     val childRouter = TestRouterB(childInteractor, component)
     router.attachChild(childRouter)
-    verify(ribRefWatcher, never()).watchDeletedObject(any())
+    verify(ribRefWatcher, never()).watchDeletedObject(any(), "")
 
     // Action: Detach the child interactor.
     router.detachChild(childRouter)
 
     // Verify: the reference watcher observes the detached interactor and child.
-    verify(ribRefWatcher).watchDeletedObject(eq(childInteractor))
+    verify(ribRefWatcher).watchDeletedObject(eq(childInteractor), "")
   }
 
   @Test
@@ -207,13 +207,13 @@ class InteractorAndRouterTest {
       }
     val rootRouter = TestRouterB(component, TestInteractorB(), ribRefWatcher)
     val child = addTwoNestedChildInteractors()
-    verify(ribRefWatcher, never()).watchDeletedObject(any())
+    verify(ribRefWatcher, never()).watchDeletedObject(any(), "")
 
     // Action: Detach all child interactors.
     rootRouter.detachChild(child)
 
     // Verify: called four times. Twice for each interactor.
-    verify(ribRefWatcher, times(2)).watchDeletedObject(any())
+    verify(ribRefWatcher, times(2)).watchDeletedObject(any(), "")
   }
 
   private fun addTwoNestedChildInteractors(): Router<TestInteractorB> {

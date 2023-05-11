@@ -34,17 +34,30 @@ public open class RibRefWatcher {
     referenceWatcher = watcher
   }
 
+  @Deprecated(
+    "Add the description parameter",
+    replaceWith = ReplaceWith("watchDeletedObject(objectToWatch, description)"),
+  )
+  public open fun watchDeletedObject(
+    objectToWatch: Any?,
+  ) {
+    watchDeletedObject(objectToWatch, "missing description")
+  }
+
   /**
    * Watch this object to verify it has no inbound references.
    *
    * @param objectToWatch the object to watch.
    */
-  public open fun watchDeletedObject(objectToWatch: Any?) {
+  public open fun watchDeletedObject(
+    objectToWatch: Any?,
+    description: String,
+  ) {
     if (objectToWatch == null) {
       return
     }
     if (isLeakCanaryEnabled || uLeakEnabled) {
-      referenceWatcher?.watch(objectToWatch)
+      referenceWatcher?.watch(objectToWatch, description)
     }
   }
 
@@ -97,7 +110,7 @@ public open class RibRefWatcher {
      *
      * @param objectToWatch the object to watch.
      */
-    public fun watch(objectToWatch: Any)
+    public fun watch(objectToWatch: Any, description: String)
 
     /**
      * Method to pipe breadcrumbs into the Breadcrumb logger.
