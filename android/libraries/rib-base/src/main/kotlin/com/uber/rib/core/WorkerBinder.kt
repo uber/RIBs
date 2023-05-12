@@ -16,11 +16,13 @@
 package com.uber.rib.core
 
 import androidx.annotation.VisibleForTesting
+import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
+import io.reactivex.subjects.CompletableSubject
 import java.lang.ref.WeakReference
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -311,6 +313,10 @@ private fun <T : Comparable<T>> Worker.bind(
       CoroutineStart.DEFAULT
     }
 
+  val completable = CompletableSubject.create()
+  val scopeProvider = ScopeProvider { completable }
+  val workerScopeProvider = WorkerScopeProvider(scopeProvider)
+
   /*
    * We need `Dispatchers.Unconfined` to react immediately to lifecycle flow emissions, and we need
    * `CoroutineStart.Undispatched` to prevent coroutines launched in `onStart` with `Dispatchers.Unconfined`
@@ -327,6 +333,7 @@ private fun <T : Comparable<T>> Worker.bind(
       lifecycle
         .takeWhile { it < lifecycleRange.endInclusive }
         .onCompletion {
+          completable.onComplete()
           bindAndReportWorkerInfo(
             workerDurationListenerWeakRef,
             WorkerEvent.STOP,
@@ -341,7 +348,6 @@ private fun <T : Comparable<T>> Worker.bind(
             WorkerEvent.START,
             coroutineContext,
           ) {
-            val workerScopeProvider = WorkerScopeProvider(lifecycle.asScopeProvider(lifecycleRange))
             onStart(workerScopeProvider)
           }
         }
