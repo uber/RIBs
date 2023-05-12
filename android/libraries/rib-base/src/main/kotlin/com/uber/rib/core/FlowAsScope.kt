@@ -17,24 +17,15 @@
 
 package com.uber.rib.core
 
-import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.autodispose.lifecycle.LifecycleNotStartedException
 import io.reactivex.CompletableSource
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.flow.SharedFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.rx2.rxCompletable
-
-/**
- * Converts a [SharedFlow] of lifecycle events into a [ScopeProvider]. See [asScopeCompletable] for
- * constraints.
- */
-internal fun <T : Comparable<T>> SharedFlow<T>.asScopeProvider(
-  range: ClosedRange<T>,
-  context: CoroutineContext = EmptyCoroutineContext,
-): ScopeProvider = asScopeCompletable(range, context).asScopeProvider()
 
 /**
  * Converts a [SharedFlow] of lifecycle events into a [CompletableSource] that completes once the
@@ -50,7 +41,9 @@ internal fun <T : Comparable<T>> SharedFlow<T>.asScopeCompletable(
   context: CoroutineContext = EmptyCoroutineContext,
 ): CompletableSource {
   ensureAlive(range)
-  return rxCompletable(RibDispatchers.Unconfined + context) { first { it == range.endInclusive } }
+  return rxCompletable(RibDispatchers.Unconfined + context) {
+    takeWhile { it < range.endInclusive }.collect()
+  }
 }
 
 private fun <T : Comparable<T>> SharedFlow<T>.ensureAlive(range: ClosedRange<T>) {
@@ -60,5 +53,3 @@ private fun <T : Comparable<T>> SharedFlow<T>.ensureAlive(range: ClosedRange<T>)
     lastEmitted >= range.endInclusive -> throw LifecycleEndedException()
   }
 }
-
-private fun CompletableSource.asScopeProvider() = ScopeProvider { this }
