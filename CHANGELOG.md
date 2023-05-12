@@ -87,3 +87,7 @@
 ### Version 0.14.1
 * [Android] Open lifecycleFlow, thus enabling it for mocking 
 * [Android] [WorkerBinder] Guard against potential Worker.coroutineContext being null while using Mockito
+
+### Version 0.14.2i
+* [Android] Fix potential for deadlocks in `Worker` binding. by @psteiger in https://github.com/uber/RIBs/pull/582
+* [Android] Add  Rib Worker demo app by @FranAguilera in https://github.com/uber/RIBs/pull/575
