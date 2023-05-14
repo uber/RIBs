@@ -18,6 +18,11 @@ apply plugin: 'com.android.library'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: 'com.vanniktech.maven.publish'
 
+kotlin {
+    explicitApi()
+    jvmToolchain(11)
+}
+
 android {
     namespace "com.uber.rib.android"
     compileSdk deps.build.compileSdkVersion
@@ -55,8 +60,4 @@ dependencies {
     testImplementation deps.androidx.appcompat
     testImplementation deps.test.mockitoKotlin
     testImplementation project(":libraries:rib-test")
-}
-
-kotlin {
-    explicitApi()
 }

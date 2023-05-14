@@ -18,8 +18,10 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "com.vanniktech.maven.publish"
 
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+kotlin {
+    explicitApi()
+    jvmToolchain(11)
+}
 
 dependencies {
     api project(':libraries:rib-coroutines')
@@ -39,8 +41,4 @@ dependencies {
     testImplementation deps.androidx.annotations
     testImplementation deps.apt.androidApi
 
-}
-
-kotlin {
-    explicitApi()
 }

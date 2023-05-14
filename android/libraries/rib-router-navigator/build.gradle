@@ -17,8 +17,10 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "com.vanniktech.maven.publish"
 
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+kotlin {
+    explicitApi()
+    jvmToolchain(11)
+}
 
 dependencies {
     implementation deps.external.checkerQual
@@ -32,8 +34,4 @@ dependencies {
     testImplementation deps.test.junit
     testImplementation deps.test.mockitoKotlin
     testImplementation deps.test.truth
-}
-
-kotlin {
-    explicitApi()
 }
