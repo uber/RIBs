@@ -17,6 +17,12 @@
 apply plugin: 'com.android.library'
 apply plugin: "com.vanniktech.maven.publish"
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 android {
     namespace "com.uber.debug.broadcast.core"
     compileSdk deps.build.compileSdkVersion

@@ -4,9 +4,12 @@ buildscript {
     }
 }
 
-apply plugin: "java"
 apply plugin: "org.jetbrains.intellij"
 apply plugin: "org.jetbrains.kotlin.jvm"
+
+kotlin {
+    jvmToolchain(11)
+}
 
 group "com.uber.rib"
 

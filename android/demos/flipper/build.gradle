@@ -22,6 +22,12 @@ buildscript {
 
 apply plugin: 'com.android.application'
 
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 android {
     namespace "com.uber.rib.flipper"
     compileSdk deps.build.compileSdkVersion

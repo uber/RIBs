@@ -22,9 +22,16 @@ buildscript {
     }
 }
 
-apply plugin: 'net.ltgt.errorprone'
 apply plugin: 'com.android.application'
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(11))
+    }
+}
+
 apply plugin: 'net.ltgt.nullaway'
+apply plugin: 'net.ltgt.errorprone'
 
 android {
     namespace "com.uber.rib.tutorial1"

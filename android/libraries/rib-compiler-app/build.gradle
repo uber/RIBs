@@ -17,8 +17,10 @@
 apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "com.vanniktech.maven.publish"
 
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+kotlin {
+    explicitApi()
+    jvmToolchain(11)
+}
 
 dependencies {
     implementation project(":libraries:rib-base")
@@ -32,10 +34,6 @@ dependencies {
     compileOnly deps.apt.androidApi
 
     testImplementation deps.test.compileTesting
-}
-
-kotlin {
-    explicitApi()
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887

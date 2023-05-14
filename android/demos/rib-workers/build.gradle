@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 apply plugin: 'org.jetbrains.kotlin.android'
 apply plugin: "org.jetbrains.kotlin.kapt"
 
+kotlin {
+    jvmToolchain(11)
+}
+
 android {
     namespace "com.uber.rib.workers"
     compileSdk deps.build.compileSdkVersion

@@ -24,8 +24,10 @@ apply plugin: "org.jetbrains.kotlin.jvm"
 apply plugin: "org.jetbrains.kotlin.kapt"
 apply plugin: "com.vanniktech.maven.publish"
 
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+kotlin {
+    explicitApi()
+    jvmToolchain(11)
+}
 
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
@@ -62,8 +64,4 @@ dependencies {
     testImplementation(project(":libraries:rib-test")) {
         transitive = false
     }
-}
-
-kotlin {
-    explicitApi()
 }
