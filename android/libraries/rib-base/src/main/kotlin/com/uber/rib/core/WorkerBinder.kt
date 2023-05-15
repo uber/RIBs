@@ -333,7 +333,6 @@ private fun <T : Comparable<T>> Worker.bind(
       lifecycle
         .takeWhile { it < lifecycleRange.endInclusive }
         .onCompletion {
-          completable.onComplete()
           bindAndReportWorkerInfo(
             workerDurationListenerWeakRef,
             WorkerEvent.STOP,
@@ -341,6 +340,7 @@ private fun <T : Comparable<T>> Worker.bind(
           ) {
             onStop()
           }
+          completable.onComplete()
         }
         .collect {
           bindAndReportWorkerInfo(
