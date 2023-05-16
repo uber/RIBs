@@ -17,7 +17,6 @@
 
 package com.uber.rib.core
 
-import android.R
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -91,7 +90,7 @@ abstract class RibActivity :
   @CallSuper
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     super.onCreate(savedInstanceState)
-    val rootViewGroup = findViewById<ViewGroup>(R.id.content)
+    val rootViewGroup = findViewById<ViewGroup>(android.R.id.content)
     _lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
     val wrappedBundle: Bundle? =
       if (savedInstanceState != null) Bundle(savedInstanceState) else null
