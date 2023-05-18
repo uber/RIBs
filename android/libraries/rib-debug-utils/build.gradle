@@ -14,8 +14,10 @@
  * limitations under the License.
  */
 
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "com.vanniktech.maven.publish"
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.mavenPublish)
+}
 
 kotlin {
     explicitApi()
@@ -23,5 +25,5 @@ kotlin {
 }
 
 dependencies {
-    implementation project(":libraries:rib-base")
+    implementation(project(":libraries:rib-base"))
 }

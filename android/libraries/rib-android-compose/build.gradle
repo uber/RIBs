@@ -13,48 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: "com.vanniktech.maven.publish"
-
-kotlin {
-    explicitApi()
-    jvmToolchain(11)
+plugins {
+    id("ribs.kotlin-android-library-conventions")
+    alias(libs.plugins.mavenPublish)
 }
 
 android {
     namespace "com.uber.rib.android.compose"
-    compileSdk deps.build.compileSdkVersion
 
-    defaultConfig {
-        minSdk deps.build.minSdkVersion
-    }
     buildFeatures {
         compose true
-        buildConfig false
     }
+
     composeOptions {
-        kotlinCompilerExtensionVersion deps.versions.androidx.compose.compiler
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
+        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
     }
 }
 
 dependencies {
-    api project(":libraries:rib-android")
-    implementation deps.androidx.composeFoundation
-    implementation deps.androidx.composeUi
-    testImplementation deps.external.roboelectricBase
-    testImplementation deps.test.mockitoKotlin
-    testImplementation project(":libraries:rib-test")
+    api(project(":libraries:rib-android"))
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.ui)
+    testImplementation(testLibs.robolectric)
+    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(project(":libraries:rib-test"))
 }
