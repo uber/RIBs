@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * Implementation of the request processor interface, relying on emitting broadcast and parsing
  * logcat output.
  */
-class LogcatRequestProcessor : RequestProcessor {
-  companion object {
+public class LogcatRequestProcessor : RequestProcessor {
+  public companion object {
     private const val SHELL_COMMAND_TEMPLATE: String =
       "am broadcast -a com.uber.debug.intent.action.COMMAND --ei SEQ %d --es CMD %s"
     private const val LOGCAT_COMMAND_TEMPLATE: String =

@@ -45,22 +45,22 @@ import kotlin.Comparator
 
 /** UI component used to render tree of Ribs. */
 @SuppressWarnings("TooManyFunctions")
-class RibViewBrowser(
+public class RibViewBrowser(
   project: Project,
   private val model: Model,
   private val rootElement: PsiElement,
   private val selectionListener: Listener?,
 ) : HierarchyBrowserBase(project, rootElement) {
 
-  companion object {
+  public companion object {
     /** Go to previous Rib label */
-    const val LABEL_GO_PREVIOUS_RIB: String = "Go to previous Scope."
+    public const val LABEL_GO_PREVIOUS_RIB: String = "Go to previous Scope."
 
     /** Go to next Rib label */
-    const val LABEL_GO_NEXT_RIB: String = "Go to next Scope"
+    public const val LABEL_GO_NEXT_RIB: String = "Go to next Scope"
 
     /** Type of the Rib hierarchy */
-    const val TYPE_HIERARCHY_TYPE: String = "Views"
+    public const val TYPE_HIERARCHY_TYPE: String = "Views"
   }
 
   /**
@@ -72,7 +72,7 @@ class RibViewBrowser(
    * @param selectedRibId the RIB ID of the RIB selected by user (if any)
    * @param selectedViewId the view ID of the view selected by user (if any)
    */
-  data class Model(
+  public data class Model(
     val ribNode: RibNode,
     val ribView: RibView,
     val rootRib: RibNode,
@@ -173,7 +173,7 @@ class RibViewBrowser(
   }
 
   /** Notify that the currently selected view has changed. */
-  fun notifySelectedViewChanged() {
+  public fun notifySelectedViewChanged() {
     val node: Any? = currentTree.lastSelectedPathComponent
     if (node is DefaultMutableTreeNode && hasFocus) {
       val descriptor = node.userObject
@@ -190,9 +190,9 @@ class RibViewBrowser(
   /**
    * Interface used to notify that a new view was selected in {@ScopeHierarchyBrowser} component.
    */
-  interface Listener {
+  public interface Listener {
 
     /** Callback indicating the selected View has changed. */
-    fun onSelectedViewChanged(ribView: RibView)
+    public fun onSelectedViewChanged(ribView: RibView)
   }
 }

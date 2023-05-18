@@ -48,9 +48,10 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 @Service(PROJECT)
-class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener, Disposable {
+public class RibProjectService(public val project: Project) :
+  AndroidDeviceRepository.Listener, Disposable {
 
-  companion object {
+  public companion object {
     private const val TOOL_WINDOW_ID: String = "Ribs"
     private const val TOOL_WINDOW_TITLE: String = "Ribs"
     private const val TAB_NAME_RIBS: String = "Hierarchy"
@@ -69,7 +70,7 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
   private var isRefreshing: Boolean = false
   private var isLocating: Boolean = false
 
-  fun attach() {
+  public fun attach() {
     DumbService.getInstance(project).runWhenSmart {
       ApplicationManager.getApplication().runReadAction {
         androidDeviceRepository.addListener(this)
@@ -78,7 +79,7 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
     }
   }
 
-  fun refreshRibHierarchy() {
+  public fun refreshRibHierarchy() {
     if (isRefreshing) {
       return
     }
@@ -119,21 +120,21 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
     }
   }
 
-  fun highlightRib(id: UUID) {
+  public fun highlightRib(id: UUID) {
     val device: IDevice = selectedDevice ?: return
     LogcatRequestProcessor().execute(RibHighlightRequest(device, id))
   }
 
-  fun highlightView(id: UUID) {
+  public fun highlightView(id: UUID) {
     val device: IDevice = selectedDevice ?: return
     LogcatRequestProcessor().execute(RibHighlightRequest(device, id))
   }
 
-  fun isLocating(): Boolean {
+  public fun isLocating(): Boolean {
     return isLocating
   }
 
-  fun enableLocateMode() {
+  public fun enableLocateMode() {
     if (isLocating) {
       return
     }
@@ -176,7 +177,7 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
       )
   }
 
-  fun selectDevice(device: IDevice?) {
+  public fun selectDevice(device: IDevice?) {
     if (selectedDevice == device) {
       return
     }
@@ -190,7 +191,7 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
     refreshRibHierarchy()
   }
 
-  fun hasSelectedDevice(): Boolean {
+  public fun hasSelectedDevice(): Boolean {
     return selectedDevice != null
   }
 
@@ -236,7 +237,7 @@ class RibProjectService(val project: Project) : AndroidDeviceRepository.Listener
     return content
   }
 
-  interface Listener {
-    fun onModelUpdated(model: RibHierarchyBrowser.Model)
+  public interface Listener {
+    public fun onModelUpdated(model: RibHierarchyBrowser.Model)
   }
 }

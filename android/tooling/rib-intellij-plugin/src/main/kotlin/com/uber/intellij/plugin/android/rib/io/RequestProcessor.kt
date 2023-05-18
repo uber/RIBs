@@ -21,8 +21,8 @@ import com.google.common.util.concurrent.ListenableFuture
  * Interface used by classes capable of communicating to Android device, i.e send and receive
  * messages.
  */
-interface RequestProcessor {
+public interface RequestProcessor {
 
   /** Send a request to device and returns a future to access response. */
-  fun <T> execute(request: Request<T>): ListenableFuture<T>
+  public fun <T> execute(request: Request<T>): ListenableFuture<T>
 }

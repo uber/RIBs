@@ -26,7 +26,7 @@ import org.jetbrains.android.sdk.AndroidSdkUtils
 
 /** IntelliJ Project component responsible for exposing connected Android devices. */
 @Service(PROJECT)
-class AndroidDeviceRepository(val project: Project) :
+public class AndroidDeviceRepository(public val project: Project) :
   AndroidDebugBridge.IDeviceChangeListener, Disposable {
 
   private val devices: ArrayList<IDevice> = arrayListOf()
@@ -60,7 +60,7 @@ class AndroidDeviceRepository(val project: Project) :
   }
 
   @Synchronized
-  fun addListener(listener: Listener) {
+  public fun addListener(listener: Listener) {
     listeners.add(listener)
     if (devices.size > 0) {
       listener.onAvailableDevicesChanged(devices)
@@ -68,7 +68,7 @@ class AndroidDeviceRepository(val project: Project) :
   }
 
   @Synchronized
-  fun removeListener(listener: Listener) {
+  public fun removeListener(listener: Listener) {
     if (listeners.contains(listener)) {
       listeners.remove(listener)
     }
@@ -79,7 +79,7 @@ class AndroidDeviceRepository(val project: Project) :
     listeners.forEach { it.onAvailableDevicesChanged(devices) }
   }
 
-  fun isBridgeConnected(): Boolean {
+  public fun isBridgeConnected(): Boolean {
     val debugBridge = AndroidDebugBridge.getBridge()
     return debugBridge != null && with(debugBridge) { isConnected && hasInitialDeviceList() }
   }
@@ -89,8 +89,8 @@ class AndroidDeviceRepository(val project: Project) :
     devices.clear()
   }
 
-  interface Listener {
+  public interface Listener {
 
-    fun onAvailableDevicesChanged(devices: List<IDevice>)
+    public fun onAvailableDevicesChanged(devices: List<IDevice>)
   }
 }

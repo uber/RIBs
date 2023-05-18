@@ -19,10 +19,10 @@ import com.android.ddmlib.IDevice
 import java.util.UUID
 
 /** Rib highlight response object. */
-class RibHighlightResponse : Response<Unit>()
+public class RibHighlightResponse : Response<Unit>()
 
 /** Rib highlight request object. */
-class RibHighlightRequest(device: IDevice, id: UUID) :
+public class RibHighlightRequest(device: IDevice, id: UUID) :
   Request<RibHighlightResponse>(
     device,
     "RIB_HIGHLIGHT",

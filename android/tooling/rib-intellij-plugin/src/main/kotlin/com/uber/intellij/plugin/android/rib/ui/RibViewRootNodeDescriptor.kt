@@ -32,7 +32,7 @@ import java.awt.Font
  * @param ribNode the rib node corresponding to this descriptor
  * @param ribView the rib view corresponding to this descriptor
  */
-class RibViewRootNodeDescriptor(
+public class RibViewRootNodeDescriptor(
   private val nonNullProject: Project,
   element: PsiElement,
   ribNode: RibNode,

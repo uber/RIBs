@@ -23,7 +23,7 @@ import javax.annotation.processing.Processor
 
 /** Process the annotations for all added annotation processor pipelines. */
 @AutoService(Processor::class)
-open class RibTestProcessor : RibProcessor() {
+public open class RibTestProcessor : RibProcessor() {
   private var interactorTestGenerator: InteractorTestGenerator? = null
 
   @Synchronized

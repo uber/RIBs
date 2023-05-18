@@ -27,18 +27,18 @@ import java.awt.Font
 import javax.swing.Icon
 
 /** Base class for all tree node descriptors used in Rib IntelliJ plugin. */
-open class RibHierarchyDescriptor(
+public open class RibHierarchyDescriptor(
   project: Project,
-  val parentDescriptor: HierarchyNodeDescriptor?,
-  val element: PsiElement,
+  public val parentDescriptor: HierarchyNodeDescriptor?,
+  public val element: PsiElement,
   isBase: Boolean,
 ) : HierarchyNodeDescriptor(project, parentDescriptor, element, isBase) {
 
   /** Method to set text of the node entry. */
-  open fun updateText(text: CompositeAppearance) {}
+  public open fun updateText(text: CompositeAppearance) {}
 
   /** Method used to get the unique id of descriptor. Used for programmatic selection. */
-  open fun getUniqueId(): String? {
+  public open fun getUniqueId(): String? {
     return null
   }
 
@@ -57,7 +57,7 @@ open class RibHierarchyDescriptor(
   }
 
   /** Return default text attributes. */
-  fun getDefaultTextAttributes(isError: Boolean = false): TextAttributes {
+  public fun getDefaultTextAttributes(isError: Boolean = false): TextAttributes {
     val font: Int = if (myIsBase) Font.BOLD else Font.PLAIN
     return if (isError) {
       TextAttributes(myColor, null, Color.red, EffectType.WAVE_UNDERSCORE, font)
@@ -72,7 +72,7 @@ open class RibHierarchyDescriptor(
   }
 
   /** Compare 2 instances of text appearance. */
-  fun CompositeAppearance.compareTo(another: CompositeAppearance): Boolean {
+  public fun CompositeAppearance.compareTo(another: CompositeAppearance): Boolean {
     return Comparing.equal(this, another)
   }
 }
