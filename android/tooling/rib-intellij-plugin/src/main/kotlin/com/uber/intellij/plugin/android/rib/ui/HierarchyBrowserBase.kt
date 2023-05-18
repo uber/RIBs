@@ -36,8 +36,10 @@ import javax.swing.tree.TreeSelectionModel
  * It enables speed search configurations to search non-expanded nodes too. It is needed when
  * searching for given scope(s) in the entire graph hierarchy (which can be pretty large).
  */
-abstract class HierarchyBrowserBase(val project: Project, private val rootElement: PsiElement) :
-  HierarchyBrowserBaseEx(project, rootElement) {
+public abstract class HierarchyBrowserBase(
+  public val project: Project,
+  private val rootElement: PsiElement,
+) : HierarchyBrowserBaseEx(project, rootElement) {
 
   override fun doRefresh(currentBuilderOnly: Boolean) {
     ApplicationManager.getApplication().invokeLater {
@@ -69,15 +71,15 @@ abstract class HierarchyBrowserBase(val project: Project, private val rootElemen
   }
 
   /** Refresh completion callback. */
-  open fun onRefreshComplete() {}
+  public open fun onRefreshComplete() {}
 
   /** Expand entire hierarchy */
-  fun expandAll() {
+  public fun expandAll() {
     TreeUtil.expandAll(currentTree)
   }
 
   /** Select a given item in the hierarchy, based on provided id. */
-  fun selectById(id: String) {
+  public fun selectById(id: String) {
     TreeUtil.promiseSelect(
       currentTree,
       object : TreeVisitor {

@@ -26,7 +26,7 @@ import java.nio.charset.Charset
 import java.util.LinkedList
 
 /** Some command line utilities. */
-object CommandLineUtils {
+public object CommandLineUtils {
 
   /**
    * Executes `which` for a command.
@@ -38,7 +38,7 @@ object CommandLineUtils {
    * @throws ExecutionException
    * @throws IOException
    */
-  fun which(project: Project, command: String): String {
+  public fun which(project: Project, command: String): String {
     return executeWithLineOutput(project, "which", command).output()[0]
   }
 
@@ -53,7 +53,7 @@ object CommandLineUtils {
    * @throws ExecutionException
    * @throws IOException
    */
-  fun executeWithLineOutput(
+  public fun executeWithLineOutput(
     project: Project,
     command: String,
     vararg params: String,
@@ -93,15 +93,15 @@ object CommandLineUtils {
   }
 
   /** Holder for process output and error stream. */
-  class ProcessOutput(private val output: List<String>, private val error: List<String>) {
+  public class ProcessOutput(private val output: List<String>, private val error: List<String>) {
 
     /** Returns the process std output */
-    fun output(): List<String> {
+    public fun output(): List<String> {
       return output
     }
 
     /** Returns the process error output */
-    fun error(): List<String> {
+    public fun error(): List<String> {
       return error
     }
   }

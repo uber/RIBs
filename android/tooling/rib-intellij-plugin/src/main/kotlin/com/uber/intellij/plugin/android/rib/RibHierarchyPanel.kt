@@ -38,14 +38,14 @@ import javax.swing.JSplitPane
 import javax.swing.JSplitPane.RIGHT
 
 /** UI Component representing the panel including rib hierarchy. */
-class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
+public class RibHierarchyPanel(public val project: Project, private val initialModel: Model) :
   JPanel(),
   RibProjectService.Listener,
   ActionListener,
   RibHierarchyBrowser.Listener,
   RibViewBrowser.Listener {
 
-  companion object {
+  public companion object {
     private val EMPTY_RIB_VIEW: RibView = RibView("", "", "", "", emptyList())
     private val EMPTY_RIB_NODE: RibNode = RibNode("", "", emptyList(), EMPTY_RIB_VIEW)
     private val EMPTY_VIEW_MODEL: ViewModel =
@@ -113,13 +113,13 @@ class RibHierarchyPanel(val project: Project, private val initialModel: Model) :
   }
 
   /** Requests to update the list of devices. */
-  fun onAvailableDevicesChanged(devices: List<IDevice>) {
+  public fun onAvailableDevicesChanged(devices: List<IDevice>) {
     comboBoxModel.removeAllElements()
     devices.forEach { comboBoxModel.addElement(it) }
   }
 
   /** Requests to update the selected device. */
-  fun onSelectedDeviceChanged(selectedDevice: IDevice?) {
+  public fun onSelectedDeviceChanged(selectedDevice: IDevice?) {
     comboBoxModel.selectedItem = selectedDevice
   }
 

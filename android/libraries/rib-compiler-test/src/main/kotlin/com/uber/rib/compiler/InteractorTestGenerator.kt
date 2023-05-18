@@ -33,7 +33,7 @@ import javax.lang.model.element.Modifier
  * @Scope
  * @Retention(SOURCE) public @interface LoggedInScope { } </code>
  */
-open class InteractorTestGenerator(
+public open class InteractorTestGenerator(
   processingEnvironment: ProcessingEnvironment,
   errorReporter: ErrorReporter,
 ) : Generator<InteractorAnnotatedClass>(processingEnvironment, errorReporter) {

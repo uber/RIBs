@@ -27,29 +27,29 @@ import com.uber.intellij.plugin.android.rib.io.RibHost
 import javax.swing.Icon
 
 /** Node descriptor used to render tree roots. */
-class RibHierarchyRootNodeDescriptor(
+public class RibHierarchyRootNodeDescriptor(
   project: Project,
   element: PsiElement,
-  val ribHost: RibHost,
+  public val ribHost: RibHost,
   private val status: RibHierarchyBrowser.Status,
 ) : RibHierarchyDescriptor(project, null, element, true) {
 
   private val deviceRepository: AndroidDeviceRepository = project.service()
   private val ribProjectService: RibProjectService = project.service()
 
-  companion object {
+  public companion object {
     /** Label used when android bridge is not connected */
-    const val LABEL_NO_BRIDGE: String =
+    public const val LABEL_NO_BRIDGE: String =
       "No Android bridge. Make sure Android SDK is configured for this project."
 
     /** Label used when no device is connected. */
-    const val LABEL_NO_DEVICE: String = "No Android device connected..."
+    public const val LABEL_NO_DEVICE: String = "No Android device connected..."
 
     /** Label used when device list is being refreshed. */
-    const val LABEL_WAIT: String = "Loading RIB info..."
+    public const val LABEL_WAIT: String = "Loading RIB info..."
 
     /** Label used when no no Rib info could be fetched from device. */
-    const val LABEL_ERROR: String =
+    public const val LABEL_ERROR: String =
       "No RIB info available. Make sure RIB app is running in foreground, then refresh."
   }
 

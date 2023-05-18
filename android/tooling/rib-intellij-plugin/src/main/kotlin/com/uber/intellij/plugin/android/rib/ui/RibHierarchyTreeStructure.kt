@@ -21,8 +21,10 @@ import com.intellij.openapi.project.Project
 import com.uber.intellij.plugin.android.rib.RibHierarchyUtils
 
 /** Tree structure used by Rib hierarchy */
-class RibHierarchyTreeStructure(private val project: Project, descriptor: HierarchyNodeDescriptor) :
-  HierarchyTreeStructure(project, descriptor) {
+public class RibHierarchyTreeStructure(
+  private val project: Project,
+  descriptor: HierarchyNodeDescriptor,
+) : HierarchyTreeStructure(project, descriptor) {
 
   init {
     setBaseElement(descriptor)

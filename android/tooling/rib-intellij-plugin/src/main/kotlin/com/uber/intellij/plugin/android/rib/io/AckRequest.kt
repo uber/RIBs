@@ -18,7 +18,8 @@ package com.uber.intellij.plugin.android.rib.io
 import com.android.ddmlib.IDevice
 
 /** Ack response object. */
-class AckResponse : Response<String>()
+public class AckResponse : Response<String>()
 
 /** Ack request object. */
-class AckRequest(device: IDevice) : Request<AckResponse>(device, "ACK", AckResponse::class.java)
+public class AckRequest(device: IDevice) :
+  Request<AckResponse>(device, "ACK", AckResponse::class.java)
