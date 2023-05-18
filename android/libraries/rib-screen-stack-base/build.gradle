@@ -14,39 +14,21 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: "com.vanniktech.maven.publish"
-
-kotlin {
-    explicitApi()
-    jvmToolchain(11)
+plugins {
+    id("ribs.kotlin-android-library-conventions")
+    alias(libs.plugins.mavenPublish)
 }
 
 android {
     namespace "com.ubercab.core.screenstack.base"
-    compileSdk deps.build.compileSdkVersion
-
-    defaultConfig {
-        minSdk deps.build.minSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
-    }
-
-    buildFeatures {
-        buildConfig false
-    }
 }
 
 dependencies {
-    api deps.external.rxjava2
-    api deps.external.rxrelay2
-    api deps.external.rxbinding
-    implementation deps.androidx.annotations
-    implementation deps.uber.autodisposeCoroutines
-    implementation deps.kotlin.coroutinesAndroid
-    implementation deps.kotlin.coroutinesRx2
+    api(libs.rxjava2)
+    api(libs.rxrelay2)
+    api(libs.rxbinding)
+    implementation(libs.annotation)
+    implementation(libs.autodispose.coroutines)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.rx2)
 }

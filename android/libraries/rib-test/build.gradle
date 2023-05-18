@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "com.vanniktech.maven.publish"
-
-kotlin {
-    explicitApi()
-    jvmToolchain(11)
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.mavenPublish)
 }
 
 dependencies {
-    api project(":libraries:rib-base")
-    implementation deps.external.rxjava2
-    implementation deps.kotlin.stdlib
-    api deps.test.junit
-    api deps.test.truth
-    api deps.test.mockito
-    implementation deps.test.mockitoKotlin
+    api(project(":libraries:rib-base"))
+    implementation(libs.rxjava2)
+    implementation(libs.kotlin.stdlib)
+    api(testLibs.junit)
+    api(testLibs.truth)
+    api(testLibs.mockito)
+    implementation(testLibs.mockitoKotlin)
 }

@@ -14,31 +14,27 @@
  * limitations under the License.
  */
 
-
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "com.vanniktech.maven.publish"
-
-kotlin {
-    explicitApi()
-    jvmToolchain(11)
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.mavenPublish)
 }
 
 dependencies {
-    api project(':libraries:rib-coroutines')
-    api deps.kotlin.coroutinesTest
-    api deps.test.junit
+    api(project(':libraries:rib-coroutines'))
+    api(testLibs.coroutines.test)
+    api(testLibs.junit)
 
-    compileOnly deps.external.android
+    compileOnly(libs.android.api)
 
-    testImplementation project(":libraries:rib-base")
-    testImplementation project(":libraries:rib-test")
-    testImplementation deps.test.junit
-    testImplementation deps.test.mockito
-    testImplementation deps.test.mockitoKotlin
-    testImplementation deps.test.truth
-    testImplementation deps.kotlin.coroutinesTest
-    testImplementation deps.kotlin.coroutinesAndroid
-    testImplementation deps.androidx.annotations
-    testImplementation deps.apt.androidApi
+    testImplementation(project(":libraries:rib-base"))
+    testImplementation(project(":libraries:rib-test"))
+    testImplementation(testLibs.junit)
+    testImplementation(testLibs.mockito)
+    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.truth)
+    testImplementation(testLibs.coroutines.test)
+    testImplementation(libs.coroutines.android)
+    testImplementation(libs.annotation)
+    testImplementation(libs.android.api)
 
 }

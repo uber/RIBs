@@ -13,51 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: 'com.vanniktech.maven.publish'
-
-kotlin {
-    explicitApi()
-    jvmToolchain(11)
+plugins {
+    id("ribs.kotlin-android-library-conventions")
+    alias(libs.plugins.mavenPublish)
 }
 
 android {
     namespace "com.uber.rib.android"
-    compileSdk deps.build.compileSdkVersion
-
-    defaultConfig {
-        minSdk deps.build.minSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
 }
 
 dependencies {
-    api project(":libraries:rib-android-core")
-    api project(":libraries:rib-base")
-    api deps.external.rxkotlin
-    api deps.external.rxrelay2
-    api deps.external.rxjava2
-    implementation deps.apt.javaxInject
-    implementation deps.androidx.annotations
-    implementation deps.androidx.appcompat
-    implementation deps.external.guavaAndroid
-    implementation deps.uber.autodisposeCoroutines
-    implementation deps.kotlin.coroutinesAndroid
-    implementation deps.kotlin.coroutinesRx2
-    testImplementation deps.external.roboelectricBase
-    testImplementation deps.androidx.appcompat
-    testImplementation deps.test.mockitoKotlin
-    testImplementation project(":libraries:rib-test")
+    api(project(":libraries:rib-android-core"))
+    api(project(":libraries:rib-base"))
+    api(libs.rxkotlin)
+    api(libs.rxrelay2)
+    api(libs.rxjava2)
+    implementation(libs.javax.inject)
+    implementation(libs.annotation)
+    implementation(libs.appcompat)
+    implementation(libs.guava.android)
+    implementation(libs.autodispose.coroutines)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.rx2)
+    testImplementation(testLibs.robolectric)
+    testImplementation(libs.appcompat)
+    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(project(":libraries:rib-test"))
 }

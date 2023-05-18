@@ -7,8 +7,8 @@ buildscript {
         gradlePluginPortal()
     }
     dependencies {
-        classpath deps.build.gradlePlugins.japicmp
-        classpath deps.build.guavaJre // https://github.com/melix/japicmp-gradle-plugin/issues/36
+        classpath "me.champeau.gradle:japicmp-gradle-plugin:0.2.8"
+        classpath libs.guava.jre // https://github.com/melix/japicmp-gradle-plugin/issues/36
     }
 }
 

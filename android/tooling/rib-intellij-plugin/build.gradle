@@ -1,20 +1,14 @@
-buildscript {
-    dependencies {
-        classpath deps.build.intellijPlugin
-    }
-}
-
-apply plugin: "org.jetbrains.intellij"
-apply plugin: "org.jetbrains.kotlin.jvm"
-
-kotlin {
-    jvmToolchain(11)
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.intellij)
 }
 
 group "com.uber.rib"
 
 repositories {
     mavenLocal()
+    google()
+    mavenCentral()
 }
 
 dependencies {
@@ -35,16 +29,16 @@ dependencies {
     testImplementation(project(":libraries:rib-compiler-test")) {
         transitive = false
     }
-    testImplementation deps.apt.daggerCompiler
-    testImplementation deps.apt.javaxInject
-    testImplementation deps.external.dagger
-    testImplementation deps.uber.autodispose
-    testImplementation deps.uber.autodisposeLifecycle
-    testImplementation deps.test.truth
-    testImplementation deps.test.compileTesting
-    testImplementation deps.test.mockito
-    testImplementation deps.androidx.annotations
-    testImplementation deps.apt.androidApi
+    testImplementation(libs.dagger.compiler)
+    testImplementation(libs.javax.inject)
+    testImplementation(libs.dagger.library)
+    testImplementation(libs.autodispose.library)
+    testImplementation(libs.autodispose.lifecycle)
+    testImplementation(testLibs.truth)
+    testImplementation(testLibs.compileTesting)
+    testImplementation(testLibs.mockito)
+    testImplementation(libs.annotation)
+    testImplementation(libs.android.api)
 }
 
 // Determines if the machine has Maven credentials.
@@ -62,7 +56,7 @@ version = pluginXml.version
 
 intellij {
     plugins = ['java', 'Kotlin', 'android']
-    version = deps.versions.intellij
+    version = libs.versions.intellij
     pluginName = "uber-ribs"
     updateSinceUntilBuild = false
     sandboxDir = "${project.gradle.gradleHomeDir}/caches/intellij"
@@ -79,13 +73,5 @@ afterEvaluate {
         archives sourcesJar
         archives project.tasks.getByName("buildPlugin")
     }
-    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).all {
-        kotlinOptions {
-            jvmTarget = "11"
-        }
-    }
-    tasks.withType(JavaCompile).all {
-        sourceCompatibility = "11"
-        targetCompatibility = "11"
-    }
+
 }
