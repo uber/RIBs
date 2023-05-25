@@ -40,7 +40,7 @@ public abstract class Presenter : ScopeProvider, RibActionEmitter {
 
   @Volatile private var _lifecycleObservable: Observable<PresenterEvent>? = null
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable(DirectDispatcher) }
 
   /** @return `true` if the presenter is loaded, `false` if not. */
   protected var isLoaded: Boolean = false

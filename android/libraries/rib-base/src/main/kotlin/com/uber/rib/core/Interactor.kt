@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("invisible_reference", "invisible_member")
+
 package com.uber.rib.core
 
 import androidx.annotation.CallSuper
@@ -46,7 +48,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
 
   @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable(DirectDispatcher) }
 
   private val routerDelegate = InitOnceProperty<R>()
 

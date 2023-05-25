@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 @file:JvmSynthetic
+@file:Suppress("invisible_reference", "invisible_member")
 
 package com.uber.rib.core
 
@@ -41,7 +42,7 @@ internal fun <T : Comparable<T>> SharedFlow<T>.asScopeCompletable(
   context: CoroutineContext = EmptyCoroutineContext,
 ): CompletableSource {
   ensureAlive(range)
-  return rxCompletable(RibDispatchers.Unconfined + context) {
+  return rxCompletable(DirectDispatcher + context) {
     takeWhile { it < range.endInclusive }.collect()
   }
 }

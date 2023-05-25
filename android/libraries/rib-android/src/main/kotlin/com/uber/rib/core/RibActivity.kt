@@ -60,7 +60,7 @@ abstract class RibActivity :
 
   @Volatile private var _lifecycleObservable: Observable<ActivityLifecycleEvent>? = null
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable(DirectDispatcher) }
 
   private val _callbacksFlow =
     MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
@@ -69,7 +69,7 @@ abstract class RibActivity :
 
   @Volatile private var _callbacksObservable: Observable<ActivityCallbackEvent>? = null
   private val callbacksObservable
-    get() = ::_callbacksObservable.setIfNullAndGet { callbacksFlow.asObservable() }
+    get() = ::_callbacksObservable.setIfNullAndGet { callbacksFlow.asObservable(DirectDispatcher) }
 
   /** @return an observable of this activity's lifecycle events. */
   final override fun lifecycle(): Observable<ActivityLifecycleEvent> = lifecycleObservable
