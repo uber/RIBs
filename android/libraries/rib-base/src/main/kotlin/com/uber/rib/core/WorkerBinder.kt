@@ -61,6 +61,46 @@ public object WorkerBinder {
 
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
+   * interactor's lifecycle events
+   *
+   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
+   *
+   * Inject this class into your interactor and call this method on any
+   *
+   * @param interactor The interactor that provides the lifecycle.
+   * @param worker The class that wants to be informed when to start and stop doing work.
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
+   */
+  @JvmStatic
+  public fun bindToInteractor(
+    interactor: Interactor<*, *>,
+    worker: Worker,
+  ): WorkerUnbinder = bind(interactor, worker, RibDispatchers.Default)
+
+  /**
+   * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
+   * interactor's lifecycle events
+   *
+   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
+   *
+   * Inject this class into your interactor and call this method on any
+   *
+   * @param interactor The interactor that provides the lifecycle.
+   * @param workers A list of classes that want to be informed when to start and stop doing work.
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
+   */
+  @JvmStatic
+  public fun bindToInteractor(
+    interactor: Interactor<*, *>,
+    workers: List<Worker>,
+  ) {
+    bind(interactor, workers, RibDispatchers.Default)
+  }
+
+  /**
+   * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events. Inject this class into your interactor and call this method on
    * any
    *
@@ -70,6 +110,14 @@ public object WorkerBinder {
    *   is not overriden with a value different that [EmptyCoroutineContext]
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
+  @Deprecated(
+    message =
+      """
+      This method will bind on current thread where WorkerBinder is called. This often means that
+      the binding will happen on the main Thread leading to potential Jank issues/ANRs
+    """,
+    replaceWith = ReplaceWith("bindToInteractor(interactor, workers)"),
+  )
   @JvmStatic
   @JvmOverloads
   public fun bind(
@@ -95,6 +143,14 @@ public object WorkerBinder {
    *   [Worker.coroutineContext] is not overriden with a value different than
    *   [EmptyCoroutineContext]
    */
+  @Deprecated(
+    message =
+      """
+      This method will bind on current thread where WorkerBinder is called. This often means that
+      the binding will happen on the main Thread leading to potential Jank issues/ANRs
+    """,
+    replaceWith = ReplaceWith("bindToInteractor(interactor, workers)"),
+  )
   @JvmStatic
   @JvmOverloads
   public fun bind(
@@ -111,6 +167,42 @@ public object WorkerBinder {
    * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to an
    * presenter's lifecycle events. Inject this class into your presenter and call this method on any
    *
+   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
+   *
+   * @param presenter The presenter that provides the lifecycle.
+   * @param worker The class that wants to be informed when to start and stop doing work.
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
+   */
+  @JvmStatic
+  public fun bindToPresenter(
+    presenter: Presenter,
+    worker: Worker,
+  ): WorkerUnbinder = bind(presenter, worker, RibDispatchers.Default)
+
+  /**
+   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to an
+   * presenter's lifecycle events. Inject this class into your presenter and call this method on any
+   *
+   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
+   *
+   * @param presenter The presenter that provides the lifecycle.
+   * @param workers A list of classes that want to be informed when to start and stop doing work.
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
+   */
+  @JvmStatic
+  public fun bindToPresenter(
+    presenter: Presenter,
+    workers: List<Worker>,
+  ) {
+    bind(presenter, workers, RibDispatchers.Default)
+  }
+
+  /**
+   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to an
+   * presenter's lifecycle events. Inject this class into your presenter and call this method on any
+   *
    * @param presenter The presenter that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
    * @param dispatcherAtBinder CoroutineDispatcher to be applied only when the
@@ -118,6 +210,14 @@ public object WorkerBinder {
    *   [EmptyCoroutineContext]
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
+  @Deprecated(
+    message =
+      """
+      This method will bind on current thread where WorkerBinder is called. This often means that
+      the binding will happen on the main Thread leading to potential Jank issues/ANRs
+    """,
+    replaceWith = ReplaceWith("bindToPresenter(presenter, worker)"),
+  )
   @JvmStatic
   @JvmOverloads
   public fun bind(
@@ -143,7 +243,16 @@ public object WorkerBinder {
    *   [Worker.coroutineContext] is not overriden with a value different than
    *   [EmptyCoroutineContext]
    */
+  @Deprecated(
+    message =
+      """
+      This method will bind on current thread where WorkerBinder is called. This often means that
+      the binding will happen on the main Thread leading to potential Jank issues/ANRs
+    """,
+    replaceWith = ReplaceWith("bindToPresenter(presenter, workers)"),
+  )
   @JvmStatic
+  @JvmOverloads
   public fun bind(
     presenter: Presenter,
     workers: List<Worker>,

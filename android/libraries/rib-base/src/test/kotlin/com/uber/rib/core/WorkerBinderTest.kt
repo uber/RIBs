@@ -18,6 +18,7 @@ package com.uber.rib.core
 import com.google.common.truth.Truth.assertThat
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.rib.core.WorkerBinder.bind
+import com.uber.rib.core.WorkerBinder.bindToInteractor
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
 import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
 import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
@@ -181,6 +182,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   fun bind_withUnconfinedCoroutineDispatchers_shouldReportBinderInformationForOnStart() = runTest {
     val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
     bindFakeWorker()
+    advanceUntilIdle()
     verify(workerBinderListener).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.firstValue.assertWorkerDuration(
       "FakeWorker",
@@ -195,7 +197,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
     prepareInteractor()
     val workers = listOf(fakeWorker, fakeWorker, uiWorker)
-    bind(interactor, workers)
+    bindToInteractor(interactor, workers)
     advanceUntilIdle()
     verify(workerBinderListener, times(3)).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.firstValue.assertWorkerDuration(
@@ -214,7 +216,9 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   fun unbind_withUnconfinedCoroutineDispatchers_shouldReportBinderDurationForOnStop() = runTest {
     val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
     val unbinder = bindFakeWorker()
+    advanceUntilIdle()
     unbinder.unbind()
+    advanceUntilIdle()
     verify(workerBinderListener, times(2)).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.secondValue.assertWorkerDuration(
       "FakeWorker",
@@ -225,7 +229,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   private fun bindFakeWorker(): WorkerUnbinder {
     prepareInteractor()
-    return bind(interactor, fakeWorker)
+    return bindToInteractor(interactor, fakeWorker)
   }
 
   private fun prepareInteractor() {
