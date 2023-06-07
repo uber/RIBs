@@ -53,18 +53,18 @@ class RibWorkerSelectionInteractor(
         when (it) {
           RibWorkerBindTypeClickType.SINGLE_WORKER_BIND_CALLER_THREAD -> {
             updateViewModel(uiWorker::class.simpleName)
-            WorkerBinder.bind(this, uiWorker)
+            WorkerBinder.bindToInteractor(this, uiWorker)
           }
           RibWorkerBindTypeClickType.SINGLE_WORKER_BIND_BACKGROUND_THREAD -> {
             updateViewModel(ioWorker::class.simpleName)
-            WorkerBinder.bind(this, ioWorker)
+            WorkerBinder.bindToInteractor(this, ioWorker)
           }
           RibWorkerBindTypeClickType.BIND_MULTIPLE_WORKERS -> {
             val workers = listOf(backgroundWorker, defaultWorker, ioWorker, uiWorker)
             updateViewModel("Multiple workers ")
             // Given uiWorker specifies its CoroutineContext,
             // RibDispatchers.Main for Ui worker will remain besides Dispatchers.Default
-            WorkerBinder.bind(this, workers, RibDispatchers.Default)
+            WorkerBinder.bindToInteractor(this, workers)
           }
           RibWorkerBindTypeClickType.BIND_RIB_COROUTINE_WORKER -> {
             updateViewModel(defaultRibCoroutineWorker::class.simpleName)
@@ -78,7 +78,7 @@ class RibWorkerSelectionInteractor(
           RibWorkerBindTypeClickType.RIB_COROUTINE_WORKER_TO_WORKER -> {
             val worker = defaultRibCoroutineWorker.asWorker()
             updateViewModel(worker::class.simpleName)
-            WorkerBinder.bind(this, worker)
+            WorkerBinder.bindToInteractor(this, worker)
           }
         }
       }
