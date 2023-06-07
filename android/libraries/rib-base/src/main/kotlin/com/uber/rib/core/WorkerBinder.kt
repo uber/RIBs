@@ -63,10 +63,8 @@ public object WorkerBinder {
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events
    *
-   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
-   *
-   * Inject this class into your interactor and call this method on any
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
@@ -82,10 +80,8 @@ public object WorkerBinder {
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events
    *
-   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
-   *
-   * Inject this class into your interactor and call this method on any
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param workers A list of classes that want to be informed when to start and stop doing work.
@@ -101,8 +97,7 @@ public object WorkerBinder {
 
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
-   * interactor's lifecycle events. Inject this class into your interactor and call this method on
-   * any
+   * interactor's lifecycle events.
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
@@ -164,10 +159,10 @@ public object WorkerBinder {
   }
 
   /**
-   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to an
-   * presenter's lifecycle events. Inject this class into your presenter and call this method on any
+   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to a
+   * presenter's lifecycle events.
    *
-   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
    *
    * @param presenter The presenter that provides the lifecycle.
@@ -181,10 +176,10 @@ public object WorkerBinder {
   ): WorkerUnbinder = bind(presenter, worker, RibDispatchers.Default)
 
   /**
-   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to an
-   * presenter's lifecycle events. Inject this class into your presenter and call this method on any
+   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to a
+   * presenter's lifecycle events.
    *
-   * IMPORTANT: Binding will happen on [RibDispatchers.DEFAULT] unless the Worker explicitly
+   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
    *
    * @param presenter The presenter that provides the lifecycle.
@@ -200,8 +195,8 @@ public object WorkerBinder {
   }
 
   /**
-   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to an
-   * presenter's lifecycle events. Inject this class into your presenter and call this method on any
+   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to a
+   * presenter's lifecycle events.
    *
    * @param presenter The presenter that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
@@ -234,7 +229,7 @@ public object WorkerBinder {
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
-   * to an presenter's lifecycle events. Use this class into your presenter and call this method on
+   * to a presenter's lifecycle events. Use this class into your presenter and call this method on
    * attach.
    *
    * @param presenter The presenter that provides the lifecycle.
