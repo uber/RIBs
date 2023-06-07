@@ -18,7 +18,6 @@ package com.uber.rib.workers.root.main.ribworkerselection
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.RibDispatchers
 import com.uber.rib.core.WorkerBinder
 import com.uber.rib.core.asRibCoroutineWorker
 import com.uber.rib.core.asWorker
