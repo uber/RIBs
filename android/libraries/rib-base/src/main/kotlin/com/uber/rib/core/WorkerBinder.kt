@@ -62,11 +62,12 @@ public object WorkerBinder {
   }
 
   /**
-   * Initializes [WorkerBinderMigrationProvider]
+   * Initializes [WorkerBinderMigrationProvider]. It will be used to allow changing the current
+   * default CoroutineDispatchers being bound from [RibDispatchers.Main] to [RibDispatchers.Default]
+   * at WorkerBinder.bind calls.
    *
-   * Provide a concrete implementation of [WorkerBinderMigrationProvider] that allow controlled
-   * changes (e.g. via remote configuration) for changing current default CoroutineDispatchers being
-   * bound from [RibDispatchers.Main] to [RibDispatchers.Default]
+   * This could be used within a remote configuration that will allow for a safe revert in case of
+   * issues detected (e.g. Specific Worker must be bound on main thread)
    *
    * IMPORTANT: If set, this should be called at the earliest scope possible to allow migrating
    * early workers
@@ -447,13 +448,18 @@ public fun interface WorkerBinderListener {
  * allow a safe migration (e.g. via remove config) and allowing to change the current
  * CoroutineDispatcher being used in WorkerBinder.bind calls from [CoroutineDispatchers.Unconfined]
  * to [RibDispatchers.Default]
+ *
+ * IMPORTANT NOTE: For calls to WorkerBinder.bind that receive a list of workers and one of the
+ * workers in the list requires to be bound on main thread, a concrete override can be applied on
+ * the Worker itself (e.g. by overriding default coroutineContext at Worker from
+ * [EmptyCoroutineContext] to [RibDispatchers.Main]
  */
 public fun interface WorkerBinderMigrationProvider {
 
   /**
-   * Returns true with true when the original default CoroutineDispatcher at WorkerBinder should be
-   * migrated to a background dispatcher (e.g. from [CoroutineDispatchers.Unconfined] to
-   * [RibDispatchers.Default])
+   * Returns true when the default CoroutineDispatcher ([CoroutineDispatchers.Unconfined]) at
+   * WorkerBinder should be migrated to a background dispatcher (e.g. from
+   * [CoroutineDispatchers.Unconfined] to [RibDispatchers.Default])
    */
   public fun shouldMigrateDispatcherAtWorkerBinder(): Boolean
 }
