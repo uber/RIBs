@@ -48,6 +48,8 @@ public object WorkerBinder {
 
   private var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
 
+  private var workerBinderMigrationProvider: WorkerBinderMigrationProvider? = null
+
   /**
    * Initializes reporting of [WorkerBinderInfo] via [WorkerBinderListener]
    *
@@ -57,6 +59,23 @@ public object WorkerBinder {
   @JvmStatic
   public fun initializeMonitoring(workerBinderListener: WorkerBinderListener) {
     this.workerBinderListenerWeakRef = WeakReference<WorkerBinderListener>(workerBinderListener)
+  }
+
+  /**
+   * Initializes [WorkerBinderMigrationProvider]
+   *
+   * Provide a concrete implementation of [WorkerBinderMigrationProvider] that allow controlled
+   * changes (e.g. via remote configuration) for changing current default CoroutineDispatchers being
+   * bound from [RibDispatchers.Main] to [RibDispatchers.Default]
+   *
+   * IMPORTANT: If set, this should be called at the earliest scope possible to allow migrating
+   * early workers
+   */
+  @JvmStatic
+  public fun initializeDispatcherMigration(
+    workerBinderMigrationProvider: WorkerBinderMigrationProvider,
+  ) {
+    this.workerBinderMigrationProvider = workerBinderMigrationProvider
   }
 
   /**
@@ -74,7 +93,13 @@ public object WorkerBinder {
   public fun bindToInteractor(
     interactor: Interactor<*, *>,
     worker: Worker,
-  ): WorkerUnbinder = bind(interactor, worker, RibDispatchers.Default)
+  ): WorkerUnbinder =
+    worker.bind(
+      interactor.lifecycleFlow,
+      Interactor.lifecycleRange,
+      RibDispatchers.Default,
+      workerBinderListenerWeakRef,
+    )
 
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
@@ -92,7 +117,9 @@ public object WorkerBinder {
     interactor: Interactor<*, *>,
     workers: List<Worker>,
   ) {
-    bind(interactor, workers, RibDispatchers.Default)
+    for (interactorWorker in workers) {
+      bindToInteractor(interactor, interactorWorker)
+    }
   }
 
   /**
@@ -118,14 +145,16 @@ public object WorkerBinder {
   public fun bind(
     interactor: Interactor<*, *>,
     worker: Worker,
-    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
-  ): WorkerUnbinder =
-    worker.bind(
+    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ): WorkerUnbinder {
+    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
+    return worker.bind(
       interactor.lifecycleFlow,
       Interactor.lifecycleRange,
       dispatcherAtBinder,
       workerBinderListenerWeakRef,
     )
+  }
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -151,8 +180,9 @@ public object WorkerBinder {
   public fun bind(
     interactor: Interactor<*, *>,
     workers: List<Worker>,
-    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
   ) {
+    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker, dispatcherAtBinder)
     }
@@ -173,7 +203,13 @@ public object WorkerBinder {
   public fun bindToPresenter(
     presenter: Presenter,
     worker: Worker,
-  ): WorkerUnbinder = bind(presenter, worker, RibDispatchers.Default)
+  ): WorkerUnbinder =
+    worker.bind(
+      presenter.lifecycleFlow,
+      Presenter.lifecycleRange,
+      RibDispatchers.Default,
+      workerBinderListenerWeakRef,
+    )
 
   /**
    * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to a
@@ -191,7 +227,9 @@ public object WorkerBinder {
     presenter: Presenter,
     workers: List<Worker>,
   ) {
-    bind(presenter, workers, RibDispatchers.Default)
+    for (worker in workers) {
+      bindToPresenter(presenter, worker)
+    }
   }
 
   /**
@@ -218,14 +256,16 @@ public object WorkerBinder {
   public fun bind(
     presenter: Presenter,
     worker: Worker,
-    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
-  ): WorkerUnbinder =
-    worker.bind(
+    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ): WorkerUnbinder {
+    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
+    return worker.bind(
       presenter.lifecycleFlow,
       Presenter.lifecycleRange,
       dispatcherAtBinder,
       workerBinderListenerWeakRef,
     )
+  }
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -251,8 +291,9 @@ public object WorkerBinder {
   public fun bind(
     presenter: Presenter,
     workers: List<Worker>,
-    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
   ) {
+    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
     for (worker in workers) {
       bind(presenter, worker, dispatcherAtBinder)
     }
@@ -347,6 +388,19 @@ public object WorkerBinder {
       }
     }
   }
+
+  private fun getDispatcherFromMigration(
+    originalDispatcher: CoroutineDispatcher,
+  ): CoroutineDispatcher {
+    return if (isWorkerBinderDispatcherMigrationEnabled()) {
+      RibDispatchers.Default
+    } else {
+      originalDispatcher
+    }
+  }
+
+  private fun isWorkerBinderDispatcherMigrationEnabled(): Boolean =
+    workerBinderMigrationProvider?.shouldMigrateDispatcherAtWorkerBinder() ?: false
 }
 
 /**
@@ -385,6 +439,23 @@ public fun interface WorkerBinderListener {
   public fun onBindCompleted(
     workerBinderInfo: WorkerBinderInfo,
   )
+}
+
+/**
+ * Given the potential performance issues of binding all Workers on effective main thread (Janky
+ * Frames, ANRs, App launch delay), it provides an abstraction for configuring flag in order to
+ * allow a safe migration (e.g. via remove config) and allowing to change the current
+ * CoroutineDispatcher being used in WorkerBinder.bind calls from [CoroutineDispatchers.Unconfined]
+ * to [RibDispatchers.Default]
+ */
+public fun interface WorkerBinderMigrationProvider {
+
+  /**
+   * Returns true with true when the original default CoroutineDispatcher at WorkerBinder should be
+   * migrated to a background dispatcher (e.g. from [CoroutineDispatchers.Unconfined] to
+   * [RibDispatchers.Default])
+   */
+  public fun shouldMigrateDispatcherAtWorkerBinder(): Boolean
 }
 
 private fun getJobCoroutineContext(
