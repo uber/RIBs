@@ -56,6 +56,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
       }
     }
   private val workerBinderListener: WorkerBinderListener = mock()
+  private val fakeWorkerBinderThreadMigrationProvider = FakeWorkerBinderThreadMigrationProvider()
 
   private val fakeWorker = FakeWorker()
   private val interactor = FakeInteractor<Presenter, Router<*>>()
@@ -63,6 +64,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @Before
   fun setUp() {
     WorkerBinder.initializeMonitoring(workerBinderListener)
+    WorkerBinder.initializeDispatcherMigration(fakeWorkerBinderThreadMigrationProvider)
   }
 
   @Test
@@ -192,6 +194,20 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 
   @Test
+  fun bind_withMigrationEnabled_shouldBindOnRibDispatchersDefault() = runTest {
+    val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
+    prepareInteractor()
+    bind(interactor, fakeWorker)
+    advanceUntilIdle()
+    verify(workerBinderListener).onBindCompleted(binderDurationCaptor.capture())
+    binderDurationCaptor.firstValue.assertWorkerDuration(
+      "FakeWorker",
+      WorkerEvent.START,
+      RibDispatchers.Default,
+    )
+  }
+
+  @Test
   fun bind_multipleWorkers_shouldReportBinderTwice() = runTest {
     val uiWorker = UiWorker()
     val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
@@ -263,4 +279,9 @@ private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
 
 class UiWorker : Worker {
   override val coroutineContext: CoroutineDispatcher = RibDispatchers.Main
+}
+
+class FakeWorkerBinderThreadMigrationProvider : WorkerBinderThreadMigrationProvider {
+  var isMigrationEnabled = false
+  override fun shouldMigrateDispatcherAtWorkerBinder(): Boolean = isMigrationEnabled
 }
