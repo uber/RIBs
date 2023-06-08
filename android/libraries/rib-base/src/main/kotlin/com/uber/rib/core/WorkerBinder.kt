@@ -72,7 +72,7 @@ public object WorkerBinder {
    * early workers
    */
   @JvmStatic
-  public fun initializeDispatcherMigration(
+  public fun initializeWorkerBinderMigration(
     workerBinderMigrationProvider: WorkerBinderMigrationProvider,
   ) {
     this.workerBinderMigrationProvider = workerBinderMigrationProvider

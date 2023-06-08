@@ -64,7 +64,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @Before
   fun setUp() {
     WorkerBinder.initializeMonitoring(workerBinderListener)
-    WorkerBinder.initializeDispatcherMigration(fakeWorkerBinderThreadMigrationProvider)
+    WorkerBinder.initializeWorkerBinderMigration(fakeWorkerBinderThreadMigrationProvider)
   }
 
   @Test
