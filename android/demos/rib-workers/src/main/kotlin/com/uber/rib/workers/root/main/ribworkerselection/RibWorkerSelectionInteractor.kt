@@ -18,7 +18,7 @@ package com.uber.rib.workers.root.main.ribworkerselection
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.WorkerBinder
+import com.uber.rib.core.WorkerBinder.bindTo
 import com.uber.rib.core.asRibCoroutineWorker
 import com.uber.rib.core.asWorker
 import com.uber.rib.core.bind
@@ -52,18 +52,18 @@ class RibWorkerSelectionInteractor(
         when (it) {
           RibWorkerBindTypeClickType.SINGLE_WORKER_BIND_CALLER_THREAD -> {
             updateViewModel(uiWorker::class.simpleName)
-            WorkerBinder.bindToInteractor(this, uiWorker)
+            uiWorker.bindTo(this)
           }
           RibWorkerBindTypeClickType.SINGLE_WORKER_BIND_BACKGROUND_THREAD -> {
             updateViewModel(ioWorker::class.simpleName)
-            WorkerBinder.bindToInteractor(this, ioWorker)
+            ioWorker.bindTo(this)
           }
           RibWorkerBindTypeClickType.BIND_MULTIPLE_WORKERS -> {
             val workers = listOf(backgroundWorker, defaultWorker, ioWorker, uiWorker)
             updateViewModel("Multiple workers ")
             // Given uiWorker specifies its CoroutineContext,
             // RibDispatchers.Main for Ui worker will remain besides Dispatchers.Default
-            WorkerBinder.bindToInteractor(this, workers)
+            workers.bindTo(this)
           }
           RibWorkerBindTypeClickType.BIND_RIB_COROUTINE_WORKER -> {
             updateViewModel(defaultRibCoroutineWorker::class.simpleName)
@@ -77,7 +77,7 @@ class RibWorkerSelectionInteractor(
           RibWorkerBindTypeClickType.RIB_COROUTINE_WORKER_TO_WORKER -> {
             val worker = defaultRibCoroutineWorker.asWorker()
             updateViewModel(worker::class.simpleName)
-            WorkerBinder.bindToInteractor(this, worker)
+            worker.bindTo(this)
           }
         }
       }

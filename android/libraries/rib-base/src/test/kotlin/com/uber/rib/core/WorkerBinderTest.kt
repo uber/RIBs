@@ -18,7 +18,7 @@ package com.uber.rib.core
 import com.google.common.truth.Truth.assertThat
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.rib.core.WorkerBinder.bind
-import com.uber.rib.core.WorkerBinder.bindToInteractor
+import com.uber.rib.core.WorkerBinder.bindTo
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
 import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
 import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
@@ -56,7 +56,6 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
       }
     }
   private val workerBinderListener: WorkerBinderListener = mock()
-  private val fakeWorkerBinderThreadMigrationProvider = FakeWorkerBinderMigrationProvider()
 
   private val fakeWorker = FakeWorker()
   private val interactor = FakeInteractor<Presenter, Router<*>>()
@@ -64,7 +63,6 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @Before
   fun setUp() {
     WorkerBinder.initializeMonitoring(workerBinderListener)
-    WorkerBinder.initializeWorkerBinderMigration(fakeWorkerBinderThreadMigrationProvider)
   }
 
   @Test
@@ -213,7 +211,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
     prepareInteractor()
     val workers = listOf(fakeWorker, fakeWorker, uiWorker)
-    bindToInteractor(interactor, workers)
+    workers.bindTo(interactor)
     advanceUntilIdle()
     verify(workerBinderListener, times(3)).onBindCompleted(binderDurationCaptor.capture())
     binderDurationCaptor.firstValue.assertWorkerDuration(
@@ -245,7 +243,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   private fun bindFakeWorker(): WorkerUnbinder {
     prepareInteractor()
-    return bindToInteractor(interactor, fakeWorker)
+    return fakeWorker.bindTo(interactor)
   }
 
   private fun prepareInteractor() {
@@ -279,10 +277,4 @@ private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
 
 class UiWorker : Worker {
   override val coroutineContext: CoroutineDispatcher = RibDispatchers.Main
-}
-
-class FakeWorkerBinderMigrationProvider : WorkerBinderMigrationProvider {
-  private var isMigrationEnabled = false
-
-  override fun shouldMigrateDispatcherAtWorkerBinder(): Boolean = isMigrationEnabled
 }

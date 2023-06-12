@@ -48,8 +48,6 @@ public object WorkerBinder {
 
   private var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
 
-  private var workerBinderMigrationProvider: WorkerBinderMigrationProvider? = null
-
   /**
    * Initializes reporting of [WorkerBinderInfo] via [WorkerBinderListener]
    *
@@ -62,40 +60,20 @@ public object WorkerBinder {
   }
 
   /**
-   * Initializes [WorkerBinderMigrationProvider]. It will be used to allow changing the current
-   * default CoroutineDispatchers being bound from [RibDispatchers.Main] to [RibDispatchers.Default]
-   * at WorkerBinder.bind calls.
-   *
-   * This could be used within a remote configuration that will allow for a safe revert in case of
-   * issues detected (e.g. Specific Worker must be bound on main thread)
-   *
-   * IMPORTANT: If set, this should be called at the earliest scope possible to allow migrating
-   * early workers
-   */
-  @JvmStatic
-  public fun initializeWorkerBinderMigration(
-    workerBinderMigrationProvider: WorkerBinderMigrationProvider,
-  ) {
-    this.workerBinderMigrationProvider = workerBinderMigrationProvider
-  }
-
-  /**
-   * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
+   * Bind a [Worker] (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events
    *
    * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
    *
    * @param interactor The interactor that provides the lifecycle.
-   * @param worker The class that wants to be informed when to start and stop doing work.
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bindToInteractor(
+  public fun Worker.bindTo(
     interactor: Interactor<*, *>,
-    worker: Worker,
   ): WorkerUnbinder =
-    worker.bind(
+    bind(
       interactor.lifecycleFlow,
       Interactor.lifecycleRange,
       RibDispatchers.Default,
@@ -103,23 +81,21 @@ public object WorkerBinder {
     )
 
   /**
-   * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
-   * interactor's lifecycle events
+   * Bind a [List] of [Worker] (ie. a manager or any other class that needs an interactor's
+   * lifecycle) to an interactor's lifecycle events
    *
    * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
    *
    * @param interactor The interactor that provides the lifecycle.
-   * @param workers A list of classes that want to be informed when to start and stop doing work.
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bindToInteractor(
+  public fun List<Worker>.bindTo(
     interactor: Interactor<*, *>,
-    workers: List<Worker>,
   ) {
-    for (interactorWorker in workers) {
-      bindToInteractor(interactor, interactorWorker)
+    for (interactorWorker in this) {
+      interactorWorker.bindTo(interactor)
     }
   }
 
@@ -139,23 +115,21 @@ public object WorkerBinder {
       This method will bind on current thread where WorkerBinder is called. This often means that
       the binding will happen on the main Thread leading to potential Jank issues/ANRs
     """,
-    replaceWith = ReplaceWith("bindToInteractor(interactor, workers)"),
+    replaceWith = ReplaceWith("worker.bindTo(interactor)"),
   )
   @JvmStatic
   @JvmOverloads
   public fun bind(
     interactor: Interactor<*, *>,
     worker: Worker,
-    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
-  ): WorkerUnbinder {
-    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
-    return worker.bind(
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ): WorkerUnbinder =
+    worker.bind(
       interactor.lifecycleFlow,
       Interactor.lifecycleRange,
       dispatcherAtBinder,
       workerBinderListenerWeakRef,
     )
-  }
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -174,38 +148,35 @@ public object WorkerBinder {
       This method will bind on current thread where WorkerBinder is called. This often means that
       the binding will happen on the main Thread leading to potential Jank issues/ANRs
     """,
-    replaceWith = ReplaceWith("bindToInteractor(interactor, workers)"),
+    replaceWith = ReplaceWith("workers.bindTo(interactor)"),
   )
   @JvmStatic
   @JvmOverloads
   public fun bind(
     interactor: Interactor<*, *>,
     workers: List<Worker>,
-    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
   ) {
-    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker, dispatcherAtBinder)
     }
   }
 
   /**
-   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to a
+   * Bind a [Worker] (ie. a manager or any other class that needs an presenter's lifecycle) to a
    * presenter's lifecycle events.
    *
    * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
    *
    * @param presenter The presenter that provides the lifecycle.
-   * @param worker The class that wants to be informed when to start and stop doing work.
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bindToPresenter(
+  public fun Worker.bindTo(
     presenter: Presenter,
-    worker: Worker,
   ): WorkerUnbinder =
-    worker.bind(
+    bind(
       presenter.lifecycleFlow,
       Presenter.lifecycleRange,
       RibDispatchers.Default,
@@ -213,23 +184,21 @@ public object WorkerBinder {
     )
 
   /**
-   * Bind a worker (ie. a manager or any other class that needs an presenter's lifecycle) to a
-   * presenter's lifecycle events.
+   * Bind a [List] of [Worker] (ie. a manager or any other class that needs an presenter's
+   * lifecycle) to a presenter's lifecycle events.
    *
    * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
    * overrides [coroutineContext] to other than [EmptyCoroutineContext]
    *
    * @param presenter The presenter that provides the lifecycle.
-   * @param workers A list of classes that want to be informed when to start and stop doing work.
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bindToPresenter(
+  public fun List<Worker>.bindTo(
     presenter: Presenter,
-    workers: List<Worker>,
   ) {
-    for (worker in workers) {
-      bindToPresenter(presenter, worker)
+    for (worker in this) {
+      worker.bindTo(presenter)
     }
   }
 
@@ -250,23 +219,21 @@ public object WorkerBinder {
       This method will bind on current thread where WorkerBinder is called. This often means that
       the binding will happen on the main Thread leading to potential Jank issues/ANRs
     """,
-    replaceWith = ReplaceWith("bindToPresenter(presenter, worker)"),
+    replaceWith = ReplaceWith("worker.bindTo(presenter)"),
   )
   @JvmStatic
   @JvmOverloads
   public fun bind(
     presenter: Presenter,
     worker: Worker,
-    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
-  ): WorkerUnbinder {
-    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
-    return worker.bind(
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
+  ): WorkerUnbinder =
+    worker.bind(
       presenter.lifecycleFlow,
       Presenter.lifecycleRange,
       dispatcherAtBinder,
       workerBinderListenerWeakRef,
     )
-  }
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -285,16 +252,15 @@ public object WorkerBinder {
       This method will bind on current thread where WorkerBinder is called. This often means that
       the binding will happen on the main Thread leading to potential Jank issues/ANRs
     """,
-    replaceWith = ReplaceWith("bindToPresenter(presenter, workers)"),
+    replaceWith = ReplaceWith("workers.bindTo(presenter)"),
   )
   @JvmStatic
   @JvmOverloads
   public fun bind(
     presenter: Presenter,
     workers: List<Worker>,
-    originalDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined,
+    dispatcherAtBinder: CoroutineDispatcher = RibDispatchers.Unconfined,
   ) {
-    val dispatcherAtBinder = getDispatcherFromMigration(originalDispatcher)
     for (worker in workers) {
       bind(presenter, worker, dispatcherAtBinder)
     }
@@ -309,7 +275,7 @@ public object WorkerBinder {
       will happen on the caller thread without a possibility to change the threading
       It also doesn't provide information for [WorkerBinderInfo] when a [WorkerBinderListener] is added
     """,
-    replaceWith = ReplaceWith("bind(interactor, worker) or bind(presenter, worker)"),
+    replaceWith = ReplaceWith("worker.bind(interactor) or worker.bind(presenter)"),
   )
   public fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
     val disposable =
@@ -389,19 +355,6 @@ public object WorkerBinder {
       }
     }
   }
-
-  private fun getDispatcherFromMigration(
-    originalDispatcher: CoroutineDispatcher,
-  ): CoroutineDispatcher {
-    return if (isWorkerBinderDispatcherMigrationEnabled()) {
-      RibDispatchers.Default
-    } else {
-      originalDispatcher
-    }
-  }
-
-  private fun isWorkerBinderDispatcherMigrationEnabled(): Boolean =
-    workerBinderMigrationProvider?.shouldMigrateDispatcherAtWorkerBinder() ?: false
 }
 
 /**
@@ -440,28 +393,6 @@ public fun interface WorkerBinderListener {
   public fun onBindCompleted(
     workerBinderInfo: WorkerBinderInfo,
   )
-}
-
-/**
- * Given the potential performance issues of binding all Workers on effective main thread (Janky
- * Frames, ANRs, App launch delay), it provides an abstraction for configuring flag in order to
- * allow a safe migration (e.g. via remove config) and allowing to change the current
- * CoroutineDispatcher being used in WorkerBinder.bind calls from [CoroutineDispatchers.Unconfined]
- * to [RibDispatchers.Default]
- *
- * IMPORTANT NOTE: For calls to WorkerBinder.bind that receive a list of workers and one of the
- * workers in the list requires to be bound on main thread, a concrete override can be applied on
- * the Worker itself (e.g. by overriding default coroutineContext at Worker from
- * [EmptyCoroutineContext] to [RibDispatchers.Main]
- */
-public fun interface WorkerBinderMigrationProvider {
-
-  /**
-   * Returns true when the default CoroutineDispatcher ([CoroutineDispatchers.Unconfined]) at
-   * WorkerBinder should be migrated to a background dispatcher (e.g. from
-   * [CoroutineDispatchers.Unconfined] to [RibDispatchers.Default])
-   */
-  public fun shouldMigrateDispatcherAtWorkerBinder(): Boolean
 }
 
 private fun getJobCoroutineContext(
