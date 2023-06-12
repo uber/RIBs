@@ -18,7 +18,6 @@ package com.uber.rib.core
 import com.google.common.truth.Truth.assertThat
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.rib.core.WorkerBinder.bind
-import com.uber.rib.core.WorkerBinder.bindTo
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
 import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
 import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
