@@ -18,10 +18,10 @@ package com.uber.rib.workers.root.main.ribworkerselection
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.WorkerBinder.bindTo
 import com.uber.rib.core.asRibCoroutineWorker
 import com.uber.rib.core.asWorker
 import com.uber.rib.core.bind
+import com.uber.rib.core.bindTo
 import com.uber.rib.core.coroutineScope
 import com.uber.rib.workers.root.main.workers.BackgroundWorker
 import com.uber.rib.workers.root.main.workers.DefaultRibCoroutineWorker

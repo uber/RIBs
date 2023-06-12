@@ -46,7 +46,7 @@ private val Worker.bindingCoroutineContext: CoroutineContext
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
 public object WorkerBinder {
 
-  private var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
+  internal var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
 
   /**
    * Initializes reporting of [WorkerBinderInfo] via [WorkerBinderListener]
@@ -57,46 +57,6 @@ public object WorkerBinder {
   @JvmStatic
   public fun initializeMonitoring(workerBinderListener: WorkerBinderListener) {
     this.workerBinderListenerWeakRef = WeakReference<WorkerBinderListener>(workerBinderListener)
-  }
-
-  /**
-   * Bind a [Worker] (ie. a manager or any other class that needs an interactor's lifecycle) to an
-   * interactor's lifecycle events
-   *
-   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
-   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
-   *
-   * @param interactor The interactor that provides the lifecycle.
-   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
-   */
-  @JvmStatic
-  public fun Worker.bindTo(
-    interactor: Interactor<*, *>,
-  ): WorkerUnbinder =
-    bind(
-      interactor.lifecycleFlow,
-      Interactor.lifecycleRange,
-      RibDispatchers.Default,
-      workerBinderListenerWeakRef,
-    )
-
-  /**
-   * Bind a [List] of [Worker] (ie. a manager or any other class that needs an interactor's
-   * lifecycle) to an interactor's lifecycle events
-   *
-   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
-   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
-   *
-   * @param interactor The interactor that provides the lifecycle.
-   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
-   */
-  @JvmStatic
-  public fun List<Worker>.bindTo(
-    interactor: Interactor<*, *>,
-  ) {
-    for (interactorWorker in this) {
-      interactorWorker.bindTo(interactor)
-    }
   }
 
   /**
@@ -159,46 +119,6 @@ public object WorkerBinder {
   ) {
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker, dispatcherAtBinder)
-    }
-  }
-
-  /**
-   * Bind a [Worker] (ie. a manager or any other class that needs an presenter's lifecycle) to a
-   * presenter's lifecycle events.
-   *
-   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
-   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
-   *
-   * @param presenter The presenter that provides the lifecycle.
-   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
-   */
-  @JvmStatic
-  public fun Worker.bindTo(
-    presenter: Presenter,
-  ): WorkerUnbinder =
-    bind(
-      presenter.lifecycleFlow,
-      Presenter.lifecycleRange,
-      RibDispatchers.Default,
-      workerBinderListenerWeakRef,
-    )
-
-  /**
-   * Bind a [List] of [Worker] (ie. a manager or any other class that needs an presenter's
-   * lifecycle) to a presenter's lifecycle events.
-   *
-   * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly
-   * overrides [coroutineContext] to other than [EmptyCoroutineContext]
-   *
-   * @param presenter The presenter that provides the lifecycle.
-   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
-   */
-  @JvmStatic
-  public fun List<Worker>.bindTo(
-    presenter: Presenter,
-  ) {
-    for (worker in this) {
-      worker.bindTo(presenter)
     }
   }
 
@@ -497,3 +417,84 @@ private fun WeakReference<WorkerBinderListener>.reportWorkerBinderInfo(
 
   this@reportWorkerBinderInfo.get()?.onBindCompleted(workerBinderInfo)
 }
+
+/**
+ * Bind a [Worker] (ie. a manager or any other class that needs an interactor's lifecycle) to an
+ * interactor's lifecycle events
+ *
+ * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly overrides
+ * [coroutineContext] to other than [EmptyCoroutineContext]
+ *
+ * @param interactor The interactor that provides the lifecycle.
+ * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
+ */
+public fun Worker.bindTo(
+  interactor: Interactor<*, *>,
+): WorkerUnbinder =
+  bindToDefaultDispatcher(
+    interactor.lifecycleFlow,
+    Interactor.lifecycleRange,
+  )
+
+/**
+ * Bind a [List] of [Worker] (ie. a manager or any other class that needs an interactor's lifecycle)
+ * to an interactor's lifecycle events
+ *
+ * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly overrides
+ * [coroutineContext] to other than [EmptyCoroutineContext]
+ *
+ * @param interactor The interactor that provides the lifecycle.
+ */
+public fun List<Worker>.bindTo(
+  interactor: Interactor<*, *>,
+) {
+  for (worker in this) {
+    worker.bindTo(interactor)
+  }
+}
+
+/**
+ * Bind a [Worker] (ie. a manager or any other class that needs an presenter's lifecycle) to a
+ * presenter's lifecycle events.
+ *
+ * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly overrides
+ * [coroutineContext] to other than [EmptyCoroutineContext]
+ *
+ * @param presenter The presenter that provides the lifecycle.
+ * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
+ */
+public fun Worker.bindTo(
+  presenter: Presenter,
+): WorkerUnbinder =
+  bindToDefaultDispatcher(
+    presenter.lifecycleFlow,
+    Presenter.lifecycleRange,
+  )
+
+/**
+ * Bind a [List] of [Worker] (ie. a manager or any other class that needs an presenter's lifecycle)
+ * to a presenter's lifecycle events.
+ *
+ * IMPORTANT: Binding will happen on [RibDispatchers.Default] unless the Worker explicitly overrides
+ * [coroutineContext] to other than [EmptyCoroutineContext]
+ *
+ * @param presenter The presenter that provides the lifecycle.
+ */
+public fun List<Worker>.bindTo(
+  presenter: Presenter,
+) {
+  for (worker in this) {
+    worker.bindTo(presenter)
+  }
+}
+
+private fun <T : Comparable<T>> Worker.bindToDefaultDispatcher(
+  lifecycle: SharedFlow<T>,
+  lifecycleRange: ClosedRange<T>,
+): WorkerUnbinder =
+  bind(
+    lifecycle,
+    lifecycleRange,
+    RibDispatchers.Default,
+    WorkerBinder.workerBinderListenerWeakRef,
+  )
