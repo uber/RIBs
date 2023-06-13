@@ -62,6 +62,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @Before
   fun setUp() {
     WorkerBinder.initializeMonitoring(workerBinderListener)
+    WorkerBinder.updateDispatcher { RibDispatchers.Unconfined }
   }
 
   @Test
@@ -223,6 +224,20 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     )
   }
 
+  @Test
+  fun bind_withUpdatedWorkerBinderDispatcher_shouldBindOnRibDispatchersDefault() = runTest {
+    val binderDurationCaptor = argumentCaptor<WorkerBinderInfo>()
+    WorkerBinder.updateDispatcher { RibDispatchers.Default }
+    prepareInteractor()
+    bind(interactor, fakeWorker)
+    advanceUntilIdle()
+    verify(workerBinderListener).onBindCompleted(binderDurationCaptor.capture())
+    binderDurationCaptor.firstValue.assertWorkerDuration(
+      "FakeWorker",
+      WorkerEvent.START,
+      RibDispatchers.Default,
+    )
+  }
   private fun bindFakeWorker(): WorkerUnbinder {
     prepareInteractor()
     return bind(interactor, fakeWorker)
