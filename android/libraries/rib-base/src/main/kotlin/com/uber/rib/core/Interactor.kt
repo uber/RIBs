@@ -19,12 +19,14 @@ import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.rib.core.RibLogger.logRibEvent
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -102,14 +104,47 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
 
   public open fun dispatchAttach(savedInstanceState: Bundle?) {
     _lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
-    (getPresenter() as? Presenter)?.dispatchLoad()
-    didBecomeActive(savedInstanceState)
+
+    val presenter = (getPresenter() as? Presenter)
+    presenter?.let {
+      val presenterDidUnloadDuration = measureTimeMillis { it.dispatchLoad() }
+      logRibEvent(
+        it.javaClass.simpleName,
+        RibMonitorType.PRESENTER_DID_LOAD,
+        presenterDidUnloadDuration,
+      )
+    }
+
+    val interactorDidBecomeActiveDuration = measureTimeMillis {
+      didBecomeActive(savedInstanceState)
+    }
+    logRibEvent(
+      this.javaClass.simpleName,
+      RibMonitorType.INTERACTOR_DID_BECOME_ACTIVE,
+      interactorDidBecomeActiveDuration,
+    )
   }
 
   public open fun dispatchDetach(): P {
-    (getPresenter() as? Presenter)?.dispatchUnload()
-    willResignActive()
+    val presenter = (getPresenter() as? Presenter)
+    presenter?.let {
+      val presenterDidUnloadDuration = measureTimeMillis { it.dispatchLoad() }
+      logRibEvent(
+        it.javaClass.simpleName,
+        RibMonitorType.PRESENTER_WILL_UNLOAD,
+        presenterDidUnloadDuration,
+      )
+    }
+
+    val interactorWillResignActiveDuration = measureTimeMillis { willResignActive() }
+    logRibEvent(
+      this.javaClass.simpleName,
+      RibMonitorType.INTERACTOR_WILL_RESIGN_ACTIVE,
+      interactorWillResignActiveDuration,
+    )
+
     _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
+
     return getPresenter()
   }
 
