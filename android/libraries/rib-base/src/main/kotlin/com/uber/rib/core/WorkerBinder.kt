@@ -55,10 +55,6 @@ public object WorkerBinder {
 
   private var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
 
-  private var workerBinderDispatcher: WorkerBinderDispatcher = WorkerBinderDispatcher {
-    RibDispatchers.Unconfined
-  }
-
   /**
    * Initializes reporting of [WorkerBinderInfo] via [WorkerBinderListener]
    *
@@ -68,19 +64,6 @@ public object WorkerBinder {
   @JvmStatic
   public fun initializeMonitoring(workerBinderListener: WorkerBinderListener) {
     this.workerBinderListenerWeakRef = WeakReference<WorkerBinderListener>(workerBinderListener)
-  }
-
-  /**
-   * WARNING: Use with caution
-   *
-   * Changes the default WorkerBinderDispatcher used for all WorkerBinder calls. When not updated
-   * will rely on [RibDispatcher.Unconfined] for previous backward compatibility.
-   *
-   * To be called at the earliest point of your application
-   */
-  @JvmStatic
-  public fun updateDispatcher(workerBinderDispatcher: WorkerBinderDispatcher) {
-    this.workerBinderDispatcher = workerBinderDispatcher
   }
 
   /**
@@ -100,7 +83,6 @@ public object WorkerBinder {
     worker.bind(
       interactor.lifecycleFlow,
       Interactor.lifecycleRange,
-      workerBinderDispatcher.get(),
       workerBinderListenerWeakRef,
     )
 
@@ -138,7 +120,6 @@ public object WorkerBinder {
     worker.bind(
       presenter.lifecycleFlow,
       Presenter.lifecycleRange,
-      workerBinderDispatcher.get(),
       workerBinderListenerWeakRef,
     )
 
@@ -277,14 +258,6 @@ public data class WorkerBinderInfo(
   val totalBindingDurationMilli: Long,
 )
 
-/*
- * The CoroutineDispatcher to be applied only when [Worker.coroutineContext]
- * is not overriden with a value different that [EmptyCoroutineContext]
- */
-public fun interface WorkerBinderDispatcher {
-  public fun get(): CoroutineDispatcher
-}
-
 /** Reports total binding duration of Worker.onStart/onStop */
 public fun interface WorkerBinderListener {
 
@@ -312,9 +285,9 @@ private fun getJobCoroutineContext(
 private fun <T : Comparable<T>> Worker.bind(
   lifecycle: SharedFlow<T>,
   lifecycleRange: ClosedRange<T>,
-  dispatcherAtBinder: CoroutineDispatcher,
   workerDurationListenerWeakRef: WeakReference<WorkerBinderListener>?,
 ): WorkerUnbinder {
+  val dispatcherAtBinder = RibCoroutinesConfig.deprecatedWorkerDispatcher
   val coroutineContext =
     getJobCoroutineContext(
       dispatcherAtBinder,
