@@ -44,6 +44,13 @@ private val Worker.bindingCoroutineContext: CoroutineContext
   get() = this.coroutineContext ?: EmptyCoroutineContext
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
+@Deprecated(
+  message =
+    """
+      [com.uber.rib.core.Worker] is deprecated in favor of [com.uber.rib.core.RibCoroutineWorker]
+    """,
+  replaceWith = ReplaceWith("For binding a RibCoroutineWorker use its .bind extension function"),
+)
 public object WorkerBinder {
 
   private var workerBinderListenerWeakRef: WeakReference<WorkerBinderListener>? = null
