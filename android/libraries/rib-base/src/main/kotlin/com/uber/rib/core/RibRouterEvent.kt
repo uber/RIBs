@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2023. Uber Technologies
+ * Copyright (C) 2017. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,8 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workers.root.main.workers.monitoring
+package com.uber.rib.core
 
-fun interface BackendReporter {
-  fun report(genericMessage: String)
-}
+/**
+ * @param eventType [RibEventType]
+ * @param router [Router]
+ * @param parentRouter [Router] and null for the root ribs that are directly attached to
+ *   RibActivity/Fragment
+ */
+public open class RibRouterEvent(
+  public open val eventType: RibEventType,
+  public open val router: Router<*>,
+  public open val parentRouter: Router<*>?,
+)

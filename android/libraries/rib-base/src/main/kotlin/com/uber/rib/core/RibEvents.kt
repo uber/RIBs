@@ -16,14 +16,25 @@
 package com.uber.rib.core
 
 import io.reactivex.Observable
+import kotlin.reflect.KClass
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
-public class RibEvents private constructor() {
+public object RibEvents {
 
-  private val _events = MutableSharedFlow<RibEvent>(0, 1, BufferOverflow.DROP_OLDEST)
-  public val events: Observable<RibEvent> = _events.asObservable()
+  private val mutableRouterEvents =
+    MutableSharedFlow<RibRouterEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+  private val mutableRibDurationEvents =
+    MutableSharedFlow<RibEventDurationData>(0, 1, BufferOverflow.DROP_OLDEST)
+
+  @JvmStatic
+  public val routerEvents: Observable<RibRouterEvent>
+    get() = mutableRouterEvents.asObservable()
+
+  @JvmStatic
+  public val ribDurationEvents: Observable<RibEventDurationData>
+    get() = mutableRibDurationEvents.asObservable()
 
   /**
    * @param eventType [RibEventType]
@@ -31,13 +42,56 @@ public class RibEvents private constructor() {
    * @param parent [Router] and null for the root ribs that are directly attached to
    *   RibActivity/Fragment
    */
-  public fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
-    _events.tryEmit(RibEvent(eventType, child, parent))
+  public fun emitRouterEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
+    mutableRouterEvents.tryEmit(RibRouterEvent(eventType, child, parent))
   }
 
-  public companion object {
-    private val instance: RibEvents = RibEvents()
+  /**
+   * Emits emission of ATTACHED/DETACHED events for each RIB component.
+   *
+   * @param ribClass Class names for custom RIB implementations (e.g. LoggedInInteractor,
+   *   UiRibWorker, etc)
+   * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter)
+   * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
+   * @param totalBindingDurationMilli Total duration (in ms) of each ATTACH/DETACH events
+   */
+  internal fun emitRibEventDuration(
+    ribClass: KClass<*>,
+    ribComponentType: RibComponentType,
+    ribEventType: RibEventType,
+    totalBindingDurationMilli: Long,
+  ) {
+    val ribClassName = ribClass.qualifiedName
 
-    @JvmStatic public fun getInstance(): RibEvents = instance
+    // There's no point to emit emission if we don't know which RIB component name was triggered
+    ribClassName?.let {
+      val ribEventData =
+        RibEventDurationData(
+          it,
+          ribComponentType,
+          ribEventType,
+          Thread.currentThread().name,
+          totalBindingDurationMilli,
+        )
+      mutableRibDurationEvents.tryEmit(ribEventData)
+    }
   }
 }
+
+/** Holds relevant RIB event information */
+public data class RibEventDurationData(
+  /** Related RIB class name */
+  val className: String,
+
+  /** The current RIB event type being bound (e.g. Interactor/Presenter/Router) */
+  val ribComponentType: RibComponentType,
+
+  /** RIB component event type ATTACHED/DETACHED */
+  val ribEventType: RibEventType,
+
+  /** Reports the current thread name where Rib Event happen (should mainly be main thread) */
+  val threadName: String,
+
+  /** Total binding duration in milliseconds of Worker.onStart/onStop */
+  val totalBindingDurationMilli: Long,
+)

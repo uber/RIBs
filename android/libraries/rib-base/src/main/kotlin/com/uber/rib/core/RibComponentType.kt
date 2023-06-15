@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017. Uber Technologies
+ * Copyright (C) 2023. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,14 +15,11 @@
  */
 package com.uber.rib.core
 
-/**
- * @param eventType [RibEventType]
- * @param router [Router]
- * @param parentRouter [Router] and null for the root ribs that are directly attached to
- *   RibActivity/Fragment
- */
-public open class RibEvent(
-  public open val eventType: RibEventType,
-  public open val router: Router<*>,
-  public open val parentRouter: Router<*>?,
-)
+public enum class RibComponentType {
+  ROUTER,
+  PRESENTER,
+  INTERACTOR,
+  DEPRECATED_WORKER,
+
+  /** RIB_COROUTINE_WORKER -> To be added on next releases */
+}

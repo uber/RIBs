@@ -22,8 +22,6 @@ import com.uber.rib.core.lifecycle.InteractorEvent
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.atLeastOnce
 import org.mockito.kotlin.doReturn
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
@@ -35,7 +33,6 @@ class InteractorAndRouterTest {
 
   private val childInteractor: Interactor<*, *> = mock()
   private val ribRefWatcher: RibRefWatcher = mock()
-  private val ribMonitoringListener: RibMonitoringListener = mock()
 
   private lateinit var interactor: TestInteractor
   private lateinit var router: TestRouter
@@ -69,40 +66,6 @@ class InteractorAndRouterTest {
 
     // Then.
     verify(childInteractor).dispatchDetach()
-  }
-
-  @Test
-  fun dispatchAttach_withMonitoringEnabled_shouldReportDuration() {
-    // Given.
-    val ribMonitorDataCaptor = argumentCaptor<RibMonitorData>()
-    RibLogger.initialize(ribMonitoringListener)
-
-    // When.
-    router.dispatchAttach(null)
-
-    // Then.
-    verify(ribMonitoringListener, atLeastOnce()).onRibEventCompleted(ribMonitorDataCaptor.capture())
-    Truth.assertThat(ribMonitorDataCaptor.firstValue.ribEventMonitorType)
-      .isEqualTo(RibMonitorType.PRESENTER_DID_LOAD)
-    Truth.assertThat(ribMonitorDataCaptor.secondValue.ribEventMonitorType)
-      .isEqualTo(RibMonitorType.INTERACTOR_DID_BECOME_ACTIVE)
-  }
-
-  @Test
-  fun dispatchDetach_withMonitoringEnabled_shouldReportDuration() {
-    // Given.
-    val ribMonitorDataCaptor = argumentCaptor<RibMonitorData>()
-    RibLogger.initialize(ribMonitoringListener)
-
-    // When.
-    router.dispatchDetach()
-
-    // Then.
-    verify(ribMonitoringListener, atLeastOnce()).onRibEventCompleted(ribMonitorDataCaptor.capture())
-    Truth.assertThat(ribMonitorDataCaptor.firstValue.ribEventMonitorType)
-      .isEqualTo(RibMonitorType.PRESENTER_WILL_UNLOAD)
-    Truth.assertThat(ribMonitorDataCaptor.secondValue.ribEventMonitorType)
-      .isEqualTo(RibMonitorType.INTERACTOR_WILL_RESIGN_ACTIVE)
   }
 
   @Test

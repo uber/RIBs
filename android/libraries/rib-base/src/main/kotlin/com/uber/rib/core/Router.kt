@@ -21,6 +21,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
+import kotlin.system.measureTimeMillis
 
 /**
  * Responsible for handling the addition and removal of children routers.
@@ -113,13 +114,19 @@ protected constructor(
           )
       }
     }
-    children.add(childRouter)
+    val attachedRouterDurationInMilli = measureTimeMillis { children.add(childRouter) }
+    RibEvents.emitRibEventDuration(
+      this.javaClass.kotlin,
+      RibComponentType.ROUTER,
+      RibEventType.ATTACHED,
+      attachedRouterDurationInMilli,
+    )
     ribRefWatcher.logBreadcrumb(
       "ATTACHED",
       childRouter.javaClass.simpleName,
       this.javaClass.simpleName,
     )
-    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, childRouter, this)
+    RibEvents.emitRouterEvent(RibEventType.ATTACHED, childRouter, this)
     var childBundle: Bundle? = null
     if (savedInstanceState != null) {
       val previousChildren = savedInstanceState?.getBundleExtra(KEY_CHILD_ROUTERS)
@@ -157,9 +164,15 @@ protected constructor(
           .handleNonFatalWarning("A RIB tried to detach a child that was never attached", null)
       }
     }
-    childRouter.dispatchDetach()
+    val routerDetachDurationInMilli = measureTimeMillis { childRouter.dispatchDetach() }
     if (isChildRemoved) {
-      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, childRouter, this)
+      RibEvents.emitRibEventDuration(
+        this.javaClass.kotlin,
+        RibComponentType.ROUTER,
+        RibEventType.DETACHED,
+        routerDetachDurationInMilli,
+      )
+      RibEvents.emitRouterEvent(RibEventType.DETACHED, childRouter, this)
     }
   }
 

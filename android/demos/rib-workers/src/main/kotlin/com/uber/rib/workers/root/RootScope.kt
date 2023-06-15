@@ -21,8 +21,6 @@ import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.uber.rib.core.EmptyPresenter
 import com.uber.rib.core.RibActivity
 import com.uber.rib.workers.root.main.MainScope
-import com.uber.rib.workers.root.main.workers.monitoring.BackendReporter
-import com.uber.rib.workers.root.main.workers.monitoring.RibWorkerMonitor
 
 @motif.Scope
 interface RootScope {
@@ -43,12 +41,6 @@ interface RootScope {
         setViewTreeLifecycleOwner(activity)
         setViewTreeSavedStateRegistryOwner(activity)
       }
-    }
-
-    fun backendReporter(): BackendReporter = BackendReporter {}
-
-    fun ribWorkerMonitor(backendReporter: BackendReporter): RibWorkerMonitor {
-      return RibWorkerMonitor(backendReporter)
     }
   }
 }

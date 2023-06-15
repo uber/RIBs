@@ -15,15 +15,13 @@
  */
 package com.uber.rib.flipper
 
-import android.util.Log
-import android.view.View
 import com.facebook.flipper.core.FlipperConnection
 import com.facebook.flipper.core.FlipperObject
 import com.facebook.flipper.core.FlipperPlugin
 import com.facebook.flipper.core.FlipperResponder
 import com.uber.rib.core.RibDebugOverlay
-import com.uber.rib.core.RibEvent
 import com.uber.rib.core.RibEvents
+import com.uber.rib.core.RibRouterEvent
 import com.uber.rib.core.Router
 import com.uber.rib.core.ViewRouter
 import com.uber.rib.flipper.RibEventPayload.Companion.EVENT_PARAMETER_ID
@@ -54,10 +52,9 @@ class RibTreePlugin : FlipperPlugin {
 
   init {
     // Start listening to rib events right away, since flipper client might connect only later on
-    RibEvents.getInstance()
-      .events
-      .filter { e: RibEvent -> e.parentRouter != null }
-      .map { e: RibEvent ->
+    RibEvents.routerEvents
+      .filter { e: RibRouterEvent -> e.parentRouter != null }
+      .map { e: RibRouterEvent ->
         val router: Router<*> = e.router
         val routerId = createRouterIdIfNeeded(router)
         val parentRouter: Router<*>? = e.parentRouter
