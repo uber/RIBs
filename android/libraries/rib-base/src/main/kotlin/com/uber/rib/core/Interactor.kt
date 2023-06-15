@@ -20,14 +20,17 @@ import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.core.lifecycle.RibLifecycle
+import com.uber.rib.core.lifecycle.coroutineScope as lifecycleCoroutineScope
+import com.uber.rib.core.lifecycle.internal.InternalRibLifecycle
+import com.uber.rib.core.lifecycle.internal.actualRibLifecycle
+import com.uber.rib.core.lifecycle.internal.asScopeCompletable
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.rx2.asObservable
 
 /**
@@ -36,17 +39,11 @@ import kotlinx.coroutines.rx2.asObservable
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
+@OptIn(InternalRibsApi::class)
 public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
+
   @Inject public lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
-  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-  public open val lifecycleFlow: SharedFlow<InteractorEvent>
-    get() = _lifecycleFlow
-
-  @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
-  private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
-
   private val routerDelegate = InitOnceProperty<R>()
 
   /** @return the router for this interactor. */
@@ -57,22 +54,43 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
     this.actualPresenter = presenter
   }
 
+  private val _ribLifecycle = InternalRibLifecycle(lifecycleRange)
+  override val ribLifecycle: RibLifecycle<InteractorEvent>
+    get() = _ribLifecycle
+
+  // For retro compatibility
+
+  @Volatile private var mockedRibLifecycleRef: RibLifecycle<InteractorEvent>? = null
+
+  @Deprecated("This field should never be used on real code", level = DeprecationLevel.ERROR)
+  final override val actualRibLifecycle: RibLifecycle<InteractorEvent>
+    get() = actualRibLifecycle(::mockedRibLifecycleRef, lifecycleRange)
+
+  @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
+
+  @Suppress("DEPRECATION_ERROR")
+  private val lifecycleObservable
+    get() =
+      ::_lifecycleObservable.setIfNullAndGet { actualRibLifecycle.lifecycleFlow.asObservable() }
+
   // ---- LifecycleScopeProvider overrides ---- //
 
   final override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
-
   final override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> =
     LIFECYCLE_MAP_FUNCTION
 
-  final override fun peekLifecycle(): InteractorEvent? = lifecycleFlow.replayCache.lastOrNull()
+  @Suppress("DEPRECATION_ERROR")
+  final override fun peekLifecycle(): InteractorEvent? =
+    actualRibLifecycle.lifecycleFlow.replayCache.lastOrNull()
 
+  @Suppress("DEPRECATION_ERROR")
   final override fun requestScope(): CompletableSource =
-    lifecycleFlow.asScopeCompletable(lifecycleRange)
+    actualRibLifecycle.lifecycleFlow.asScopeCompletable(lifecycleRange)
 
   // ---- InteractorType overrides ---- //
 
   override fun isAttached(): Boolean =
-    _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+    ribLifecycle.lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   override fun handleBackPress(): Boolean = false
 
@@ -101,7 +119,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
   protected open fun onSaveInstanceState(outState: Bundle) {}
 
   public open fun dispatchAttach(savedInstanceState: Bundle?) {
-    _lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
+    _ribLifecycle.lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
     (getPresenter() as? Presenter)?.dispatchLoad()
     didBecomeActive(savedInstanceState)
   }
@@ -109,7 +127,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
   public open fun dispatchDetach(): P {
     (getPresenter() as? Presenter)?.dispatchUnload()
     willResignActive()
-    _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
+    _ribLifecycle.lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
     return getPresenter()
   }
 
@@ -161,8 +179,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
   }
 
   public companion object {
-    @get:JvmSynthetic internal val lifecycleRange = InteractorEvent.ACTIVE..InteractorEvent.INACTIVE
-
+    private val lifecycleRange = InteractorEvent.ACTIVE..InteractorEvent.INACTIVE
     private val LIFECYCLE_MAP_FUNCTION =
       CorrespondingEventsFunction { interactorEvent: InteractorEvent ->
         when (interactorEvent) {
@@ -172,3 +189,9 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
       }
   }
 }
+
+@Deprecated(
+  "Replace the 'com.uber.core.coroutineScope' import with 'com.uber.core.lifecycle.coroutineScope'",
+)
+public val Interactor<*, *>.coroutineScope: CoroutineScope
+  get() = this.lifecycleCoroutineScope

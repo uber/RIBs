@@ -70,7 +70,6 @@ tasks.withType<KotlinCompile>().configureEach {
         freeCompilerArgs.addAll(
             "-Xexplicit-api=warning",
             "-Xjvm-default=enable",
-            "-opt-in=kotlin.RequiresOptIn",
         )
     }
 }
