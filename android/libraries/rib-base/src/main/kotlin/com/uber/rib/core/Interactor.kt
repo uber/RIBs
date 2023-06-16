@@ -19,14 +19,13 @@ import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
-import com.uber.rib.core.RibEvents.emitRibEventDuration
+import com.uber.rib.core.RibEvents.callRibActionAndEmitEvents
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
-import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -107,45 +106,43 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
 
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
-      val presenterDidLoadDuration = measureTimeMillis { it.dispatchLoad() }
-      emitRibEventDuration(
+      callRibActionAndEmitEvents(
         it.javaClass.kotlin,
         RibComponentType.PRESENTER,
-        RibEventType.ATTACHED,
-        presenterDidLoadDuration,
-      )
+        RibEventType.ATTACHED
+      ) {
+        it.dispatchLoad()
+      }
     }
 
-    val interactorDidBecomeActiveDuration = measureTimeMillis {
-      didBecomeActive(savedInstanceState)
-    }
-    emitRibEventDuration(
+    callRibActionAndEmitEvents(
       this.javaClass.kotlin,
       RibComponentType.INTERACTOR,
-      RibEventType.ATTACHED,
-      interactorDidBecomeActiveDuration,
-    )
+      RibEventType.ATTACHED
+    ) {
+      didBecomeActive(savedInstanceState)
+    }
   }
 
   public open fun dispatchDetach(): P {
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
-      val presenterDidUnloadDuration = measureTimeMillis { it.dispatchUnload() }
-      emitRibEventDuration(
+      callRibActionAndEmitEvents(
         it.javaClass.kotlin,
         RibComponentType.PRESENTER,
-        RibEventType.DETACHED,
-        presenterDidUnloadDuration,
-      )
+        RibEventType.DETACHED
+      ) {
+        it.dispatchUnload()
+      }
     }
 
-    val interactorWillResignActiveDuration = measureTimeMillis { willResignActive() }
-    emitRibEventDuration(
+    callRibActionAndEmitEvents(
       this.javaClass.kotlin,
       RibComponentType.INTERACTOR,
-      RibEventType.DETACHED,
-      interactorWillResignActiveDuration,
-    )
+      RibEventType.DETACHED
+    ) {
+      willResignActive()
+    }
 
     _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
 

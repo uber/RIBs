@@ -22,17 +22,11 @@ import com.facebook.flipper.core.FlipperClient
 import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.soloader.SoLoader
-import com.uber.rib.core.RibEvents
 import com.uber.rib.flipper.RibTreePlugin
-import com.uber.rib.workers.root.logger.RibEventLogger
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.rx2.asFlow
+import com.uber.rib.workers.root.logger.ApplicationLevelWorkerLogger
 
 class ComposeApplication : Application() {
 
-  @OptIn(DelicateCoroutinesApi::class)
   override fun onCreate() {
     super.onCreate()
     SoLoader.init(this, false)
@@ -44,6 +38,6 @@ class ComposeApplication : Application() {
       client.start()
     }
 
-    GlobalScope.launch { RibEvents.ribDurationEvents.asFlow().collect { RibEventLogger.log(it) } }
+    ApplicationLevelWorkerLogger.start()
   }
 }

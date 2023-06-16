@@ -18,7 +18,7 @@ package com.uber.rib.core
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
-import com.uber.rib.core.RibEvents.emitRibEventDuration
+import com.uber.rib.core.RibEvents.callRibActionAndEmitEvents
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
@@ -26,7 +26,6 @@ import io.reactivex.Observable
 import io.reactivex.subjects.CompletableSubject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
-import kotlin.system.measureTimeMillis
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
@@ -299,13 +298,15 @@ private fun <T : Comparable<T>> Worker.bind(
 
 private inline fun Worker.bindAndReportWorkerInfo(
   ribEventType: RibEventType,
-  workerBinderAction: Worker.() -> Unit,
+  crossinline workerBinderAction: Worker.() -> Unit,
 ) {
-  val bindActionDurationInMilli = measureTimeMillis { workerBinderAction() }
-  emitRibEventDuration(
+  val workerClass = this.javaClass.kotlin
+
+  callRibActionAndEmitEvents(
     this.javaClass.kotlin,
-    ribComponentType = RibComponentType.DEPRECATED_WORKER,
+    RibComponentType.DEPRECATED_WORKER,
     ribEventType,
-    bindActionDurationInMilli,
-  )
+  ) {
+    workerBinderAction()
+  }
 }
