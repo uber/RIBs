@@ -19,9 +19,9 @@ import android.os.Looper
 import androidx.annotation.CallSuper
 import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
+import com.uber.rib.core.RibEvents.callRibActionAndEmitEvents
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
-import kotlin.system.measureTimeMillis
 
 /**
  * Responsible for handling the addition and removal of children routers.
@@ -114,13 +114,15 @@ protected constructor(
           )
       }
     }
-    val attachedRouterDurationInMilli = measureTimeMillis { children.add(childRouter) }
-    RibEvents.emitRibEventDuration(
-      this.javaClass.kotlin,
+
+    callRibActionAndEmitEvents(
+      childRouter.javaClass.kotlin,
       RibComponentType.ROUTER,
       RibEventType.ATTACHED,
-      attachedRouterDurationInMilli,
-    )
+    ) {
+      children.add(childRouter)
+    }
+
     ribRefWatcher.logBreadcrumb(
       "ATTACHED",
       childRouter.javaClass.simpleName,
@@ -164,14 +166,16 @@ protected constructor(
           .handleNonFatalWarning("A RIB tried to detach a child that was never attached", null)
       }
     }
-    val routerDetachDurationInMilli = measureTimeMillis { childRouter.dispatchDetach() }
+
+    callRibActionAndEmitEvents(
+      childRouter.javaClass.kotlin,
+      RibComponentType.ROUTER,
+      RibEventType.DETACHED,
+    ) {
+      childRouter.dispatchDetach()
+    }
+
     if (isChildRemoved) {
-      RibEvents.emitRibEventDuration(
-        this.javaClass.kotlin,
-        RibComponentType.ROUTER,
-        RibEventType.DETACHED,
-        routerDetachDurationInMilli,
-      )
       RibEvents.emitRouterEvent(RibEventType.DETACHED, childRouter, this)
     }
   }

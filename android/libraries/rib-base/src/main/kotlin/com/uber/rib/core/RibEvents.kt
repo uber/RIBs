@@ -26,15 +26,13 @@ public object RibEvents {
   private val mutableRouterEvents =
     MutableSharedFlow<RibRouterEvent>(0, 1, BufferOverflow.DROP_OLDEST)
   private val mutableRibDurationEvents =
-    MutableSharedFlow<RibEventDurationData>(0, 1, BufferOverflow.DROP_OLDEST)
+    MutableSharedFlow<RibActionInfo>(0, 1, BufferOverflow.DROP_OLDEST)
 
   @JvmStatic
-  public val routerEvents: Observable<RibRouterEvent>
-    get() = mutableRouterEvents.asObservable()
+  public val routerEvents: Observable<RibRouterEvent> = mutableRouterEvents.asObservable()
 
   @JvmStatic
-  public val ribDurationEvents: Observable<RibEventDurationData>
-    get() = mutableRibDurationEvents.asObservable()
+  public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
 
   /**
    * @param eventType [RibEventType]
@@ -47,51 +45,70 @@ public object RibEvents {
   }
 
   /**
+   * Calls related RIB action (e.g. didBecomeActive) and emits emission of ATTACHED/DETACHED events
+   * for each RIB component.
+   *
+   * @param ribClass Class names for custom RIB implementations (e.g. LoggedInInteractor,
+   *   UiRibWorker, etc)
+   * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter)
+   * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
+   */
+  internal fun callRibActionAndEmitEvents(
+    ribClass: KClass<*>,
+    ribComponentType: RibComponentType,
+    ribEventType: RibEventType,
+    ribAction: () -> Unit,
+  ) {
+    emitRibEventAction(ribClass, ribComponentType, ribEventType, RibActionType.STARTED)
+    ribAction()
+    emitRibEventAction(ribClass, ribComponentType, ribEventType, RibActionType.COMPLETED)
+  }
+
+  /**
    * Emits emission of ATTACHED/DETACHED events for each RIB component.
    *
    * @param ribClass Class names for custom RIB implementations (e.g. LoggedInInteractor,
    *   UiRibWorker, etc)
    * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
-   * @param totalBindingDurationMilli Total duration (in ms) of each ATTACH/DETACH events
+   * @param ribActionType: RibActionType,
    */
-  internal fun emitRibEventDuration(
+  private fun emitRibEventAction(
     ribClass: KClass<*>,
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
-    totalBindingDurationMilli: Long,
+    ribActionType: RibActionType,
   ) {
     val ribClassName = ribClass.qualifiedName
 
     // There's no point to emit emission if we don't know which RIB component name was triggered
     ribClassName?.let {
       val ribEventData =
-        RibEventDurationData(
+        RibActionInfo(
           it,
           ribComponentType,
           ribEventType,
-          Thread.currentThread().name,
-          totalBindingDurationMilli,
+          ribActionType,
         )
       mutableRibDurationEvents.tryEmit(ribEventData)
     }
   }
 }
 
+public enum class RibActionType {
+  STARTED,
+  COMPLETED,
+}
+
 /** Holds relevant RIB event information */
-public data class RibEventDurationData(
+public data class RibActionInfo(
   /** Related RIB class name */
   val className: String,
 
   /** The current RIB event type being bound (e.g. Interactor/Presenter/Router) */
   val ribComponentType: RibComponentType,
-
-  /** RIB component event type ATTACHED/DETACHED */
   val ribEventType: RibEventType,
 
-  /** Reports the current thread name where Rib Event happen (should mainly be main thread) */
-  val threadName: String,
-
-  /** Total binding duration in milliseconds of Worker.onStart/onStop */
-  val totalBindingDurationMilli: Long,
+  /** RIB component event type PRE_ATTACH */
+  val ribActionType: RibActionType,
 )
