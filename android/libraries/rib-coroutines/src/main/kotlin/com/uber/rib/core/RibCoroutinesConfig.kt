@@ -37,4 +37,21 @@ public object RibCoroutinesConfig {
    * [Thread.UncaughtExceptionHandler].
    */
   @JvmStatic public var exceptionHandler: CoroutineExceptionHandler? = null
+
+  /**
+   * Specify the [CoroutineDispatcher] to be used while binding a [com.uber.rib.Worker] via
+   * [WorkerBinder]
+   *
+   * IMPORTANT: This shouldn't be used outside [WorkerBinder] given that [WorkerBinder]/[Worker] are
+   * deprecated
+   */
+  @Deprecated(
+    message =
+      """
+      This dispatcher is only intended to be used within the [com.uber.rib.core.WorkerBinder].
+      For adding and binding new RIB workers please use [RibCoroutineWorker]
+      """,
+  )
+  @JvmStatic
+  public var deprecatedWorkerDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined
 }
