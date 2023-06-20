@@ -17,8 +17,10 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth
 import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.rib.core.RibEvents.ribActionEvents
 import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
+import io.reactivex.observers.TestObserver
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -36,6 +38,7 @@ class InteractorAndRouterTest {
 
   private lateinit var interactor: TestInteractor
   private lateinit var router: TestRouter
+  private val ribActionInfoObserver = TestObserver<RibActionInfo>()
 
   @Before
   fun setup() {
@@ -49,22 +52,52 @@ class InteractorAndRouterTest {
 
   @Test
   fun attach_shouldAttachChildController() {
+    // Given.
+    ribActionEvents.subscribe(ribActionInfoObserver)
+
     // When.
     router.dispatchAttach(null)
 
     // Then.
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    Truth.assertThat(
+        ribActionInfoValues.contains(
+          buildInteractorAction(RibEventType.ATTACHED, RibActionType.STARTED),
+        ),
+      )
+      .isTrue()
+    Truth.assertThat(
+        ribActionInfoValues.contains(
+          buildInteractorAction(RibEventType.ATTACHED, RibActionType.COMPLETED),
+        ),
+      )
+      .isTrue()
     verify(childInteractor).dispatchAttach(null)
   }
 
   @Test
   fun detach_shouldDetachChildController() {
     // Given.
+    ribActionEvents.subscribe(ribActionInfoObserver)
     router.dispatchAttach(null)
 
     // When.
     router.dispatchDetach()
 
     // Then.
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    Truth.assertThat(
+        ribActionInfoValues.contains(
+          buildInteractorAction(RibEventType.DETACHED, RibActionType.STARTED),
+        ),
+      )
+      .isTrue()
+    Truth.assertThat(
+        ribActionInfoValues.contains(
+          buildInteractorAction(RibEventType.DETACHED, RibActionType.COMPLETED),
+        ),
+      )
+      .isTrue()
     verify(childInteractor).dispatchDetach()
   }
 
@@ -261,6 +294,17 @@ class InteractorAndRouterTest {
       interactor.setPresenter(component.presenter())
     }
   }
+
+  private fun buildInteractorAction(
+    ribEventType: RibEventType,
+    ribActionType: RibActionType,
+  ) =
+    RibActionInfo(
+      "com.uber.rib.core.InteractorAndRouterTest.TestInteractor",
+      ribComponentType = RibComponentType.INTERACTOR,
+      ribEventType = ribEventType,
+      ribActionType = ribActionType,
+    )
 
   companion object {
     private const val TEST_KEY = "test_key"

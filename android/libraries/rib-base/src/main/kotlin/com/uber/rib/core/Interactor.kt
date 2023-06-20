@@ -109,7 +109,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
       callRibActionAndEmitEvents(
         it.javaClass.kotlin,
         RibComponentType.PRESENTER,
-        RibEventType.ATTACHED
+        RibEventType.ATTACHED,
       ) {
         it.dispatchLoad()
       }
@@ -118,7 +118,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
     callRibActionAndEmitEvents(
       this.javaClass.kotlin,
       RibComponentType.INTERACTOR,
-      RibEventType.ATTACHED
+      RibEventType.ATTACHED,
     ) {
       didBecomeActive(savedInstanceState)
     }
@@ -130,7 +130,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
       callRibActionAndEmitEvents(
         it.javaClass.kotlin,
         RibComponentType.PRESENTER,
-        RibEventType.DETACHED
+        RibEventType.DETACHED,
       ) {
         it.dispatchUnload()
       }
@@ -139,7 +139,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
     callRibActionAndEmitEvents(
       this.javaClass.kotlin,
       RibComponentType.INTERACTOR,
-      RibEventType.DETACHED
+      RibEventType.DETACHED,
     ) {
       willResignActive()
     }

@@ -17,6 +17,7 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
 import com.jakewharton.rxrelay2.BehaviorRelay
+import com.uber.rib.core.RibEvents.ribActionEvents
 import com.uber.rib.core.WorkerBinder.bind
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
 import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
@@ -24,6 +25,7 @@ import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
+import io.reactivex.observers.TestObserver
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -33,7 +35,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.times
@@ -55,6 +56,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   private val fakeWorker = FakeWorker()
   private val interactor = FakeInteractor<Presenter, Router<*>>()
+  private val ribActionInfoObserver = TestObserver<RibActionInfo>()
 
   @Test
   fun bind_whenInteractorAttached_shouldStartWorker() {
@@ -171,28 +173,35 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   @Test
   fun bind_withUnconfinedCoroutineDispatchers_shouldReportBinderInformationForOnStart() = runTest {
-    val ribEventDataCaptor = argumentCaptor<RibEventData>()
+    val expectedRibActionInfo = buildExpectedWorkerRibAction()
+    ribActionEvents.subscribe(ribActionInfoObserver)
     bindFakeWorker()
-    // TBU
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    assertThat(ribActionInfoValues.last()).isEqualTo(expectedRibActionInfo)
   }
 
   @Test
-  fun bind_multipleWorkers_shouldReportBinderTwice() = runTest {
+  fun bind_multipleWorkers_shouldReportBinderUiWorker() = runTest {
+    val expectedUiRibActionEvent = buildExpectedWorkerRibAction("com.uber.rib.core.UiWorker")
+    ribActionEvents.subscribe(ribActionInfoObserver)
     val uiWorker = UiWorker()
-    val ribEventDataCaptor = argumentCaptor<RibEventData>()
     prepareInteractor()
     val workers = listOf(fakeWorker, fakeWorker, uiWorker)
     bind(interactor, workers)
     advanceUntilIdle()
-    // TBU
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    assertThat(ribActionInfoValues.last()).isEqualTo(expectedUiRibActionEvent)
   }
 
   @Test
   fun unbind_withUnconfinedCoroutineDispatchers_shouldReportBinderDurationForOnStop() = runTest {
-    val ribEventDataCaptor = argumentCaptor<RibEventData>()
+    val expectedUiRibActionEvent =
+      buildExpectedWorkerRibAction(ribEventType = RibEventType.DETACHED)
+    ribActionEvents.subscribe(ribActionInfoObserver)
     val unbinder = bindFakeWorker()
     unbinder.unbind()
-    // TBU
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    assertThat(ribActionInfoValues.last()).isEqualTo(expectedUiRibActionEvent)
   }
 
   private fun bindFakeWorker(): WorkerUnbinder {
@@ -205,13 +214,16 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
     interactor.enableTestScopeOverride()
   }
 
-  private fun RibEventData.assertWorkerDuration(
-    expectedWorkerClassName: String,
-    expectedWorkerEvent: RibEventType,
-  ) {
-    assertThat(className).contains(expectedWorkerClassName)
-    assertThat(ribEventType).isEqualTo(expectedWorkerEvent)
-  }
+  private fun buildExpectedWorkerRibAction(
+    expectedClassName: String = "com.uber.rib.core.FakeWorker",
+    ribEventType: RibEventType = RibEventType.ATTACHED,
+  ): RibActionInfo =
+    RibActionInfo(
+      expectedClassName,
+      RibComponentType.DEPRECATED_WORKER,
+      ribEventType,
+      RibActionType.COMPLETED,
+    )
 
   companion object {
     @JvmStatic

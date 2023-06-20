@@ -50,8 +50,9 @@ public object RibEvents {
    *
    * @param ribClass Class names for custom RIB implementations (e.g. LoggedInInteractor,
    *   UiRibWorker, etc)
-   * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter)
+   * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
+   * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
    */
   internal fun callRibActionAndEmitEvents(
     ribClass: KClass<*>,
