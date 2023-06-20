@@ -31,6 +31,13 @@ import kotlinx.coroutines.CoroutineDispatcher
  * RibDispatchers.Default) from [Worker] will take priority over the one passed via a
  * [WorkerBinder.bind] call
  */
+@Deprecated(
+  message =
+    """
+      [com.uber.rib.core.Worker] is deprecated in favor of [com.uber.rib.core.RibCoroutineWorker]
+    """,
+  replaceWith = ReplaceWith("RibCoroutineWorker"),
+)
 public interface Worker {
 
   /**
