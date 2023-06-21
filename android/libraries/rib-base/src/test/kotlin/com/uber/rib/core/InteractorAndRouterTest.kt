@@ -18,6 +18,7 @@ package com.uber.rib.core
 import com.google.common.truth.Truth
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.RibEvents.ribActionEvents
+import com.uber.rib.core.RibEventsUtils.assertRibActionInfo
 import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.observers.TestObserver
@@ -60,18 +61,14 @@ class InteractorAndRouterTest {
 
     // Then.
     val ribActionInfoValues = ribActionInfoObserver.values()
-    Truth.assertThat(
-        ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.ATTACHED, RibActionState.STARTED),
-        ),
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.ATTACHED,
+        RibComponentType.INTERACTOR,
+        RibActionState.COMPLETED,
+        "com.uber.rib.core.InteractorAndRouterTest.TestInteractor",
       )
-      .isTrue()
-    Truth.assertThat(
-        ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.ATTACHED, RibActionState.COMPLETED),
-        ),
-      )
-      .isTrue()
     verify(childInteractor).dispatchAttach(null)
   }
 
@@ -86,18 +83,14 @@ class InteractorAndRouterTest {
 
     // Then.
     val ribActionInfoValues = ribActionInfoObserver.values()
-    Truth.assertThat(
-        ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.DETACHED, RibActionState.STARTED),
-        ),
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.DETACHED,
+        RibComponentType.ROUTER,
+        RibActionState.COMPLETED,
+        "com.uber.rib.core.FakeRouter",
       )
-      .isTrue()
-    Truth.assertThat(
-        ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.DETACHED, RibActionState.COMPLETED),
-        ),
-      )
-      .isTrue()
     verify(childInteractor).dispatchDetach()
   }
 
@@ -294,18 +287,6 @@ class InteractorAndRouterTest {
       interactor.setPresenter(component.presenter())
     }
   }
-
-  private fun buildInteractorAction(
-    ribEventType: RibEventType,
-    ribActionState: RibActionState,
-  ) =
-    RibActionInfo(
-      "com.uber.rib.core.InteractorAndRouterTest.TestInteractor",
-      ribComponentType = RibComponentType.INTERACTOR,
-      ribEventType = ribEventType,
-      ribActionState = ribActionState,
-      Thread.currentThread().name,
-    )
 
   companion object {
     private const val TEST_KEY = "test_key"
