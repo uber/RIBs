@@ -19,7 +19,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
-import com.uber.rib.core.RibEvents.callRibActionAndEmitEvents
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
@@ -106,44 +106,39 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
 
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
-      callRibActionAndEmitEvents(
-        it.javaClass.kotlin,
+      triggerRibActionAndEmitEvents(
+        { it.dispatchLoad() },
+        it,
         RibComponentType.PRESENTER,
         RibEventType.ATTACHED,
-      ) {
-        it.dispatchLoad()
-      }
+      )
     }
 
-    callRibActionAndEmitEvents(
-      this.javaClass.kotlin,
+    triggerRibActionAndEmitEvents(
+      { didBecomeActive(savedInstanceState) },
+      this,
       RibComponentType.INTERACTOR,
       RibEventType.ATTACHED,
-    ) {
-      didBecomeActive(savedInstanceState)
-    }
+    )
   }
 
   public open fun dispatchDetach(): P {
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
-      callRibActionAndEmitEvents(
-        it.javaClass.kotlin,
+      triggerRibActionAndEmitEvents(
+        { it.dispatchUnload() },
+        it,
         RibComponentType.PRESENTER,
         RibEventType.DETACHED,
-      ) {
-        it.dispatchUnload()
-      }
+      )
     }
 
-    callRibActionAndEmitEvents(
-      this.javaClass.kotlin,
+    triggerRibActionAndEmitEvents(
+      { willResignActive() },
+      this,
       RibComponentType.INTERACTOR,
       RibEventType.DETACHED,
-    ) {
-      willResignActive()
-    }
-
+    )
     _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
 
     return getPresenter()

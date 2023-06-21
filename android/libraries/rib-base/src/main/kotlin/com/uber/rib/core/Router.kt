@@ -19,7 +19,7 @@ import android.os.Looper
 import androidx.annotation.CallSuper
 import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
-import com.uber.rib.core.RibEvents.callRibActionAndEmitEvents
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -115,13 +115,12 @@ protected constructor(
       }
     }
 
-    callRibActionAndEmitEvents(
-      childRouter.javaClass.kotlin,
+    triggerRibActionAndEmitEvents(
+      { children.add(childRouter) },
+      childRouter,
       RibComponentType.ROUTER,
       RibEventType.ATTACHED,
-    ) {
-      children.add(childRouter)
-    }
+    )
 
     ribRefWatcher.logBreadcrumb(
       "ATTACHED",
@@ -167,13 +166,12 @@ protected constructor(
       }
     }
 
-    callRibActionAndEmitEvents(
-      childRouter.javaClass.kotlin,
+    triggerRibActionAndEmitEvents(
+      { childRouter.dispatchDetach() },
+      childRouter,
       RibComponentType.ROUTER,
       RibEventType.DETACHED,
-    ) {
-      childRouter.dispatchDetach()
-    }
+    )
 
     if (isChildRemoved) {
       RibEvents.emitRouterEvent(RibEventType.DETACHED, childRouter, this)

@@ -18,7 +18,7 @@ package com.uber.rib.core
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
-import com.uber.rib.core.RibEvents.callRibActionAndEmitEvents
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
@@ -265,35 +265,22 @@ private fun <T : Comparable<T>> Worker.bind(
       lifecycle
         .takeWhile { it < lifecycleRange.endInclusive }
         .onCompletion {
-          bindAndReportWorkerInfo(
+          triggerRibActionAndEmitEvents(
+            { onStop() },
+            this@bind,
+            RibComponentType.DEPRECATED_WORKER,
             RibEventType.DETACHED,
-          ) {
-            onStop()
-          }
+          )
           completable.onComplete()
         }
         .collect {
-          bindAndReportWorkerInfo(
+          triggerRibActionAndEmitEvents(
+            { onStart(workerScopeProvider) },
+            this@bind,
+            RibComponentType.DEPRECATED_WORKER,
             RibEventType.ATTACHED,
-          ) {
-            onStart(workerScopeProvider)
-          }
+          )
         }
     }
   return WorkerUnbinder(job::cancel)
-}
-
-private inline fun Worker.bindAndReportWorkerInfo(
-  ribEventType: RibEventType,
-  crossinline workerBinderAction: Worker.() -> Unit,
-) {
-  val workerClass = this.javaClass.kotlin
-
-  callRibActionAndEmitEvents(
-    this.javaClass.kotlin,
-    RibComponentType.DEPRECATED_WORKER,
-    ribEventType,
-  ) {
-    workerBinderAction()
-  }
 }

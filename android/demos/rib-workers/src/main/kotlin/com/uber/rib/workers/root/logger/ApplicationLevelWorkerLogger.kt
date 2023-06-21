@@ -17,7 +17,7 @@ package com.uber.rib.workers.root.logger
 
 import android.util.Log
 import com.uber.rib.core.RibActionInfo
-import com.uber.rib.core.RibActionType
+import com.uber.rib.core.RibActionState
 import com.uber.rib.core.RibComponentType
 import com.uber.rib.core.RibDispatchers
 import com.uber.rib.core.RibEvents
@@ -54,11 +54,11 @@ object ApplicationLevelWorkerLogger {
 
   private fun RibActionInfo.logWorkerDuration() {
     val ribComponentKey = this.className
-    if (ribActionType == RibActionType.STARTED && !ribComponentKey.isClassNameInMap()) {
+    if (ribActionState == RibActionState.STARTED && !ribComponentKey.isClassNameInMap()) {
       concurrentHashMap[ribComponentKey] = currentTimeMillis()
     }
 
-    if (ribActionType == RibActionType.COMPLETED && ribComponentKey.isClassNameInMap()) {
+    if (ribActionState == RibActionState.COMPLETED && ribComponentKey.isClassNameInMap()) {
       val preOnStartDuration = concurrentHashMap[ribComponentKey]
       preOnStartDuration?.let { this.logDuration(it) }
       concurrentHashMap.remove(ribComponentKey)

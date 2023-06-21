@@ -62,13 +62,13 @@ class InteractorAndRouterTest {
     val ribActionInfoValues = ribActionInfoObserver.values()
     Truth.assertThat(
         ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.ATTACHED, RibActionType.STARTED),
+          buildInteractorAction(RibEventType.ATTACHED, RibActionState.STARTED),
         ),
       )
       .isTrue()
     Truth.assertThat(
         ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.ATTACHED, RibActionType.COMPLETED),
+          buildInteractorAction(RibEventType.ATTACHED, RibActionState.COMPLETED),
         ),
       )
       .isTrue()
@@ -88,13 +88,13 @@ class InteractorAndRouterTest {
     val ribActionInfoValues = ribActionInfoObserver.values()
     Truth.assertThat(
         ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.DETACHED, RibActionType.STARTED),
+          buildInteractorAction(RibEventType.DETACHED, RibActionState.STARTED),
         ),
       )
       .isTrue()
     Truth.assertThat(
         ribActionInfoValues.contains(
-          buildInteractorAction(RibEventType.DETACHED, RibActionType.COMPLETED),
+          buildInteractorAction(RibEventType.DETACHED, RibActionState.COMPLETED),
         ),
       )
       .isTrue()
@@ -297,13 +297,13 @@ class InteractorAndRouterTest {
 
   private fun buildInteractorAction(
     ribEventType: RibEventType,
-    ribActionType: RibActionType,
+    ribActionState: RibActionState,
   ) =
     RibActionInfo(
       "com.uber.rib.core.InteractorAndRouterTest.TestInteractor",
       ribComponentType = RibComponentType.INTERACTOR,
       ribEventType = ribEventType,
-      ribActionType = ribActionType,
+      ribActionState = ribActionState,
     )
 
   companion object {

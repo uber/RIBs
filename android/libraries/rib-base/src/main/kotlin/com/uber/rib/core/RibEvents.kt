@@ -16,7 +16,6 @@
 package com.uber.rib.core
 
 import io.reactivex.Observable
-import kotlin.reflect.KClass
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -48,57 +47,46 @@ public object RibEvents {
    * Calls related RIB action (e.g. didBecomeActive) and emits emission of ATTACHED/DETACHED events
    * for each RIB component.
    *
-   * @param ribClass Class names for custom RIB implementations (e.g. LoggedInInteractor,
-   *   UiRibWorker, etc)
+   * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
+   * @param ribCallerClassType Related RIB component class type
    * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
-   * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
    */
-  internal fun callRibActionAndEmitEvents(
-    ribClass: KClass<*>,
+  internal fun <T : Any> triggerRibActionAndEmitEvents(
+    ribAction: () -> Unit,
+    ribCallerClassType: T,
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
-    ribAction: () -> Unit,
   ) {
-    emitRibEventAction(ribClass, ribComponentType, ribEventType, RibActionType.STARTED)
+    val ribClassName = ribCallerClassType.asQualifiedName()
+    ribClassName?.emitRibEventAction(ribComponentType, ribEventType, RibActionState.STARTED)
     ribAction()
-    emitRibEventAction(ribClass, ribComponentType, ribEventType, RibActionType.COMPLETED)
+    ribClassName?.emitRibEventAction(ribComponentType, ribEventType, RibActionState.COMPLETED)
   }
+
+  private fun Any.asQualifiedName(): String? = javaClass.kotlin.qualifiedName
 
   /**
    * Emits emission of ATTACHED/DETACHED events for each RIB component.
    *
-   * @param ribClass Class names for custom RIB implementations (e.g. LoggedInInteractor,
-   *   UiRibWorker, etc)
    * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
-   * @param ribActionType: RibActionType,
+   * @param ribActionState: RibActionType,
    */
-  private fun emitRibEventAction(
-    ribClass: KClass<*>,
+  private fun String.emitRibEventAction(
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
-    ribActionType: RibActionType,
+    ribActionState: RibActionState,
   ) {
-    val ribClassName = ribClass.qualifiedName
-
-    // There's no point to emit emission if we don't know which RIB component name was triggered
-    ribClassName?.let {
-      val ribEventData =
-        RibActionInfo(
-          it,
-          ribComponentType,
-          ribEventType,
-          ribActionType,
-        )
-      mutableRibDurationEvents.tryEmit(ribEventData)
-    }
+    val ribActionInfo =
+      RibActionInfo(
+        this,
+        ribComponentType,
+        ribEventType,
+        ribActionState,
+      )
+    mutableRibDurationEvents.tryEmit(ribActionInfo)
   }
-}
-
-public enum class RibActionType {
-  STARTED,
-  COMPLETED,
 }
 
 /** Holds relevant RIB event information */
@@ -108,8 +96,16 @@ public data class RibActionInfo(
 
   /** The current RIB event type being bound (e.g. Interactor/Presenter/Router) */
   val ribComponentType: RibComponentType,
+
+  /** Represents the RIB event type, e.g. ATTACHED/DETACHED */
   val ribEventType: RibEventType,
 
-  /** RIB component event type PRE_ATTACH */
-  val ribActionType: RibActionType,
+  /** RIB Action state (e.g. event to be called before/after didBecomeActive, willLoad, etc) */
+  val ribActionState: RibActionState,
 )
+
+/** Represents status for each RibAction */
+public enum class RibActionState {
+  STARTED,
+  COMPLETED,
+}
