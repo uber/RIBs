@@ -33,15 +33,6 @@ public object RibEvents {
   @JvmStatic
   public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
 
-  @Deprecated(
-    message =
-    """
-     getInstance() is no longer needed. You can use directly access properties [routerEvents] or [ribActionEvents]
-    """,
-    replaceWith = ReplaceWith("RibEvents.routerEvents or RibEvents.ribActionEvents"),
-  )
-  @JvmStatic public fun getInstance(): RibEvents = this
-
   /**
    * @param eventType [RibEventType]
    * @param child [Router]
