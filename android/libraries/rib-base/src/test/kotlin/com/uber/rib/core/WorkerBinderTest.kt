@@ -223,6 +223,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
       RibComponentType.DEPRECATED_WORKER,
       ribEventType,
       RibActionState.COMPLETED,
+      Thread.currentThread().name,
     )
 
   companion object {

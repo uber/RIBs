@@ -23,8 +23,7 @@ import com.uber.rib.core.RibDispatchers
 import com.uber.rib.core.RibEvents
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
@@ -34,17 +33,17 @@ import kotlinx.coroutines.rx2.asFlow
  * 2. Could report expensive workers on Ui thread and crash on Debug builds for early detection
  * 3. More tailored aggregation if needed.
  *
- * IMPORTANT: Given logic at [log] will be running upon Interactor/Router/Presenter/Worker
- * ATTACH/DETACH, the added logic should guaranteed that we are not impacting app performance
+ * IMPORTANT: Given logic at [logWorkerDuration] will be running upon
+ * Interactor/Router/Presenter/Worker ATTACH/DETACH, the added logic should guaranteed that we are
+ * not impacting app performance
  */
 object ApplicationLevelWorkerLogger {
   private const val LOG_TAG = "RibEventLogger"
 
   private val concurrentHashMap: ConcurrentHashMap<String, Long> = ConcurrentHashMap()
 
-  @OptIn(DelicateCoroutinesApi::class)
   fun start() {
-    GlobalScope.launch(RibDispatchers.Unconfined) {
+    MainScope().launch(RibDispatchers.Default) {
       RibEvents.ribActionEvents
         .filter { it.ribComponentType == RibComponentType.DEPRECATED_WORKER }
         .asFlow()
@@ -69,10 +68,9 @@ object ApplicationLevelWorkerLogger {
 
   private fun RibActionInfo.logDuration(preOnStartDuration: Long) {
     val totalDuration = currentTimeMillis() - preOnStartDuration
-    val currentThreadName = Thread.currentThread().name
     Log.d(
       LOG_TAG,
-      "WORKER_BINDING_INFO -> ${this.className} ${this.ribEventType} took $totalDuration ms on $currentThreadName thread",
+      "WORKER_BINDING_INFO -> ${this.className} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
     )
   }
 }

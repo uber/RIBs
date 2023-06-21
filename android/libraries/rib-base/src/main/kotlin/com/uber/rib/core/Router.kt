@@ -116,11 +116,12 @@ protected constructor(
     }
 
     triggerRibActionAndEmitEvents(
-      { children.add(childRouter) },
       childRouter,
       RibComponentType.ROUTER,
       RibEventType.ATTACHED,
-    )
+    ) {
+      children.add(childRouter)
+    }
 
     ribRefWatcher.logBreadcrumb(
       "ATTACHED",
@@ -167,11 +168,12 @@ protected constructor(
     }
 
     triggerRibActionAndEmitEvents(
-      { childRouter.dispatchDetach() },
       childRouter,
       RibComponentType.ROUTER,
       RibEventType.DETACHED,
-    )
+    ) {
+      childRouter.dispatchDetach()
+    }
 
     if (isChildRemoved) {
       RibEvents.emitRouterEvent(RibEventType.DETACHED, childRouter, this)

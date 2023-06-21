@@ -304,6 +304,7 @@ class InteractorAndRouterTest {
       ribComponentType = RibComponentType.INTERACTOR,
       ribEventType = ribEventType,
       ribActionState = ribActionState,
+      Thread.currentThread().name,
     )
 
   companion object {

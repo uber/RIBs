@@ -107,38 +107,43 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
       triggerRibActionAndEmitEvents(
-        { it.dispatchLoad() },
         it,
         RibComponentType.PRESENTER,
         RibEventType.ATTACHED,
-      )
+      ) {
+        it.dispatchLoad()
+      }
     }
 
     triggerRibActionAndEmitEvents(
-      { didBecomeActive(savedInstanceState) },
       this,
       RibComponentType.INTERACTOR,
       RibEventType.ATTACHED,
-    )
+    ) {
+      didBecomeActive(savedInstanceState)
+    }
   }
 
   public open fun dispatchDetach(): P {
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
       triggerRibActionAndEmitEvents(
-        { it.dispatchUnload() },
         it,
         RibComponentType.PRESENTER,
         RibEventType.DETACHED,
-      )
+      ) {
+        it.dispatchUnload()
+      }
     }
 
     triggerRibActionAndEmitEvents(
-      { willResignActive() },
       this,
       RibComponentType.INTERACTOR,
       RibEventType.DETACHED,
-    )
+    ) {
+      willResignActive()
+    }
+
     _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
 
     return getPresenter()

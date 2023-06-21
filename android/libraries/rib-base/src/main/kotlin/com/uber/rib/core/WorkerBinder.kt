@@ -266,20 +266,23 @@ private fun <T : Comparable<T>> Worker.bind(
         .takeWhile { it < lifecycleRange.endInclusive }
         .onCompletion {
           triggerRibActionAndEmitEvents(
-            { onStop() },
             this@bind,
             RibComponentType.DEPRECATED_WORKER,
             RibEventType.DETACHED,
-          )
+          ) {
+            onStop()
+          }
+
           completable.onComplete()
         }
         .collect {
           triggerRibActionAndEmitEvents(
-            { onStart(workerScopeProvider) },
             this@bind,
             RibComponentType.DEPRECATED_WORKER,
             RibEventType.ATTACHED,
-          )
+          ) {
+            onStart(workerScopeProvider)
+          }
         }
     }
   return WorkerUnbinder(job::cancel)

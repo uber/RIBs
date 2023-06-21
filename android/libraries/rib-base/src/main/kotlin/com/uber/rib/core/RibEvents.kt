@@ -53,10 +53,10 @@ public object RibEvents {
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
    */
   internal fun <T : Any> triggerRibActionAndEmitEvents(
-    ribAction: () -> Unit,
     ribCallerClassType: T,
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
+    ribAction: () -> Unit,
   ) {
     val ribClassName = ribCallerClassType.asQualifiedName()
     ribClassName?.emitRibEventAction(ribComponentType, ribEventType, RibActionState.STARTED)
@@ -84,6 +84,7 @@ public object RibEvents {
         ribComponentType,
         ribEventType,
         ribActionState,
+        Thread.currentThread().name,
       )
     mutableRibDurationEvents.tryEmit(ribActionInfo)
   }
@@ -102,6 +103,9 @@ public data class RibActionInfo(
 
   /** RIB Action state (e.g. event to be called before/after didBecomeActive, willLoad, etc) */
   val ribActionState: RibActionState,
+
+  /** Original caller thread where the RIB action happens */
+  val originalCallerThreadName: String,
 )
 
 /** Represents status for each RibAction */
