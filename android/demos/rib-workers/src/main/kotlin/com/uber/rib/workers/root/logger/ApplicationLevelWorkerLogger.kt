@@ -19,11 +19,11 @@ import android.util.Log
 import com.uber.rib.core.RibActionInfo
 import com.uber.rib.core.RibActionState
 import com.uber.rib.core.RibComponentType
-import com.uber.rib.core.RibDispatchers
 import com.uber.rib.core.RibEvents
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.ConcurrentHashMap
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.rx2.asFlow
 
@@ -38,12 +38,13 @@ import kotlinx.coroutines.rx2.asFlow
  * not impacting app performance
  */
 object ApplicationLevelWorkerLogger {
-  private const val LOG_TAG = "RibEventLogger"
+  private const val LOG_TAG = "WorkerLogger"
 
-  private val concurrentHashMap: ConcurrentHashMap<String, Long> = ConcurrentHashMap()
+  private val workerTimeStampMap = ConcurrentHashMap<String, Long>()
 
+  @OptIn(DelicateCoroutinesApi::class)
   fun start() {
-    MainScope().launch(RibDispatchers.Default) {
+    GlobalScope.launch {
       RibEvents.ribActionEvents
         .filter { it.ribComponentType == RibComponentType.DEPRECATED_WORKER }
         .asFlow()
@@ -54,23 +55,26 @@ object ApplicationLevelWorkerLogger {
   private fun RibActionInfo.logWorkerDuration() {
     val ribComponentKey = this.className
     if (ribActionState == RibActionState.STARTED && !ribComponentKey.isClassNameInMap()) {
-      concurrentHashMap[ribComponentKey] = currentTimeMillis()
-    }
-
-    if (ribActionState == RibActionState.COMPLETED && ribComponentKey.isClassNameInMap()) {
-      val preOnStartDuration = concurrentHashMap[ribComponentKey]
-      preOnStartDuration?.let { this.logDuration(it) }
-      concurrentHashMap.remove(ribComponentKey)
+      workerTimeStampMap[ribComponentKey] = currentTimeMillis()
+    } else if (ribActionState == RibActionState.COMPLETED && ribComponentKey.isClassNameInMap()) {
+      val startedTimeStamp = workerTimeStampMap[ribComponentKey]
+      startedTimeStamp?.let {
+        val totalDuration = getTotalDuration(it)
+        this.logDuration(totalDuration)
+      }
+      workerTimeStampMap.remove(ribComponentKey)
     }
   }
 
-  private fun String.isClassNameInMap(): Boolean = concurrentHashMap.containsKey(this)
+  private fun String.isClassNameInMap(): Boolean = workerTimeStampMap.containsKey(this)
 
-  private fun RibActionInfo.logDuration(preOnStartDuration: Long) {
-    val totalDuration = currentTimeMillis() - preOnStartDuration
+  private fun getTotalDuration(preOnStartDuration: Long): Long =
+    currentTimeMillis() - preOnStartDuration
+
+  private fun RibActionInfo.logDuration(totalDuration: Long) {
     Log.d(
       LOG_TAG,
-      "WORKER_BINDING_INFO -> ${this.className} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
+      "${this.className} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
     )
   }
 }

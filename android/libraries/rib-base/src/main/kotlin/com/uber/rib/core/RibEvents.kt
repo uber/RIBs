@@ -52,7 +52,7 @@ public object RibEvents {
    * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
    */
-  internal fun <T : Any> triggerRibActionAndEmitEvents(
+  internal inline fun <T : Any> triggerRibActionAndEmitEvents(
     ribCallerClassType: T,
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
