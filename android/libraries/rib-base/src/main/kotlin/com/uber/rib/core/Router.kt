@@ -34,7 +34,7 @@ protected constructor(
   public open val interactor: I,
   private val ribRefWatcher: RibRefWatcher,
   private val mainThread: Thread,
-) {
+) : RibComponent {
   private val children: MutableList<Router<*>> = CopyOnWriteArrayList()
   private val interactorGeneric: Interactor<*, *>
     get() = interactor as Interactor<*, *>

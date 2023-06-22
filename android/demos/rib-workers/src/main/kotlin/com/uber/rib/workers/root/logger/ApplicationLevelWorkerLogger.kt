@@ -44,6 +44,8 @@ object ApplicationLevelWorkerLogger {
 
   @OptIn(DelicateCoroutinesApi::class)
   fun start() {
+    RibEvents.startCapturingRibActionInfo()
+
     GlobalScope.launch {
       RibEvents.ribActionEvents
         .filter { it.ribComponentType == RibComponentType.DEPRECATED_WORKER }

@@ -31,6 +31,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -58,6 +59,11 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   private val fakeWorker = FakeWorker()
   private val interactor = FakeInteractor<Presenter, Router<*>>()
   private val ribActionInfoObserver = TestObserver<RibActionInfo>()
+
+  @Before
+  fun setUp() {
+    RibEvents.startCapturingRibActionInfo()
+  }
 
   @Test
   fun bind_whenInteractorAttached_shouldStartWorker() {

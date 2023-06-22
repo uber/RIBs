@@ -49,6 +49,7 @@ class InteractorAndRouterTest {
     }
     interactor = TestInteractor(childInteractor)
     router = TestRouter(interactor, component)
+    RibEvents.startCapturingRibActionInfo()
   }
 
   @Test
@@ -67,7 +68,7 @@ class InteractorAndRouterTest {
         RibEventType.ATTACHED,
         RibComponentType.INTERACTOR,
         RibActionState.COMPLETED,
-        "com.uber.rib.core.InteractorAndRouterTest.TestInteractor",
+        "com.uber.rib.core.InteractorAndRouterTest${'$'}TestInteractor",
       )
     verify(childInteractor).dispatchAttach(null)
   }

@@ -15,11 +15,11 @@
  */
 package com.uber.rib.core
 
+public interface RibComponent
+
 public enum class RibComponentType {
   ROUTER,
   PRESENTER,
   INTERACTOR,
   DEPRECATED_WORKER,
-
-  /** RIB_COROUTINE_WORKER -> To be added on next releases */
 }

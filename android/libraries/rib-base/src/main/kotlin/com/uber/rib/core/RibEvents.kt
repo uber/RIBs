@@ -33,12 +33,24 @@ public object RibEvents {
   @JvmStatic
   public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
 
+  private var allowRibActionEmissions = false
+
+  /**
+   * To be called before start observing/collecting on [ribActionEvents] (usually at your earliest
+   * application point)
+   */
+  @JvmStatic
+  public fun startCapturingRibActionInfo() {
+    this.allowRibActionEmissions = true
+  }
+
   /**
    * @param eventType [RibEventType]
    * @param child [Router]
    * @param parent [Router] and null for the root ribs that are directly attached to
    *   RibActivity/Fragment
    */
+  @JvmStatic
   public fun emitRouterEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
     mutableRouterEvents.tryEmit(RibRouterEvent(eventType, child, parent))
   }
@@ -48,23 +60,25 @@ public object RibEvents {
    * for each RIB component.
    *
    * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
-   * @param ribCallerClassType Related RIB component class type
+   * @param ribComponent Related RIB component
    * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
    */
-  internal inline fun <T : Any> triggerRibActionAndEmitEvents(
-    ribCallerClassType: T,
+  internal inline fun triggerRibActionAndEmitEvents(
+    ribComponent: RibComponent,
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
     ribAction: () -> Unit,
   ) {
-    val ribClassName = ribCallerClassType.asQualifiedName()
-    ribClassName?.emitRibEventAction(ribComponentType, ribEventType, RibActionState.STARTED)
+    emitRibEventActionIfNeeded(ribComponent, ribComponentType, ribEventType, RibActionState.STARTED)
     ribAction()
-    ribClassName?.emitRibEventAction(ribComponentType, ribEventType, RibActionState.COMPLETED)
+    emitRibEventActionIfNeeded(
+      ribComponent,
+      ribComponentType,
+      ribEventType,
+      RibActionState.COMPLETED,
+    )
   }
-
-  private fun Any.asQualifiedName(): String? = javaClass.kotlin.qualifiedName
 
   /**
    * Emits emission of ATTACHED/DETACHED events for each RIB component.
@@ -73,14 +87,21 @@ public object RibEvents {
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
    * @param ribActionState: RibActionType,
    */
-  private fun String.emitRibEventAction(
+  private fun emitRibEventActionIfNeeded(
+    ribComponent: RibComponent,
     ribComponentType: RibComponentType,
     ribEventType: RibEventType,
     ribActionState: RibActionState,
   ) {
+    if (!allowRibActionEmissions) {
+      // Unless specified explicitly via [RibEvents.startCapturingRibActionInfo] there is no need
+      // to create unnecessary objects if no one is observing/collecting RibAction events
+      return
+    }
+
     val ribActionInfo =
       RibActionInfo(
-        this,
+        ribComponent.javaClass.name,
         ribComponentType,
         ribEventType,
         ribActionState,
