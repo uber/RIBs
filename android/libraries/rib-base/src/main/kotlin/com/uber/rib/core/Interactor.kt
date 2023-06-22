@@ -37,7 +37,7 @@ import kotlinx.coroutines.rx2.asObservable
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
-public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, RibComponent {
+public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, RibEventEmitter {
   @Inject public lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
   private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
@@ -108,7 +108,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
     presenter?.let {
       triggerRibActionAndEmitEvents(
         it,
-        RibComponentType.PRESENTER,
+        RibEventEmitterType.PRESENTER,
         RibEventType.ATTACHED,
       ) {
         it.dispatchLoad()
@@ -117,7 +117,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
 
     triggerRibActionAndEmitEvents(
       this,
-      RibComponentType.INTERACTOR,
+      RibEventEmitterType.INTERACTOR,
       RibEventType.ATTACHED,
     ) {
       didBecomeActive(savedInstanceState)
@@ -129,7 +129,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
     presenter?.let {
       triggerRibActionAndEmitEvents(
         it,
-        RibComponentType.PRESENTER,
+        RibEventEmitterType.PRESENTER,
         RibEventType.DETACHED,
       ) {
         it.dispatchUnload()
@@ -138,7 +138,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
 
     triggerRibActionAndEmitEvents(
       this,
-      RibComponentType.INTERACTOR,
+      RibEventEmitterType.INTERACTOR,
       RibEventType.DETACHED,
     ) {
       willResignActive()

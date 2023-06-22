@@ -267,7 +267,7 @@ private fun <T : Comparable<T>> Worker.bind(
         .onCompletion {
           triggerRibActionAndEmitEvents(
             this@bind,
-            RibComponentType.DEPRECATED_WORKER,
+            RibEventEmitterType.DEPRECATED_WORKER,
             RibEventType.DETACHED,
           ) {
             onStop()
@@ -278,7 +278,7 @@ private fun <T : Comparable<T>> Worker.bind(
         .collect {
           triggerRibActionAndEmitEvents(
             this@bind,
-            RibComponentType.DEPRECATED_WORKER,
+            RibEventEmitterType.DEPRECATED_WORKER,
             RibEventType.ATTACHED,
           ) {
             onStart(workerScopeProvider)

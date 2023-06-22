@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import androidx.annotation.VisibleForTesting
 import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -40,8 +41,14 @@ public object RibEvents {
    * application point)
    */
   @JvmStatic
-  public fun allowRibActionEmissions() {
+  public fun enableRibActionEmissions() {
     this.areRibActionEmissionsAllowed = true
+  }
+
+  /** Only to be used within test * */
+  @VisibleForTesting
+  internal fun disableRibActionEmissions() {
+    this.areRibActionEmissionsAllowed = false
   }
 
   /**
@@ -60,21 +67,26 @@ public object RibEvents {
    * for each RIB component.
    *
    * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
-   * @param ribComponent Related RIB component
-   * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
+   * @param RibEventEmitter Related RIB component
+   * @param RibEventEmitterType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
    */
   internal inline fun triggerRibActionAndEmitEvents(
-    ribComponent: RibComponent,
-    ribComponentType: RibComponentType,
+    RibEventEmitter: RibEventEmitter,
+    RibEventEmitterType: RibEventEmitterType,
     ribEventType: RibEventType,
     ribAction: () -> Unit,
   ) {
-    emitRibEventActionIfNeeded(ribComponent, ribComponentType, ribEventType, RibActionState.STARTED)
+    emitRibEventActionIfNeeded(
+      RibEventEmitter,
+      RibEventEmitterType,
+      ribEventType,
+      RibActionState.STARTED,
+    )
     ribAction()
     emitRibEventActionIfNeeded(
-      ribComponent,
-      ribComponentType,
+      RibEventEmitter,
+      RibEventEmitterType,
       ribEventType,
       RibActionState.COMPLETED,
     )
@@ -83,13 +95,13 @@ public object RibEvents {
   /**
    * Emits emission of ATTACHED/DETACHED events for each RIB component.
    *
-   * @param ribComponentType The RIB component type (e.g. Interactor, Router, Presenter)
+   * @param RibEventEmitterType The RIB component type (e.g. Interactor, Router, Presenter)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
    * @param ribActionState: RibActionType,
    */
   private fun emitRibEventActionIfNeeded(
-    ribComponent: RibComponent,
-    ribComponentType: RibComponentType,
+    RibEventEmitter: RibEventEmitter,
+    RibEventEmitterType: RibEventEmitterType,
     ribEventType: RibEventType,
     ribActionState: RibActionState,
   ) {
@@ -101,8 +113,8 @@ public object RibEvents {
 
     val ribActionInfo =
       RibActionInfo(
-        ribComponent.javaClass.name,
-        ribComponentType,
+        RibEventEmitter.javaClass.name,
+        RibEventEmitterType,
         ribEventType,
         ribActionState,
         Thread.currentThread().name,
@@ -114,10 +126,10 @@ public object RibEvents {
 /** Holds relevant RIB event information */
 public data class RibActionInfo(
   /** Related RIB class name */
-  val className: String,
+  val ribEventEmitterName: String,
 
   /** The current RIB event type being bound (e.g. Interactor/Presenter/Router) */
-  val ribComponentType: RibComponentType,
+  val RibEventEmitterType: RibEventEmitterType,
 
   /** Represents the RIB event type, e.g. ATTACHED/DETACHED */
   val ribEventType: RibEventType,
@@ -128,6 +140,19 @@ public data class RibActionInfo(
   /** Original caller thread where the RIB action happens */
   val originalCallerThreadName: String,
 )
+
+/**
+ * Contract for all related Rib Components e.g. Interactor, Presenter, Router, Workers where will be
+ * emitting via [ribActionEvents]
+ */
+public interface RibEventEmitter
+
+public enum class RibEventEmitterType {
+  ROUTER,
+  PRESENTER,
+  INTERACTOR,
+  DEPRECATED_WORKER,
+}
 
 /** Represents status for each RibAction */
 public enum class RibActionState {

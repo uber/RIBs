@@ -33,7 +33,7 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * practice this caused confusion: if both a presenter and interactor can perform complex rx logic
  * it becomes unclear where you should write your bussiness logic.
  */
-public abstract class Presenter : ScopeProvider, RibComponent {
+public abstract class Presenter : ScopeProvider, RibEventEmitter {
   private val _lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
   public open val lifecycleFlow: SharedFlow<PresenterEvent>
     get() = _lifecycleFlow

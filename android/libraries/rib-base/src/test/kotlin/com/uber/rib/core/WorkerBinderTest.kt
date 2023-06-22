@@ -62,7 +62,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   @Before
   fun setUp() {
-    RibEvents.allowRibActionEmissions()
+    RibEvents.enableRibActionEmissions()
   }
 
   @Test
@@ -187,10 +187,18 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
       .last()
       .assertRibActionInfo(
         RibEventType.ATTACHED,
-        RibComponentType.DEPRECATED_WORKER,
+        RibEventEmitterType.DEPRECATED_WORKER,
         RibActionState.COMPLETED,
         ribClassName = "com.uber.rib.core.FakeWorker",
       )
+  }
+
+  @Test
+  fun bind_withDisabledRibActionEvents_shouldNotEmitActionEvents() = runTest {
+    RibEvents.disableRibActionEmissions()
+    ribActionEvents.subscribe(ribActionInfoObserver)
+    bindFakeWorker()
+    assertThat(ribActionInfoObserver.values()).isEmpty()
   }
 
   @Test
@@ -206,7 +214,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
       .last()
       .assertRibActionInfo(
         RibEventType.ATTACHED,
-        RibComponentType.DEPRECATED_WORKER,
+        RibEventEmitterType.DEPRECATED_WORKER,
         RibActionState.COMPLETED,
         ribClassName = "com.uber.rib.core.UiWorker",
       )
@@ -222,7 +230,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
       .last()
       .assertRibActionInfo(
         RibEventType.DETACHED,
-        RibComponentType.DEPRECATED_WORKER,
+        RibEventEmitterType.DEPRECATED_WORKER,
         RibActionState.COMPLETED,
         ribClassName = "com.uber.rib.core.FakeWorker",
       )

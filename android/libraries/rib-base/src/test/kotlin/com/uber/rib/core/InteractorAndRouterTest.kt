@@ -16,6 +16,7 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.RibEvents.ribActionEvents
 import com.uber.rib.core.RibEventsUtils.assertRibActionInfo
@@ -49,7 +50,7 @@ class InteractorAndRouterTest {
     }
     interactor = TestInteractor(childInteractor)
     router = TestRouter(interactor, component)
-    RibEvents.allowRibActionEmissions()
+    RibEvents.enableRibActionEmissions()
   }
 
   @Test
@@ -66,11 +67,24 @@ class InteractorAndRouterTest {
       .last()
       .assertRibActionInfo(
         RibEventType.ATTACHED,
-        RibComponentType.INTERACTOR,
+        RibEventEmitterType.INTERACTOR,
         RibActionState.COMPLETED,
         "com.uber.rib.core.InteractorAndRouterTest${'$'}TestInteractor",
       )
     verify(childInteractor).dispatchAttach(null)
+  }
+
+  @Test
+  fun attach_withoutAllowingEmissions_shouldNotEmtRibActionEvents() {
+    // Given.
+    RibEvents.disableRibActionEmissions()
+    ribActionEvents.subscribe(ribActionInfoObserver)
+
+    // When.
+    router.dispatchAttach(null)
+
+    // Then.
+    assertThat(ribActionInfoObserver.values()).isEmpty()
   }
 
   @Test
@@ -88,7 +102,7 @@ class InteractorAndRouterTest {
       .last()
       .assertRibActionInfo(
         RibEventType.DETACHED,
-        RibComponentType.ROUTER,
+        RibEventEmitterType.ROUTER,
         RibActionState.COMPLETED,
         "com.uber.rib.core.FakeRouter",
       )

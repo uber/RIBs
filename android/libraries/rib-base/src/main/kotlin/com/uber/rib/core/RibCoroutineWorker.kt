@@ -43,7 +43,7 @@ import kotlinx.coroutines.supervisorScope
 import kotlinx.coroutines.withContext
 
 /** A manager or helper class bound to a [CoroutineScope] by using a binder like [bind]. */
-public fun interface RibCoroutineWorker : RibComponent {
+public fun interface RibCoroutineWorker : RibEventEmitter {
 
   /** Called when worker is started. Children coroutines can be launched in [scope]. */
   public suspend fun onStart(scope: CoroutineScope)

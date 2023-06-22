@@ -34,7 +34,7 @@ protected constructor(
   public open val interactor: I,
   private val ribRefWatcher: RibRefWatcher,
   private val mainThread: Thread,
-) : RibComponent {
+) : RibEventEmitter {
   private val children: MutableList<Router<*>> = CopyOnWriteArrayList()
   private val interactorGeneric: Interactor<*, *>
     get() = interactor as Interactor<*, *>
@@ -117,7 +117,7 @@ protected constructor(
 
     triggerRibActionAndEmitEvents(
       childRouter,
-      RibComponentType.ROUTER,
+      RibEventEmitterType.ROUTER,
       RibEventType.ATTACHED,
     ) {
       children.add(childRouter)
@@ -169,7 +169,7 @@ protected constructor(
 
     triggerRibActionAndEmitEvents(
       childRouter,
-      RibComponentType.ROUTER,
+      RibEventEmitterType.ROUTER,
       RibEventType.DETACHED,
     ) {
       childRouter.dispatchDetach()

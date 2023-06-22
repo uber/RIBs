@@ -18,7 +18,7 @@ package com.uber.rib.workers.root.logger
 import android.util.Log
 import com.uber.rib.core.RibActionInfo
 import com.uber.rib.core.RibActionState
-import com.uber.rib.core.RibComponentType
+import com.uber.rib.core.RibEventEmitterType
 import com.uber.rib.core.RibEvents
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.ConcurrentHashMap
@@ -44,27 +44,28 @@ object ApplicationLevelWorkerLogger {
 
   @OptIn(DelicateCoroutinesApi::class)
   fun start() {
-    RibEvents.allowRibActionEmissions()
+    RibEvents.enableRibActionEmissions()
 
     GlobalScope.launch {
       RibEvents.ribActionEvents
-        .filter { it.ribComponentType == RibComponentType.DEPRECATED_WORKER }
+        .filter { it.RibEventEmitterType == RibEventEmitterType.DEPRECATED_WORKER }
         .asFlow()
         .collect { it.logWorkerDuration() }
     }
   }
 
   private fun RibActionInfo.logWorkerDuration() {
-    val ribComponentKey = this.className
-    if (ribActionState == RibActionState.STARTED && !ribComponentKey.isClassNameInMap()) {
-      workerTimeStampMap[ribComponentKey] = currentTimeMillis()
-    } else if (ribActionState == RibActionState.COMPLETED && ribComponentKey.isClassNameInMap()) {
-      val startedTimeStamp = workerTimeStampMap[ribComponentKey]
+    if (ribActionState == RibActionState.STARTED && !ribEventEmitterName.isClassNameInMap()) {
+      workerTimeStampMap[this.ribEventEmitterName] = currentTimeMillis()
+    } else if (
+      ribActionState == RibActionState.COMPLETED && ribEventEmitterName.isClassNameInMap()
+    ) {
+      val startedTimeStamp = workerTimeStampMap[ribEventEmitterName]
       startedTimeStamp?.let {
         val totalDuration = getTotalDuration(it)
         this.logDuration(totalDuration)
       }
-      workerTimeStampMap.remove(ribComponentKey)
+      workerTimeStampMap.remove(ribEventEmitterName)
     }
   }
 
@@ -76,7 +77,7 @@ object ApplicationLevelWorkerLogger {
   private fun RibActionInfo.logDuration(totalDuration: Long) {
     Log.d(
       LOG_TAG,
-      "${this.className} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
+      "${this.ribEventEmitterName} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
     )
   }
 }

@@ -20,13 +20,13 @@ import com.google.common.truth.Truth
 object RibEventsUtils {
   internal fun RibActionInfo.assertRibActionInfo(
     expectedRibEventType: RibEventType,
-    expectedRibComponentType: RibComponentType,
+    expectedRibEventEmitterType: RibEventEmitterType,
     ribActionState: RibActionState,
     ribClassName: String,
   ) {
     Truth.assertThat(this.ribEventType).isEqualTo(expectedRibEventType)
-    Truth.assertThat(this.ribComponentType).isEqualTo(expectedRibComponentType)
+    Truth.assertThat(this.RibEventEmitterType).isEqualTo(expectedRibEventEmitterType)
     Truth.assertThat(this.ribActionState).isEqualTo(ribActionState)
-    Truth.assertThat(this.className).isEqualTo(ribClassName)
+    Truth.assertThat(this.ribEventEmitterName).isEqualTo(ribClassName)
   }
 }
