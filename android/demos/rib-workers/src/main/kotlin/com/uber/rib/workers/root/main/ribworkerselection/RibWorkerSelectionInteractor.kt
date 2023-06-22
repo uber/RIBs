@@ -49,7 +49,7 @@ class RibWorkerSelectionInteractor(
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
 
-    Log.d(this.javaClass.name, "WorkerLogger enabled? $RibEvents.areRibActionEmissionsAllowed")
+    Log.d(this.javaClass.name, "WorkerLogger enabled? ${RibEvents.areRibActionEmissionsAllowed}")
 
     eventStream
       .observe()

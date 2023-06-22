@@ -195,7 +195,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   @Test
   fun bind_withDisabledRibActionEvents_shouldNotEmitActionEvents() = runTest {
-    RibEvents.disableRibActionEmissions()
+    RibEvents.areRibActionEmissionsAllowed = false
     ribActionEvents.subscribe(ribActionInfoObserver)
     bindFakeWorker()
     assertThat(ribActionInfoObserver.values()).isEmpty()

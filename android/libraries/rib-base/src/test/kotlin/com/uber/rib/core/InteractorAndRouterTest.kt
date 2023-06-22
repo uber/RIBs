@@ -77,7 +77,7 @@ class InteractorAndRouterTest {
   @Test
   fun attach_withoutAllowingEmissions_shouldNotEmtRibActionEvents() {
     // Given.
-    RibEvents.disableRibActionEmissions()
+    RibEvents.areRibActionEmissionsAllowed = false
     ribActionEvents.subscribe(ribActionInfoObserver)
 
     // When.

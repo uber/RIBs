@@ -36,7 +36,7 @@ public object RibEvents {
 
   /** Indicates if [ribActionEvents] will be emitting. */
   public var areRibActionEmissionsAllowed: Boolean = false
-    private set
+    @VisibleForTesting internal set
 
   /**
    * To be called before start observing/collecting on [ribActionEvents] (usually at your earliest
@@ -45,11 +45,6 @@ public object RibEvents {
   @JvmStatic
   public fun enableRibActionEmissions() {
     this.areRibActionEmissionsAllowed = true
-  }
-
-  @VisibleForTesting
-  internal fun disableRibActionEmissions() {
-    this.areRibActionEmissionsAllowed = false
   }
 
   /**
@@ -109,8 +104,9 @@ public object RibEvents {
     ribActionState: RibActionState,
   ) {
     if (!areRibActionEmissionsAllowed) {
-      // Unless specified explicitly via [RibEvents.allowRibActionEmissions] there is no need
-      // to create unnecessary objects if no one is observing/collecting RibAction events
+      // Unless specified explicitly via [RibEvents.enableRibActionEmissions()] there is no need
+      // to create unnecessary objects if there is no intention on observing/collecting RibAction
+      // events
       return
     }
 
