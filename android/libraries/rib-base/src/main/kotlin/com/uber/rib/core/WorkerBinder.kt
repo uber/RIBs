@@ -47,9 +47,9 @@ private val Worker.bindingCoroutineContext: CoroutineContext
 @Deprecated(
   message =
     """
-      [com.uber.rib.core.Worker] is deprecated in favor of [com.uber.rib.core.RibCoroutineWorker]
+      com.uber.rib.core.Worker is deprecated in favor of com.uber.rib.core.RibCoroutineWorker
     """,
-  replaceWith = ReplaceWith("For binding a RibCoroutineWorker use its .bind extension function"),
+  replaceWith = ReplaceWith("coroutineScope.bind(ribCoroutineWorker)"),
 )
 public object WorkerBinder {
 

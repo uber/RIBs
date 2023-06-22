@@ -34,7 +34,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 @Deprecated(
   message =
     """
-      [com.uber.rib.core.Worker] is deprecated in favor of [com.uber.rib.core.RibCoroutineWorker]
+      com.uber.rib.core.Worker is deprecated in favor of com.uber.rib.core.RibCoroutineWorker
     """,
   replaceWith = ReplaceWith("RibCoroutineWorker"),
 )
