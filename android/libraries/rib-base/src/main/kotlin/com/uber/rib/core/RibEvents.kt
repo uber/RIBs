@@ -63,44 +63,46 @@ public object RibEvents {
 
   /**
    * Calls related RIB action (e.g. didBecomeActive) and emits emission of ATTACHED/DETACHED events
-   * for each RIB component.
+   * for each [RibActionEmitter] (e.g. Concrete Interactor, Presenter, Router, Worker).
    *
-   * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
-   * @param RibEventEmitter Related RIB component
-   * @param RibEventEmitterType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
+   * @param ribActionEmitter The related Rib Action emitter class
+   * @param ribActionEmitterType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
+   * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
    */
   internal inline fun triggerRibActionAndEmitEvents(
-    RibEventEmitter: RibEventEmitter,
-    RibEventEmitterType: RibEventEmitterType,
+    ribActionEmitter: RibActionEmitter,
+    ribActionEmitterType: RibActionEmitterType,
     ribEventType: RibEventType,
     ribAction: () -> Unit,
   ) {
     emitRibEventActionIfNeeded(
-      RibEventEmitter,
-      RibEventEmitterType,
+      ribActionEmitter,
+      ribActionEmitterType,
       ribEventType,
       RibActionState.STARTED,
     )
     ribAction()
     emitRibEventActionIfNeeded(
-      RibEventEmitter,
-      RibEventEmitterType,
+      ribActionEmitter,
+      ribActionEmitterType,
       ribEventType,
       RibActionState.COMPLETED,
     )
   }
 
   /**
-   * Emits emission of ATTACHED/DETACHED events for each RIB component.
+   * Emits ATTACHED/DETACHED events for each RIB component.
    *
-   * @param RibEventEmitterType The RIB component type (e.g. Interactor, Router, Presenter)
+   * @param ribActionEmitter The related Rib Action emitter class
+   * @param ribActionEmitterType The RIB component type (e.g. Interactor, Router, Presenter)
    * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
-   * @param ribActionState: RibActionType,
+   * @param ribActionState: RIB action state (STARTED/COMPLETED). For example prior and after call
+   *   of Interactor.didBecomeActive
    */
   private fun emitRibEventActionIfNeeded(
-    RibEventEmitter: RibEventEmitter,
-    RibEventEmitterType: RibEventEmitterType,
+    ribActionEmitter: RibActionEmitter,
+    ribActionEmitterType: RibActionEmitterType,
     ribEventType: RibEventType,
     ribActionState: RibActionState,
   ) {
@@ -112,8 +114,8 @@ public object RibEvents {
 
     val ribActionInfo =
       RibActionInfo(
-        RibEventEmitter.javaClass.name,
-        RibEventEmitterType,
+        ribActionEmitter.javaClass.name,
+        ribActionEmitterType,
         ribEventType,
         ribActionState,
         Thread.currentThread().name,
@@ -124,13 +126,23 @@ public object RibEvents {
 
 /** Holds relevant RIB event information */
 public data class RibActionInfo(
-  /** Related RIB class name */
-  val ribEventEmitterName: String,
+  /** Related RIB Action concrete class name */
+  val ribActionEmitterName: String,
 
-  /** The current RIB event type being bound (e.g. Interactor/Presenter/Router) */
-  val RibEventEmitterType: RibEventEmitterType,
+  /** The current RIB event type being bound (e.g. INTERACTOR/PRESENTER/ROUTER/WORKER) */
+  val ribActionEmitterType: RibActionEmitterType,
 
-  /** Represents the RIB event type, e.g. ATTACHED/DETACHED */
+  /**
+   * Represents the RIB event type (ATTACHED/DETACHED).
+   *
+   * For example for interactor:
+   * - Interactor.didBecomeActive -> ATTACHED
+   * - Interactor.willResignActive -> DETACHED
+   *
+   * For Worker:
+   * - Worker.onStart() -> ATTACHED
+   * - Worker.onStop() -> DETACHED
+   */
   val ribEventType: RibEventType,
 
   /** RIB Action state (e.g. event to be called before/after didBecomeActive, willLoad, etc) */
@@ -141,12 +153,12 @@ public data class RibActionInfo(
 )
 
 /**
- * Contract for all related Rib Components e.g. Interactor, Presenter, Router, Workers where will be
- * emitting via [ribActionEvents]
+ * Contract for all related Rib Action Types (Interactor, Presenter, Router, Worker) where will be
+ * emitting via [ribActionEvents] observable
  */
-public interface RibEventEmitter
+public interface RibActionEmitter
 
-public enum class RibEventEmitterType {
+public enum class RibActionEmitterType {
   ROUTER,
   PRESENTER,
   INTERACTOR,

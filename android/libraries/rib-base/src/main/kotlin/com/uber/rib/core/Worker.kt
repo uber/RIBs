@@ -38,7 +38,7 @@ import kotlinx.coroutines.CoroutineDispatcher
     """,
   replaceWith = ReplaceWith("RibCoroutineWorker"),
 )
-public interface Worker : RibEventEmitter {
+public interface Worker : RibActionEmitter {
 
   /**
    * When overriden, will specify on which [CoroutineContext] the [Worker] will be bound via

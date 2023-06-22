@@ -67,7 +67,7 @@ class InteractorAndRouterTest {
       .last()
       .assertRibActionInfo(
         RibEventType.ATTACHED,
-        RibEventEmitterType.INTERACTOR,
+        RibActionEmitterType.INTERACTOR,
         RibActionState.COMPLETED,
         "com.uber.rib.core.InteractorAndRouterTest${'$'}TestInteractor",
       )
@@ -102,7 +102,7 @@ class InteractorAndRouterTest {
       .last()
       .assertRibActionInfo(
         RibEventType.DETACHED,
-        RibEventEmitterType.ROUTER,
+        RibActionEmitterType.ROUTER,
         RibActionState.COMPLETED,
         "com.uber.rib.core.FakeRouter",
       )

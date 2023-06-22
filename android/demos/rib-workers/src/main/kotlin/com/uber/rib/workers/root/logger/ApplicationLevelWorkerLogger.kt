@@ -16,9 +16,9 @@
 package com.uber.rib.workers.root.logger
 
 import android.util.Log
+import com.uber.rib.core.RibActionEmitterType
 import com.uber.rib.core.RibActionInfo
 import com.uber.rib.core.RibActionState
-import com.uber.rib.core.RibEventEmitterType
 import com.uber.rib.core.RibEvents
 import java.lang.System.currentTimeMillis
 import java.util.concurrent.ConcurrentHashMap
@@ -48,24 +48,24 @@ object ApplicationLevelWorkerLogger {
 
     GlobalScope.launch {
       RibEvents.ribActionEvents
-        .filter { it.RibEventEmitterType == RibEventEmitterType.DEPRECATED_WORKER }
+        .filter { it.ribActionEmitterType == RibActionEmitterType.DEPRECATED_WORKER }
         .asFlow()
         .collect { it.logWorkerDuration() }
     }
   }
 
   private fun RibActionInfo.logWorkerDuration() {
-    if (ribActionState == RibActionState.STARTED && !ribEventEmitterName.isClassNameInMap()) {
-      workerTimeStampMap[this.ribEventEmitterName] = currentTimeMillis()
+    if (ribActionState == RibActionState.STARTED && !ribActionEmitterName.isClassNameInMap()) {
+      workerTimeStampMap[this.ribActionEmitterName] = currentTimeMillis()
     } else if (
-      ribActionState == RibActionState.COMPLETED && ribEventEmitterName.isClassNameInMap()
+      ribActionState == RibActionState.COMPLETED && ribActionEmitterName.isClassNameInMap()
     ) {
-      val startedTimeStamp = workerTimeStampMap[ribEventEmitterName]
+      val startedTimeStamp = workerTimeStampMap[ribActionEmitterName]
       startedTimeStamp?.let {
         val totalDuration = getTotalDuration(it)
         this.logDuration(totalDuration)
       }
-      workerTimeStampMap.remove(ribEventEmitterName)
+      workerTimeStampMap.remove(ribActionEmitterName)
     }
   }
 
@@ -77,7 +77,7 @@ object ApplicationLevelWorkerLogger {
   private fun RibActionInfo.logDuration(totalDuration: Long) {
     Log.d(
       LOG_TAG,
-      "${this.ribEventEmitterName} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
+      "${this.ribActionEmitterName} ${this.ribEventType} took $totalDuration ms on $originalCallerThreadName thread",
     )
   }
 }
