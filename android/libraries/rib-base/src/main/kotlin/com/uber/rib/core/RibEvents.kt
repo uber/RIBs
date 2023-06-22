@@ -45,7 +45,6 @@ public object RibEvents {
     this.areRibActionEmissionsAllowed = true
   }
 
-  /** Only to be used within test * */
   @VisibleForTesting
   internal fun disableRibActionEmissions() {
     this.areRibActionEmissionsAllowed = false
