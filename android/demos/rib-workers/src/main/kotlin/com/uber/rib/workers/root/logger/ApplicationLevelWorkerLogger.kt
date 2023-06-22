@@ -44,7 +44,7 @@ object ApplicationLevelWorkerLogger {
 
   @OptIn(DelicateCoroutinesApi::class)
   fun start() {
-    RibEvents.startCapturingRibActionInfo()
+    RibEvents.allowRibActionEmissions()
 
     GlobalScope.launch {
       RibEvents.ribActionEvents

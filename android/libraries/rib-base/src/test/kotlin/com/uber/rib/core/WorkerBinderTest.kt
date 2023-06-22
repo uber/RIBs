@@ -62,7 +62,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
 
   @Before
   fun setUp() {
-    RibEvents.startCapturingRibActionInfo()
+    RibEvents.allowRibActionEmissions()
   }
 
   @Test

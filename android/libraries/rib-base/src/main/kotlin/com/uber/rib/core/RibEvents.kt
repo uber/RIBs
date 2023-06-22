@@ -33,15 +33,15 @@ public object RibEvents {
   @JvmStatic
   public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
 
-  private var allowRibActionEmissions = false
+  private var areRibActionEmissionsAllowed = false
 
   /**
    * To be called before start observing/collecting on [ribActionEvents] (usually at your earliest
    * application point)
    */
   @JvmStatic
-  public fun startCapturingRibActionInfo() {
-    this.allowRibActionEmissions = true
+  public fun allowRibActionEmissions() {
+    this.areRibActionEmissionsAllowed = true
   }
 
   /**
@@ -93,8 +93,8 @@ public object RibEvents {
     ribEventType: RibEventType,
     ribActionState: RibActionState,
   ) {
-    if (!allowRibActionEmissions) {
-      // Unless specified explicitly via [RibEvents.startCapturingRibActionInfo] there is no need
+    if (!areRibActionEmissionsAllowed) {
+      // Unless specified explicitly via [RibEvents.allowRibActionEmissions] there is no need
       // to create unnecessary objects if no one is observing/collecting RibAction events
       return
     }

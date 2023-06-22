@@ -49,7 +49,7 @@ class InteractorAndRouterTest {
     }
     interactor = TestInteractor(childInteractor)
     router = TestRouter(interactor, component)
-    RibEvents.startCapturingRibActionInfo()
+    RibEvents.allowRibActionEmissions()
   }
 
   @Test
