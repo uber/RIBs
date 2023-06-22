@@ -15,9 +15,11 @@
  */
 package com.uber.rib.workers.root.main.ribworkerselection
 
+import android.util.Log
 import com.uber.rib.core.BasicInteractor
 import com.uber.rib.core.Bundle
 import com.uber.rib.core.ComposePresenter
+import com.uber.rib.core.RibEvents
 import com.uber.rib.core.WorkerBinder
 import com.uber.rib.core.asRibCoroutineWorker
 import com.uber.rib.core.asWorker
@@ -46,6 +48,9 @@ class RibWorkerSelectionInteractor(
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
+
+    Log.d(this.javaClass.name, "WorkerLogger enabled? $RibEvents.areRibActionEmissionsAllowed")
+
     eventStream
       .observe()
       .onEach {

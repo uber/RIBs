@@ -34,7 +34,9 @@ public object RibEvents {
   @JvmStatic
   public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
 
-  private var areRibActionEmissionsAllowed = false
+  /** Indicates if [ribActionEvents] will be emitting. */
+  public var areRibActionEmissionsAllowed: Boolean = false
+    private set
 
   /**
    * To be called before start observing/collecting on [ribActionEvents] (usually at your earliest
