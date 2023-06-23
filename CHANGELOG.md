@@ -88,6 +88,18 @@
 * [Android] Open lifecycleFlow, thus enabling it for mocking 
 * [Android] [WorkerBinder] Guard against potential Worker.coroutineContext being null while using Mockito
 
-### Version 0.14.2i
+### Version 0.14.2
 * [Android] Fix potential for deadlocks in `Worker` binding. by @psteiger in https://github.com/uber/RIBs/pull/582
 * [Android] Add  Rib Worker demo app by @FranAguilera in https://github.com/uber/RIBs/pull/575
+
+### Version 0.15.0
+* Only complete the worker's scope after calling `Worker.onStop` by @psteiger in https://github.com/uber/RIBs/pull/585
+* Improve KDoc on `ActivityLifecycleEvent` by explaining ordering semantics. by @psteiger in https://github.com/uber/RIBs/pull/586
+* Make use of `jvmToolchain` for building the project. by @psteiger in https://github.com/uber/RIBs/pull/583
+* Revamp Gradle scripts by @psteiger in https://github.com/uber/RIBs/pull/588
+* Deprecate old worker by @FranAguilera in https://github.com/uber/RIBs/pull/597
+* Allow overriding default CoroutineDispatcher for WorkerBinder calls by @FranAguilera in https://github.com/uber/RIBs/pull/596
+* Update README.md by @FranAguilera in https://github.com/uber/RIBs/pull/600
+* Deprecate WorkerUnbinder by @FranAguilera in https://github.com/uber/RIBs/pull/601
+* Expose ribActionEvents stream by @FranAguilera in https://github.com/uber/RIBs/pull/599
+
