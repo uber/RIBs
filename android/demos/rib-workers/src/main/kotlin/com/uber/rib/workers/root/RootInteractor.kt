@@ -16,20 +16,8 @@
 package com.uber.rib.workers.root
 
 import com.uber.rib.core.BasicInteractor
-import com.uber.rib.core.Bundle
 import com.uber.rib.core.EmptyPresenter
-import com.uber.rib.core.WorkerBinder
-import com.uber.rib.workers.root.main.workers.monitoring.RibWorkerMonitor
 
 class RootInteractor(
   presenter: EmptyPresenter,
-  private val ribWorkerMonitor: RibWorkerMonitor,
-) : BasicInteractor<EmptyPresenter, RootRouter>(presenter) {
-
-  override fun didBecomeActive(savedInstanceState: Bundle?) {
-    super.didBecomeActive(savedInstanceState)
-
-    // Setting up Worker Monitoring prior to any WorkerBinding
-    WorkerBinder.initializeMonitoring(ribWorkerMonitor)
-  }
-}
+) : BasicInteractor<EmptyPresenter, RootRouter>(presenter)

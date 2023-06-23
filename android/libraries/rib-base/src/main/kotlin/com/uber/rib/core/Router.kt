@@ -19,6 +19,7 @@ import android.os.Looper
 import androidx.annotation.CallSuper
 import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -33,7 +34,7 @@ protected constructor(
   public open val interactor: I,
   private val ribRefWatcher: RibRefWatcher,
   private val mainThread: Thread,
-) {
+) : RibActionEmitter {
   private val children: MutableList<Router<*>> = CopyOnWriteArrayList()
   private val interactorGeneric: Interactor<*, *>
     get() = interactor as Interactor<*, *>
@@ -113,13 +114,21 @@ protected constructor(
           )
       }
     }
-    children.add(childRouter)
+
+    triggerRibActionAndEmitEvents(
+      childRouter,
+      RibActionEmitterType.ROUTER,
+      RibEventType.ATTACHED,
+    ) {
+      children.add(childRouter)
+    }
+
     ribRefWatcher.logBreadcrumb(
       "ATTACHED",
       childRouter.javaClass.simpleName,
       this.javaClass.simpleName,
     )
-    RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, childRouter, this)
+    RibEvents.emitRouterEvent(RibEventType.ATTACHED, childRouter, this)
     var childBundle: Bundle? = null
     if (savedInstanceState != null) {
       val previousChildren = savedInstanceState?.getBundleExtra(KEY_CHILD_ROUTERS)
@@ -157,9 +166,17 @@ protected constructor(
           .handleNonFatalWarning("A RIB tried to detach a child that was never attached", null)
       }
     }
-    childRouter.dispatchDetach()
+
+    triggerRibActionAndEmitEvents(
+      childRouter,
+      RibActionEmitterType.ROUTER,
+      RibEventType.DETACHED,
+    ) {
+      childRouter.dispatchDetach()
+    }
+
     if (isChildRemoved) {
-      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, childRouter, this)
+      RibEvents.emitRouterEvent(RibEventType.DETACHED, childRouter, this)
     }
   }
 

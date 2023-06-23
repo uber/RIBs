@@ -98,7 +98,7 @@ abstract class RibActivity :
     router?.let {
       it.dispatchAttach(wrappedBundle)
       rootViewGroup.addView(it.view)
-      RibEvents.getInstance().emitEvent(RibEventType.ATTACHED, it, null)
+      RibEvents.emitRouterEvent(RibEventType.ATTACHED, it, null)
     }
   }
 
@@ -151,7 +151,7 @@ abstract class RibActivity :
     _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.DESTROY))
     router?.let {
       it.dispatchDetach()
-      RibEvents.getInstance().emitEvent(RibEventType.DETACHED, it, null)
+      RibEvents.emitRouterEvent(RibEventType.DETACHED, it, null)
     }
     router = null
     super.onDestroy()

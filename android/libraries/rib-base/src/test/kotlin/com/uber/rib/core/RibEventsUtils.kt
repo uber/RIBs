@@ -13,8 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.workers.root.main.workers.monitoring
+package com.uber.rib.core
 
-fun interface BackendReporter {
-  fun report(genericMessage: String)
+import com.google.common.truth.Truth
+
+object RibEventsUtils {
+  internal fun RibActionInfo.assertRibActionInfo(
+    expectedRibEventType: RibEventType,
+    expectedRibActionEmitterType: RibActionEmitterType,
+    ribActionState: RibActionState,
+    ribClassName: String,
+  ) {
+    Truth.assertThat(this.ribEventType).isEqualTo(expectedRibEventType)
+    Truth.assertThat(this.ribActionEmitterType).isEqualTo(expectedRibActionEmitterType)
+    Truth.assertThat(this.ribActionState).isEqualTo(ribActionState)
+    Truth.assertThat(this.ribActionEmitterName).isEqualTo(ribClassName)
+  }
 }

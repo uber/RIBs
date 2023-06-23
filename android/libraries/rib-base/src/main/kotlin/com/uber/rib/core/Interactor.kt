@@ -19,6 +19,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
@@ -36,7 +37,7 @@ import kotlinx.coroutines.rx2.asObservable
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
-public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
+public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, RibActionEmitter {
   @Inject public lateinit var injectedPresenter: P
   internal var actualPresenter: P? = null
   private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
@@ -102,14 +103,49 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType {
 
   public open fun dispatchAttach(savedInstanceState: Bundle?) {
     _lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
-    (getPresenter() as? Presenter)?.dispatchLoad()
-    didBecomeActive(savedInstanceState)
+
+    val presenter = (getPresenter() as? Presenter)
+    presenter?.let {
+      triggerRibActionAndEmitEvents(
+        it,
+        RibActionEmitterType.PRESENTER,
+        RibEventType.ATTACHED,
+      ) {
+        it.dispatchLoad()
+      }
+    }
+
+    triggerRibActionAndEmitEvents(
+      this,
+      RibActionEmitterType.INTERACTOR,
+      RibEventType.ATTACHED,
+    ) {
+      didBecomeActive(savedInstanceState)
+    }
   }
 
   public open fun dispatchDetach(): P {
-    (getPresenter() as? Presenter)?.dispatchUnload()
-    willResignActive()
+    val presenter = (getPresenter() as? Presenter)
+    presenter?.let {
+      triggerRibActionAndEmitEvents(
+        it,
+        RibActionEmitterType.PRESENTER,
+        RibEventType.DETACHED,
+      ) {
+        it.dispatchUnload()
+      }
+    }
+
+    triggerRibActionAndEmitEvents(
+      this,
+      RibActionEmitterType.INTERACTOR,
+      RibEventType.DETACHED,
+    ) {
+      willResignActive()
+    }
+
     _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
+
     return getPresenter()
   }
 

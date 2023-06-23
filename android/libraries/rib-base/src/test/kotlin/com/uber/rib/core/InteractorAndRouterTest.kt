@@ -16,9 +16,13 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth
+import com.google.common.truth.Truth.assertThat
 import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.rib.core.RibEvents.ribActionEvents
+import com.uber.rib.core.RibEventsUtils.assertRibActionInfo
 import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
+import io.reactivex.observers.TestObserver
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -36,6 +40,7 @@ class InteractorAndRouterTest {
 
   private lateinit var interactor: TestInteractor
   private lateinit var router: TestRouter
+  private val ribActionInfoObserver = TestObserver<RibActionInfo>()
 
   @Before
   fun setup() {
@@ -45,26 +50,62 @@ class InteractorAndRouterTest {
     }
     interactor = TestInteractor(childInteractor)
     router = TestRouter(interactor, component)
+    RibEvents.enableRibActionEmissions()
   }
 
   @Test
   fun attach_shouldAttachChildController() {
+    // Given.
+    ribActionEvents.subscribe(ribActionInfoObserver)
+
     // When.
     router.dispatchAttach(null)
 
     // Then.
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.ATTACHED,
+        RibActionEmitterType.INTERACTOR,
+        RibActionState.COMPLETED,
+        "com.uber.rib.core.InteractorAndRouterTest${'$'}TestInteractor",
+      )
     verify(childInteractor).dispatchAttach(null)
+  }
+
+  @Test
+  fun attach_withoutAllowingEmissions_shouldNotEmtRibActionEvents() {
+    // Given.
+    RibEvents.areRibActionEmissionsAllowed = false
+    ribActionEvents.subscribe(ribActionInfoObserver)
+
+    // When.
+    router.dispatchAttach(null)
+
+    // Then.
+    assertThat(ribActionInfoObserver.values()).isEmpty()
   }
 
   @Test
   fun detach_shouldDetachChildController() {
     // Given.
+    ribActionEvents.subscribe(ribActionInfoObserver)
     router.dispatchAttach(null)
 
     // When.
     router.dispatchDetach()
 
     // Then.
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.DETACHED,
+        RibActionEmitterType.ROUTER,
+        RibActionState.COMPLETED,
+        "com.uber.rib.core.FakeRouter",
+      )
     verify(childInteractor).dispatchDetach()
   }
 

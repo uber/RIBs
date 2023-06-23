@@ -23,6 +23,7 @@ import com.facebook.flipper.plugins.inspector.DescriptorMapping
 import com.facebook.flipper.plugins.inspector.InspectorFlipperPlugin
 import com.facebook.soloader.SoLoader
 import com.uber.rib.flipper.RibTreePlugin
+import com.uber.rib.workers.root.logger.ApplicationLevelWorkerLogger
 
 class ComposeApplication : Application() {
 
@@ -36,5 +37,7 @@ class ComposeApplication : Application() {
       client.addPlugin(InspectorFlipperPlugin(this, DescriptorMapping.withDefaults()))
       client.start()
     }
+
+    ApplicationLevelWorkerLogger.start()
   }
 }
