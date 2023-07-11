@@ -15,12 +15,18 @@
  */
 package com.uber.rib.compose.root.main.loggedin.offgame
 
+import android.widget.FrameLayout
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -28,17 +34,39 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
+import com.uber.rib.compose.R
 import com.uber.rib.compose.util.CustomButton
 import com.uber.rib.compose.util.EventStream
 
 @Composable
 fun OffGameView(viewModel: State<OffGameViewModel>, eventStream: EventStream<OffGameEvent>) {
   Column(
-    modifier = Modifier.fillMaxSize().padding(16.dp),
+    modifier = Modifier
+      .fillMaxSize()
+      .padding(16.dp),
+    horizontalAlignment = Alignment.CenterHorizontally,
     verticalArrangement = Arrangement.spacedBy(16.dp, alignment = Alignment.Bottom),
   ) {
+    Text("OffGame (Compose RIB)")
+    Spacer(Modifier.height(128.dp))
+    Box(modifier = Modifier
+      .fillMaxWidth()
+      .height(256.dp)
+      .background(Color.Blue)) {
+        AndroidView(
+          modifier = Modifier.fillMaxSize(), // Occupy the max size in the Compose UI tree
+          factory = { context ->
+            FrameLayout(context).apply {
+              id = R.id.welcome_container
+              setBackgroundColor(android.graphics.Color.CYAN)
+            }
+          }
+        )
+    }
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
       Text(text = viewModel.value.playerOne)
       Text(text = "Win Count: ${viewModel.value.playerOneWins}")

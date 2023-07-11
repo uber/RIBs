@@ -35,6 +35,7 @@ class OffGameInteractor(
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
+    router.attachWelcome()
 
     eventStream
       .observe()

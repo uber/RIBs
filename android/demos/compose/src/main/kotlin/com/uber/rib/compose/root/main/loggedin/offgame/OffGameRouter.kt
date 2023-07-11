@@ -15,8 +15,11 @@
  */
 package com.uber.rib.compose.root.main.loggedin.offgame
 
+import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import com.uber.rib.compose.R
+import com.uber.rib.compose.root.main.loggedin.offgame.welcome.WelcomeRouter
 import com.uber.rib.core.BasicComposeRouter
 import com.uber.rib.core.ComposePresenter
 
@@ -24,4 +27,18 @@ class OffGameRouter(
   presenter: ComposePresenter,
   interactor: OffGameInteractor,
   slot: MutableState<(@Composable () -> Unit)>,
-) : BasicComposeRouter<OffGameInteractor>(presenter, interactor, slot)
+  private val scope: OffGameScope
+) : BasicComposeRouter<OffGameInteractor>(presenter, interactor, slot) {
+
+  private var welcomeRouter: WelcomeRouter? = null
+
+  internal fun attachWelcome() {
+    if (welcomeRouter == null) {
+      // can't attach child because we have no ref to the FrameLayout from AndriodView in OffGameView
+//      welcomeRouter = scope.welcomeScope().router().also {
+//        attachChild(it)
+//        view.findViewById<ViewGroup>(R.id.welcome_container).addView(it.view)
+//      }
+    }
+  }
+}

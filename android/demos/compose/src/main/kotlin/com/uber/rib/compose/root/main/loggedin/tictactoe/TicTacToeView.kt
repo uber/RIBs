@@ -48,7 +48,7 @@ fun TicTacToeView(viewModel: State<TicTacToeViewModel>, eventStream: EventStream
     verticalArrangement = Arrangement.Top,
     modifier = Modifier.fillMaxSize().background(Color.Blue),
   ) {
-    Text("Current Player: ${viewModel.value.currentPlayer}", color = Color.White)
+    Text("Current Player: ${viewModel.value.currentPlayer} (Compose RIB)", color = Color.White)
     Box(
       modifier = Modifier.aspectRatio(1f).fillMaxSize(),
     ) {

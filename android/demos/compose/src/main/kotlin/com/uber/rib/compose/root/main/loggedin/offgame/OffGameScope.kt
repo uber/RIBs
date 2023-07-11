@@ -15,9 +15,11 @@
  */
 package com.uber.rib.compose.root.main.loggedin.offgame
 
+import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import com.uber.rib.compose.root.main.AuthInfo
+import com.uber.rib.compose.root.main.loggedin.offgame.welcome.WelcomeScope
 import com.uber.rib.compose.util.EventStream
 import com.uber.rib.compose.util.StateStream
 import com.uber.rib.core.ComposePresenter
@@ -25,6 +27,8 @@ import com.uber.rib.core.ComposePresenter
 @motif.Scope
 interface OffGameScope {
   fun router(): OffGameRouter
+
+  fun welcomeScope(parentViewGroup: ViewGroup): WelcomeScope
 
   @motif.Objects
   abstract class Objects {
