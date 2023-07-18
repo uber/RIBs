@@ -103,3 +103,6 @@
 * Deprecate WorkerUnbinder by @FranAguilera in https://github.com/uber/RIBs/pull/601
 * Expose ribActionEvents stream by @FranAguilera in https://github.com/uber/RIBs/pull/599
 
+### Version 0.15.1
+* [Android] Remove use of @JvmDefault in favor of using -Xjvm-default=all by @psteiger in https://github.com/uber/RIBs/pull/576
+
