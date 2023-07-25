@@ -84,6 +84,22 @@ public object WorkerBinder {
     interactor: Interactor<*, *>,
     workers: List<Worker>,
   ) {
+    bind(interactor, workers as Iterable<Worker>)
+  }
+
+  /**
+   * Bind workers (i.e. a manager or any other class that needs an interactor lifecycle) to an
+   * interactor lifecycle events. Use this class into your interactor and call this method on
+   * attach.
+   *
+   * @param interactor The interactor that provides the lifecycle.
+   * @param workers A list of classes that want to be informed when to start and stop doing work.
+   */
+  @JvmStatic
+  public fun bind(
+    interactor: Interactor<*, *>,
+    workers: Iterable<Worker>,
+  ) {
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker)
     }
@@ -119,6 +135,22 @@ public object WorkerBinder {
   public fun bind(
     presenter: Presenter,
     workers: List<Worker>,
+  ) {
+    bind(presenter, workers as Iterable<Worker>)
+  }
+
+  /**
+   * Bind a list of workers (i.e. a manager or any other class that needs a presenter lifecycle) to
+   * a presenter lifecycle events. Use this class into your presenter and call this method on
+   * attach.
+   *
+   * @param presenter The presenter that provides the lifecycle.
+   * @param workers A list of classes that want to be informed when to start and stop doing work.
+   */
+  @JvmStatic
+  public fun bind(
+    presenter: Presenter,
+    workers: Iterable<Worker>,
   ) {
     for (worker in workers) {
       bind(presenter, worker)
