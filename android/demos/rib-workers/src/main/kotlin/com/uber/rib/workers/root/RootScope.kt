@@ -16,10 +16,7 @@
 package com.uber.rib.workers.root
 
 import android.view.ViewGroup
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.uber.rib.core.EmptyPresenter
-import com.uber.rib.core.RibActivity
 import com.uber.rib.workers.root.main.MainScope
 
 @motif.Scope
@@ -36,11 +33,8 @@ interface RootScope {
 
     abstract fun presenter(): EmptyPresenter
 
-    fun view(parentViewGroup: ViewGroup, activity: RibActivity): RootView {
-      return RootView(parentViewGroup.context).apply {
-        setViewTreeLifecycleOwner(activity)
-        setViewTreeSavedStateRegistryOwner(activity)
-      }
+    fun view(parentViewGroup: ViewGroup): RootView {
+      return RootView(parentViewGroup.context)
     }
   }
 }

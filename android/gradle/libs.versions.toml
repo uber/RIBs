@@ -3,7 +3,7 @@ android-api = "4.1.1.4"
 androidx-activity = "1.7.0"
 androidx-annotations = "1.1.0"
 androidx-appcompat = "1.3.0"
-androidx-lifecycle = "2.5.1"
+androidx-lifecycle = "2.6.1"
 autocommon = "0.8"
 autodispose = "1.4.0"
 autoservice = "1.0-rc4"
@@ -95,6 +95,7 @@ javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
 jsr250 = { group = "javax.annotation", name = "jsr250-api", version.ref = "jsr250" }
 kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidx-lifecycle" }
 motif-compiler = { group = "com.uber.motif", name = "motif-compiler", version.ref = "motif" }
 motif-library = { group = "com.uber.motif", name = "motif", version.ref = "motif" }
 percent = { group = "androidx.percentlayout", name = "percentlayout", version.ref = "percent" }

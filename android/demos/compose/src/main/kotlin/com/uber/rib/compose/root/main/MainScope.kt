@@ -19,15 +19,12 @@ import android.view.ViewGroup
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.ComposeView
-import androidx.lifecycle.setViewTreeLifecycleOwner
-import androidx.savedstate.setViewTreeSavedStateRegistryOwner
 import com.uber.rib.compose.root.main.loggedin.LoggedInScope
 import com.uber.rib.compose.root.main.loggedout.LoggedOutScope
 import com.uber.rib.compose.util.AnalyticsClient
 import com.uber.rib.compose.util.ExperimentClient
 import com.uber.rib.compose.util.LoggerClient
 import com.uber.rib.core.ComposePresenter
-import com.uber.rib.core.RibActivity
 import motif.Expose
 
 @motif.Scope
@@ -55,15 +52,8 @@ interface MainScope {
       }
     }
 
-    fun view(
-      parentViewGroup: ViewGroup,
-      activity: RibActivity,
-      presenter: ComposePresenter,
-    ): ComposeView {
-      return ComposeView(parentViewGroup.context).apply {
-        setViewTreeLifecycleOwner(activity)
-        setViewTreeSavedStateRegistryOwner(activity)
-      }
+    fun view(parentViewGroup: ViewGroup): ComposeView {
+      return ComposeView(parentViewGroup.context)
     }
 
     abstract fun childContent(): MainRouter.ChildContent

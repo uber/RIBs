@@ -36,6 +36,7 @@ dependencies {
     implementation(libs.coroutines.android)
     implementation(libs.coroutines.rx2)
     testImplementation(testLibs.robolectric)
+    testImplementation(libs.lifecycle.runtime)
     testImplementation(libs.appcompat)
     testImplementation(testLibs.mockitoKotlin)
     testImplementation(project(":libraries:rib-test"))
