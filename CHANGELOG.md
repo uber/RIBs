@@ -106,3 +106,6 @@
 ### Version 0.15.1
 * [Android] Remove use of @JvmDefault in favor of using -Xjvm-default=all by @psteiger in https://github.com/uber/RIBs/pull/576
 
+### Version 0.15.2
+* [Android] Set view tree owners for RibActivity
+
