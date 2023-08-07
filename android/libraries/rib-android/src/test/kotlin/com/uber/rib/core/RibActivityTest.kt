@@ -20,6 +20,7 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.google.common.truth.Truth.assertThat
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.lifecycle.LifecycleEndedException
@@ -187,6 +188,17 @@ class RibActivityTest {
   fun getController() {
     val activity: RibActivity = Robolectric.setupActivity(EmptyActivity::class.java)
     assertThat(activity.interactor).isNotNull()
+  }
+
+  @Test
+  fun onCreate_setsViewTreeOwners() {
+    val activity = Robolectric.buildActivity(EmptyActivity::class.java).create(null).get()
+    assertThat(activity.window.decorView.findViewTreeLifecycleOwner()).isNotNull()
+
+    val contentView = activity.findViewById<FrameLayout>(android.R.id.content)
+    val rootView = View(RuntimeEnvironment.application)
+    contentView.addView(rootView)
+    assertThat(rootView.findViewTreeLifecycleOwner()).isNotNull()
   }
 
   @Test(expected = IllegalArgumentException::class)
