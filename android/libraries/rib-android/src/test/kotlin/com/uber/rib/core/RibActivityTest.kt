@@ -21,6 +21,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import com.google.common.truth.Truth.assertThat
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.lifecycle.LifecycleEndedException
@@ -191,14 +193,23 @@ class RibActivityTest {
   }
 
   @Test
-  fun onCreate_setsViewTreeOwners() {
+  fun onCreate_setsViewTreeOwners_forDecorView() {
     val activity = Robolectric.buildActivity(EmptyActivity::class.java).create(null).get()
-    assertThat(activity.window.decorView.findViewTreeLifecycleOwner()).isNotNull()
+    val decorView = activity.window.decorView
+    assertThat(decorView.findViewTreeLifecycleOwner()).isNotNull()
+    assertThat(decorView.findViewTreeSavedStateRegistryOwner()).isNotNull()
+    assertThat(decorView.findViewTreeViewModelStoreOwner()).isNotNull()
+  }
 
+  @Test
+  fun onCreate_setsViewTreeOwners_forViewAddedToDecorView() {
+    val activity = Robolectric.buildActivity(EmptyActivity::class.java).create(null).get()
     val contentView = activity.findViewById<FrameLayout>(android.R.id.content)
     val rootView = View(RuntimeEnvironment.application)
     contentView.addView(rootView)
     assertThat(rootView.findViewTreeLifecycleOwner()).isNotNull()
+    assertThat(rootView.findViewTreeSavedStateRegistryOwner()).isNotNull()
+    assertThat(rootView.findViewTreeViewModelStoreOwner()).isNotNull()
   }
 
   @Test(expected = IllegalArgumentException::class)
