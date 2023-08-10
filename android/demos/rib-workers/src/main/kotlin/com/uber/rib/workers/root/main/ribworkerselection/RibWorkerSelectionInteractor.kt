@@ -63,10 +63,15 @@ class RibWorkerSelectionInteractor(
             updateViewModel(ioWorker::class.simpleName)
             WorkerBinder.bind(this, ioWorker)
           }
-          RibWorkerBindTypeClickType.BIND_MULTIPLE_WORKERS -> {
+          RibWorkerBindTypeClickType.BIND_MULTIPLE_DEPRECATED_WORKERS -> {
             val workers = listOf(backgroundWorker, defaultWorker, ioWorker, uiWorker)
-            updateViewModel("Multiple workers ")
+            updateViewModel("Multiple deprecated workers ")
             WorkerBinder.bind(this, workers)
+          }
+          RibWorkerBindTypeClickType.BIND_MULTIPLE_RIB_COROUTINE_WORKERS -> {
+            val workers = listOf(defaultRibCoroutineWorker, defaultRibCoroutineWorker)
+            updateViewModel("Multiple RibCoroutineWorkers ")
+            coroutineScope.bind(workers)
           }
           RibWorkerBindTypeClickType.BIND_RIB_COROUTINE_WORKER -> {
             updateViewModel(defaultRibCoroutineWorker::class.simpleName)
