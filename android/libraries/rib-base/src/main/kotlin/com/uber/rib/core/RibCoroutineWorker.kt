@@ -204,7 +204,7 @@ public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker =
 /** Converts a [RibCoroutineWorker] to a [Worker]. */
 @JvmOverloads
 public fun RibCoroutineWorker.asWorker(
-  coroutineContext: CoroutineContext = EmptyCoroutineContext,
+  coroutineContext: CoroutineContext = RibDispatchers.Default,
 ): Worker = RibCoroutineWorkerToWorkerAdapter(this, coroutineContext)
 
 internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) :
