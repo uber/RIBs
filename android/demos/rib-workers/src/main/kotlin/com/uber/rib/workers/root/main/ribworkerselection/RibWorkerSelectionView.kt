@@ -57,8 +57,14 @@ fun RibWorkerSelectionView(
 
     AddButton(
       eventStream,
-      RibWorkerBindTypeClickType.BIND_MULTIPLE_WORKERS,
-      "Bind multiple workers",
+      RibWorkerBindTypeClickType.BIND_MULTIPLE_DEPRECATED_WORKERS,
+      "Bind multiple Deprecated Workers",
+    )
+
+    AddButton(
+      eventStream,
+      RibWorkerBindTypeClickType.BIND_MULTIPLE_RIB_COROUTINE_WORKERS,
+      "Bind multiple RibCoroutineWorkers",
     )
 
     AddButton(

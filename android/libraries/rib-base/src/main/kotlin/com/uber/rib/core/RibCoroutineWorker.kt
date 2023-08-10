@@ -107,6 +107,17 @@ public fun CoroutineScope.bind(
   return BindWorkerHandleImpl(bindJob, unbindJob)
 }
 
+/** Binds a list of [worker]'s in a scope that is a child of the [CoroutineScope] receiver. */
+@JvmOverloads
+public fun CoroutineScope.bind(
+  workers: Iterable<RibCoroutineWorker>,
+  coroutineContext: CoroutineContext = RibDispatchers.Default,
+) {
+  for (worker in workers) {
+    bind(worker, coroutineContext)
+  }
+}
+
 /**
  * Guarantees to run synchronous [init] block exactly once in an undispatched manner.
  *
