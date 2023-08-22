@@ -32,7 +32,6 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -64,6 +63,8 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   @Before
   fun setUp() {
     RibEvents.enableRibActionEmissions()
+    RibCoroutinesConfig.deprecatedWorkerDispatcher = ribCoroutinesRule.ribDispatchers.Unconfined
+
   }
 
   @Test
@@ -149,7 +150,6 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 
   @Test
-  @Ignore("Failing silently before Coroutines 1.7, to be investigated")
   fun bind_whenSubscribeToLifecycleInWorker_observerIsCalledEagerly() = runTest {
     val interactor = object : Interactor<Any, Router<*>>() {}
     var enteredUnconfined = false
