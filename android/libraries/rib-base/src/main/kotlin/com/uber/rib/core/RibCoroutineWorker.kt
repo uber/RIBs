@@ -52,6 +52,27 @@ public fun interface RibCoroutineWorker : RibActionEmitter {
   public fun onStop(cause: Throwable) {}
 }
 
+/** A manager or helper class bound to a [CoroutineScope] by using a binder like [bind]. */
+public inline fun RibCoroutineWorker(
+  crossinline onStart: suspend CoroutineScope.() -> Unit,
+): RibCoroutineWorker {
+  /*
+   * 'RibCoroutineWorker' is already a functional interface; the purpose of this builder is to allow consumers
+   * to create a 'RibCoroutineWorker' with 'CoroutineScope' in receiver position. E.g.
+   *
+   * Functional interface:
+   * RibCoroutineWorker { scope ->
+   *   scope.launch { ... }
+   * }
+   *
+   * This factory method:
+   * RibCoroutineWorker {
+   *   launch { ... }
+   * }
+   */
+  return RibCoroutineWorker { scope -> scope.onStart() }
+}
+
 // ---- Binder ---- //
 
 /**
