@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import kotlinx.coroutines.CoroutineDispatcher
 import org.junit.rules.TestWatcher
 import org.junit.runner.Description
 
@@ -26,14 +27,15 @@ public class RibCoroutinesRule(
   public val ribDispatchers: TestRibDispatchers = TestRibDispatchers(),
 ) : TestWatcher() {
 
-  private var originalDeprecatedWorkerDispatcher = RibCoroutinesConfig.deprecatedWorkerDispatcher
+  private var originalDeprecatedWorkerDispatcher : CoroutineDispatcher? = null
   override fun starting(description: Description) {
     ribDispatchers.installTestDispatchers()
+    originalDeprecatedWorkerDispatcher = RibCoroutinesConfig.deprecatedWorkerDispatcher
     RibCoroutinesConfig.deprecatedWorkerDispatcher = ribDispatchers.Unconfined
   }
 
   override fun finished(description: Description) {
     ribDispatchers.resetTestDispatchers()
-    RibCoroutinesConfig.deprecatedWorkerDispatcher = originalDeprecatedWorkerDispatcher
+    RibCoroutinesConfig.deprecatedWorkerDispatcher = originalDeprecatedWorkerDispatcher!!
   }
 }
