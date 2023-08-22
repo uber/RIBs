@@ -64,7 +64,6 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   fun setUp() {
     RibEvents.enableRibActionEmissions()
     RibCoroutinesConfig.deprecatedWorkerDispatcher = ribCoroutinesRule.ribDispatchers.Unconfined
-
   }
 
   @Test
