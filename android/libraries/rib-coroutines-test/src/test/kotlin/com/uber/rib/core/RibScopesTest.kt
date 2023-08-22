@@ -19,7 +19,6 @@ import android.app.Application
 import com.google.common.truth.Truth.assertThat
 import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
@@ -29,7 +28,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.mock
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class RibScopesTest {
 
   @get:Rule var rule = RibCoroutinesRule()

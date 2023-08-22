@@ -16,7 +16,6 @@
 package com.uber.rib.core
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainCoroutineDispatcher
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
@@ -25,7 +24,6 @@ import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
-@ExperimentalCoroutinesApi
 public data class TestRibDispatchers(
   /**
    * [TestCoroutineScheduler] to be used by all other [TestDispatcher] when using the default

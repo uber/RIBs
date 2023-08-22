@@ -17,11 +17,9 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
 import org.junit.Test
 
-@OptIn(ExperimentalCoroutinesApi::class)
 internal class RibDispatchersTest {
 
   @Test
