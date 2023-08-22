@@ -26,11 +26,14 @@ public class RibCoroutinesRule(
   public val ribDispatchers: TestRibDispatchers = TestRibDispatchers(),
 ) : TestWatcher() {
 
+  private var originalDeprecatedWorkerDispatcher = RibCoroutinesConfig.deprecatedWorkerDispatcher
   override fun starting(description: Description) {
     ribDispatchers.installTestDispatchers()
+    RibCoroutinesConfig.deprecatedWorkerDispatcher = ribDispatchers.Unconfined
   }
 
   override fun finished(description: Description) {
     ribDispatchers.resetTestDispatchers()
+    RibCoroutinesConfig.deprecatedWorkerDispatcher = originalDeprecatedWorkerDispatcher
   }
 }
