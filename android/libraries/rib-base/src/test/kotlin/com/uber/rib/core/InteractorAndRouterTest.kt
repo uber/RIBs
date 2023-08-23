@@ -97,16 +97,23 @@ class InteractorAndRouterTest {
     router.dispatchDetach()
 
     // Then.
-    val ribActionInfoValues = ribActionInfoObserver.values()
-    ribActionInfoValues
-      .last()
-      .assertRibActionInfo(
-        RibEventType.DETACHED,
-        RibActionEmitterType.ROUTER,
-        RibActionState.COMPLETED,
-        "com.uber.rib.core.FakeRouter",
-      )
     verify(childInteractor).dispatchDetach()
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    val childRouterDetachIndex =
+      ribActionInfoValues.indexOfFirst {
+        it.ribEventType == RibEventType.DETACHED &&
+          it.ribActionEmitterType == RibActionEmitterType.ROUTER &&
+          it.ribActionState == RibActionState.COMPLETED
+      }
+    val selfInteractorDetachIndex =
+      ribActionInfoValues.indexOfFirst {
+        it.ribEventType == RibEventType.DETACHED &&
+          it.ribActionEmitterType == RibActionEmitterType.INTERACTOR &&
+          it.ribActionState == RibActionState.COMPLETED
+      }
+    assertThat(selfInteractorDetachIndex).isGreaterThan(-1)
+    assertThat(childRouterDetachIndex).isGreaterThan(-1)
+    assertThat(selfInteractorDetachIndex > childRouterDetachIndex).isTrue()
   }
 
   @Test
