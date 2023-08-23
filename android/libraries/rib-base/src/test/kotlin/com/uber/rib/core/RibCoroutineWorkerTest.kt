@@ -24,7 +24,6 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.DelicateCoroutinesApi
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.awaitCancellation
@@ -49,7 +48,6 @@ import org.junit.Test
 
 private const val ON_START_DELAY_DURATION_MILLIS = 100L
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class RibCoroutineWorkerTest {
   @get:Rule val coroutineRule = RibCoroutinesRule()
   private val worker = TestRibCoroutineWorker()
@@ -180,7 +178,7 @@ class RibCoroutineWorkerTest {
   }
 }
 
-@OptIn(ExperimentalCoroutinesApi::class, InternalCoroutinesApi::class)
+@OptIn(InternalCoroutinesApi::class)
 private class ImmediateDispatcher(
   scheduler: TestCoroutineScheduler,
   private val delegate: TestDispatcher = StandardTestDispatcher(scheduler),

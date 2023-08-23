@@ -138,7 +138,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 
   @Test
-  fun bind_onStartIsCalledEagerly() {
+  fun bind_onStartIsCalledEagerly() = runTest {
     val interactor = object : Interactor<Any, Router<*>>() {}
     var onStartCalled = false
     val worker = Worker { onStartCalled = true }
@@ -148,7 +148,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 
   @Test
-  fun bind_whenSubscribeToLifecycleInWorker_observerIsCalledEagerly() {
+  fun bind_whenSubscribeToLifecycleInWorker_observerIsCalledEagerly() = runTest {
     val interactor = object : Interactor<Any, Router<*>>() {}
     var enteredUnconfined = false
     val worker = Worker {

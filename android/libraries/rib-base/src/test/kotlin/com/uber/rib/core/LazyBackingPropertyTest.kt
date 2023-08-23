@@ -17,7 +17,6 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
 import io.reactivex.Observable
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.launch
@@ -25,7 +24,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.kotlin.mock
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class LazyBackingPropertyTest {
   @Volatile private var _expensiveObject: ExpensiveObject? = null
   private val expensiveObject
