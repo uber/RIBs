@@ -1,6 +1,6 @@
 [versions]
 compile-testing = "0.17"
-coroutines = "1.6.4"
+coroutines = "1.7.3"
 junit = "4.12"
 mockito = "4.6.1"
 mockito-kotlin = "4.0.0"
