@@ -109,3 +109,10 @@
 ### Version 0.15.2
 * [Android] Set view tree owners for RibActivity
 
+### Version 0.15.3
+* Add RibCoroutineWorker.bind that receives multiple workers by @FranAguilera in https://github.com/uber/RIBs/pull/607
+* Change default CoroutineContext from empty to default for the RibCoroutineWorker<>Worker conversion by @FranAguilera in https://github.com/uber/RIBs/pull/608
+* Add `RibCoroutineWorker` factory method with `CoroutineScope` as receiver by @psteiger in https://github.com/uber/RIBs/pull/610
+* Update coroutines 1.7.3 by @tyvsmith in https://github.com/uber/RIBs/pull/609
+* Bump kotlinx.coroutines.test to 1.7.3 by @psteiger in https://github.com/uber/RIBs/pull/611
+
