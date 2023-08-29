@@ -23,7 +23,7 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":libraries:rib-compiler-app"))
+    api(project(":libraries:rib-compiler-app"))
     implementation(libs.javapoet)
 
     compileOnly(libs.annotation)
