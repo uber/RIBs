@@ -42,12 +42,10 @@ public abstract class HierarchyBrowserBase(
 ) : HierarchyBrowserBaseEx(project, rootElement) {
 
   override fun doRefresh(currentBuilderOnly: Boolean) {
-    ApplicationManager.getApplication().invokeLater {
       super.doRefresh(currentBuilderOnly)
       ApplicationManager.getApplication().invokeLater {
         expandAll()
         onRefreshComplete()
-      }
     }
   }
 
