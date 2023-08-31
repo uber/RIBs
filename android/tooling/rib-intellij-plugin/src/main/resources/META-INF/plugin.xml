@@ -1,7 +1,7 @@
 <idea-plugin version="2">
     <id>com.uber.rib.intellij-plugin</id>
     <name>RIBs</name>
-    <version>0.1.4</version>
+    <version>0.1.5</version>
     <vendor>
         Uber Mobile Platform Team
     </vendor>
@@ -17,7 +17,7 @@
     <change-notes><![CDATA[
       <strong>0.1.5</strong><br/>
       <ul>
-        <li>IntelliJ 2022.3 compatibility</li>
+        <li>IntelliJ 2023.2 compatibility</li>
       </ul>
       <strong>0.1.4</strong><br/>
       <ul>
@@ -39,7 +39,7 @@
     <depends>com.intellij.java</depends>
     <depends>org.jetbrains.android</depends>
 
-    <idea-version since-build="213"/>
+    <idea-version since-build="223"/>
 
     <extensions defaultExtensionNs="com.intellij">
         <backgroundPostStartupActivity implementation="com.uber.intellij.plugin.android.rib.AttachRibProjectServiceActivity"/>

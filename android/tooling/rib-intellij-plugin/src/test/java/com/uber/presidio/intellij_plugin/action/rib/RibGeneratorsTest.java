@@ -36,6 +36,7 @@ public class RibGeneratorsTest {
   private static final String TEST_RIBLET_NAME = "TestRib";
 
   @Test
+  @Ignore("https://github.com/JetBrains/gradle-intellij-plugin/issues/1452")
   public void ribGenerators_shouldGenerateClassesThatCompiler() {
     testWithGenerators(
         Generators.getGeneratorsForRibWithoutPresenterAndView(

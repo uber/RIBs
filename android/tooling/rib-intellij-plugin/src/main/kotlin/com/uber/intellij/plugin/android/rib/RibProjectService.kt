@@ -28,7 +28,6 @@ import com.intellij.openapi.progress.ProgressManager
 import com.intellij.openapi.progress.Task
 import com.intellij.openapi.project.DumbService
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.util.IconLoader
 import com.intellij.openapi.wm.ToolWindow
 import com.intellij.openapi.wm.ToolWindowAnchor
 import com.intellij.openapi.wm.ToolWindowManager
@@ -216,7 +215,7 @@ public class RibProjectService(public val project: Project) :
       if (toolWindowManager.getToolWindow(TOOL_WINDOW_ID) == null) {
         val toolWindow: ToolWindow =
           toolWindowManager.registerToolWindow(TOOL_WINDOW_ID, true, ToolWindowAnchor.RIGHT)
-        toolWindow.setIcon(IconLoader.getIcon("/icons/rib.png"))
+        toolWindow.setIcon(RibIcons.RibIcon)
         toolWindow.title = TOOL_WINDOW_TITLE
 
         ribPanel = RibHierarchyPanel(project, model)
@@ -231,7 +230,7 @@ public class RibProjectService(public val project: Project) :
   }
 
   private fun createRibContent(toolWindow: ToolWindow): Content {
-    val content = ContentFactory.SERVICE.getInstance().createContent(ribPanel, TAB_NAME_RIBS, true)
+    val content = ContentFactory.getInstance().createContent(ribPanel, TAB_NAME_RIBS, true)
     content.isCloseable = false
     toolWindow.contentManager.addContent(content)
     return content
