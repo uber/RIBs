@@ -54,7 +54,7 @@ class XRay private constructor() {
     /** Setup XRay using a [XRayConfig] */
     @JvmStatic
     public fun setup(config: XRayConfig) {
-        INSTANCE.config = config
+      INSTANCE.config = config
     }
 
     /** Toggles state of XRay. */
