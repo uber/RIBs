@@ -23,58 +23,60 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
+import androidx.annotation.VisibleForTesting
 
 /** Utility class that shows riblets name in its background. */
 class XRay private constructor() {
-  private var isEnabled = false
-  private var textPaint: Paint? = null
-  private fun writeOnBitmap(bitmap: Bitmap, text: String) {
-    val canvas = Canvas(bitmap)
-    val textPaint = getTextPaint()
-    val xStartPoint = (bitmap.width - textPaint.measureText(text)) / 2f
-    val yStartPoint = bitmap.height / 2f
-    canvas.drawText(text, xStartPoint, yStartPoint, textPaint)
+  private var config = XRayConfig()
+  private val textPaint: Paint by lazy {
+    Paint().apply {
+      textSize = TEXT_SIZE.toFloat()
+      color = TEXT_COLOR
+    }
   }
 
-  private fun getTextPaint(): Paint {
-    if (textPaint == null) {
-      textPaint =
-        Paint().apply {
-          textSize = TEXT_SIZE.toFloat()
-          color = TEXT_COLOR
-        }
+  private fun writeOnBitmap(bitmap: Bitmap, text: String) {
+    Canvas(bitmap).run {
+      val xStartPoint = (bitmap.width - textPaint.measureText(text)) / 2f
+      val yStartPoint = bitmap.height / 2f
+      drawText(text, xStartPoint, yStartPoint, textPaint)
     }
-    return textPaint!!
   }
 
   companion object {
     private val INSTANCE = XRay()
     private const val FRAME_WIDTH = 500
     private const val FRAME_HEIGHT = 150
-    private const val XRAY_ALFA = 0.9f
+    private const val XRAY_ALPHA = 0.9f
     private const val TEXT_SIZE = 30
     private const val TEXT_COLOR = Color.RED
 
-    /** Toggles state of XRay. */
+    /** Setup XRay using a [XRayConfig] */
     @JvmStatic
-    fun toggle() {
-      INSTANCE.isEnabled = !INSTANCE.isEnabled
+    public fun setup(config: XRayConfig) {
+        INSTANCE.config = config
+    }
+
+    /** Toggles state of XRay. */
+    public fun toggle() {
+      val config = INSTANCE.config
+      setup(config.copy(enabled = !config.enabled))
     }
 
     /** @return `true` if XRay is enabled, `false` otherwise. */
     @JvmStatic
-    fun isEnabled(): Boolean {
-      return INSTANCE.isEnabled
+    public fun isEnabled(): Boolean {
+      return INSTANCE.config.enabled
     }
 
     /**
      * Puts [ViewBuilder]s riblet name in the background of the [View]
      *
-     * @param viewRouter a [ViewRouter] which riblets name should be written.
+     * @param routerName the riblets name to be written.
      * @param view a [View] to put the name behind.
      */
     @JvmStatic
-    fun apply(viewRouter: ViewRouter<*, *>, view: View) {
+    internal fun apply(routerName: String, view: View) {
       val oldBackground = view.background
       val bitmap: Bitmap =
         if (oldBackground != null) {
@@ -82,11 +84,15 @@ class XRay private constructor() {
         } else {
           Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
         }
-      INSTANCE.writeOnBitmap(bitmap, getRibletName(viewRouter))
-      val newBackground = BitmapDrawable(view.context.resources, bitmap)
-      newBackground.gravity = Gravity.CENTER
-      view.background = newBackground
-      view.alpha = XRAY_ALFA
+      INSTANCE.writeOnBitmap(bitmap, getShortRibletName(routerName))
+      view.background =
+        BitmapDrawable(view.context.resources, bitmap).apply {
+          gravity = Gravity.CENTER
+        }
+
+      if (INSTANCE.config.alphaEnabled) {
+        view.alpha = XRAY_ALPHA
+      }
     }
 
     private fun drawableToBitmap(drawable: Drawable): Bitmap {
@@ -110,8 +116,13 @@ class XRay private constructor() {
       return bitmap
     }
 
-    private fun getRibletName(viewRouter: ViewRouter<*, *>): String {
-      return viewRouter.javaClass.simpleName.replace("Router", "")
+    @VisibleForTesting
+    internal fun getShortRibletName(originalName: String): String {
+      return if (originalName != "Router") {
+        originalName.replace("Router", "")
+      } else {
+        originalName
+      }
     }
   }
 }

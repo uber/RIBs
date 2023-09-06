@@ -63,6 +63,13 @@ protected constructor(
   }
 
   /**
+   * @return the name of the router. This is used for logging and debugging purposes.
+   */
+  protected fun getName(): String {
+    return javaClass.simpleName
+  }
+
+  /**
    * Dispatch back press to the associated interactor. Do not override this.
    *
    * @return TRUE if the interactor handles the back press.
@@ -125,8 +132,8 @@ protected constructor(
 
     ribRefWatcher.logBreadcrumb(
       "ATTACHED",
-      childRouter.javaClass.simpleName,
-      this.javaClass.simpleName,
+      childRouter.getName(),
+      this.getName(),
     )
     RibEvents.emitRouterEvent(RibEventType.ATTACHED, childRouter, this)
     var childBundle: Bundle? = null
@@ -153,8 +160,8 @@ protected constructor(
     ribRefWatcher.watchDeletedObject(interactor)
     ribRefWatcher.logBreadcrumb(
       "DETACHED",
-      childRouter.javaClass.simpleName,
-      this.javaClass.simpleName,
+      childRouter.getName(),
+      this.getName(),
     )
     if (savedInstanceState != null) {
       val childrenBundles = savedInstanceState?.getBundleExtra(KEY_CHILD_ROUTERS)
