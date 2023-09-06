@@ -86,9 +86,7 @@ class XRay private constructor() {
         }
       INSTANCE.writeOnBitmap(bitmap, getShortRibletName(routerName))
       view.background =
-        BitmapDrawable(view.context.resources, bitmap).apply {
-          gravity = Gravity.CENTER
-        }
+        BitmapDrawable(view.context.resources, bitmap).apply { gravity = Gravity.CENTER }
 
       if (INSTANCE.config.alphaEnabled) {
         view.alpha = XRAY_ALPHA
