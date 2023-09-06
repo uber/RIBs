@@ -62,9 +62,7 @@ protected constructor(
     interactorGeneric.setRouterInternal(this)
   }
 
-  /**
-   * @return the name of the router. This is used for logging and debugging purposes.
-   */
+  /** @return the name of the router. This is used for logging and debugging purposes. */
   protected fun getName(): String {
     return javaClass.simpleName
   }
