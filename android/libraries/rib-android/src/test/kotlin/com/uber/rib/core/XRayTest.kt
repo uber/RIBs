@@ -38,36 +38,40 @@ class XRayTest {
   }
 
   @Test
-  fun test_initial_value() {
+  fun `test initial value`() {
     XRay.setup(XRayConfig())
     assertFalse("XRay must be disabled by default", XRay.isEnabled())
   }
 
   @Test
-  fun apply_changesViewBackground() {
-    val view: View = mock { on { context } doReturn (RuntimeEnvironment.application.baseContext) }
+  fun `apply function changes view background`() {
+    val view: View = mock {
+      on { context } doReturn RuntimeEnvironment.application.baseContext
+    }
     XRay.apply("Test", view)
     verify(view).background = any()
     verify(view).alpha = 0.9f
   }
 
   @Test
-  fun apply_changesViewBackground_alphaDisabled() {
+  fun `apply function changes view background but with alpha disabled`() {
     XRay.setup(XRayConfig(enabled = true, alphaEnabled = false))
-    val view: View = mock { on { context } doReturn (RuntimeEnvironment.application.baseContext) }
+    val view: View = mock {
+      on { context } doReturn RuntimeEnvironment.application.baseContext
+    }
     XRay.apply("Test", view)
     verify(view).background = any()
     verify(view, never()).alpha = any()
   }
 
   @Test
-  fun getShortRibletName_mustShortRouterName() {
+  fun `getShortRibletName must short router name`() {
     assertEquals("Test", XRay.getShortRibletName("TestRouter"))
     assertEquals("Router", XRay.getShortRibletName("Router"))
   }
 
   @Test
-  fun xray_toggle() {
+  fun `xray toggle`() {
     XRay.toggle()
     assertFalse(XRay.isEnabled())
 

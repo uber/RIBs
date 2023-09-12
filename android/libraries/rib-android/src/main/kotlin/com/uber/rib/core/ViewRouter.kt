@@ -34,6 +34,7 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
   ) : super(interactor, component) {
     this.view = view
     if (XRay.isEnabled()) {
+      XRay.toggle()
       XRay.apply(getName(), view)
     }
   }

@@ -26,7 +26,7 @@ import android.view.View
 import androidx.annotation.VisibleForTesting
 
 /** Utility class that shows riblets name in its background. */
-class XRay private constructor() {
+public object XRay {
   private var config = XRayConfig()
   private val textPaint: Paint by lazy {
     Paint().apply {
@@ -43,84 +43,90 @@ class XRay private constructor() {
     }
   }
 
-  companion object {
-    private val INSTANCE = XRay()
-    private const val FRAME_WIDTH = 500
-    private const val FRAME_HEIGHT = 150
-    private const val XRAY_ALPHA = 0.9f
-    private const val TEXT_SIZE = 30
-    private const val TEXT_COLOR = Color.RED
+  /** Setup XRay using a [XRayConfig] */
+  @JvmStatic
+  public fun setup(config: XRayConfig) {
+    this.config = config
+  }
 
-    /** Setup XRay using a [XRayConfig] */
-    @JvmStatic
-    public fun setup(config: XRayConfig) {
-      INSTANCE.config = config
-    }
+  /** Toggles state of XRay. */
+  @Deprecated(
+    message = "toggle() may lead to switch-on-switch-off behavior. Use setup() instead.",
+    replaceWith = ReplaceWith("setup(XRayConfig(enabled = !config.enabled))")
+  )
+  @JvmStatic
+  public fun toggle() {
+    setup(config.copy(enabled = !config.enabled))
+  }
 
-    /** Toggles state of XRay. */
-    public fun toggle() {
-      val config = INSTANCE.config
-      setup(config.copy(enabled = !config.enabled))
-    }
+  /** @return `true` if XRay is enabled, `false` otherwise. */
+  @JvmStatic
+  public fun isEnabled(): Boolean {
+    return this.config.enabled
+  }
 
-    /** @return `true` if XRay is enabled, `false` otherwise. */
-    @JvmStatic
-    public fun isEnabled(): Boolean {
-      return INSTANCE.config.enabled
-    }
-
-    /**
-     * Puts [ViewBuilder]s riblet name in the background of the [View]
-     *
-     * @param routerName the riblets name to be written.
-     * @param view a [View] to put the name behind.
-     */
-    @JvmStatic
-    internal fun apply(routerName: String, view: View) {
-      val oldBackground = view.background
-      val bitmap: Bitmap =
-        if (oldBackground != null) {
-          drawableToBitmap(oldBackground)
-        } else {
-          Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
-        }
-      INSTANCE.writeOnBitmap(bitmap, getShortRibletName(routerName))
-      view.background =
-        BitmapDrawable(view.context.resources, bitmap).apply { gravity = Gravity.CENTER }
-
-      if (INSTANCE.config.alphaEnabled) {
-        view.alpha = XRAY_ALPHA
-      }
-    }
-
-    private fun drawableToBitmap(drawable: Drawable): Bitmap {
-      if (drawable is BitmapDrawable) {
-        if (drawable.bitmap != null) {
-          return drawable.bitmap
-        }
-      }
-      val bitmap: Bitmap =
-        if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
-          Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
-        } else {
-          Bitmap.createBitmap(
-            drawable.intrinsicWidth,
-            drawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888,
-          )
-        }
-      val canvas = Canvas(bitmap)
-      drawable.draw(canvas)
-      return bitmap
-    }
-
-    @VisibleForTesting
-    internal fun getShortRibletName(originalName: String): String {
-      return if (originalName != "Router") {
-        originalName.replace("Router", "")
+  /**
+   * Puts [ViewBuilder]s riblet name in the background of the [View]
+   *
+   * @param routerName the riblets name to be written.
+   * @param view a [View] to put the name behind.
+   */
+  @JvmStatic
+  internal fun apply(routerName: String, view: View) {
+    val oldBackground = view.background
+    val bitmap: Bitmap =
+      if (oldBackground != null) {
+        drawableToBitmap(oldBackground)
       } else {
-        originalName
+        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
       }
+    writeOnBitmap(bitmap, getShortRibletName(routerName))
+    view.background =
+      BitmapDrawable(view.context.resources, bitmap).apply { gravity = Gravity.CENTER }
+
+    if (config.alphaEnabled) {
+      view.alpha = XRAY_ALPHA
     }
   }
+
+  private fun drawableToBitmap(drawable: Drawable): Bitmap {
+    if (drawable is BitmapDrawable) {
+      if (drawable.bitmap != null) {
+        return drawable.bitmap
+      }
+    }
+    val bitmap: Bitmap =
+      if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
+      } else {
+        Bitmap.createBitmap(
+          drawable.intrinsicWidth,
+          drawable.intrinsicHeight,
+          Bitmap.Config.ARGB_8888,
+        )
+      }
+    val canvas = Canvas(bitmap)
+    drawable.draw(canvas)
+    return bitmap
+  }
+
+  @VisibleForTesting
+  internal fun getShortRibletName(originalName: String): String {
+    return if (originalName != "Router") {
+      originalName.replace("Router", "")
+    } else {
+      originalName
+    }
+  }
+
+  private const val FRAME_WIDTH = 500
+  private const val FRAME_HEIGHT = 150
+  private const val XRAY_ALPHA = 0.9f
+  private const val TEXT_SIZE = 30
+  private const val TEXT_COLOR = Color.RED
 }
+
+public data class XRayConfig(
+  val enabled: Boolean = false,
+  val alphaEnabled: Boolean = true,
+)
