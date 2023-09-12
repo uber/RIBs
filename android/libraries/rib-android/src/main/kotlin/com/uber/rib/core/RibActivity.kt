@@ -22,9 +22,6 @@ import android.content.res.Configuration
 import android.os.Build
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import androidx.lifecycle.ViewTreeLifecycleOwner
-import androidx.lifecycle.ViewTreeViewModelStoreOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.autodispose.lifecycle.LifecycleNotStartedException
@@ -93,7 +90,6 @@ abstract class RibActivity :
   @CallSuper
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     super.onCreate(savedInstanceState)
-    initViewTreeOwners()
     val rootViewGroup = findViewById<ViewGroup>(android.R.id.content)
     _lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
     val wrappedBundle: Bundle? =
@@ -235,18 +231,6 @@ abstract class RibActivity :
    * @return the [Interactor].
    */
   protected abstract fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *>
-
-  /**
-   * [RibActivity] must call this since it does not use [ComponentActivity.setContentView] which
-   * already handles this.
-   */
-  private fun initViewTreeOwners() {
-    // Set the view tree owners before setting the content view so that the inflation process
-    // and attach listeners will see them already present
-    ViewTreeLifecycleOwner.set(window.decorView, this)
-    ViewTreeViewModelStoreOwner.set(window.decorView, this)
-    ViewTreeSavedStateRegistryOwner.set(window.decorView, this)
-  }
 
   companion object {
     /**
