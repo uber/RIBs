@@ -45,9 +45,7 @@ class XRayTest {
 
   @Test
   fun `apply function changes view background`() {
-    val view: View = mock {
-      on { context } doReturn RuntimeEnvironment.application.baseContext
-    }
+    val view: View = mock { on { context } doReturn RuntimeEnvironment.application.baseContext }
     XRay.apply("Test", view)
     verify(view).background = any()
     verify(view).alpha = 0.9f
@@ -56,9 +54,7 @@ class XRayTest {
   @Test
   fun `apply function changes view background but with alpha disabled`() {
     XRay.setup(XRayConfig(enabled = true, alphaEnabled = false))
-    val view: View = mock {
-      on { context } doReturn RuntimeEnvironment.application.baseContext
-    }
+    val view: View = mock { on { context } doReturn RuntimeEnvironment.application.baseContext }
     XRay.apply("Test", view)
     verify(view).background = any()
     verify(view, never()).alpha = any()

@@ -52,7 +52,7 @@ public object XRay {
   /** Toggles state of XRay. */
   @Deprecated(
     message = "toggle() may lead to switch-on-switch-off behavior. Use setup() instead.",
-    replaceWith = ReplaceWith("setup(XRayConfig(enabled = !config.enabled))")
+    replaceWith = ReplaceWith("setup(XRayConfig(enabled = !config.enabled))"),
   )
   @JvmStatic
   public fun toggle() {
