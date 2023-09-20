@@ -33,9 +33,7 @@ dependencies {
 
     testImplementation(libs.annotation)
     testImplementation(testLibs.compileTesting)
-    if (!Jvm.current().javaVersion.isJava9Compatible()) {
-        testCompile files(Jvm.current().getToolsJar())
-    }
+    testImplementation files("libs/tools.jar")
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
