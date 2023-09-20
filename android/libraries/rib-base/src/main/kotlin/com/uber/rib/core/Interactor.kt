@@ -156,11 +156,9 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   /** @return the currently attached presenter if there is one */
   @VisibleForTesting
   private fun getPresenter(): P {
-    return runCatching {
-      actualPresenter ?: injectedPresenter
-    }.getOrNull().run {
-      checkNotNull(this) { "Attempting to get interactor's presenter before being set." }
-    }
+    return runCatching { actualPresenter ?: injectedPresenter }
+      .getOrNull()
+      .run { checkNotNull(this) { "Attempting to get interactor's presenter before being set." } }
   }
 
   @VisibleForTesting
