@@ -116,3 +116,6 @@
 * Update coroutines 1.7.3 by @tyvsmith in https://github.com/uber/RIBs/pull/609
 * Bump kotlinx.coroutines.test to 1.7.3 by @psteiger in https://github.com/uber/RIBs/pull/611
 
+### Version 0.15.4
+* Set JvmVersion to 1.8
+
