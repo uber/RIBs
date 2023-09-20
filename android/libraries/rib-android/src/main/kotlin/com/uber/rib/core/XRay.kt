@@ -28,11 +28,9 @@ import androidx.annotation.VisibleForTesting
 /** Utility class that shows riblets name in its background. */
 public object XRay {
   private var config = XRayConfig()
-  private val textPaint: Paint by lazy {
-    Paint().apply {
-      textSize = TEXT_SIZE.toFloat()
-      color = TEXT_COLOR
-    }
+  private val textPaint = Paint().apply {
+    textSize = TEXT_SIZE.toFloat()
+    color = TEXT_COLOR
   }
 
   private fun writeOnBitmap(bitmap: Bitmap, text: String) {
