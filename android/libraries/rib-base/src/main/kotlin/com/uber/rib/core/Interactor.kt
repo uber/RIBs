@@ -150,26 +150,17 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   }
 
   internal fun setRouterInternal(router: Router<*>) {
-    if (routerDelegate != null) {
-      this.router = router as R
-    }
+    this.router = router as R
   }
 
   /** @return the currently attached presenter if there is one */
   @VisibleForTesting
   private fun getPresenter(): P {
-    val presenter: P? =
-      try {
-        if (actualPresenter != null) {
-          actualPresenter
-        } else {
-          injectedPresenter
-        }
-      } catch (e: UninitializedPropertyAccessException) {
-        actualPresenter
-      }
-    checkNotNull(presenter) { "Attempting to get interactor's presenter before being set." }
-    return presenter
+    return runCatching {
+      actualPresenter ?: injectedPresenter
+    }.getOrNull().run {
+      checkNotNull(this) { "Attempting to get interactor's presenter before being set." }
+    }
   }
 
   @VisibleForTesting

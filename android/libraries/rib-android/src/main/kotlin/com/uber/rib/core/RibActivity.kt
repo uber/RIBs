@@ -96,10 +96,9 @@ abstract class RibActivity :
     initViewTreeOwners()
     val rootViewGroup = findViewById<ViewGroup>(android.R.id.content)
     _lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
-    val wrappedBundle: Bundle? =
-      if (savedInstanceState != null) Bundle(savedInstanceState) else null
     router = createRouter(rootViewGroup)
     router?.let {
+      val wrappedBundle: Bundle? = savedInstanceState?.let(::Bundle)
       it.dispatchAttach(wrappedBundle)
       rootViewGroup.addView(it.view)
       RibEvents.emitRouterEvent(RibEventType.ATTACHED, it, null)
