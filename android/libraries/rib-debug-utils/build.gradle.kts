@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-    id("ribs.kotlin-android-library-conventions")
+    id("ribs.kotlin-library-conventions")
     alias(libs.plugins.mavenPublish)
 }
 
-android {
-    namespace "com.uber.rib.workflow.test"
-
-    // This module is only testing utilities. Given this code isn't intended to be run inside a production
-    // android app this module confuses android lint. Let's just disable lint errors here.
-    lint {
-        abortOnError false
-        disable 'InvalidPackage'
+kotlin {
+    sourceSets {
+        configureEach {
+            languageSettings {
+                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
+            }
+        }
     }
+    explicitApi()
+    jvmToolchain(8)
 }
 
 dependencies {
-    api(project(":libraries:rib-workflow"))
-    api(libs.guava.android)
-    api(libs.rxjava2)
-    implementation(libs.annotation)
-    implementation(testLibs.truth)
+    implementation(project(":libraries:rib-base"))
 }

@@ -20,6 +20,7 @@ import androidx.annotation.CallSuper
 import androidx.annotation.MainThread
 import androidx.annotation.VisibleForTesting
 import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import java.util.Locale
 import java.util.concurrent.CopyOnWriteArrayList
 
@@ -40,7 +41,8 @@ protected constructor(
     get() = interactor as Interactor<*, *>
 
   /** @return the Tag. */
-  internal var tag: String? = null
+  @CoreFriendModuleApi
+  public var tag: String? = null
     private set
   private var savedInstanceState: Bundle? = null
   private var isLoaded = false
@@ -58,6 +60,7 @@ protected constructor(
     (component as? InteractorBaseComponent<Interactor<*, *>>)?.inject(interactorGeneric)
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   protected open fun attachToInteractor() {
     interactorGeneric.setRouterInternal(this)
   }
@@ -99,6 +102,7 @@ protected constructor(
    * @param childRouter the [Router] to be attached.
    * @param tag an identifier to namespace saved instance state [Bundle] objects.
    */
+  @OptIn(CoreFriendModuleApi::class)
   @MainThread
   public open fun attachChild(childRouter: Router<*>, tag: String) {
     for (child in children) {
@@ -146,6 +150,7 @@ protected constructor(
    *
    * @param childRouter the [Router] to be detached.
    */
+  @OptIn(CoreFriendModuleApi::class)
   @MainThread
   public open fun detachChild(childRouter: Router<*>) {
     val isChildRemoved = children.remove(childRouter)
@@ -185,6 +190,7 @@ protected constructor(
     dispatchAttach(savedInstanceState, javaClass.name)
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   @CallSuper
   @Initializer
   public open fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
@@ -218,7 +224,8 @@ protected constructor(
    *
    * @return Children.
    */
-  internal open fun getChildren(): List<Router<*>> {
+  @CoreFriendModuleApi
+  public open fun getChildren(): List<Router<*>> {
     return children
   }
 
@@ -226,6 +233,7 @@ protected constructor(
     saveInstanceState(outState)
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   protected open fun saveInstanceState(outState: Bundle) {
     val interactorSavedInstanceState = Bundle()
     interactorGeneric.onSaveInstanceStateInternal(interactorSavedInstanceState)

@@ -17,6 +17,7 @@ package com.uber.rib.workflow.core
 
 import com.google.common.base.Optional
 import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.workflow.core.internal.WorkflowFriendModuleApi
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -44,8 +45,11 @@ private constructor(
    * @param <A2> the actionable item type returned by the next step.
    * @return a [Step] to chain more calls to.
    */
+  @OptIn(WorkflowFriendModuleApi::class)
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
-  open fun <T2, A2 : ActionableItem> onStep(func: BiFunction<T, A, Step<T2, A2>>): Step<T2, A2> {
+  public open fun <T2, A2 : ActionableItem> onStep(
+    func: BiFunction<T, A, Step<T2, A2>>,
+  ): Step<T2, A2> {
     return Step(
       asObservable()
         .flatMap { data: Optional<Data<T, A>> ->
@@ -59,11 +63,13 @@ private constructor(
     )
   }
 
+  @OptIn(WorkflowFriendModuleApi::class)
   internal open fun asResultObservable(): Observable<Optional<T>> {
     return asObservable().map { data -> Optional.fromNullable(data.orNull()?.getValue()) }
   }
 
-  internal open fun asObservable(): Observable<Optional<Data<T, A>>> {
+  @WorkflowFriendModuleApi
+  public open fun asObservable(): Observable<Optional<Data<T, A>>> {
     val cachedObservable: Observable<Optional<Data<T, A>>> =
       stepDataSingle.toObservable().observeOn(AndroidSchedulers.mainThread()).cache()
     return cachedObservable.flatMap { dataOptional: Optional<Data<T, A>> ->
@@ -88,9 +94,12 @@ private constructor(
    * @param value for this instance.
    * @param actionableItem for this instance.
    */
-  open class Data<T, A : ActionableItem>(private val value: T, internal val actionableItem: A) {
+  public open class Data<T, A : ActionableItem>(
+    private val value: T,
+    internal val actionableItem: A,
+  ) {
 
-    internal open fun getValue() = value
+    @WorkflowFriendModuleApi public open fun getValue() = value
 
     companion object {
       /**
@@ -102,7 +111,7 @@ private constructor(
        * @return a new [Step.Data] instance. </A>
        */
       @JvmStatic
-      fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> {
+      public fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> {
         return Data(NoValueHolder.INSTANCE, actionableItem)
       }
     }

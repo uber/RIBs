@@ -19,25 +19,30 @@ plugins {
 }
 
 android {
-    namespace "com.uber.rib.android"
+    namespace = "com.uber.rib.workflow.test"
+
+    // This module is only testing utilities. Given this code isn't intended to be run inside a production
+    // android app this module confuses android lint. Let's just disable lint errors here.
+    lint {
+        abortOnError = false
+        disable.add("InvalidPackage")
+    }
+}
+
+kotlin {
+    sourceSets {
+        configureEach {
+            languageSettings {
+                optIn("com.uber.rib.workflow.core.internal.WorkflowFriendModuleApi")
+            }
+        }
+    }
 }
 
 dependencies {
-    api(project(":libraries:rib-android-core"))
-    api(project(":libraries:rib-base"))
-    api(libs.rxkotlin)
-    api(libs.rxrelay2)
+    api(project(":libraries:rib-workflow"))
+    api(libs.guava.android)
     api(libs.rxjava2)
-    implementation(libs.javax.inject)
     implementation(libs.annotation)
-    implementation(libs.appcompat)
-    implementation(libs.guava.android)
-    implementation(libs.autodispose.coroutines)
-    implementation(libs.coroutines.android)
-    implementation(libs.coroutines.rx2)
-    testImplementation(testLibs.robolectric)
-    testImplementation(libs.lifecycle.runtime)
-    testImplementation(libs.appcompat)
-    testImplementation(testLibs.mockitoKotlin)
-    testImplementation(project(":libraries:rib-test"))
+    implementation(testLibs.truth)
 }

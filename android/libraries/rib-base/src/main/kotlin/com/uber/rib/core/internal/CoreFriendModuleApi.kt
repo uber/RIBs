@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2017. Uber Technologies
+ * Copyright (C) 2023. Uber Technologies
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.uber.rib.core.internal
 
-plugins {
-    id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
-}
-
-kotlin {
-    explicitApi()
-    jvmToolchain(8)
-}
-
-dependencies {
-    implementation(project(":libraries:rib-base"))
-}
+/*
+ * Methods that are visible only to rib-base friend modules.
+ *
+ * Anything marked with this annotation is not intended for public use.
+ */
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR) internal annotation class CoreFriendModuleApi

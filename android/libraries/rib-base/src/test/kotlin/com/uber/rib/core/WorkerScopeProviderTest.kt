@@ -17,6 +17,7 @@ package com.uber.rib.core
 
 import com.jakewharton.rxrelay2.BehaviorRelay
 import com.jakewharton.rxrelay2.Relay
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.observers.TestObserver
 import org.junit.Before
@@ -27,6 +28,7 @@ class WorkerScopeProviderTest {
   private val lifecycle: Relay<WorkerEvent> = BehaviorRelay.create()
   private lateinit var testObserver: TestObserver<Any>
 
+  @OptIn(CoreFriendModuleApi::class)
   @Before
   fun setUp() {
     testObserver = TestObserver()

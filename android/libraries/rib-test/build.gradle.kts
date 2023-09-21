@@ -19,22 +19,22 @@ plugins {
     alias(libs.plugins.mavenPublish)
 }
 
+kotlin {
+    sourceSets {
+        configureEach {
+            languageSettings {
+                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
+            }
+        }
+    }
+}
+
 dependencies {
-    api(project(':libraries:rib-coroutines'))
-    api(testLibs.coroutines.test)
+    api(project(":libraries:rib-base"))
+    implementation(libs.rxjava2)
+    implementation(libs.kotlin.stdlib)
     api(testLibs.junit)
-
-    compileOnly(libs.android.api)
-
-    testImplementation(project(":libraries:rib-base"))
-    testImplementation(project(":libraries:rib-test"))
-    testImplementation(testLibs.junit)
-    testImplementation(testLibs.mockito)
-    testImplementation(testLibs.mockitoKotlin)
-    testImplementation(testLibs.truth)
-    testImplementation(testLibs.coroutines.test)
-    testImplementation(libs.coroutines.android)
-    testImplementation(libs.annotation)
-    testImplementation(libs.android.api)
-
+    api(testLibs.truth)
+    api(testLibs.mockito)
+    implementation(testLibs.mockitoKotlin)
 }
