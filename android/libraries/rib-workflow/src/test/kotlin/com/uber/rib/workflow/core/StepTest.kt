@@ -19,6 +19,7 @@ import com.google.common.base.Optional
 import com.google.common.truth.Truth.assertThat
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.workflow.core.Step.Data
+import com.uber.rib.workflow.core.internal.WorkflowFriendModuleApi
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.BehaviorSubject
@@ -27,6 +28,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(WorkflowFriendModuleApi::class)
 class StepTest {
 
   @get:Rule var androidSchedulersRuleRx2 = AndroidSchedulersRule()

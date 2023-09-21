@@ -16,6 +16,7 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import io.reactivex.Observable
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.channels.toList
@@ -26,6 +27,8 @@ import org.mockito.kotlin.mock
 
 class LazyBackingPropertyTest {
   @Volatile private var _expensiveObject: ExpensiveObject? = null
+
+  @OptIn(CoreFriendModuleApi::class)
   private val expensiveObject
     get() = ::_expensiveObject.setIfNullAndGet { ExpensiveObject() }
 
@@ -47,6 +50,8 @@ class LazyBackingPropertyTest {
 
 private open class ClassToBeMocked {
   @Volatile private var _prop: Observable<Int>? = null
+
+  @OptIn(CoreFriendModuleApi::class)
   val prop: Observable<Int>
     get() = ::_prop.setIfNullAndGet { Observable.just(1, 2, 3) }
 }

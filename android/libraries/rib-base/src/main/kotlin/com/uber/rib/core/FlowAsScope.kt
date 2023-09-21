@@ -19,6 +19,7 @@ package com.uber.rib.core
 
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.autodispose.lifecycle.LifecycleNotStartedException
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import io.reactivex.CompletableSource
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -36,7 +37,8 @@ import kotlinx.coroutines.rx2.rxCompletable
  * 2. [LifecycleEndedException], if the last emitted event is in the end (inclusive) or beyond
  *    [range].
  */
-internal fun <T : Comparable<T>> SharedFlow<T>.asScopeCompletable(
+@CoreFriendModuleApi
+public fun <T : Comparable<T>> SharedFlow<T>.asScopeCompletable(
   range: ClosedRange<T>,
   context: CoroutineContext = EmptyCoroutineContext,
 ): CompletableSource {

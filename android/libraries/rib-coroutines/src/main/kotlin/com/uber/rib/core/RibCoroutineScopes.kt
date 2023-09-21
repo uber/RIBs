@@ -18,6 +18,7 @@ package com.uber.rib.core
 import android.app.Application
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.coroutinesinterop.asCoroutineScope
+import com.uber.rib.core.internal.CoroutinesFriendModuleApi
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -34,6 +35,7 @@ import kotlinx.coroutines.job
  * This scope is bound to
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
+@OptIn(CoroutinesFriendModuleApi::class)
 public val ScopeProvider.coroutineScope: CoroutineScope by
   LazyCoroutineScope<ScopeProvider> {
     val context: CoroutineContext =
@@ -52,6 +54,7 @@ public val ScopeProvider.coroutineScope: CoroutineScope by
  * This scope is bound to
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
+@OptIn(CoroutinesFriendModuleApi::class)
 public val Application.coroutineScope: CoroutineScope by
   LazyCoroutineScope<Application> {
     val context: CoroutineContext =
@@ -63,17 +66,18 @@ public val Application.coroutineScope: CoroutineScope by
     CoroutineScope(context)
   }
 
-internal class LazyCoroutineScope<This : Any>(val initializer: This.() -> CoroutineScope) {
-  companion object {
+@CoroutinesFriendModuleApi
+public class LazyCoroutineScope<This : Any>(private val initializer: This.() -> CoroutineScope) {
+  public companion object {
     private val values = WeakHashMap<Any, CoroutineScope>()
 
     // Used to get and set Test overrides from rib-coroutines-test utils
-    operator fun get(provider: Any) = values[provider]
-    operator fun set(provider: Any, scope: CoroutineScope?) {
+    public operator fun get(provider: Any): CoroutineScope? = values[provider]
+    public operator fun set(provider: Any, scope: CoroutineScope?) {
       values[provider] = scope
     }
   }
-  operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope =
+  public operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope =
     synchronized(LazyCoroutineScope) {
       return values.getOrPut(thisRef) {
         thisRef.initializer().apply {

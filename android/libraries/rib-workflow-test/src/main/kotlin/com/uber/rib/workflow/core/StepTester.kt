@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("invisible_reference", "invisible_member")
-
 package com.uber.rib.workflow.core
 
 import com.google.common.base.Optional
@@ -23,7 +21,7 @@ import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 
 /** Utility to expose [Observable] instances on a [Step] for unit testing purposes. */
-object StepTester {
+public object StepTester {
   /**
    * Exposes a [Step] instances observable for testing purposes.
    *
@@ -33,7 +31,7 @@ object StepTester {
    * @return a [Observable] that runs the steps action. </A></T>
    */
   @JvmStatic
-  fun <T, A : ActionableItem> exposeObservable(
+  public fun <T, A : ActionableItem> exposeObservable(
     step: Step<T, A>,
   ): Observable<Optional<Step.Data<T, A>>> {
     return step.asObservable()
@@ -48,7 +46,7 @@ object StepTester {
    * @return the data of the step </A></T>
    */
   @JvmStatic
-  fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? {
+  public fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? {
     return step.getValue()
   }
 
@@ -60,7 +58,7 @@ object StepTester {
    * @param <A> type of next actionable item for a step. </A></T>
    */
   @JvmStatic
-  fun <T, A : ActionableItem> assertStepNotYetEmitted(
+  public fun <T, A : ActionableItem> assertStepNotYetEmitted(
     testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
   ) {
     testSubscriber.run {
@@ -78,7 +76,7 @@ object StepTester {
    * @param <A> type of next actionable item for a step. </A></T>
    */
   @JvmStatic
-  fun <T, A : ActionableItem> assertStepEmitted(
+  public fun <T, A : ActionableItem> assertStepEmitted(
     testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
   ) {
     testSubscriber.assertValueCount(1)

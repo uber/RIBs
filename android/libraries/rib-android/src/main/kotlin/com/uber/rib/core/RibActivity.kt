@@ -13,8 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("invisible_reference", "invisible_member")
-
 package com.uber.rib.core
 
 import android.content.Intent
@@ -45,7 +43,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
 /** Base implementation for all VIP [android.app.Activity]s. */
-abstract class RibActivity :
+public abstract class RibActivity :
   CoreAppCompatActivity(),
   ActivityStarter,
   LifecycleScopeProvider<ActivityLifecycleEvent>,
@@ -55,7 +53,7 @@ abstract class RibActivity :
   private val _lifecycleFlow =
     MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
 
-  open val lifecycleFlow: SharedFlow<ActivityLifecycleEvent>
+  public open val lifecycleFlow: SharedFlow<ActivityLifecycleEvent>
     get() = _lifecycleFlow
 
   @Volatile private var _lifecycleObservable: Observable<ActivityLifecycleEvent>? = null
@@ -64,7 +62,7 @@ abstract class RibActivity :
 
   private val _callbacksFlow =
     MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
-  open val callbacksFlow: SharedFlow<ActivityCallbackEvent>
+  public open val callbacksFlow: SharedFlow<ActivityCallbackEvent>
     get() = _callbacksFlow
 
   @Volatile private var _callbacksObservable: Observable<ActivityCallbackEvent>? = null
@@ -215,7 +213,7 @@ abstract class RibActivity :
    * @return the [Interactor] when the activity has alive.
    * @throws IllegalStateException if the activity has not been created or has been destroyed.
    */
-  open val interactor: Interactor<*, *>
+  public open val interactor: Interactor<*, *>
     get() =
       if (router != null) {
         router?.interactor as Interactor<*, *>
@@ -232,7 +230,7 @@ abstract class RibActivity :
    */
   protected abstract fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *>
 
-  companion object {
+  public companion object {
     /**
      * Figures out which corresponding next lifecycle event in which to unsubscribe, for Activities.
      */

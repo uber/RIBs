@@ -19,6 +19,7 @@ import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
@@ -157,6 +158,7 @@ public object WorkerBinder {
     }
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   @JvmStatic
   @VisibleForTesting
   @Deprecated(
@@ -226,6 +228,7 @@ public object WorkerBinder {
    * @param workerLifecycle the worker lifecycle event provider
    * @param worker the class that wants to be informed when to start and stop doing work
    */
+  @OptIn(CoreFriendModuleApi::class)
   @JvmStatic
   @Deprecated(
     message =

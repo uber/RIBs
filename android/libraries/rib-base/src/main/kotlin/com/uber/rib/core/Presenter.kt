@@ -17,6 +17,7 @@ package com.uber.rib.core
 
 import androidx.annotation.CallSuper
 import com.uber.autodispose.ScopeProvider
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.PresenterEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
@@ -39,6 +40,8 @@ public abstract class Presenter : ScopeProvider, RibActionEmitter {
     get() = _lifecycleFlow
 
   @Volatile private var _lifecycleObservable: Observable<PresenterEvent>? = null
+
+  @OptIn(CoreFriendModuleApi::class)
   private val lifecycleObservable
     get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
 
@@ -70,6 +73,7 @@ public abstract class Presenter : ScopeProvider, RibActionEmitter {
   /** @return an observable of this controller's lifecycle events. */
   public fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
+  @OptIn(CoreFriendModuleApi::class)
   final override fun requestScope(): CompletableSource =
     lifecycleFlow.asScopeCompletable(lifecycleRange)
 

@@ -20,6 +20,7 @@ import androidx.annotation.VisibleForTesting
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
@@ -39,12 +40,15 @@ import kotlinx.coroutines.rx2.asObservable
  */
 public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, RibActionEmitter {
   @Inject public lateinit var injectedPresenter: P
-  internal var actualPresenter: P? = null
+
+  @CoreFriendModuleApi public var actualPresenter: P? = null
   private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
   public open val lifecycleFlow: SharedFlow<InteractorEvent>
     get() = _lifecycleFlow
 
   @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
+
+  @OptIn(CoreFriendModuleApi::class)
   private val lifecycleObservable
     get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
 
@@ -54,6 +58,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   public open var router: R by routerDelegate
     protected set
 
+  @OptIn(CoreFriendModuleApi::class)
   protected constructor(presenter: P) : this() {
     this.actualPresenter = presenter
   }
@@ -67,6 +72,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
 
   final override fun peekLifecycle(): InteractorEvent? = lifecycleFlow.replayCache.lastOrNull()
 
+  @OptIn(CoreFriendModuleApi::class)
   final override fun requestScope(): CompletableSource =
     lifecycleFlow.asScopeCompletable(lifecycleRange)
 
@@ -149,13 +155,15 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
     return getPresenter()
   }
 
-  internal fun setRouterInternal(router: Router<*>) {
+  @CoreFriendModuleApi
+  public fun setRouterInternal(router: Router<*>) {
     if (routerDelegate != null) {
       this.router = router as R
     }
   }
 
   /** @return the currently attached presenter if there is one */
+  @OptIn(CoreFriendModuleApi::class)
   @VisibleForTesting
   private fun getPresenter(): P {
     val presenter: P? =
@@ -172,6 +180,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
     return presenter
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   @VisibleForTesting
   internal fun setPresenter(presenter: P) {
     actualPresenter = presenter

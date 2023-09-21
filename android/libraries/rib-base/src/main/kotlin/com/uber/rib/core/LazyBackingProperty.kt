@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import kotlin.reflect.KMutableProperty0
 
 /**
@@ -30,8 +31,9 @@ import kotlin.reflect.KMutableProperty0
  *
  * To properly support concurrency, the backing mutable property should be [Volatile].
  */
-internal inline fun <T : Any> KMutableProperty0<T?>.setIfNullAndGet(
+@CoreFriendModuleApi
+public inline fun <T : Any> KMutableProperty0<T?>.setIfNullAndGet(
   initializer: () -> T,
 ): T = get() ?: synchronized(Lock) { get() ?: initializer().also { set(it) } }
 
-private object Lock
+@CoreFriendModuleApi public object Lock
