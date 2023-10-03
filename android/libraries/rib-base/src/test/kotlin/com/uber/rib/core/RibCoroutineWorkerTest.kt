@@ -24,6 +24,7 @@ import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Delay
 import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.Runnable
 import kotlinx.coroutines.awaitCancellation
@@ -47,10 +48,12 @@ import org.junit.Rule
 import org.junit.Test
 
 private const val ON_START_DELAY_DURATION_MILLIS = 100L
+private const val INNER_COROUTINE_DELAY_DURATION_MILLIS = 200L
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RibCoroutineWorkerTest {
   @get:Rule val coroutineRule = RibCoroutinesRule()
-  private val worker = TestRibCoroutineWorker()
+  private val worker = TestWorker()
 
   @Test
   fun bindWorkHandle_onJoin_thenJoinsBindingOperation() = runTest {
@@ -79,7 +82,7 @@ class RibCoroutineWorkerTest {
         assertThat(suppressed).isInstanceOf(IllegalStateException::class.java)
         assertThat(suppressed).hasMessageThat().isEqualTo(onStopErrorMsg)
         assertThat(worker.onStartFinished).isTrue()
-        assertThat(worker.onStopFinished).isTrue()
+        assertThat(worker.onStopRan).isTrue()
       }
     }
   }
@@ -95,9 +98,9 @@ class RibCoroutineWorkerTest {
     val bindHandle = bind(worker)
     bindHandle.join()
     val unbindHandle = bindHandle.unbind()
-    assertThat(worker.onStopFinished).isFalse()
+    assertThat(worker.onStopRan).isFalse()
     unbindHandle.join()
-    assertThat(worker.onStopFinished).isTrue()
+    assertThat(worker.onStopRan).isTrue()
     assertThat(worker.onStopCause).isInstanceOf(CancellationException::class.java)
     assertThat(worker.onStopCause).hasMessageThat().isEqualTo("Worker was manually unbound.")
   }
@@ -110,7 +113,7 @@ class RibCoroutineWorkerTest {
       cancel(cancellationMsg)
     }
     advanceUntilIdle()
-    assertThat(worker.onStopFinished).isTrue()
+    assertThat(worker.onStopRan).isTrue()
     assertThat(worker.onStopCause).isInstanceOf(CancellationException::class.java)
     assertThat(worker.onStopCause).hasMessageThat().isEqualTo(cancellationMsg)
   }
@@ -173,8 +176,43 @@ class RibCoroutineWorkerTest {
       assertThat(dispatcher.dispatchCount).isEqualTo(1) // no new dispatch done
       handle.unbind()
       assertThat(worker.onStopThread!!.id).isEqualTo(Thread.currentThread().id)
-      assertThat(worker.onStopFinished).isTrue()
+      assertThat(worker.onStopRan).isTrue()
     }
+  }
+
+  @Test
+  fun testHelperFunction() = runTest {
+    // Sanity - assert initial state.
+    assertThat(worker.onStartStarted).isFalse()
+    assertThat(worker.onStartFinished).isFalse()
+    assertThat(worker.innerCoroutineStarted).isFalse()
+    assertThat(worker.innerCoroutineIdle).isFalse()
+    assertThat(worker.innerCoroutineCompleted).isFalse()
+    assertThat(worker.onStopRan).isFalse()
+    test(worker) {
+      // Assert onStart and inner coroutine started but have not finished (it has delays)
+      assertThat(it.onStartStarted).isTrue()
+      assertThat(it.innerCoroutineStarted).isTrue()
+      assertThat(it.onStartFinished).isFalse()
+      // Advance time so only onStart finishes
+      advanceTimeBy(ON_START_DELAY_DURATION_MILLIS)
+      runCurrent()
+      assertThat(it.onStartFinished).isTrue()
+      assertThat(it.innerCoroutineIdle).isFalse()
+      // Advance time so inner coroutine becomes idle (reaches awaitCancellation).
+      val remainingTime = INNER_COROUTINE_DELAY_DURATION_MILLIS - testScheduler.currentTime
+      advanceTimeBy(remainingTime)
+      runCurrent()
+      assertThat(it.innerCoroutineIdle).isTrue()
+      assertThat(it.innerCoroutineCompleted).isFalse()
+      // onStop should only be called after the lambda returns
+      assertThat(it.onStopRan).isFalse()
+    }
+    // Worker should be unbound at this point.
+    assertThat(worker.innerCoroutineCompleted).isTrue()
+    assertThat(worker.onStopRan).isTrue()
+    assertThat(worker.onStopCause).isInstanceOf(CancellationException::class.java)
+    assertThat(worker.onStopCause).hasMessageThat().isEqualTo("Worker was manually unbound.")
   }
 }
 
@@ -202,13 +240,16 @@ private class ImmediateDispatcher(
   }
 }
 
-private class TestRibCoroutineWorker : RibCoroutineWorker {
+private class TestWorker : RibCoroutineWorker {
   var onStartStarted = false
   var onStartFinished = false
   var onStartThread: Thread? = null
   var onStopCause: Throwable? = null
-  var onStopFinished = false
+  var onStopRan = false
   var onStopThread: Thread? = null
+  var innerCoroutineStarted = false
+  var innerCoroutineIdle = false
+  var innerCoroutineCompleted = false
 
   private var _doOnStart: suspend () -> Unit = {}
   private var _doOnStop: () -> Unit = {}
@@ -225,7 +266,16 @@ private class TestRibCoroutineWorker : RibCoroutineWorker {
     onStartStarted = true
     onStartThread = Thread.currentThread()
     try {
-      scope.launch { awaitCancellation() }
+      scope.launch {
+        try {
+          innerCoroutineStarted = true
+          delay(INNER_COROUTINE_DELAY_DURATION_MILLIS)
+          innerCoroutineIdle = true
+          awaitCancellation()
+        } finally {
+          innerCoroutineCompleted = true
+        }
+      }
       delay(ON_START_DELAY_DURATION_MILLIS)
       _doOnStart()
     } finally {
@@ -239,7 +289,7 @@ private class TestRibCoroutineWorker : RibCoroutineWorker {
     try {
       _doOnStop()
     } finally {
-      onStopFinished = true
+      onStopRan = true
     }
   }
 }

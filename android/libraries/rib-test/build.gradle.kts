@@ -36,5 +36,6 @@ dependencies {
     api(testLibs.junit)
     api(testLibs.truth)
     api(testLibs.mockito)
+    api(testLibs.coroutines.test)
     implementation(testLibs.mockitoKotlin)
 }
