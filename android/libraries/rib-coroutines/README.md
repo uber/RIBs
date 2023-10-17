@@ -5,7 +5,7 @@ This module is responsible for defining the coroutines extensions for the rib-ba
 ## Installation
 ```gradle
 dependencies {
-  implementation 'com.uber.rib:rib-coroutines:0.15.4'
+  implementation 'com.uber.rib:rib-coroutines:0.16.0'
 }
 ```
 
