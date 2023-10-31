@@ -48,7 +48,7 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
     }
   }
 
-  internal fun saveInstanceStateInternal(outState: Bundle) {
+  internal fun dispatchSaveInstanceState(outState: Bundle) {
     saveInstanceState(outState)
   }
 }

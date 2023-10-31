@@ -104,7 +104,7 @@ public abstract class RibActivity :
   override fun onSaveInstanceState(outState: android.os.Bundle) {
     super.onSaveInstanceState(outState)
     _callbacksFlow.tryEmit(createOnSaveInstanceStateEvent(outState))
-    router?.saveInstanceStateInternal(Bundle(outState))
+    router?.dispatchSaveInstanceState(Bundle(outState))
       ?: throw NullPointerException("Router should not be null")
   }
 
