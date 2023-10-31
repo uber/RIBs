@@ -47,8 +47,4 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
       XRay.apply(this, view)
     }
   }
-
-  internal fun dispatchSaveInstanceState(outState: Bundle) {
-    saveInstanceState(outState)
-  }
 }

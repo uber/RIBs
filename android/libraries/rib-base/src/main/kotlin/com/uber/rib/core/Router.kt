@@ -229,7 +229,8 @@ protected constructor(
     return children
   }
 
-  internal fun saveInstanceStateInternal(outState: Bundle) {
+  @CoreFriendModuleApi
+  public fun saveInstanceStateInternal(outState: Bundle) {
     saveInstanceState(outState)
   }
 
