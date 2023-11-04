@@ -123,3 +123,6 @@
 * Get rid of suppressions for "invisible_reference" and "invisible_member" by @psteiger in https://github.com/uber/RIBs/pull/618
 * Introduce `TestScope.test(RibCoroutineWorker)` test helper utility. by @psteiger in https://github.com/uber/RIBs/pull/620
 
+### Version 0.16.1
+* [Android] Remove duplicate method by @jbarr in https://github.com/uber/RIBs/pull/621
+
