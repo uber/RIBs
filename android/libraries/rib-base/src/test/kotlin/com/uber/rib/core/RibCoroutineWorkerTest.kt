@@ -190,6 +190,8 @@ class RibCoroutineWorkerTest {
     assertThat(worker.innerCoroutineCompleted).isFalse()
     assertThat(worker.onStopRan).isFalse()
     test(worker) {
+      // Quick check that suspend functions can be called inside this block
+      delay(0)
       // Assert onStart and inner coroutine started but have not finished (it has delays)
       assertThat(it.onStartStarted).isTrue()
       assertThat(it.innerCoroutineStarted).isTrue()
