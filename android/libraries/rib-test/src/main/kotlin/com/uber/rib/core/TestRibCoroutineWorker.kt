@@ -39,7 +39,7 @@ import kotlinx.coroutines.test.runCurrent
 @OptIn(ExperimentalCoroutinesApi::class)
 public inline fun <T : RibCoroutineWorker> TestScope.test(
   worker: T,
-  crossinline testBody: TestScope.(T) -> Unit,
+  testBody: TestScope.(T) -> Unit,
 ) {
   val dispatcher = StandardTestDispatcher(testScheduler)
   val handle = bind(worker, dispatcher)
