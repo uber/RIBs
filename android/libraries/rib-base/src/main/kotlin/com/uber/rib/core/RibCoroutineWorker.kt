@@ -246,12 +246,19 @@ internal constructor(
 ) : Worker {
 
   override fun onStart(lifecycle: WorkerScopeProvider) {
-    // We can start it undispatched because Worker binder will already call `onStart` in correct
-    // context,
-    // but we still want to pass in `coroutineDispatcher` to resume from suspensions in `onStart` in
+    // We start it undispatched to keep the behavior of immediate binding of Worker when
+    // WorkerBinder.bind is called.
+    // We still want to pass in `coroutineContext` to resume from suspensions in `onStart` in
     // correct context.
-    lifecycle.coroutineScope.launch(coroutineContext, start = CoroutineStart.UNDISPATCHED) {
-      supervisorScope { ribCoroutineWorker.onStart(this) }
+    lifecycle.coroutineScope.launch(coroutineContext, CoroutineStart.UNDISPATCHED) {
+      supervisorScope {
+        ribCoroutineWorker.onStart(this)
+        // Keep this scope alive until cancelled.
+        // This is particularly important for cases where we do not launch long-running coroutines
+        // with scope, but instead install some completion handler that we expect to be called at
+        // worker unbinding. This is the case with Rx subscriptions with 'autoDispose(scope)'
+        awaitCancellation()
+      }
     }
   }
 

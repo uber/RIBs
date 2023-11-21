@@ -16,6 +16,8 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import com.uber.autodispose.coroutinesinterop.autoDispose
+import io.reactivex.subjects.PublishSubject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlinx.coroutines.CancellationException
@@ -46,6 +48,7 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withContext
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 private const val ON_START_DELAY_DURATION_MILLIS = 100L
 private const val INNER_COROUTINE_DELAY_DURATION_MILLIS = 200L
@@ -178,6 +181,23 @@ class RibCoroutineWorkerTest {
       assertThat(worker.onStopThread!!.id).isEqualTo(Thread.currentThread().id)
       assertThat(worker.onStopRan).isTrue()
     }
+  }
+
+  @Test
+  fun asWorker_autoDisposeWithCoroutineScope_lateEmissionIsReceivedBySubscriber() = runTest {
+    val router = mock<Router<*>>()
+    val interactor = object : Interactor<Any, Router<*>>() {}
+    val subject = PublishSubject.create<Unit>()
+    var gotEmission = false
+    val ribCoroutineWorker = RibCoroutineWorker {
+      subject.autoDispose(this).subscribe { gotEmission = true }
+    }
+    val worker = ribCoroutineWorker.asWorker()
+    InteractorHelper.attach(interactor, Any(), router, null)
+    WorkerBinder.bind(interactor, worker)
+    runCurrent()
+    subject.onNext(Unit)
+    assertThat(gotEmission).isTrue()
   }
 
   @Test
