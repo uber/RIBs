@@ -126,3 +126,7 @@
 ### Version 0.16.1
 * [Android] Remove duplicate method by @jbarr in https://github.com/uber/RIBs/pull/621
 
+### Version 0.16.2
+* Make suspend functions callable inside `test(worker) { }` by @psteiger in https://github.com/uber/RIBs/pull/624
+* [RibCoroutineWorker] In `asWorker()`, keep scope alive until lifecycl… by @psteiger in https://github.com/uber/RIBs/pull/625
+
