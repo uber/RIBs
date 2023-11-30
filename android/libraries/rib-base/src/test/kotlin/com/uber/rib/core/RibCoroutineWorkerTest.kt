@@ -208,15 +208,18 @@ class RibCoroutineWorkerTest {
     val router = mock<Router<*>>()
     val interactor = object : Interactor<Any, Router<*>>() {}
     val subject = PublishSubject.create<Unit>()
+    var started = false
     var disposed = false
-    val ribCoroutineWorker = RibCoroutineWorker {
-      subject.doOnDispose { disposed = true }.autoDispose(this).subscribe()
+    val ribCoroutineWorker = RibCoroutineWorker { scope ->
+      started = true
+      subject.doOnDispose { disposed = true }.autoDispose(scope).subscribe()
     }
     val worker = ribCoroutineWorker.asWorker()
     InteractorHelper.attach(interactor, Any(), router, null)
     val unbinder = WorkerBinder.bind(interactor, worker)
     runCurrent()
     subject.onNext(Unit)
+    assertThat(started).isTrue()
     assertThat(disposed).isFalse()
     unbinder.unbind()
     runCurrent()
