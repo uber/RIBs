@@ -195,6 +195,8 @@ private suspend fun bindAndAwaitCancellation(worker: RibCoroutineWorker, bindJob
   try {
     supervisorScope {
       worker.onStart(this)
+      // In case no cancellation check was done at all in `onStart` (e.g. it did not suspend),
+      // we want to cancel it before completing.
       ensureActive()
       bindJob.complete()
       awaitCancellation() // Never returns normally, so we are sure an exception will be caught.
@@ -218,18 +220,28 @@ private fun CompletableJob.cancelOrCompleteExceptionally(throwable: Throwable) {
 
 // ---- RibCoroutineWorker <-> Worker adapters ---- //
 
-/** Converts a [Worker] to a [RibCoroutineWorker]. */
+/**
+ * Converts a [Worker] to a [RibCoroutineWorker].
+ *
+ * Returns the instance unchanged if it already implements [RibCoroutineWorker].
+ */
 public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker =
-  WorkerToRibCoroutineWorkerAdapter(this)
+  this as? RibCoroutineWorker ?: WorkerToRibCoroutineWorkerAdapter(this)
 
-/** Converts a [RibCoroutineWorker] to a [Worker]. */
+/**
+ * Converts a [RibCoroutineWorker] to a [Worker].
+ *
+ * Returns the instance unchanged if it already implements [Worker]. In that case,
+ * [coroutineContext] will not be used.
+ */
 @JvmOverloads
 public fun RibCoroutineWorker.asWorker(
   coroutineContext: CoroutineContext = RibDispatchers.Default,
-): Worker = RibCoroutineWorkerToWorkerAdapter(this, coroutineContext)
+): Worker = this as? Worker ?: RibCoroutineWorkerToWorkerAdapter(this, coroutineContext)
 
-internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) :
-  RibCoroutineWorker {
+internal open class WorkerToRibCoroutineWorkerAdapter(
+  private val worker: Worker,
+) : RibCoroutineWorker {
   override suspend fun onStart(scope: CoroutineScope) {
     withContext(worker.coroutineContext ?: EmptyCoroutineContext) {
       worker.onStart(scope.asWorkerScopeProvider())
@@ -239,8 +251,7 @@ internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker
   override fun onStop(cause: Throwable): Unit = worker.onStop()
 }
 
-internal open class RibCoroutineWorkerToWorkerAdapter
-internal constructor(
+internal open class RibCoroutineWorkerToWorkerAdapter(
   private val ribCoroutineWorker: RibCoroutineWorker,
   override val coroutineContext: CoroutineContext,
 ) : Worker {
