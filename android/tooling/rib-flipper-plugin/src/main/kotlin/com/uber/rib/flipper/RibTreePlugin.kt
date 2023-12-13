@@ -30,10 +30,8 @@ import com.uber.rib.flipper.RibTreeMessageType.SHOW_HIGHLIGHT
 import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.ReplaySubject
 import java.lang.ref.WeakReference
-import java.util.HashMap
 import java.util.UUID
 import java.util.WeakHashMap
-import kotlin.jvm.Synchronized
 
 /** Flipper debug tool plugin to help with RIBs developement. */
 class RibTreePlugin : FlipperPlugin {
@@ -59,7 +57,12 @@ class RibTreePlugin : FlipperPlugin {
         val routerId = createRouterIdIfNeeded(router)
         val parentRouter: Router<*>? = e.parentRouter
         val parentRouterId = createRouterIdIfNeeded(parentRouter)
-        RibEventPayload(sessionId, e.eventType, routerId, router, parentRouterId, parentRouter)
+        RibEventPayload(
+          sessionId = sessionId,
+          eventType = e.eventType,
+          routerInfo = RibEventPayload.RouterInfo.fromRouter(router, routerId),
+          parentRouterInfo = RibEventPayload.RouterInfo.fromRouter(parentRouter, parentRouterId),
+        )
       }
       .subscribe(events)
   }
@@ -73,7 +76,7 @@ class RibTreePlugin : FlipperPlugin {
     this.connection = connection
     disposable =
       events.subscribe { e: RibEventPayload ->
-        this.connection?.send(e.eventName, e.flipperPayload)
+        this.connection?.send(e.eventName, e.toFlipperPayload())
       }
     connection.receive(SHOW_HIGHLIGHT.toString()) { params: FlipperObject, _: FlipperResponder? ->
       val id: String = params.getString(EVENT_PARAMETER_ID)
