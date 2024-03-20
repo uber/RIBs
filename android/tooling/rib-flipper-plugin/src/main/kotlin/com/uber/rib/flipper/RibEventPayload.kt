@@ -28,14 +28,11 @@ import com.uber.rib.core.ViewRouter
 internal class RibEventPayload(
   private val sessionId: String,
   private val eventType: RibEventType,
-  private val routerId: String,
-  private val router: Router<*>,
-  private val parentRouterId: String,
-  private val parentRouter: Router<*>?,
+  private val routerInfo: RouterInfo,
+  private val parentRouterInfo: RouterInfo,
 ) {
 
   companion object {
-    const val ROUTER_NAME_PREFIX: String = "Router"
     const val EVENT_PARAMETER_ID: String = "id"
     const val EVENT_PARAMETER_HOST_CLASSNAME: String = "hostClassName"
     const val EVENT_PARAMETER_ROUTER_CLASSNAME: String = "routerClassName"
@@ -49,52 +46,54 @@ internal class RibEventPayload(
   val eventName: String
     get() = eventType.toString()
 
-  val flipperPayload: FlipperObject
-    get() =
-      FlipperObject.Builder()
-        .put(EVENT_PARAMETER_SESSION_ID, sessionId)
-        .put(EVENT_PARAMETER_ROUTER, RibEventRouterPayload(routerId, router).flipperPayload)
-        .put(
-          EVENT_PARAMETER_PARENT,
-          RibEventRouterPayload(parentRouterId, parentRouter).flipperPayload,
+  fun toFlipperPayload(): FlipperObject {
+    return FlipperObject.Builder()
+      .put(EVENT_PARAMETER_SESSION_ID, sessionId)
+      .put(EVENT_PARAMETER_ROUTER, routerInfo.toFlipperPayload())
+      .put(EVENT_PARAMETER_PARENT, parentRouterInfo.toFlipperPayload())
+      .build()
+  }
+
+  internal class RouterInfo(
+    val id: String,
+    val name: String,
+    val className: String,
+    val hasView: Boolean,
+    val activityClassName: String,
+  ) {
+    companion object {
+      private const val ROUTER_NAME_PREFIX: String = "Router"
+
+      fun fromRouter(router: Router<*>?, routerId: String) =
+        RouterInfo(
+          id = routerId,
+          name = router?.javaClass?.simpleName?.replace(ROUTER_NAME_PREFIX, "") ?: "",
+          className = router?.javaClass?.simpleName ?: "",
+          hasView = router is ViewRouter<*, *>,
+          activityClassName = if (router is ViewRouter<*, *>) getActivityClassName(router) else "",
         )
-        .build()
 
-  internal class RibEventRouterPayload
-  constructor(private val id: String, private val router: Router<*>?) {
-
-    val flipperPayload: FlipperObject
-      get() {
-        val name =
-          if (router is Router<*>) {
-            router.javaClass.simpleName.replace(ROUTER_NAME_PREFIX, "")
-          } else {
-            ""
-          }
-        val routerClassName = if (router is Router<*>) router.javaClass.simpleName else ""
-        val hasView = router is ViewRouter<*, *>
-        val activityClassName = if (router is ViewRouter<*, *>) getActivityClassName(router) else ""
-        return FlipperObject.Builder()
-          .put(EVENT_PARAMETER_ID, id)
-          .put(EVENT_PARAMETER_NAME, name)
-          .put(EVENT_PARAMETER_ROUTER_CLASSNAME, routerClassName)
-          .put(EVENT_PARAMETER_HAS_VIEW, hasView)
-          .put(EVENT_PARAMETER_HOST_CLASSNAME, activityClassName)
-          .build()
-      }
-
-    private fun getActivityClassName(router: ViewRouter<*, *>): String {
-      val view: android.view.View? = router.view
-      if (view != null) {
-        var context: android.content.Context? = view.getContext()
+      private fun getActivityClassName(router: ViewRouter<*, *>): String {
+        val view: View = router.view
+        var context: Context? = view.context
         while (context is ContextWrapper) {
           if (context is Activity) {
-            return context.javaClass.getName()
+            return context.javaClass.name
           }
-          context = context.getBaseContext()
+          context = context.baseContext
         }
+        return ""
       }
-      return ""
+    }
+
+    fun toFlipperPayload(): FlipperObject {
+      return FlipperObject.Builder()
+        .put(EVENT_PARAMETER_ID, id)
+        .put(EVENT_PARAMETER_NAME, name)
+        .put(EVENT_PARAMETER_ROUTER_CLASSNAME, className)
+        .put(EVENT_PARAMETER_HAS_VIEW, hasView)
+        .put(EVENT_PARAMETER_HOST_CLASSNAME, activityClassName)
+        .build()
     }
   }
 }
