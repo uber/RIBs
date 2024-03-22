@@ -16,17 +16,23 @@
 package com.uber.rib.core
 
 import android.app.Application
+import com.uber.autodispose.OutsideScopeException
 import com.uber.autodispose.ScopeProvider
-import com.uber.autodispose.coroutinesinterop.asCoroutineScope
 import com.uber.rib.core.internal.CoroutinesFriendModuleApi
+import com.uber.rib.core.internal.DirectDispatcher
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.rx2.await
 
 /**
  * [CoroutineScope] tied to this [ScopeProvider]. This scope will be canceled when ScopeProvider is
@@ -37,15 +43,7 @@ import kotlinx.coroutines.job
  */
 @OptIn(CoroutinesFriendModuleApi::class)
 public val ScopeProvider.coroutineScope: CoroutineScope by
-  LazyCoroutineScope<ScopeProvider> {
-    val context: CoroutineContext =
-      SupervisorJob() +
-        RibDispatchers.Main.immediate +
-        CoroutineName("${this::class.simpleName}:coroutineScope") +
-        (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
-
-    asCoroutineScope(context)
-  }
+  LazyCoroutineScope<ScopeProvider> { ScopeProviderCoroutineScope(this, createCoroutineContext()) }
 
 /**
  * [CoroutineScope] tied to this [Application]. This scope will not be cancelled, it lives for the
@@ -56,15 +54,40 @@ public val ScopeProvider.coroutineScope: CoroutineScope by
  */
 @OptIn(CoroutinesFriendModuleApi::class)
 public val Application.coroutineScope: CoroutineScope by
-  LazyCoroutineScope<Application> {
-    val context: CoroutineContext =
-      SupervisorJob() +
-        RibDispatchers.Main.immediate +
-        CoroutineName("${this::class.simpleName}:coroutineScope") +
-        (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+  LazyCoroutineScope<Application> { CoroutineScope(createCoroutineContext()) }
 
-    CoroutineScope(context)
+private fun Any.createCoroutineContext() =
+  SupervisorJob() +
+    RibDispatchers.Main.immediate +
+    CoroutineName("${this::class.simpleName}:coroutineScope") +
+    (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+
+private class ScopeProviderCoroutineScope(
+  scopeProvider: ScopeProvider,
+  override val coroutineContext: CoroutineContext,
+) : ScopeProvider by scopeProvider, CoroutineScope {
+  init {
+    requireNotNull(coroutineContext[Job]) { "coroutineContext must have a job in it" }
+    cancelWhenLifecycleEnded()
   }
+}
+
+@OptIn(CoroutinesFriendModuleApi::class)
+private fun ScopeProviderCoroutineScope.cancelWhenLifecycleEnded() {
+  launch(DirectDispatcher, CoroutineStart.UNDISPATCHED) { awaitCompletion() }
+    .invokeOnCompletion { e -> cancel("Lifecycle is not active", e) }
+}
+
+private suspend inline fun ScopeProvider.awaitCompletion() {
+  try {
+    requestScope().await()
+  } catch (e: OutsideScopeException) {
+    throw CoroutineScopeLifecycleException(
+      message = "Attempted to obtain ScopeProvider.coroutineScope out of lifecycle bounds",
+      cause = e,
+    )
+  }
+}
 
 @CoroutinesFriendModuleApi
 public class LazyCoroutineScope<This : Any>(private val initializer: This.() -> CoroutineScope) {
@@ -88,3 +111,9 @@ public class LazyCoroutineScope<This : Any>(private val initializer: This.() -> 
       }
     }
 }
+
+public class CoroutineScopeLifecycleException
+internal constructor(
+  message: String,
+  cause: OutsideScopeException,
+) : RuntimeException(message, cause)

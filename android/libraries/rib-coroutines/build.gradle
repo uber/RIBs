@@ -24,11 +24,13 @@ dependencies {
     api(libs.autodispose.coroutines)
     api(libs.coroutines.android)
     api(libs.coroutines.rx2)
+    implementation(libs.autodispose.lifecycle)
 
     compileOnly(libs.android.api)
 
     testImplementation(project(":libraries:rib-base"))
     testImplementation(project(":libraries:rib-test"))
+    testImplementation(project(":libraries:rib-coroutines-test"))
     testImplementation(testLibs.junit)
     testImplementation(testLibs.mockito)
     testImplementation(testLibs.mockitoKotlin)
