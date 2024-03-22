@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -22,6 +22,11 @@
 		4131773D1F8EF98A005F08F0 /* Foundation+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4131773C1F8EF98A005F08F0 /* Foundation+Extensions.swift */; };
 		418C175C1F97F19F003C03F7 /* Component.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418C17571F97DB2E003C03F7 /* Component.swift */; };
 		418C175D1F97F1A1003C03F7 /* Dependency.swift in Sources */ = {isa = PBXBuildFile; fileRef = 418C17561F97DB2E003C03F7 /* Dependency.swift */; };
+		4E03148926448F3900088902 /* AutoDetachRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4E03148826448F3900088902 /* AutoDetachRegistry.swift */; };
+		4E03148E2644927500088902 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 4E03148D2644927500088902 /* RxSwift */; };
+		4E0314902644927500088902 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 4E03148F2644927500088902 /* RxRelay */; };
+		4E0314922644927500088902 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 4E0314912644927500088902 /* RxCocoa */; };
+		4E0314942644927500088902 /* RxBlocking in Frameworks */ = {isa = PBXBuildFile; productRef = 4E0314932644927500088902 /* RxBlocking */; };
 		8B9882EC1F86E1CF00ABE009 /* RIBs.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8B9882E21F86E1CF00ABE009 /* RIBs.framework */; };
 		8B9882F31F86E1CF00ABE009 /* RIBs.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B9882E51F86E1CF00ABE009 /* RIBs.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		AF90B40A1FBA14DB00920384 /* RouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF90B4091FBA14DB00920384 /* RouterTests.swift */; };
@@ -61,6 +66,7 @@
 		4131773C1F8EF98A005F08F0 /* Foundation+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Foundation+Extensions.swift"; sourceTree = "<group>"; };
 		418C17561F97DB2E003C03F7 /* Dependency.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependency.swift; sourceTree = "<group>"; };
 		418C17571F97DB2E003C03F7 /* Component.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Component.swift; sourceTree = "<group>"; };
+		4E03148826448F3900088902 /* AutoDetachRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoDetachRegistry.swift; sourceTree = "<group>"; };
 		8B9882E21F86E1CF00ABE009 /* RIBs.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = RIBs.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B9882E51F86E1CF00ABE009 /* RIBs.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RIBs.h; sourceTree = "<group>"; };
 		8B9882E61F86E1CF00ABE009 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -83,7 +89,11 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4E03148E2644927500088902 /* RxSwift in Frameworks */,
+				4E0314942644927500088902 /* RxBlocking in Frameworks */,
 				BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */,
+				4E0314922644927500088902 /* RxCocoa in Frameworks */,
+				4E0314902644927500088902 /* RxRelay in Frameworks */,
 				AF9966B21FC40D7E00CAEAA2 /* RxSwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -115,6 +125,7 @@
 				413177361F8EF70A005F08F0 /* LeakDetector */,
 				4131772A1F8EEFF0005F08F0 /* Worker */,
 				413177201F8EEFEF005F08F0 /* Workflow */,
+				4E03148826448F3900088902 /* AutoDetachRegistry.swift */,
 			);
 			path = Classes;
 			sourceTree = "<group>";
@@ -275,6 +286,12 @@
 			dependencies = (
 			);
 			name = RIBs;
+			packageProductDependencies = (
+				4E03148D2644927500088902 /* RxSwift */,
+				4E03148F2644927500088902 /* RxRelay */,
+				4E0314912644927500088902 /* RxCocoa */,
+				4E0314932644927500088902 /* RxBlocking */,
+			);
 			productName = RIBs;
 			productReference = 8B9882E21F86E1CF00ABE009 /* RIBs.framework */;
 			productType = "com.apple.product-type.framework";
@@ -329,6 +346,9 @@
 				Base,
 			);
 			mainGroup = 8B9882D81F86E1CF00ABE009;
+			packageReferences = (
+				4E03148C2644927500088902 /* XCRemoteSwiftPackageReference "RxSwift" */,
+			);
 			productRefGroup = 8B9882E31F86E1CF00ABE009 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -396,6 +416,7 @@
 				4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */,
 				413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */,
 				413177311F8EF5FF005F08F0 /* Router.swift in Sources */,
+				4E03148926448F3900088902 /* AutoDetachRegistry.swift in Sources */,
 				413177301F8EF5FF005F08F0 /* Presenter.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -536,7 +557,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -561,7 +583,11 @@
 				INFOPLIST_FILE = RIBs/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBs;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -588,7 +614,11 @@
 				INFOPLIST_FILE = RIBs/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBs;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -607,7 +637,11 @@
 					"$(PRODUCTS_DIR)../Carthage/Build/iOS/",
 				);
 				INFOPLIST_FILE = RIBsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -625,7 +659,11 @@
 					"$(PRODUCTS_DIR)../Carthage/Build/iOS/",
 				);
 				INFOPLIST_FILE = RIBsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -664,6 +702,40 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		4E03148C2644927500088902 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		4E03148D2644927500088902 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E03148C2644927500088902 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		4E03148F2644927500088902 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E03148C2644927500088902 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		4E0314912644927500088902 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E03148C2644927500088902 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		4E0314932644927500088902 /* RxBlocking */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 4E03148C2644927500088902 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxBlocking;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8B9882D91F86E1CF00ABE009 /* Project object */;
 }
