@@ -36,14 +36,14 @@ class RibRefWatcherTest {
   fun watchDeletedObject_whenObjectIsNull_shouldDoNothing() {
     ribRefWatcher.enableLeakCanary()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
-    ribRefWatcher.watchDeletedObject(null)
+    ribRefWatcher.watchDeletedObject(null, "")
     verifyNoInteractions(referenceWatcher)
   }
 
   @Test
   fun watchDeletedObject_whenReferenceWatcherIsNull_shouldDoNothing() {
     ribRefWatcher.enableLeakCanary()
-    ribRefWatcher.watchDeletedObject(Any())
+    ribRefWatcher.watchDeletedObject(Any(), "")
     verifyNoInteractions(referenceWatcher)
   }
 
@@ -52,30 +52,30 @@ class RibRefWatcherTest {
     ribRefWatcher.enableLeakCanary()
     val obj = Any()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
-    ribRefWatcher.watchDeletedObject(obj)
-    verify(referenceWatcher).watch(obj)
+    ribRefWatcher.watchDeletedObject(obj, "")
+    verify(referenceWatcher).watch(obj, "")
   }
 
   @Test
   fun watchDeletedObject_whenNonNullRefWithDisabledLeakCanary_shouldDoNothing() {
     val obj = Any()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
-    ribRefWatcher.watchDeletedObject(obj)
-    verify(referenceWatcher, never()).watch(obj)
+    ribRefWatcher.watchDeletedObject(obj, "")
+    verify(referenceWatcher, never()).watch(obj, "")
   }
 
   @Test
   fun watchDeletedObject_whenObjectIsNullWithULeak_shouldDoNothing() {
     ribRefWatcher.enableULeakLifecycleTracking()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
-    ribRefWatcher.watchDeletedObject(null)
+    ribRefWatcher.watchDeletedObject(null, "")
     verifyNoInteractions(referenceWatcher)
   }
 
   @Test
   fun watchDeletedObject_whenReferenceWatcherIsNullULeakEnabled_shouldDoNothing() {
     ribRefWatcher.enableULeakLifecycleTracking()
-    ribRefWatcher.watchDeletedObject(Any())
+    ribRefWatcher.watchDeletedObject(Any(), "")
     verifyNoInteractions(referenceWatcher)
   }
 
@@ -84,15 +84,15 @@ class RibRefWatcherTest {
     ribRefWatcher.enableULeakLifecycleTracking()
     val obj = Any()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
-    ribRefWatcher.watchDeletedObject(obj)
-    verify(referenceWatcher).watch(obj)
+    ribRefWatcher.watchDeletedObject(obj, "")
+    verify(referenceWatcher).watch(obj, "")
   }
 
   @Test
   fun watchDeletedObject_whenNonNullRefULeakDisabled_shouldDoNothing() {
     val obj = Any()
     ribRefWatcher.setReferenceWatcher(referenceWatcher)
-    ribRefWatcher.watchDeletedObject(obj)
-    verify(referenceWatcher, never()).watch(obj)
+    ribRefWatcher.watchDeletedObject(obj, "")
+    verify(referenceWatcher, never()).watch(obj, "")
   }
 }
