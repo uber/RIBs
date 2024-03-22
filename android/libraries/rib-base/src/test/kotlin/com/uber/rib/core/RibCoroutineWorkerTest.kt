@@ -16,7 +16,10 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.coroutinesinterop.autoDispose
+import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
+import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.subjects.PublishSubject
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -236,6 +239,43 @@ class RibCoroutineWorkerTest {
     assertThat(worker.onStopCause).isInstanceOf(CancellationException::class.java)
     assertThat(worker.onStopCause).hasMessageThat().isEqualTo("Worker was manually unbound.")
   }
+
+  @Test
+  fun testClassThatIsBothWorkerAndRibCoroutineWorker() = runTest {
+    var workerOnStartCalled = false
+    var workerOnStopCalled = false
+    var ribCoroutineWorkerOnStartCalled = false
+    var ribCoroutineWorkerOnStopCalled = false
+    val worker =
+      WorkerAndRibCoroutineWorker(
+        workerOnStart = { workerOnStartCalled = true },
+        workerOnStop = { workerOnStopCalled = true },
+        ribCoroutineWorkerOnStart = { ribCoroutineWorkerOnStartCalled = true },
+        ribCoroutineWorkerOnStop = { ribCoroutineWorkerOnStopCalled = true },
+      )
+    val lifecycle = BehaviorRelay.createDefault(InteractorEvent.ACTIVE)
+    val workerUnbinder =
+      WorkerBinder.bind(mapInteractorLifecycleToWorker(lifecycle), worker.asWorker())
+    assertThat(workerOnStartCalled).isTrue()
+    assertThat(workerOnStopCalled).isFalse()
+    assertThat(ribCoroutineWorkerOnStartCalled).isFalse()
+    assertThat(ribCoroutineWorkerOnStopCalled).isFalse()
+    workerUnbinder.unbind()
+    assertThat(workerOnStopCalled).isTrue()
+    assertThat(ribCoroutineWorkerOnStartCalled).isFalse()
+    assertThat(ribCoroutineWorkerOnStopCalled).isFalse()
+    workerOnStartCalled = false
+    workerOnStopCalled = false
+    val unbinder = bind(worker.asRibCoroutineWorker()).also { it.join() }
+    assertThat(workerOnStartCalled).isFalse()
+    assertThat(workerOnStopCalled).isFalse()
+    assertThat(ribCoroutineWorkerOnStartCalled).isTrue()
+    assertThat(ribCoroutineWorkerOnStopCalled).isFalse()
+    unbinder.unbind().join()
+    assertThat(workerOnStartCalled).isFalse()
+    assertThat(workerOnStopCalled).isFalse()
+    assertThat(ribCoroutineWorkerOnStopCalled).isTrue()
+  }
 }
 
 @OptIn(InternalCoroutinesApi::class)
@@ -314,4 +354,25 @@ private class TestWorker : RibCoroutineWorker {
       onStopRan = true
     }
   }
+}
+
+/**
+ * This pattern is *not* recommended. New classes should *only* implement [RibCoroutineWorker]. If a
+ * class already implements [Worker] and is to be used as a [RibCoroutineWorker], it should either:
+ * 1. Migrate away from [Worker] to [RibCoroutineWorker], or
+ * 2. Be converted to [RibCoroutineWorker] using [Worker.asRibCoroutineWorker].
+ */
+private class WorkerAndRibCoroutineWorker(
+  val workerOnStart: (WorkerScopeProvider) -> Unit,
+  val workerOnStop: () -> Unit,
+  val ribCoroutineWorkerOnStart: (CoroutineScope) -> Unit,
+  val ribCoroutineWorkerOnStop: (Throwable) -> Unit,
+) : Worker, RibCoroutineWorker {
+  // Worker impl
+  override fun onStart(lifecycle: WorkerScopeProvider) = workerOnStart(lifecycle)
+  override fun onStop() = workerOnStop()
+
+  // RibCoroutineWorker impl
+  override suspend fun onStart(scope: CoroutineScope) = ribCoroutineWorkerOnStart(scope)
+  override fun onStop(cause: Throwable) = ribCoroutineWorkerOnStop(cause)
 }
