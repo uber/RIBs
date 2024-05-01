@@ -35,7 +35,7 @@ import com.uber.debug.broadcast.rib.RibHierarchyPayload.RibApplication;
 import com.uber.debug.broadcast.rib.RibHierarchyPayload.RibNode;
 import com.uber.debug.broadcast.rib.RibHierarchyPayload.RibView;
 import com.uber.rib.core.RibDebugOverlay;
-import com.uber.rib.core.RibEvent;
+import com.uber.rib.core.RibRouterEvent;
 import com.uber.rib.core.Router;
 import com.uber.rib.core.ViewRouter;
 import io.reactivex.Observable;
@@ -54,7 +54,7 @@ import java.util.WeakHashMap;
  * Debug broadcast handler responsible for exposing RIB hierarchy.
  */
 public class RibHierarchyDebugBroadcastHandler
-    implements Observer<RibEvent>, Handler<RibHierarchyPayload> {
+    implements Observer<RibRouterEvent>, Handler<RibHierarchyPayload> {
 
   public static final String COMMAND_RIB_HIERARCHY = "RIB_HIERARCHY";
   public static final String COMMAND_RIB_HIGHLIGHT = "RIB_HIGHLIGHT";
@@ -80,7 +80,8 @@ public class RibHierarchyDebugBroadcastHandler
   private @Nullable DebugBroadcastRequest mPendingLocateRequest = null;
 
   @SuppressWarnings("RxJavaSubscribeInConstructor")
-  public RibHierarchyDebugBroadcastHandler(Context context, Observable<RibEvent> ribEventsStream) {
+  public RibHierarchyDebugBroadcastHandler(
+      Context context, Observable<RibRouterEvent> ribEventsStream) {
     this.processName = getCurrentProcessName(context);
     ribEventsStream.subscribe(this);
   }
@@ -120,16 +121,16 @@ public class RibHierarchyDebugBroadcastHandler
   public void onSubscribe(Disposable d) {}
 
   @Override
-  public void onNext(RibEvent ribEvent) {
-    Router childRouter = ribEvent.getRouter();
-    Router parentRouter = ribEvent.getParentRouter();
+  public void onNext(RibRouterEvent ribRouterEvent) {
+    Router childRouter = ribRouterEvent.getRouter();
+    Router parentRouter = ribRouterEvent.getParentRouter();
     if (parentRouter == null) {
       return;
     }
     UUID childId = createRouterIdIfNeeded(childRouter);
     UUID parentId = createRouterIdIfNeeded(parentRouter);
     try {
-      switch (ribEvent.getEventType()) {
+      switch (ribRouterEvent.getEventType()) {
         case ATTACHED:
           addChild(parentId, childId);
           break;
@@ -137,14 +138,15 @@ public class RibHierarchyDebugBroadcastHandler
           removeChild(parentId, childId);
           break;
         default:
-          throw new UnsupportedOperationException("Unknown command: " + ribEvent.getEventType());
+          throw new UnsupportedOperationException(
+              "Unknown command: " + ribRouterEvent.getEventType());
       }
     } catch (IllegalArgumentException e) {
       String message =
           String.format(
               Locale.US,
               "Error processing RibEvent %s: parent=%s child=%s",
-              ribEvent.getEventType().toString(),
+              ribRouterEvent.getEventType().toString(),
               parentRouter.getClass().getSimpleName(),
               childRouter.getClass().getSimpleName());
       Log.w(TAG, message);

@@ -16,25 +16,24 @@ import org.gradle.internal.jvm.Jvm
  * limitations under the License.
  */
 
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "org.jetbrains.kotlin.kapt"
-apply plugin: "com.vanniktech.maven.publish"
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.mavenPublish)
+}
 
 dependencies {
-    implementation project(":libraries:rib-compiler-app")
-    implementation deps.apt.javapoet
-    implementation deps.kotlin.stdlib
+    api(project(":libraries:rib-compiler-app"))
+    implementation(libs.javapoet)
 
-    compileOnly deps.androidx.annotations
-    compileOnly deps.apt.autoService
-    compileOnly deps.apt.androidApi
-    kapt deps.apt.autoService
+    compileOnly(libs.annotation)
+    compileOnly(libs.autoservice)
+    compileOnly(libs.android.api)
+    kapt(libs.autoservice)
 
-    testImplementation deps.androidx.annotations
-    testImplementation deps.test.compileTesting
-    if (!Jvm.current().javaVersion.isJava9Compatible()) {
-        testCompile files(Jvm.current().getToolsJar())
-    }
+    testImplementation(libs.annotation)
+    testImplementation(testLibs.compileTesting)
+    testImplementation files("libs/tools.jar")
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887

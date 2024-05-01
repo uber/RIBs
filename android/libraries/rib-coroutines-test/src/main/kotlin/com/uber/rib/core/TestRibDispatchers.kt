@@ -16,31 +16,32 @@
 package com.uber.rib.core
 
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.MainCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.test.TestDispatcher
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 
-@ExperimentalCoroutinesApi
 public data class TestRibDispatchers(
-  override val Default: TestCoroutineDispatcher = TestCoroutineDispatcher(),
-  override val IO: TestCoroutineDispatcher = TestCoroutineDispatcher(),
-  override val Unconfined: TestCoroutineDispatcher = TestCoroutineDispatcher(),
-  val MainTestDelegate: TestCoroutineDispatcher = TestCoroutineDispatcher()
+  /**
+   * [TestCoroutineScheduler] to be used by all other [TestDispatcher] when using the default
+   * constructor.
+   *
+   * Note that when passing in custom dispatchers, this test scheduler will not be used.
+   */
+  private val testScheduler: TestCoroutineScheduler? = TestCoroutineScheduler(),
+  override val Default: TestDispatcher = StandardTestDispatcher(testScheduler),
+  override val IO: TestDispatcher = StandardTestDispatcher(testScheduler),
+  override val Unconfined: TestDispatcher = UnconfinedTestDispatcher(testScheduler),
+  val MainTestDelegate: TestDispatcher = StandardTestDispatcher(testScheduler),
 ) : RibDispatchersProvider {
 
   public fun installTestDispatchers() {
     // MainTestCoroutineDispatcher is Internal, so we need to wrap it through the main API
     Dispatchers.setMain(MainTestDelegate)
     RibCoroutinesConfig.dispatchers = this
-  }
-
-  public fun cleanupTestDispatchers() {
-    Default.cleanupTestCoroutines()
-    MainTestDelegate.cleanupTestCoroutines()
-    IO.cleanupTestCoroutines()
-    Unconfined.cleanupTestCoroutines()
   }
 
   public fun resetTestDispatchers() {

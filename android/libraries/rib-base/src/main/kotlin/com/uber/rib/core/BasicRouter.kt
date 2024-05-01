@@ -20,4 +20,4 @@ package com.uber.rib.core
  *
  * @param <I> type of interactor.
  */
-abstract class BasicRouter<I : Interactor<*, *>>(interactor: I) : Router<I>(interactor)
+public abstract class BasicRouter<I : Interactor<*, *>>(interactor: I) : Router<I>(interactor)

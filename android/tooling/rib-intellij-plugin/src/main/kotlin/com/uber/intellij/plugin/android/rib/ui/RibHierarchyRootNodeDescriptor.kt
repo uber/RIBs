@@ -16,46 +16,50 @@
 package com.uber.intellij.plugin.android.rib.ui
 
 import com.intellij.icons.AllIcons
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.roots.ui.util.CompositeAppearance
 import com.intellij.psi.PsiElement
-import com.uber.intellij.plugin.android.rib.AndroidDeviceRepositoryComponent
+import com.uber.intellij.plugin.android.rib.AndroidDeviceRepository
 import com.uber.intellij.plugin.android.rib.RibHierarchyBrowser
-import com.uber.intellij.plugin.android.rib.RibProjectComponent
+import com.uber.intellij.plugin.android.rib.RibProjectService
 import com.uber.intellij.plugin.android.rib.io.RibHost
 import javax.swing.Icon
 
 /** Node descriptor used to render tree roots. */
-class RibHierarchyRootNodeDescriptor(
+public class RibHierarchyRootNodeDescriptor(
   project: Project,
   element: PsiElement,
-  val ribHost: RibHost,
-  private val status: RibHierarchyBrowser.Status
+  public val ribHost: RibHost,
+  private val status: RibHierarchyBrowser.Status,
 ) : RibHierarchyDescriptor(project, null, element, true) {
 
-  companion object {
+  private val deviceRepository: AndroidDeviceRepository = project.service()
+  private val ribProjectService: RibProjectService = project.service()
+
+  public companion object {
     /** Label used when android bridge is not connected */
-    const val LABEL_NO_BRIDGE: String =
+    public const val LABEL_NO_BRIDGE: String =
       "No Android bridge. Make sure Android SDK is configured for this project."
 
     /** Label used when no device is connected. */
-    const val LABEL_NO_DEVICE: String = "No Android device connected..."
+    public const val LABEL_NO_DEVICE: String = "No Android device connected..."
 
     /** Label used when device list is being refreshed. */
-    const val LABEL_WAIT: String = "Loading RIB info..."
+    public const val LABEL_WAIT: String = "Loading RIB info..."
 
     /** Label used when no no Rib info could be fetched from device. */
-    const val LABEL_ERROR: String =
+    public const val LABEL_ERROR: String =
       "No RIB info available. Make sure RIB app is running in foreground, then refresh."
   }
 
   override fun updateText(text: CompositeAppearance) {
-    if (!AndroidDeviceRepositoryComponent.getInstance(project).isBridgeConnected()) {
+    if (!deviceRepository.isBridgeConnected()) {
       text.ending.addText(LABEL_NO_BRIDGE)
       return
     }
 
-    if (!RibProjectComponent.getInstance(project).hasSelectedDevice()) {
+    if (!ribProjectService.hasSelectedDevice()) {
       text.ending.addText(LABEL_NO_DEVICE)
       return
     }
@@ -75,7 +79,7 @@ class RibHierarchyRootNodeDescriptor(
   }
 
   override fun getIcon(element: PsiElement): Icon? {
-    if (!RibProjectComponent.getInstance(project).hasSelectedDevice()) {
+    if (!ribProjectService.hasSelectedDevice()) {
       return AllIcons.General.BalloonInformation
     }
 

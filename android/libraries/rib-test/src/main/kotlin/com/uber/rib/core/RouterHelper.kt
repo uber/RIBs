@@ -15,19 +15,19 @@
  */
 package com.uber.rib.core
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.isA
-import com.nhaarman.mockitokotlin2.isNull
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
 import org.mockito.AdditionalMatchers.or
 import org.mockito.InOrder
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.isA
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.never
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 import org.mockito.verification.VerificationMode
 
-/** The helper to test [Router].  */
-object RouterHelper {
+/** The helper to test [Router]. */
+public object RouterHelper {
   /**
    * Dispatches attachment to a router.
    *
@@ -35,7 +35,7 @@ object RouterHelper {
    * @param <R> type of router.
    */
   @JvmStatic
-  open fun <R : Router<*>> attach(router: R) {
+  public fun <R : Router<*>> attach(router: R) {
     router.dispatchAttach(null)
   }
 
@@ -45,7 +45,7 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun detach(router: Router<*>) {
+  public fun detach(router: Router<*>) {
     router.dispatchDetach()
   }
 
@@ -55,7 +55,7 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun verifyAttached(router: Router<*>) {
+  public fun verifyAttached(router: Router<*>) {
     verify(router).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
@@ -66,7 +66,7 @@ object RouterHelper {
    * @param times the number of times attached
    */
   @JvmStatic
-  open fun verifyAttached(router: Router<*>, times: Int) {
+  public fun verifyAttached(router: Router<*>, times: Int) {
     verify(router, times(times)).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
@@ -77,7 +77,7 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun verifyAttached(order: InOrder, router: Router<*>) {
+  public fun verifyAttached(order: InOrder, router: Router<*>) {
     order.verify(router).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
@@ -88,7 +88,7 @@ object RouterHelper {
    * @param tag the expected tag.
    */
   @JvmStatic
-  open fun verifyAttached(router: Router<*>, tag: String) {
+  public fun verifyAttached(router: Router<*>, tag: String) {
     verify(router).dispatchAttach(or(isNull(), isA<Bundle>()), eq(tag))
   }
 
@@ -99,7 +99,7 @@ object RouterHelper {
    * @param mode The mockito verification mode. ie. `times(1)`.
    */
   @JvmStatic
-  open fun verifyAttached(router: Router<*>, mode: VerificationMode) {
+  public fun verifyAttached(router: Router<*>, mode: VerificationMode) {
     verify(router, mode).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
@@ -109,9 +109,8 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun verifyNotAttached(router: Router<*>) {
-    verify(router, never())
-      .dispatchAttach(or(isNull(), isA<Bundle>()), any())
+  public fun verifyNotAttached(router: Router<*>) {
+    verify(router, never()).dispatchAttach(or(isNull(), isA<Bundle>()), any())
   }
 
   /**
@@ -120,7 +119,7 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun verifyDetached(router: Router<*>) {
+  public fun verifyDetached(router: Router<*>) {
     verify(router).dispatchDetach()
   }
 
@@ -131,7 +130,7 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun verifyDetached(order: InOrder, router: Router<*>) {
+  public fun verifyDetached(order: InOrder, router: Router<*>) {
     order.verify(router).dispatchDetach()
   }
 
@@ -142,7 +141,7 @@ object RouterHelper {
    * @param mode The mockito verification mode. ie. `times(1)`.
    */
   @JvmStatic
-  open fun verifyDetached(router: Router<*>, mode: VerificationMode) {
+  public fun verifyDetached(router: Router<*>, mode: VerificationMode) {
     verify(router, mode).dispatchDetach()
   }
 
@@ -152,7 +151,7 @@ object RouterHelper {
    * @param router the [Router].
    */
   @JvmStatic
-  open fun verifyNotDetached(router: Router<*>) {
+  public fun verifyNotDetached(router: Router<*>) {
     verify(router, never()).dispatchDetach()
   }
 }

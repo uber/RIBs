@@ -24,7 +24,7 @@ git tag -a "v$NEW_VERSION" -m "Version $NEW_VERSION"
 # Clean build, push to sonatype, and release the repos
 echo "Building and releasing..."
 pushd $ANDROID_DIR
-./gradlew clean publish --no-daemon --no-parallel && ./gradlew closeAndReleaseRepository
+./gradlew clean publish
 popd
 
 # Prepare for next snapshot

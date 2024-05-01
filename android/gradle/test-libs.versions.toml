@@ -1,0 +1,17 @@
+[versions]
+compile-testing = "0.17"
+coroutines = "1.7.3"
+junit = "4.12"
+mockito = "4.6.1"
+mockito-kotlin = "4.0.0"
+robolectric = "4.4"
+truth = "0.43"
+
+[libraries]
+compileTesting = { group = "com.google.testing.compile", name = "compile-testing", version.ref = "compile-testing" }
+coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "coroutines" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockitoKotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+truth = { group = "com.google.truth", name = "truth", version.ref = "truth" }

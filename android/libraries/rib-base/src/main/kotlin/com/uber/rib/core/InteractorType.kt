@@ -18,8 +18,18 @@ package com.uber.rib.core
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
 import com.uber.rib.core.lifecycle.InteractorEvent
 
-/** An interface used as the upper bound of the generic used by [Router]s to avoid cyclic generic types */
-interface InteractorType : LifecycleScopeProvider<InteractorEvent> {
-  fun isAttached(): Boolean
-  fun handleBackPress(): Boolean
+/**
+ * An interface used as the upper bound of the generic used by [Router]s to avoid cyclic generic
+ * types
+ */
+public interface InteractorType : LifecycleScopeProvider<InteractorEvent> {
+  /** @return `true` if the controller is attached, `false` if not. */
+  public fun isAttached(): Boolean
+
+  /**
+   * Handle an activity back press.
+   *
+   * @return whether this interactor took action in response to a back press.
+   */
+  public fun handleBackPress(): Boolean
 }

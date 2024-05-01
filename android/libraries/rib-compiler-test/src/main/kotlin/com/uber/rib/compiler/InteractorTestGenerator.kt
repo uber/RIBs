@@ -31,48 +31,47 @@ import javax.lang.model.element.Modifier
  * Generates a dagger scope for a RibBuilder. Example: <code>
  *
  * @Scope
- * @Retention(SOURCE) public @interface LoggedInScope { }
- * </code>
+ * @Retention(SOURCE) public @interface LoggedInScope { } </code>
  */
-open class InteractorTestGenerator(
+public open class InteractorTestGenerator(
   processingEnvironment: ProcessingEnvironment,
-  errorReporter: ErrorReporter
+  errorReporter: ErrorReporter,
 ) : Generator<InteractorAnnotatedClass>(processingEnvironment, errorReporter) {
   @Throws(IOException::class)
   override fun generate(annotatedInteractor: InteractorAnnotatedClass) {
     if (annotatedInteractor.isCodeGenerated) {
       return
     }
-    val interactorTestBaseClassName = (
-      Constants.INTERACTOR_TEST_CREATOR_PREFIX +
+    val interactorTestBaseClassName =
+      (Constants.INTERACTOR_TEST_CREATOR_PREFIX +
         annotatedInteractor.rootName +
-        Constants.INTERACTOR_TEST_CREATOR_SUFFIX
-      )
+        Constants.INTERACTOR_TEST_CREATOR_SUFFIX)
     val constructor = MethodSpec.constructorBuilder().addModifiers(Modifier.PRIVATE).build()
     val createInteractor = createMethodSpec(annotatedInteractor)
-    val testBaseClass = TypeSpec.classBuilder(interactorTestBaseClassName)
-      .addMethod(constructor)
-      .addMethod(createInteractor)
-      .addModifiers(Modifier.PUBLIC)
-      .build()
+    val testBaseClass =
+      TypeSpec.classBuilder(interactorTestBaseClassName)
+        .addMethod(constructor)
+        .addMethod(createInteractor)
+        .addModifiers(Modifier.PUBLIC)
+        .build()
     val packageName = packageNameOf(annotatedInteractor.typeElement)
-    JavaFile.builder(packageName, testBaseClass)
-      .build()
-      .writeTo(processingEnvironment.filer)
+    JavaFile.builder(packageName, testBaseClass).build().writeTo(processingEnvironment.filer)
     annotatedInteractor.isCodeGenerated = true
   }
 
   private fun createMethodSpec(interactor: InteractorAnnotatedClass): MethodSpec {
-    val builder = MethodSpec.methodBuilder(Constants.INTERACTOR_TEST_CREATOR_METHOD_NAME)
-      .returns(TypeName.get(interactor.typeElement.asType()))
-      .addModifiers(ImmutableList.of(Modifier.PUBLIC, Modifier.STATIC))
+    val builder =
+      MethodSpec.methodBuilder(Constants.INTERACTOR_TEST_CREATOR_METHOD_NAME)
+        .returns(TypeName.get(interactor.typeElement.asType()))
+        .addModifiers(ImmutableList.of(Modifier.PUBLIC, Modifier.STATIC))
     for (dependency in interactor.dependencies) {
-      val paramSpect = ParameterSpec.builder(
-        TypeName.get(dependency.asType()),
-        dependency.simpleName.toString(),
-        Modifier.FINAL
-      )
-        .build()
+      val paramSpect =
+        ParameterSpec.builder(
+            TypeName.get(dependency.asType()),
+            dependency.simpleName.toString(),
+            Modifier.FINAL,
+          )
+          .build()
       builder.addParameter(paramSpect)
     }
     val interactorName = interactor.typeElement.simpleName.toString()
@@ -85,7 +84,7 @@ open class InteractorTestGenerator(
         builder.addStatement(
           "interactor.\$L = \$L",
           dependencies.simpleName.toString(),
-          dependencies.simpleName.toString()
+          dependencies.simpleName.toString(),
         )
       }
       builder.addStatement("return interactor").build()

@@ -14,25 +14,23 @@
  * limitations under the License.
  */
 
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "com.vanniktech.maven.publish"
-
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.mavenPublish)
+}
 
 dependencies {
-    implementation project(":libraries:rib-base")
+    implementation(project(":libraries:rib-base"))
 
-    implementation deps.apt.autoCommon
-    implementation deps.apt.javapoet
-    implementation deps.external.dagger
-    implementation deps.kotlin.stdlib
+    implementation(libs.autocommon)
+    implementation(libs.javapoet)
+    implementation(libs.dagger.library)
 
-    compileOnly deps.androidx.annotations
-    compileOnly deps.apt.autoService
-    compileOnly deps.apt.androidApi
+    compileOnly(libs.annotation)
+    compileOnly(libs.autoservice)
+    compileOnly(libs.android.api)
 
-    testImplementation deps.test.compileTesting
+    testImplementation(testLibs.compileTesting)
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887

@@ -16,14 +16,14 @@
 package com.uber.rib.core
 
 import android.view.View
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.uber.rib.core.XRay.Companion.apply
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
@@ -34,9 +34,7 @@ class XRayTest {
   fun apply_changesViewBackground() {
     XRay.toggle()
     val viewRouter: ViewRouter<*, *> = mock()
-    val view: View = mock {
-      on { context } doReturn(RuntimeEnvironment.application.baseContext)
-    }
+    val view: View = mock { on { context } doReturn (RuntimeEnvironment.application.baseContext) }
     apply(viewRouter, view)
     verify(view).background = any()
     verifyNoMoreInteractions(viewRouter)

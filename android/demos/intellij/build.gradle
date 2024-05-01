@@ -13,50 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-    }
+plugins {
+    id("ribs.kotlin-android-application-conventions")
+    alias(libs.plugins.kotlinKapt)
 }
 
-apply plugin: 'com.android.application'
-
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.intellij"
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
         applicationId "com.uber.rib.intellij"
-        versionCode 1
-        versionName "1.0"
-    }
-
-    // No need for lint. This is just a demo.
-    lint {
-        abortOnError false
-        quiet true
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
     }
 }
 
 dependencies {
-    annotationProcessor deps.apt.daggerCompiler
-    annotationProcessor project(":libraries:rib-compiler-test")
-    implementation project(":libraries:rib-android")
-    implementation deps.androidx.appcompat
-    implementation deps.external.dagger
-    implementation deps.external.rxbinding
-    implementation deps.androidx.percent
-    compileOnly deps.apt.javax
-    testImplementation project(":libraries:rib-test")
+    kapt(libs.dagger.compiler)
+    kapt(project(":libraries:rib-compiler-test"))
+    implementation(project(":libraries:rib-android"))
+    implementation(libs.appcompat)
+    implementation(libs.dagger.library)
+    implementation(libs.rxbinding)
+    implementation(libs.percent)
+    compileOnly(libs.jsr250)
+    testImplementation(project(":libraries:rib-test"))
 
     // IntelliJ debugging integration
-    implementation project(":tooling:rib-intellij-plugin:native:intellij-broadcast-rib")
+    implementation(project(":tooling:rib-intellij-plugin:native:intellij-broadcast-rib"))
 }

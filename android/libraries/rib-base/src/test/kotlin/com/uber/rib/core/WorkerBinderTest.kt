@@ -15,11 +15,10 @@
  */
 package com.uber.rib.core
 
+import com.google.common.truth.Truth.assertThat
 import com.jakewharton.rxrelay2.BehaviorRelay
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
-import com.nhaarman.mockitokotlin2.verify
+import com.uber.rib.core.RibEvents.ribActionEvents
+import com.uber.rib.core.RibEventsUtils.assertRibActionInfo
 import com.uber.rib.core.WorkerBinder.bind
 import com.uber.rib.core.WorkerBinder.bindToWorkerLifecycle
 import com.uber.rib.core.WorkerBinder.mapInteractorLifecycleToWorker
@@ -27,10 +26,44 @@ import com.uber.rib.core.WorkerBinder.mapPresenterLifecycleToWorker
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
+import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
+import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
+import org.mockito.kotlin.any
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
 
-class WorkerBinderTest {
-  private val worker: Worker = mock()
+@OptIn(ExperimentalCoroutinesApi::class)
+@RunWith(Parameterized::class)
+class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
+  @get:Rule val ribCoroutinesRule = RibCoroutinesRule()
+
+  private val worker =
+    mock<Worker>().run {
+      if (adaptFromRibCoroutineWorker) {
+        spy(this.asRibCoroutineWorker().asWorker())
+      } else {
+        this
+      }
+    }
+
+  private val fakeWorker = FakeWorker()
+  private val interactor = FakeInteractor<Presenter, Router<*>>()
+  private val ribActionInfoObserver = TestObserver<RibActionInfo>()
+
+  @Before
+  fun setUp() {
+    RibEvents.enableRibActionEmissions()
+  }
 
   @Test
   fun bind_whenInteractorAttached_shouldStartWorker() {
@@ -105,6 +138,30 @@ class WorkerBinderTest {
   }
 
   @Test
+  fun bind_onStartIsCalledEagerly() = runTest {
+    val interactor = object : Interactor<Any, Router<*>>() {}
+    var onStartCalled = false
+    val worker = Worker { onStartCalled = true }
+    InteractorHelper.attach(interactor, Unit, mock(), null)
+    bind(interactor, worker)
+    assertThat(onStartCalled).isTrue()
+  }
+
+  @Test
+  fun bind_whenSubscribeToLifecycleInWorker_observerIsCalledEagerly() = runTest {
+    val interactor = object : Interactor<Any, Router<*>>() {}
+    var enteredUnconfined = false
+    val worker = Worker {
+      val subscription = interactor.lifecycle().subscribe { enteredUnconfined = true }
+      assertThat(enteredUnconfined).isTrue()
+      subscription.dispose()
+    }
+    InteractorHelper.attach(interactor, Unit, mock(), null)
+    bind(interactor, worker)
+    assertThat(enteredUnconfined).isTrue()
+  }
+
+  @Test
   fun unbind_whenPresenterAttached_shouldStopWorker() {
     val lifecycle = BehaviorRelay.createDefault(PresenterEvent.LOADED)
     val unbinder = bind(mapPresenterLifecycleToWorker(lifecycle), worker)
@@ -120,4 +177,89 @@ class WorkerBinderTest {
     unbinder.unbind()
     verify(worker, times(1)).onStop()
   }
+
+  @Test
+  fun bind_withUnconfinedCoroutineDispatchers_shouldReportBinderInformationForOnStart() = runTest {
+    ribActionEvents.subscribe(ribActionInfoObserver)
+    bindFakeWorker()
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.ATTACHED,
+        RibActionEmitterType.DEPRECATED_WORKER,
+        RibActionState.COMPLETED,
+        ribClassName = "com.uber.rib.core.FakeWorker",
+      )
+  }
+
+  @Test
+  fun bind_withDisabledRibActionEvents_shouldNotEmitActionEvents() = runTest {
+    RibEvents.areRibActionEmissionsAllowed = false
+    ribActionEvents.subscribe(ribActionInfoObserver)
+    bindFakeWorker()
+    assertThat(ribActionInfoObserver.values()).isEmpty()
+  }
+
+  @Test
+  fun bind_multipleWorkers_shouldReportBinderUiWorker() = runTest {
+    ribActionEvents.subscribe(ribActionInfoObserver)
+    val uiWorker = UiWorker()
+    prepareInteractor()
+    val workers = listOf(fakeWorker, fakeWorker, uiWorker)
+    bind(interactor, workers)
+    advanceUntilIdle()
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.ATTACHED,
+        RibActionEmitterType.DEPRECATED_WORKER,
+        RibActionState.COMPLETED,
+        ribClassName = "com.uber.rib.core.UiWorker",
+      )
+  }
+
+  @Test
+  fun unbind_withUnconfinedCoroutineDispatchers_shouldReportBinderDurationForOnStop() = runTest {
+    ribActionEvents.subscribe(ribActionInfoObserver)
+    val unbinder = bindFakeWorker()
+    unbinder.unbind()
+    val ribActionInfoValues = ribActionInfoObserver.values()
+    ribActionInfoValues
+      .last()
+      .assertRibActionInfo(
+        RibEventType.DETACHED,
+        RibActionEmitterType.DEPRECATED_WORKER,
+        RibActionState.COMPLETED,
+        ribClassName = "com.uber.rib.core.FakeWorker",
+      )
+  }
+
+  private fun bindFakeWorker(): WorkerUnbinder {
+    prepareInteractor()
+    return bind(interactor, fakeWorker)
+  }
+
+  private fun prepareInteractor() {
+    interactor.attach()
+    interactor.enableTestScopeOverride()
+  }
+
+  companion object {
+    @JvmStatic
+    @Parameterized.Parameters(name = "adaptFromRibCoroutineWorker = {0}")
+    fun data() = listOf(arrayOf(true), arrayOf(false))
+  }
+}
+
+private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
+  object : Worker {
+    override fun onStart(lifecycle: WorkerScopeProvider) {
+      onStartBlock(lifecycle)
+    }
+  }
+
+class UiWorker : Worker {
+  override val coroutineContext: CoroutineDispatcher = RibDispatchers.Main
 }

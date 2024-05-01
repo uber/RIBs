@@ -17,6 +17,7 @@ package com.uber.rib.workflow.core
 
 import com.google.common.base.Optional
 import com.uber.rib.core.lifecycle.InteractorEvent
+import com.uber.rib.workflow.core.internal.WorkflowFriendModuleApi
 import io.reactivex.Observable
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -28,8 +29,9 @@ import io.reactivex.functions.BiFunction
  * @param <T> type of return value (if any) for this step.
  * @param <A> type of [ActionableItem] this step returns when finished.
  */
-open class Step<T, A : ActionableItem> private constructor(
-  private val stepDataSingle: Single<Optional<Data<T, A>>>
+open class Step<T, A : ActionableItem>
+private constructor(
+  private val stepDataSingle: Single<Optional<Data<T, A>>>,
 ) {
 
   /**
@@ -38,13 +40,16 @@ open class Step<T, A : ActionableItem> private constructor(
    * called.
    *
    * @param func to return the next step when this current step completes. This function will
-   * receive the result of the previous step and the next actionable item to take an action on.
+   *   receive the result of the previous step and the next actionable item to take an action on.
    * @param <T2> the value type returned by the next step.
    * @param <A2> the actionable item type returned by the next step.
    * @return a [Step] to chain more calls to.
    */
+  @OptIn(WorkflowFriendModuleApi::class)
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
-  open fun <T2, A2 : ActionableItem> onStep(func: BiFunction<T, A, Step<T2, A2>>): Step<T2, A2> {
+  public open fun <T2, A2 : ActionableItem> onStep(
+    func: BiFunction<T, A, Step<T2, A2>>,
+  ): Step<T2, A2> {
     return Step(
       asObservable()
         .flatMap { data: Optional<Data<T, A>> ->
@@ -54,21 +59,23 @@ open class Step<T, A : ActionableItem> private constructor(
             Observable.just(Optional.absent())
           }
         }
-        .singleOrError()
+        .singleOrError(),
     )
   }
 
+  @OptIn(WorkflowFriendModuleApi::class)
   internal open fun asResultObservable(): Observable<Optional<T>> {
     return asObservable().map { data -> Optional.fromNullable(data.orNull()?.getValue()) }
   }
 
-  internal open fun asObservable(): Observable<Optional<Data<T, A>>> {
-    val cachedObservable: Observable<Optional<Data<T, A>>> = stepDataSingle.toObservable()
-      .observeOn(AndroidSchedulers.mainThread())
-      .cache()
+  @WorkflowFriendModuleApi
+  public open fun asObservable(): Observable<Optional<Data<T, A>>> {
+    val cachedObservable: Observable<Optional<Data<T, A>>> =
+      stepDataSingle.toObservable().observeOn(AndroidSchedulers.mainThread()).cache()
     return cachedObservable.flatMap { dataOptional: Optional<Data<T, A>> ->
       if (dataOptional.isPresent) {
-        dataOptional.get()
+        dataOptional
+          .get()
           .actionableItem
           .lifecycle()
           .filter { interactorEvent -> interactorEvent === InteractorEvent.ACTIVE }
@@ -87,9 +94,12 @@ open class Step<T, A : ActionableItem> private constructor(
    * @param value for this instance.
    * @param actionableItem for this instance.
    */
-  open class Data<T, A : ActionableItem>(private val value: T, internal val actionableItem: A) {
+  public open class Data<T, A : ActionableItem>(
+    private val value: T,
+    internal val actionableItem: A,
+  ) {
 
-    internal open fun getValue() = value
+    @WorkflowFriendModuleApi public open fun getValue() = value
 
     companion object {
       /**
@@ -98,19 +108,19 @@ open class Step<T, A : ActionableItem> private constructor(
        *
        * @param actionableItem to advance to.
        * @param <A> type of actionable item.
-       * @return a new [Step.Data] instance.
-       </A> */
+       * @return a new [Step.Data] instance. </A>
+       */
       @JvmStatic
-      fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> {
+      public fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> {
         return Data(NoValueHolder.INSTANCE, actionableItem)
       }
     }
   }
 
-  /** Used to indicate that a step has no return value.  */
+  /** Used to indicate that a step has no return value. */
   open class NoValue
 
-  /** Initialization On Demand Singleton for [NoValue].  */
+  /** Initialization On Demand Singleton for [NoValue]. */
   private object NoValueHolder {
     val INSTANCE = NoValue()
   }
@@ -142,7 +152,7 @@ open class Step<T, A : ActionableItem> private constructor(
      */
     @JvmStatic
     fun <T, A : ActionableItem> fromOptional(
-      stepDataSingle: Single<Optional<Data<T, A>>>
+      stepDataSingle: Single<Optional<Data<T, A>>>,
     ): Step<T, A> = Step(stepDataSingle)
   }
 }

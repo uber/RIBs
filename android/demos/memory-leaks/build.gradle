@@ -13,66 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-        classpath deps.build.gradlePlugins.errorprone
-        classpath deps.build.gradlePlugins.nullaway
-    }
+plugins {
+    id("ribs.kotlin-android-application-errorprone-conventions")
+    alias(libs.plugins.kotlinKapt)
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'net.ltgt.nullaway'
-
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.memory_leak"
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
         applicationId "com.uber.tutorial3"
-        versionCode 1
-        versionName "1.0"
-    }
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
-    }
-
-    // No need for lint. This is just a tutorial.
-    lint {
-        abortOnError false
-        quiet true
     }
 }
 
 dependencies {
-    annotationProcessor deps.uber.autodisposeErrorProne
-    annotationProcessor deps.apt.daggerCompiler
-    annotationProcessor project(":libraries:rib-compiler-app")
-    annotationProcessor project(":libraries:rib-compiler-test")
-    annotationProcessor deps.apt.nullAway
-    implementation project(":libraries:rib-android")
-    implementation deps.external.dagger
-    implementation deps.external.rxbinding
-    implementation deps.external.leakcanaryDebug
-    implementation deps.androidx.percent
-    implementation deps.androidx.appcompat
-    compileOnly deps.apt.javax
-    testImplementation project(":libraries:rib-test")
-    errorprone deps.build.errorProne
-    errorprone deps.build.guavaJre
-    errorproneJavac deps.build.errorProneJavac
-    errorprone deps.build.nullAway
+    implementation(project(":libraries:rib-android"))
+    kapt(project(":libraries:rib-compiler-app"))
+    kapt(project(":libraries:rib-compiler-test"))
+    kapt(libs.autodispose.errorprone)
+    kapt(libs.dagger.compiler)
+    implementation(libs.dagger.library)
+    implementation(libs.rxbinding)
+    implementation(libs.leakcanary)
+    implementation(libs.percent)
+    implementation(libs.appcompat)
+    compileOnly(libs.jsr250)
+
+    testImplementation(project(":libraries:rib-test"))
 }
 
 tasks.withType(JavaCompile).configureEach {

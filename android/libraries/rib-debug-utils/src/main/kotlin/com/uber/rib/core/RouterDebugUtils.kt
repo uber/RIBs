@@ -15,8 +15,8 @@
  */
 package com.uber.rib.core
 
-/** Debugging utilities when working with Routers.  */
-object RouterDebugUtils {
+/** Debugging utilities when working with Routers. */
+public object RouterDebugUtils {
   private const val ARM_RIGHT = "└── "
   private const val INTERSECTION = "├── "
   private const val LINE = "│   "
@@ -31,7 +31,7 @@ object RouterDebugUtils {
    */
   @JvmStatic
   @JvmOverloads
-  fun printRouterSubtree(router: Router<*>, prefix: String = "", isTail: Boolean = true) {
+  public fun printRouterSubtree(router: Router<*>, prefix: String = "", isTail: Boolean = true) {
     Rib.getConfiguration()
       .handleDebugMessage(prefix + (if (isTail) ARM_RIGHT else INTERSECTION) + router.tag)
     val children = router.getChildren()

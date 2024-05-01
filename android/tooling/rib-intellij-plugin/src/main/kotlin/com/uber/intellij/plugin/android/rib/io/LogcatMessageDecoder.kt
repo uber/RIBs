@@ -19,7 +19,7 @@ package com.uber.intellij.plugin.android.rib.io
  * Class responsible for collecting split messages from logcat, and concatenating them into full
  * message response. This is to work around 4000 char limit of logcat entries.
  */
-class LogcatMessageDecoder {
+public class LogcatMessageDecoder {
 
   private inner class MessagePart(message: String) : Comparable<MessagePart> {
     val partNumber: Int
@@ -47,13 +47,13 @@ class LogcatMessageDecoder {
   private var parts: HashMap<Int, MessagePart> = HashMap()
 
   /** Whether all parts were received to reconstruct message */
-  val complete: Boolean
+  public val complete: Boolean
     get() {
       return partCount > 0 && parts.size == partCount
     }
 
   /** The full message. */
-  val message: String
+  public val message: String
     get() {
       if (!complete) {
         error("Message is not complete")
@@ -66,7 +66,7 @@ class LogcatMessageDecoder {
     }
 
   /** Method invoked when new part of message are received. */
-  fun onMessagePartReceived(message: String) {
+  public fun onMessagePartReceived(message: String) {
     val part = MessagePart(message)
     if (partCount == 0) {
       partCount = part.partCount

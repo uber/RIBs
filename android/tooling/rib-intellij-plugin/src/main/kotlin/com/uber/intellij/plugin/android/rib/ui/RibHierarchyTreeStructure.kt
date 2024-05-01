@@ -21,8 +21,10 @@ import com.intellij.openapi.project.Project
 import com.uber.intellij.plugin.android.rib.RibHierarchyUtils
 
 /** Tree structure used by Rib hierarchy */
-class RibHierarchyTreeStructure(private val project: Project, descriptor: HierarchyNodeDescriptor) :
-  HierarchyTreeStructure(project, descriptor) {
+public class RibHierarchyTreeStructure(
+  private val project: Project,
+  descriptor: HierarchyNodeDescriptor,
+) : HierarchyTreeStructure(project, descriptor) {
 
   init {
     setBaseElement(descriptor)
@@ -38,8 +40,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               descriptor,
               RibHierarchyUtils.getPsiClass(project, descriptor.ribHost.name),
-              it
-            )
+              it,
+            ),
           )
         }
       }
@@ -50,8 +52,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               descriptor,
               RibHierarchyUtils.getPsiClass(project, activity.name),
-              activity
-            )
+              activity,
+            ),
           )
         }
       }
@@ -61,8 +63,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
             myProject,
             descriptor,
             RibHierarchyUtils.getPsiClass(project, descriptor.ribActivity.name),
-            descriptor.ribActivity.rootRib
-          )
+            descriptor.ribActivity.rootRib,
+          ),
         )
       }
       is RibHierarchyNodeDescriptor -> {
@@ -72,8 +74,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               descriptor,
               RibHierarchyUtils.getPsiClass(project, childRibNode.name),
-              childRibNode
-            )
+              childRibNode,
+            ),
           )
         }
       }
@@ -84,8 +86,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               RibHierarchyUtils.getPsiClass(project, view.id),
               descriptor.ribNode,
-              view
-            )
+              view,
+            ),
           )
         }
       }
@@ -96,8 +98,8 @@ class RibHierarchyTreeStructure(private val project: Project, descriptor: Hierar
               myProject,
               RibHierarchyUtils.getPsiClass(project, view.id),
               descriptor.ribNode,
-              view
-            )
+              view,
+            ),
           )
         }
       }

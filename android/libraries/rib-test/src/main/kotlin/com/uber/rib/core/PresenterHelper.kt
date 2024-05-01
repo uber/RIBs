@@ -15,15 +15,15 @@
  */
 package com.uber.rib.core
 
-/** The helper to test [Presenter].  */
-object PresenterHelper {
+/** The helper to test [Presenter]. */
+public object PresenterHelper {
   /**
    * Loads the given [Presenter].
    *
    * @param presenter the presenter.
    */
   @JvmStatic
-  open fun load(presenter: Presenter) {
+  public fun load(presenter: Presenter) {
     presenter.dispatchLoad()
   }
 
@@ -33,7 +33,7 @@ object PresenterHelper {
    * @param presenter the presenter.
    */
   @JvmStatic
-  open fun unload(presenter: Presenter) {
+  public fun unload(presenter: Presenter) {
     presenter.dispatchUnload()
   }
 }

@@ -16,15 +16,43 @@
 package com.uber.rib.core
 
 import androidx.annotation.VisibleForTesting
-import com.jakewharton.rxrelay2.PublishRelay
+import com.uber.autodispose.ScopeProvider
 import com.uber.autodispose.lifecycle.LifecycleScopeProvider
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.InteractorEvent
 import com.uber.rib.core.lifecycle.PresenterEvent
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.Observable
+import io.reactivex.subjects.CompletableSubject
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.DelicateCoroutinesApi
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.onCompletion
+import kotlinx.coroutines.flow.takeWhile
+import kotlinx.coroutines.launch
+
+/**
+ * Resulting CoroutineContext defined at [Worker] that guards against potential nullable cases on
+ * tests that have a mocked Worker via Mockito
+ */
+private val Worker.bindingCoroutineContext: CoroutineContext
+  get() = this.coroutineContext ?: EmptyCoroutineContext
 
 /** Helper class to bind to an interactor's lifecycle to translate it to a [Worker] lifecycle. */
-object WorkerBinder {
+@Deprecated(
+  message =
+    """
+      com.uber.rib.core.Worker is deprecated in favor of com.uber.rib.core.RibCoroutineWorker
+    """,
+  replaceWith = ReplaceWith("coroutineScope.bind(ribCoroutineWorker)"),
+)
+public object WorkerBinder {
+
   /**
    * Bind a worker (ie. a manager or any other class that needs an interactor's lifecycle) to an
    * interactor's lifecycle events. Inject this class into your interactor and call this method on
@@ -32,12 +60,17 @@ object WorkerBinder {
    *
    * @param interactor The interactor that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  open fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder {
-    return bind(mapInteractorLifecycleToWorker(interactor.lifecycle()), worker)
-  }
+  public fun bind(
+    interactor: Interactor<*, *>,
+    worker: Worker,
+  ): WorkerUnbinder =
+    worker.bind(
+      interactor.lifecycleFlow,
+      Interactor.lifecycleRange,
+    )
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -48,7 +81,26 @@ object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  open fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
+  public fun bind(
+    interactor: Interactor<*, *>,
+    workers: List<Worker>,
+  ) {
+    bind(interactor, workers as Iterable<Worker>)
+  }
+
+  /**
+   * Bind workers (i.e. a manager or any other class that needs an interactor lifecycle) to an
+   * interactor lifecycle events. Use this class into your interactor and call this method on
+   * attach.
+   *
+   * @param interactor The interactor that provides the lifecycle.
+   * @param workers A list of classes that want to be informed when to start and stop doing work.
+   */
+  @JvmStatic
+  public fun bind(
+    interactor: Interactor<*, *>,
+    workers: Iterable<Worker>,
+  ) {
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker)
     }
@@ -60,12 +112,17 @@ object WorkerBinder {
    *
    * @param presenter The presenter that provides the lifecycle.
    * @param worker The class that wants to be informed when to start and stop doing work.
-   * @return [WorkerUnbinder] to unbind [Worker&#39;s][Worker] lifecycle.
+   * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  open fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder {
-    return bind(mapPresenterLifecycleToWorker(presenter.lifecycle()), worker)
-  }
+  public fun bind(
+    presenter: Presenter,
+    worker: Worker,
+  ): WorkerUnbinder =
+    worker.bind(
+      presenter.lifecycleFlow,
+      Presenter.lifecycleRange,
+    )
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -76,26 +133,55 @@ object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  open fun bind(presenter: Presenter, workers: List<Worker>) {
+  public fun bind(
+    presenter: Presenter,
+    workers: List<Worker>,
+  ) {
+    bind(presenter, workers as Iterable<Worker>)
+  }
+
+  /**
+   * Bind a list of workers (i.e. a manager or any other class that needs a presenter lifecycle) to
+   * a presenter lifecycle events. Use this class into your presenter and call this method on
+   * attach.
+   *
+   * @param presenter The presenter that provides the lifecycle.
+   * @param workers A list of classes that want to be informed when to start and stop doing work.
+   */
+  @JvmStatic
+  public fun bind(
+    presenter: Presenter,
+    workers: Iterable<Worker>,
+  ) {
     for (worker in workers) {
       bind(presenter, worker)
     }
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   @JvmStatic
   @VisibleForTesting
-  open fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
-    val unbindSubject = PublishRelay.create<WorkerEvent>()
-    val workerLifecycle = mappedLifecycle
-      .mergeWith(unbindSubject)
-      .takeUntil { workerEvent: WorkerEvent -> workerEvent === WorkerEvent.STOP }
-    bindToWorkerLifecycle(workerLifecycle, worker)
-    return WorkerUnbinder { unbindSubject.accept(WorkerEvent.STOP) }
+  @Deprecated(
+    message =
+      """
+      This method doesn't support binding on the [CoroutineContext] defined at Worker/WorkerBinder. Due to this, the binding
+      will happen on the caller thread without a possibility to change the threading
+      It also doesn't provide information for [WorkerBinderInfo] when a [WorkerBinderListener] is added
+    """,
+    replaceWith = ReplaceWith("bind(interactor, worker) or bind(presenter, worker)"),
+  )
+  public fun bind(mappedLifecycle: Observable<WorkerEvent>, worker: Worker): WorkerUnbinder {
+    val disposable =
+      mappedLifecycle
+        .takeWhile { it != WorkerEvent.STOP }
+        .doFinally { worker.onStop() }
+        .subscribe { worker.onStart(WorkerScopeProvider(mappedLifecycle)) }
+    return WorkerUnbinder(disposable::dispose)
   }
 
   @JvmStatic
-  fun mapInteractorLifecycleToWorker(
-    interactorEventObservable: Observable<InteractorEvent>
+  public fun mapInteractorLifecycleToWorker(
+    interactorEventObservable: Observable<InteractorEvent>,
   ): Observable<WorkerEvent> {
     return interactorEventObservable.map { interactorEvent: InteractorEvent ->
       when (interactorEvent) {
@@ -106,8 +192,8 @@ object WorkerBinder {
   }
 
   @JvmStatic
-  fun mapPresenterLifecycleToWorker(
-    presenterEventObservable: Observable<PresenterEvent>
+  public fun mapPresenterLifecycleToWorker(
+    presenterEventObservable: Observable<PresenterEvent>,
   ): Observable<WorkerEvent> {
     return presenterEventObservable.map { presenterEvent: PresenterEvent ->
       when (presenterEvent) {
@@ -127,11 +213,11 @@ object WorkerBinder {
   @JvmStatic
   @Deprecated(
     """this method uses {@code LifecycleScopeProvider} for purposes other than
-        AutoDispose. Usage is strongly discouraged as this method may be removed in the future."""
+        AutoDispose. Usage is strongly discouraged as this method may be removed in the future.""",
   )
-  open fun bindTo(
+  public fun bindTo(
     lifecycle: LifecycleScopeProvider<InteractorEvent>,
-    worker: Worker
+    worker: Worker,
   ) {
     bind(mapInteractorLifecycleToWorker(lifecycle.lifecycle()), worker)
   }
@@ -142,10 +228,19 @@ object WorkerBinder {
    * @param workerLifecycle the worker lifecycle event provider
    * @param worker the class that wants to be informed when to start and stop doing work
    */
+  @OptIn(CoreFriendModuleApi::class)
   @JvmStatic
-  fun bindToWorkerLifecycle(
+  @Deprecated(
+    message =
+      """
+      This method is unsafe because it assumes that the 'workerLifecycle' Observable completes after it
+      emits 'WorkerEvent.STOP'. If it does not complete, the subscription will leak.
+    """,
+    replaceWith = ReplaceWith("bind(workerLifecycle, worker)"),
+  )
+  public fun bindToWorkerLifecycle(
     workerLifecycle: Observable<WorkerEvent>,
-    worker: Worker
+    worker: Worker,
   ) {
     workerLifecycle.subscribe { workerEvent: WorkerEvent ->
       when (workerEvent) {
@@ -154,4 +249,76 @@ object WorkerBinder {
       }
     }
   }
+}
+
+private fun getJobCoroutineContext(
+  dispatcherAtBinder: CoroutineDispatcher,
+  worker: Worker,
+): CoroutineContext {
+  val workerCoroutineContext = worker.bindingCoroutineContext
+  return if (workerCoroutineContext != EmptyCoroutineContext) {
+    workerCoroutineContext
+  } else {
+    dispatcherAtBinder
+  }
+}
+
+private fun <T : Comparable<T>> Worker.bind(
+  lifecycle: SharedFlow<T>,
+  lifecycleRange: ClosedRange<T>,
+): WorkerUnbinder {
+  val dispatcherAtBinder = RibCoroutinesConfig.deprecatedWorkerDispatcher
+  val coroutineContext =
+    getJobCoroutineContext(
+      dispatcherAtBinder,
+      worker = this,
+    )
+  val coroutineStart =
+    if (coroutineContext == RibDispatchers.Unconfined) {
+      CoroutineStart.UNDISPATCHED
+    } else {
+      CoroutineStart.DEFAULT
+    }
+
+  val completable = CompletableSubject.create()
+  val scopeProvider = ScopeProvider { completable }
+  val workerScopeProvider = WorkerScopeProvider(scopeProvider)
+
+  /*
+   * We need `Dispatchers.Unconfined` to react immediately to lifecycle flow emissions, and we need
+   * `CoroutineStart.Undispatched` to prevent coroutines launched in `onStart` with `Dispatchers.Unconfined`
+   * from forming an event loop instead of starting eagerly.
+   *
+   * GlobalScope won't leak the job, because the flow completes when lifecycle completes.
+   */
+  @OptIn(DelicateCoroutinesApi::class)
+  val job =
+    GlobalScope.launch(
+      coroutineContext,
+      start = coroutineStart,
+    ) {
+      lifecycle
+        .takeWhile { it < lifecycleRange.endInclusive }
+        .onCompletion {
+          triggerRibActionAndEmitEvents(
+            this@bind,
+            RibActionEmitterType.DEPRECATED_WORKER,
+            RibEventType.DETACHED,
+          ) {
+            onStop()
+          }
+
+          completable.onComplete()
+        }
+        .collect {
+          triggerRibActionAndEmitEvents(
+            this@bind,
+            RibActionEmitterType.DEPRECATED_WORKER,
+            RibEventType.ATTACHED,
+          ) {
+            onStart(workerScopeProvider)
+          }
+        }
+    }
+  return WorkerUnbinder(job::cancel)
 }

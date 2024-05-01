@@ -14,59 +14,29 @@
  * limitations under the License.
  */
 
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.android
-        classpath deps.build.gradlePlugins.errorprone
-        classpath deps.build.gradlePlugins.nullaway
-    }
+plugins {
+    id("ribs.kotlin-android-application-errorprone-conventions")
 }
 
-apply plugin: 'net.ltgt.errorprone'
-apply plugin: 'com.android.application'
-apply plugin: 'net.ltgt.nullaway'
-
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
+    namespace "com.uber.rib.tutorial1"
 
     defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
         applicationId "com.uber.tutorial2"
-        versionCode 1
-        versionName "1.0"
-    }
-
-    // No need for lint. This is just a tutorial.
-    lint {
-        abortOnError false
-        quiet true
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
     }
 }
 
 dependencies {
-    annotationProcessor deps.apt.daggerCompiler
-    annotationProcessor project(":libraries:rib-compiler-test")
-    annotationProcessor deps.apt.nullAway
-    implementation project(":libraries:rib-android")
-    implementation deps.androidx.appcompat
-    implementation deps.androidx.percent
-    implementation deps.external.dagger
-    implementation deps.external.rxbinding
-    compileOnly deps.apt.androidApi
-    compileOnly deps.apt.javax
-    testImplementation project(":libraries:rib-test")
-
-    errorproneJavac deps.build.errorProneJavac
-    errorprone deps.build.nullAway
-    errorprone deps.build.errorProne
-    errorprone deps.build.guavaJre
+    kapt(libs.dagger.compiler)
+    kapt(project(":libraries:rib-compiler-test"))
+    implementation(project(":libraries:rib-android"))
+    implementation(libs.appcompat)
+    implementation(libs.percent)
+    implementation(libs.dagger.library)
+    implementation(libs.rxbinding)
+    compileOnly(libs.android.api)
+    compileOnly(libs.jsr250)
+    testImplementation(project(":libraries:rib-test"))
 }
 
 tasks.withType(JavaCompile) {

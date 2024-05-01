@@ -20,9 +20,13 @@ package com.uber.rib.core
  *
  * @param <I>
  */
-class FakeRouter<I : Interactor<*, *>> : Router<I> {
-  constructor(interactor: I) : super(interactor)
-  constructor(interactor: I, ribRefWatcher: RibRefWatcher, mainThread: Thread) : super(null, interactor, ribRefWatcher, mainThread)
+public class FakeRouter<I : Interactor<*, *>> : Router<I> {
+  public constructor(interactor: I) : super(interactor)
+  public constructor(
+    interactor: I,
+    ribRefWatcher: RibRefWatcher,
+    mainThread: Thread,
+  ) : super(null, interactor, ribRefWatcher, mainThread)
 
   override fun attachToInteractor() {
     // do not automatically attach this

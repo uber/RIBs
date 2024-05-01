@@ -27,7 +27,7 @@ import javax.lang.model.util.Types
 internal abstract class AnnotationVerifier<T : AnnotatedClass>(
   protected val errorReporter: ErrorReporter,
   protected val elementUtils: Elements,
-  protected val typesUtils: Types
+  protected val typesUtils: Types,
 ) {
 
   /**
@@ -37,6 +37,5 @@ internal abstract class AnnotationVerifier<T : AnnotatedClass>(
    * @return an [AnnotatedClass] object for the type.
    * @throws VerificationFailedException when verification fails.
    */
-  @Throws(VerificationFailedException::class)
-  abstract fun verify(type: TypeElement): T
+  @Throws(VerificationFailedException::class) abstract fun verify(type: TypeElement): T
 }

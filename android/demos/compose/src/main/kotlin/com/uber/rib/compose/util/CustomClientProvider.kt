@@ -28,12 +28,12 @@ fun CustomClientProvider(
   analyticsClient: AnalyticsClient,
   experimentClient: ExperimentClient,
   loggerClient: LoggerClient,
-  content: @Composable () -> Unit
+  content: @Composable () -> Unit,
 ) {
   CompositionLocalProvider(
     AnalyticsLocal provides analyticsClient,
     ExperimentsLocal provides experimentClient,
     LoggerLocal provides loggerClient,
-    content = content
+    content = content,
   )
 }

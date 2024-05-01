@@ -27,44 +27,36 @@ import androidx.annotation.IntRange
  */
 interface ActivityDelegate {
   /** @see [Activity.onCreate] */
-  @JvmDefault
   fun onCreate(savedInstanceState: Bundle?) {}
 
   /** @see [Activity.onStart] */
-  @JvmDefault
   fun onStart() {}
 
   /** @see [Activity.onResume] */
-  @JvmDefault
   fun onResume() {}
 
   /** @see [Activity.onPause] */
-  @JvmDefault
   fun onPause() {}
 
   /** @see [Activity.onStop] */
-  @JvmDefault
   fun onStop() {}
 
   /** @see [Activity.onDestroy] */
-  @JvmDefault
   fun onDestroy() {}
 
   /** @see [Activity.onActivityResult] */
-  @JvmDefault
   fun onActivityResult(
     activity: Activity,
     requestCode: Int,
     resultCode: Int,
-    data: Intent?
+    data: Intent?,
   ) {}
 
   /** @see [Activity.onRequestPermissionsResult] */
-  @JvmDefault
   fun onRequestPermissionsResult(
     activity: Activity,
     @IntRange(from = 0, to = 255) requestCode: Int,
     permissions: Array<String>,
-    grantResults: IntArray
+    grantResults: IntArray,
   ) {}
 }

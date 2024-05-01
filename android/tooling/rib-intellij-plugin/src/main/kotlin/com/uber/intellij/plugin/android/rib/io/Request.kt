@@ -27,11 +27,11 @@ import com.android.ddmlib.IDevice
  * @param timeoutMs the timeout to add to request
  * @param numRetries the number of retires to use for this request
  */
-open class Request<T>(
-  val device: IDevice,
-  val command: String,
-  val clazz: Class<T>,
-  val params: List<Pair<String, Any>> = emptyList(),
-  val timeoutMs: Int = 2000,
-  val numRetries: Int = 1
+public open class Request<T>(
+  public val device: IDevice,
+  public val command: String,
+  public val clazz: Class<T>,
+  public val params: List<Pair<String, Any>> = emptyList(),
+  public val timeoutMs: Int = 2000,
+  public val numRetries: Int = 1,
 )

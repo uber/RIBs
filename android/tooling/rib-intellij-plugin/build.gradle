@@ -1,50 +1,42 @@
-buildscript {
-    dependencies {
-        classpath deps.build.intellijPlugin
-    }
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.intellij)
 }
-
-apply plugin: "java"
-apply plugin: "org.jetbrains.intellij"
-apply plugin: "org.jetbrains.kotlin.jvm"
 
 group "com.uber.rib"
 
 repositories {
     mavenLocal()
+    google()
+    mavenCentral()
+}
+
+intellij {
+    plugins = ['java', 'Kotlin', 'android']
+    version = libs.versions.intellij
+    pluginName = "uber-ribs"
+    updateSinceUntilBuild = false
+    sandboxDir = "${project.gradle.gradleHomeDir}/caches/intellij"
+    downloadSources = false
+}
+
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(17))
+    }
 }
 
 dependencies {
-    implementation deps.apt.androidApi
-    implementation deps.build.commonsLang
-    implementation deps.external.ddms
-    implementation deps.external.guavaAndroid
-    implementation deps.androidx.annotations
-
-    testImplementation(project(":libraries:rib-base")) {
-        transitive = false
-    }
-    compileOnly(project(path: ":libraries:rib-android", configuration: 'default')) {
-        transitive = false
-    }
-
-    testImplementation(project(":libraries:rib-test")) {
-        transitive = false
-    }
-    testImplementation(project(":libraries:rib-compiler-app")) {
-        transitive = false
-    }
-    testImplementation(project(":libraries:rib-compiler-test")) {
-        transitive = false
-    }
-    testImplementation deps.apt.daggerCompiler
-    testImplementation deps.apt.javaxInject
-    testImplementation deps.external.dagger
-    testImplementation deps.uber.autodispose
-    testImplementation deps.uber.autodisposeLifecycle
-    testImplementation deps.test.truth
-    testImplementation deps.test.compileTesting
-    testImplementation deps.test.mockito
+    testImplementation(project(":libraries:rib-test"))
+    testImplementation(project(":libraries:rib-compiler-test"))
+    testImplementation(libs.dagger.compiler)
+    testImplementation(libs.javax.inject)
+    testImplementation(libs.dagger.library)
+    testImplementation(testLibs.truth)
+    testImplementation(testLibs.compileTesting)
+    testImplementation(testLibs.mockito)
+    testImplementation(libs.annotation)
+    testImplementation(libs.android.api)
 }
 
 // Determines if the machine has Maven credentials.
@@ -60,14 +52,6 @@ def isReleaseBuild() {
 ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
 version = pluginXml.version
 
-intellij {
-    plugins = ['java', 'Kotlin' ]
-    version = deps.versions.intellij
-    pluginName = "uber-ribs"
-    updateSinceUntilBuild = false
-    sandboxDir = "${project.gradle.gradleHomeDir}/caches/intellij"
-    downloadSources = false
-}
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     archiveClassifier = "sources"

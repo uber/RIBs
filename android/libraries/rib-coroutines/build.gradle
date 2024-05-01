@@ -14,33 +14,26 @@
  * limitations under the License.
  */
 
-
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "com.vanniktech.maven.publish"
-
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.mavenPublish)
+}
 
 dependencies {
 
-    api deps.uber.autodisposeCoroutines
-    api deps.kotlin.coroutinesAndroid
-    api deps.kotlin.coroutinesRx2
-    implementation deps.kotlin.stdlib
+    api(libs.autodispose.coroutines)
+    api(libs.coroutines.android)
+    api(libs.coroutines.rx2)
 
-    compileOnly deps.external.android
+    compileOnly(libs.android.api)
 
-    testImplementation project(":libraries:rib-base")
-    testImplementation project(":libraries:rib-test")
-    testImplementation deps.test.junit
-    testImplementation deps.test.mockito
-    testImplementation deps.test.mockitoKotlin
-    testImplementation deps.test.truth
-    testImplementation deps.kotlin.coroutinesTest
-    testImplementation deps.androidx.annotations
-    testImplementation deps.apt.androidApi
-}
-
-kotlin {
-    explicitApi()
+    testImplementation(project(":libraries:rib-base"))
+    testImplementation(project(":libraries:rib-test"))
+    testImplementation(testLibs.junit)
+    testImplementation(testLibs.mockito)
+    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.truth)
+    testImplementation(testLibs.coroutines.test)
+    testImplementation(libs.annotation)
+    testImplementation(libs.android.api)
 }

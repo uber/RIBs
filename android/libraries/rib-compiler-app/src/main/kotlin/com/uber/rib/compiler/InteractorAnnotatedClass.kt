@@ -18,12 +18,12 @@ package com.uber.rib.compiler
 import javax.lang.model.element.TypeElement
 import javax.lang.model.element.VariableElement
 
-open class InteractorAnnotatedClass(
+public open class InteractorAnnotatedClass(
   typeElement: TypeElement,
   /** @return the list of dependencies. */
-  open val dependencies: List<VariableElement>,
-  /** @return Whether this interactor extends BasicInteractor.  */
-  open val isBasic: Boolean
+  public open val dependencies: List<VariableElement>,
+  /** @return Whether this interactor extends BasicInteractor. */
+  public open val isBasic: Boolean,
 ) : AnnotatedClass(typeElement) {
 
   open override val nameSuffix: String

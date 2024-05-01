@@ -24,11 +24,11 @@ import com.uber.intellij.plugin.android.rib.RibHierarchyUtils.Companion.formatSi
 import com.uber.intellij.plugin.android.rib.io.RibNode
 
 /** Node descriptor used to render a Rib. */
-class RibHierarchyNodeDescriptor(
+public class RibHierarchyNodeDescriptor(
   project: Project,
   parentDescriptor: HierarchyNodeDescriptor?,
   private val clazz: PsiClass,
-  val ribNode: RibNode
+  public val ribNode: RibNode,
 ) : RibHierarchyDescriptor(project, parentDescriptor, clazz, false) {
 
   override fun updateText(text: CompositeAppearance) {

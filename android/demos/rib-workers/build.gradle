@@ -1,0 +1,48 @@
+plugins {
+    id("ribs.kotlin-android-application-errorprone-conventions")
+}
+
+android {
+    namespace = "com.uber.rib.workers"
+
+    defaultConfig {
+        applicationId = "com.uber.workers"
+    }
+    buildFeatures {
+        compose true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
+    }
+}
+
+dependencies {
+    kapt(libs.motif.compiler)
+    implementation(project(":libraries:rib-android"))
+    implementation(project(":libraries:rib-android-compose"))
+    implementation(project(":libraries:rib-coroutines"))
+    implementation(libs.activity.compose)
+    implementation(libs.annotation)
+    implementation(libs.appcompat)
+    implementation(libs.compose.animation)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.material)
+    implementation(libs.compose.navigation)
+    implementation(libs.compose.runtime.rx2)
+    implementation(libs.compose.ui)
+    implementation(libs.compose.viewmodel)
+    implementation(libs.compose.uitooling)
+    implementation(libs.savedstate)
+    implementation(libs.rxandroid2)
+    implementation(libs.coroutines.core)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.rx2)
+    implementation(libs.autodispose.coroutines)
+    implementation(libs.motif.library)
+
+    debugImplementation 'com.facebook.flipper:flipper:0.93.0'
+    debugImplementation 'com.facebook.soloader:soloader:0.10.1'
+    releaseImplementation 'com.facebook.flipper:flipper-noop:0.93.0'
+
+    implementation(project(":tooling:rib-flipper-plugin"))
+}

@@ -56,14 +56,14 @@ import java.util.UUID
 
 /** Utility class used by the Rib hierarchy browser component. */
 @SuppressWarnings("TooManyFunctions")
-class RibHierarchyUtils {
+public class RibHierarchyUtils {
 
   private constructor()
 
-  companion object {
+  public companion object {
 
     /** Constant used to represent empty UUID */
-    val EMPTY_UUID: UUID = UUID(0, 0)
+    public val EMPTY_UUID: UUID = UUID(0, 0)
 
     /** Time for balloon to fade out */
     private const val BALLOON_FADE_OUT_TIME: Long = 3000
@@ -72,7 +72,7 @@ class RibHierarchyUtils {
     private const val LAYOUT_FOLDER_NAME: String = "layout"
 
     /** Build root element, used when class is not available. */
-    fun buildRootElement(project: Project): PsiClass {
+    public fun buildRootElement(project: Project): PsiClass {
       val psiClass: PsiClass? =
         JavaPsiFacade.getInstance(project)
           .findClass(Object::class.java.name, GlobalSearchScope.allScope(project))
@@ -81,32 +81,32 @@ class RibHierarchyUtils {
     }
 
     /** Return the psiClass corresponding to the given class name. */
-    fun getPsiClass(project: Project, name: String): PsiClass {
+    public fun getPsiClass(project: Project, name: String): PsiClass {
       val psiClass: PsiClass? =
         JavaPsiFacade.getInstance(project).findClass(name, GlobalSearchScope.allScope(project))
       return psiClass ?: buildRootElement(project)
     }
 
     /** Check if the element supplied is a root element. */
-    fun isRootElement(element: PsiElement?): Boolean {
+    public fun isRootElement(element: PsiElement?): Boolean {
       return element is PsiClass && element.qualifiedName == Object::class.java.name
     }
 
     /** Format fully qualified class name. */
-    fun formatQualifiedName(qualifiedName: String): String {
+    public fun formatQualifiedName(qualifiedName: String): String {
       val index: Int = qualifiedName.lastIndexOf(".")
       return if (index > 0) qualifiedName.substring(0, index) else qualifiedName
     }
 
     /** Format fully qualified class name. */
-    fun formatSimpleName(qualifiedName: String): String {
+    public fun formatSimpleName(qualifiedName: String): String {
       val index: Int = qualifiedName.lastIndexOf(".")
       return if (index > 0) qualifiedName.substring(index + 1) else qualifiedName
     }
 
     /** Find node with the given ID in node hierarchy */
     @SuppressWarnings("ReturnCount")
-    fun findRibNodeRecursive(ribNode: RibNode?, id: UUID): RibNode? {
+    public fun findRibNodeRecursive(ribNode: RibNode?, id: UUID): RibNode? {
       if (ribNode == null) {
         return null
       }
@@ -124,7 +124,7 @@ class RibHierarchyUtils {
 
     /** Find view with the given ID in view hierarchy */
     @SuppressWarnings("ReturnCount")
-    fun findRibViewRecursive(ribView: RibView?, id: UUID): RibView? {
+    public fun findRibViewRecursive(ribView: RibView?, id: UUID): RibView? {
       if (ribView == null) {
         return null
       }
@@ -141,7 +141,7 @@ class RibHierarchyUtils {
     }
 
     /** Get a view tag value suffix */
-    fun getTagValueSuffix(value: String?): String? {
+    public fun getTagValueSuffix(value: String?): String? {
       if (value == null) {
         return null
       }
@@ -151,24 +151,24 @@ class RibHierarchyUtils {
 
     /** Get virtual file from path */
     @SuppressWarnings("MagicNumber")
-    fun getVirtualFile(filePath: String): VirtualFile? {
+    public fun getVirtualFile(filePath: String): VirtualFile? {
       val actualPath: Path = Paths.get(filePath)
       val pathFile: File = actualPath.toFile()
       return LocalFileSystem.getInstance().findFileByIoFile(pathFile)
     }
 
     /** Returns whether virtual file belongs to project and appears to be a layout file */
-    fun isProjectLayoutFile(project: Project, file: VirtualFile): Boolean {
+    public fun isProjectLayoutFile(project: Project, file: VirtualFile): Boolean {
       return ProjectRootManager.getInstance(project).fileIndex.isInContent(file) &&
         file.fileType is XmlFileType &&
         file.path.contains("/$LAYOUT_FOLDER_NAME/")
     }
 
     /** Display popup balloon. */
-    fun displayPopup(
+    public fun displayPopup(
       message: String,
       location: RelativePoint,
-      type: MessageType = MessageType.WARNING
+      type: MessageType = MessageType.WARNING,
     ) {
       JBPopupFactory.getInstance()
         .createHtmlTextBalloonBuilder(message, type, null)
@@ -178,7 +178,7 @@ class RibHierarchyUtils {
     }
 
     /** Display notification bubble. */
-    fun log(message: String) {
+    public fun log(message: String) {
       Notifications.Bus.notify(Notification("Rib", "Rib", message, NotificationType.INFORMATION))
     }
   }

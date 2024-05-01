@@ -17,17 +17,20 @@ package com.uber.rib.core
 
 import androidx.annotation.CallSuper
 import androidx.annotation.VisibleForTesting
-import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
-import com.uber.autodispose.lifecycle.LifecycleScopeProvider
-import com.uber.autodispose.lifecycle.LifecycleScopes
+import com.uber.rib.core.RibEvents.triggerRibActionAndEmitEvents
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
 /**
  * The base implementation for all [Interactor]s.
@@ -35,53 +38,61 @@ import kotlin.reflect.KProperty
  * @param <P> the type of [Presenter].
  * @param <R> the type of [Router].
  */
-abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<InteractorEvent>, InteractorType {
-  @Inject
-  lateinit var injectedPresenter: P
-  internal var actualPresenter: P? = null
-  private val behaviorRelay = BehaviorRelay.create<InteractorEvent>()
-  private val lifecycleRelay = behaviorRelay.toSerialized()
+public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, RibActionEmitter {
+  @Inject public lateinit var injectedPresenter: P
+
+  @CoreFriendModuleApi public var actualPresenter: P? = null
+  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  public open val lifecycleFlow: SharedFlow<InteractorEvent>
+    get() = _lifecycleFlow
+
+  @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
+
+  @OptIn(CoreFriendModuleApi::class)
+  private val lifecycleObservable
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
 
   private val routerDelegate = InitOnceProperty<R>()
+
   /** @return the router for this interactor. */
-  open var router: R by routerDelegate
+  public open var router: R by routerDelegate
     protected set
 
-  constructor()
-
-  protected constructor(presenter: P) {
+  @OptIn(CoreFriendModuleApi::class)
+  protected constructor(presenter: P) : this() {
     this.actualPresenter = presenter
   }
 
-  /** @return an observable of this controller's lifecycle events. */
-  override fun lifecycle(): Observable<InteractorEvent> {
-    return lifecycleRelay.hide()
-  }
+  // ---- LifecycleScopeProvider overrides ---- //
 
-  /** @return true if the controller is attached, false if not. */
-  override fun isAttached() = behaviorRelay.value === InteractorEvent.ACTIVE
+  final override fun lifecycle(): Observable<InteractorEvent> = lifecycleObservable
+
+  final override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> =
+    LIFECYCLE_MAP_FUNCTION
+
+  final override fun peekLifecycle(): InteractorEvent? = lifecycleFlow.replayCache.lastOrNull()
+
+  @OptIn(CoreFriendModuleApi::class)
+  final override fun requestScope(): CompletableSource =
+    lifecycleFlow.asScopeCompletable(lifecycleRange)
+
+  // ---- InteractorType overrides ---- //
+
+  override fun isAttached(): Boolean =
+    _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+
+  override fun handleBackPress(): Boolean = false
 
   /**
    * Called when attached. The presenter will automatically be added when this happens.
    *
    * @param savedInstanceState the saved [Bundle].
    */
-  @CallSuper
-  protected open fun didBecomeActive(savedInstanceState: Bundle?) {
-  }
+  @CallSuper protected open fun didBecomeActive(savedInstanceState: Bundle?) {}
 
   /**
-   * Handle an activity back press.
-   *
-   * @return whether this interactor took action in response to a back press.
-   */
-  open override fun handleBackPress(): Boolean {
-    return false
-  }
-
-  /**
-   * Called when detached. The [Interactor] should do its cleanup here. Note: View will be
-   * removed automatically so [Interactor] doesn't have to remove its view here.
+   * Called when detached. The [Interactor] should do its cleanup here. Note: View will be removed
+   * automatically so [Interactor] doesn't have to remove its view here.
    */
   protected open fun willResignActive() {}
 
@@ -97,54 +108,82 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
   protected open fun onSaveInstanceState(outState: Bundle) {}
 
   public open fun dispatchAttach(savedInstanceState: Bundle?) {
-    lifecycleRelay.accept(InteractorEvent.ACTIVE)
-    (getPresenter() as? Presenter)?.dispatchLoad()
-    didBecomeActive(savedInstanceState)
+    _lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
+
+    val presenter = (getPresenter() as? Presenter)
+    presenter?.let {
+      triggerRibActionAndEmitEvents(
+        it,
+        RibActionEmitterType.PRESENTER,
+        RibEventType.ATTACHED,
+      ) {
+        it.dispatchLoad()
+      }
+    }
+
+    triggerRibActionAndEmitEvents(
+      this,
+      RibActionEmitterType.INTERACTOR,
+      RibEventType.ATTACHED,
+    ) {
+      didBecomeActive(savedInstanceState)
+    }
   }
 
   public open fun dispatchDetach(): P {
-    (getPresenter() as? Presenter)?.dispatchUnload()
-    willResignActive()
-    lifecycleRelay.accept(InteractorEvent.INACTIVE)
+    val presenter = (getPresenter() as? Presenter)
+    presenter?.let {
+      triggerRibActionAndEmitEvents(
+        it,
+        RibActionEmitterType.PRESENTER,
+        RibEventType.DETACHED,
+      ) {
+        it.dispatchUnload()
+      }
+    }
+
+    triggerRibActionAndEmitEvents(
+      this,
+      RibActionEmitterType.INTERACTOR,
+      RibEventType.DETACHED,
+    ) {
+      willResignActive()
+    }
+
+    _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
+
     return getPresenter()
   }
 
-  internal fun setRouterInternal(router: Router<*>) {
+  @CoreFriendModuleApi
+  public fun setRouterInternal(router: Router<*>) {
     if (routerDelegate != null) {
       this.router = router as R
     }
   }
 
   /** @return the currently attached presenter if there is one */
+  @OptIn(CoreFriendModuleApi::class)
   @VisibleForTesting
   private fun getPresenter(): P {
-    val presenter: P? = try {
-      if (actualPresenter != null)
+    val presenter: P? =
+      try {
+        if (actualPresenter != null) {
+          actualPresenter
+        } else {
+          injectedPresenter
+        }
+      } catch (e: UninitializedPropertyAccessException) {
         actualPresenter
-      else
-        injectedPresenter
-    } catch (e: UninitializedPropertyAccessException) {
-      actualPresenter
-    }
+      }
     checkNotNull(presenter) { "Attempting to get interactor's presenter before being set." }
     return presenter
   }
 
+  @OptIn(CoreFriendModuleApi::class)
   @VisibleForTesting
   internal fun setPresenter(presenter: P) {
     actualPresenter = presenter
-  }
-
-  override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> {
-    return LIFECYCLE_MAP_FUNCTION
-  }
-
-  override fun peekLifecycle(): InteractorEvent? {
-    return behaviorRelay.value
-  }
-
-  final override fun requestScope(): CompletableSource {
-    return LifecycleScopes.resolveScopeFromLifecycle(this)
   }
 
   private inner class InitOnceProperty<T> : ReadWriteProperty<Any, T> {
@@ -166,12 +205,15 @@ abstract class Interactor<P : Any, R : Router<*>> : LifecycleScopeProvider<Inter
     }
   }
 
-  companion object {
-    private val LIFECYCLE_MAP_FUNCTION = CorrespondingEventsFunction { interactorEvent: InteractorEvent ->
-      when (interactorEvent) {
-        InteractorEvent.ACTIVE -> return@CorrespondingEventsFunction InteractorEvent.INACTIVE
-        else -> throw LifecycleEndedException()
+  public companion object {
+    @get:JvmSynthetic internal val lifecycleRange = InteractorEvent.ACTIVE..InteractorEvent.INACTIVE
+
+    private val LIFECYCLE_MAP_FUNCTION =
+      CorrespondingEventsFunction { interactorEvent: InteractorEvent ->
+        when (interactorEvent) {
+          InteractorEvent.ACTIVE -> return@CorrespondingEventsFunction InteractorEvent.INACTIVE
+          else -> throw LifecycleEndedException()
+        }
       }
-    }
   }
 }

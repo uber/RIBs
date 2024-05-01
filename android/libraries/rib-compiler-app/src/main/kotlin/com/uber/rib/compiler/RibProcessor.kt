@@ -24,8 +24,8 @@ import javax.lang.model.element.TypeElement
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
-/** Process the annotations with [ProcessorPipeline].  */
-abstract class RibProcessor : AbstractProcessor(), ProcessContext {
+/** Process the annotations with [ProcessorPipeline]. */
+public abstract class RibProcessor : AbstractProcessor(), ProcessContext {
 
   override var errorReporter: ErrorReporter? = null
     protected set
@@ -34,7 +34,7 @@ abstract class RibProcessor : AbstractProcessor(), ProcessContext {
   override var typesUtils: Types? = null
     protected set
 
-  var processorPipelines: MutableList<ProcessorPipeline> = ArrayList()
+  public var processorPipelines: MutableList<ProcessorPipeline> = ArrayList()
 
   @Synchronized
   override fun init(processingEnv: ProcessingEnvironment) {
@@ -58,7 +58,7 @@ abstract class RibProcessor : AbstractProcessor(), ProcessContext {
         processorPipeline.process(annotations, roundEnv)
       } catch (e: Throwable) {
         errorReporter?.reportError(
-          "Fatal error running ${processorPipeline.annotationType.simpleName} processor: ${e.message}"
+          "Fatal error running ${processorPipeline.annotationType.simpleName} processor: ${e.message}",
         )
       }
     }
@@ -71,5 +71,7 @@ abstract class RibProcessor : AbstractProcessor(), ProcessContext {
    * @param processContext the [ProcessContext].
    * @return the list of processor pipelines.
    */
-  protected abstract fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline>
+  protected abstract fun getProcessorPipelines(
+    processContext: ProcessContext,
+  ): List<ProcessorPipeline>
 }

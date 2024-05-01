@@ -16,9 +16,10 @@
 package com.uber.rib.core.lifecycle
 
 /**
- * Enum used represent when a [Worker] should stop and start in response to interactor
- * lifecycle events.
+ * Enum used represent when a [Worker][com.uber.rib.core.Worker] should stop and start in response
+ * to interactor lifecycle events.
  */
-enum class WorkerEvent {
-  START, STOP
+public enum class WorkerEvent {
+  START,
+  STOP,
 }

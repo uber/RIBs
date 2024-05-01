@@ -30,4 +30,8 @@ class AuthStream {
   }
 }
 
-data class AuthInfo(val isLoggedIn: Boolean, val playerOne: String = "", val playerTwo: String = "")
+data class AuthInfo(
+  val isLoggedIn: Boolean,
+  val playerOne: String = "",
+  val playerTwo: String = "",
+)

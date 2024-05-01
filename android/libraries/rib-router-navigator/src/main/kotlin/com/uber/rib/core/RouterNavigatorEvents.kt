@@ -15,18 +15,26 @@
  */
 package com.uber.rib.core
 
-import com.jakewharton.rxrelay2.PublishRelay
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
-/** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent]  */
-class RouterNavigatorEvents private constructor() {
+/** Class that provides its instance to emit or subscribe to [RouterNavigatorEvent] */
+public class RouterNavigatorEvents private constructor() {
 
-  private val events: PublishRelay<RouterNavigatorEvent> = PublishRelay.create()
+  private val _events = MutableSharedFlow<RouterNavigatorEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
   /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
-  open fun getEvents(): Observable<RouterNavigatorEvent> {
-    return events.hide()
-  }
+  public val events: Observable<RouterNavigatorEvent> = _events.asObservable()
+
+  @JvmSynthetic // Hide from Java consumers. In Java, `getEvents` resolves to the `events` property.
+  @JvmName("_getEvents")
+  @Deprecated( // Deprecate for Kotlin consumers.
+    message = "Use the 'events' property",
+    replaceWith = ReplaceWith("events"),
+  )
+  public fun getEvents(): Observable<RouterNavigatorEvent> = events
 
   /**
    * Emits a new [RouterNavigatorEvent] on the stream.
@@ -35,13 +43,12 @@ class RouterNavigatorEvents private constructor() {
    * @param parent router instance to which child will attach to.
    * @param child router instance which getting attached.
    */
-  open fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
-    events.accept(RouterNavigatorEvent(eventType, parent, child))
+  public fun emitEvent(eventType: RouterNavigatorEventType, parent: Router<*>, child: Router<*>) {
+    _events.tryEmit(RouterNavigatorEvent(eventType, parent, child))
   }
 
-  companion object {
+  public companion object {
     /** @return the singleton instance */
-    @JvmStatic
-    val instance = RouterNavigatorEvents()
+    @JvmStatic public val instance: RouterNavigatorEvents = RouterNavigatorEvents()
   }
 }

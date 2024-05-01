@@ -16,15 +16,27 @@
 package com.uber.rib.core
 
 /** Represents states for [StackRouterNavigator]. Most often implemented with an enum. */
-interface RouterNavigatorState {
+public interface RouterNavigatorState {
 
   /** @return identifier for a [StackRouterNavigator] state. */
-  @JvmDefault
-  fun stateName(): String {
+  public fun stateName(): String {
     return if (this.javaClass.isEnum) {
       (this as Enum<*>).name
     } else {
       throw java.lang.AssertionError("Must be implemented by enum or override stateName()")
     }
   }
+
+  /**
+   * @return Boolean flag configure router caching behavior between transactions.
+   *
+   * TRUE - same instance of router will be reused in all [RouterNavigator.AttachTransition] (not
+   * recommended as might produce memory leak. Usage of [Router.dispatchAttach] and
+   * [Router.saveInstanceState] is preferred option)
+   *
+   * FALSE - router instance will be destroyed after
+   * [RouterNavigator.DetachCallback.onPostDetachFromHost] and will be recreated for next
+   * [RouterNavigator.AttachTransition]
+   */
+  public fun isCacheable(): Boolean = false
 }

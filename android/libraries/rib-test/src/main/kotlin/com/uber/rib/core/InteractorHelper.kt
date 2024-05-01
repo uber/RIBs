@@ -15,13 +15,13 @@
  */
 package com.uber.rib.core
 
-import com.nhaarman.mockitokotlin2.isA
-import com.nhaarman.mockitokotlin2.isNull
-import com.nhaarman.mockitokotlin2.verify
 import org.mockito.AdditionalMatchers.or
+import org.mockito.kotlin.isA
+import org.mockito.kotlin.isNull
+import org.mockito.kotlin.verify
 
-/** The helper to test [Interactor].  */
-object InteractorHelper {
+/** The helper to test [Interactor]. */
+public object InteractorHelper {
   /**
    * Attaches the [Interactor] using a mock router.
    *
@@ -33,11 +33,11 @@ object InteractorHelper {
    * @param savedInstanceState the saved [Bundle].
    */
   @JvmStatic
-  open fun <P : Any, R : Router<*>> attach(
+  public fun <P : Any, R : Router<*>> attach(
     interactor: Interactor<P, R>,
     presenter: P,
     router: R,
-    savedInstanceState: Bundle?
+    savedInstanceState: Bundle?,
   ) {
     interactor.actualPresenter = presenter
     interactor.setRouterInternal(router)
@@ -51,7 +51,7 @@ object InteractorHelper {
    * @param savedInstanceState the saved [Bundle].
    */
   @JvmStatic
-  open fun reattach(interactor: Interactor<*, *>, savedInstanceState: Bundle?) {
+  public fun reattach(interactor: Interactor<*, *>, savedInstanceState: Bundle?) {
     interactor.dispatchAttach(savedInstanceState)
   }
 
@@ -61,7 +61,7 @@ object InteractorHelper {
    * @param controller the [Interactor].
    */
   @JvmStatic
-  open fun detach(controller: Interactor<*, *>) {
+  public fun detach(controller: Interactor<*, *>) {
     controller.dispatchDetach()
   }
 
@@ -71,7 +71,7 @@ object InteractorHelper {
    * @param interactor the [Interactor].
    */
   @JvmStatic
-  open fun verifyAttached(interactor: Interactor<*, *>) {
+  public fun verifyAttached(interactor: Interactor<*, *>) {
     verify(interactor).dispatchAttach(or(isNull(), isA<Bundle>()))
   }
 
@@ -81,7 +81,7 @@ object InteractorHelper {
    * @param interactor the [Interactor].
    */
   @JvmStatic
-  open fun verifyDetached(interactor: Interactor<*, *>) {
+  public fun verifyDetached(interactor: Interactor<*, *>) {
     verify(interactor).dispatchDetach()
   }
 }

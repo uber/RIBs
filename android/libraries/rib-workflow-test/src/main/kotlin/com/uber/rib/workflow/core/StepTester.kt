@@ -20,18 +20,20 @@ import com.google.common.truth.Truth.assertThat
 import io.reactivex.Observable
 import io.reactivex.observers.TestObserver
 
-/** Utility to expose [Observable] instances on a [Step] for unit testing purposes.  */
-object StepTester {
+/** Utility to expose [Observable] instances on a [Step] for unit testing purposes. */
+public object StepTester {
   /**
    * Exposes a [Step] instances observable for testing purposes.
    *
    * @param step to expose observable for.
    * @param <T> type of return value for a step.
    * @param <A> type of next actionable item for a step.
-   * @return a [Observable] that runs the steps action.
-   </A></T> */
+   * @return a [Observable] that runs the steps action. </A></T>
+   */
   @JvmStatic
-  fun <T, A : ActionableItem> exposeObservable(step: Step<T, A>): Observable<Optional<Step.Data<T, A>>> {
+  public fun <T, A : ActionableItem> exposeObservable(
+    step: Step<T, A>,
+  ): Observable<Optional<Step.Data<T, A>>> {
     return step.asObservable()
   }
 
@@ -41,10 +43,10 @@ object StepTester {
    * @param step to expose data for.
    * @param <T> type of return value for a step.
    * @param <A> type of next actionable item for a step.
-   * @return the data of the step
-   </A></T> */
+   * @return the data of the step </A></T>
+   */
   @JvmStatic
-  fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? {
+  public fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? {
     return step.getValue()
   }
 
@@ -53,11 +55,11 @@ object StepTester {
    *
    * @param testSubscriber the step subscriber to assert on.
    * @param <T> type of return value for a step.
-   * @param <A> type of next actionable item for a step.
-   </A></T> */
+   * @param <A> type of next actionable item for a step. </A></T>
+   */
   @JvmStatic
-  fun <T, A : ActionableItem> assertStepNotYetEmitted(
-    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
+  public fun <T, A : ActionableItem> assertStepNotYetEmitted(
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
   ) {
     testSubscriber.run {
       assertNoValues()
@@ -71,11 +73,11 @@ object StepTester {
    *
    * @param testSubscriber the step subscriber to assert on.
    * @param <T> type of return value for a step.
-   * @param <A> type of next actionable item for a step.
-   </A></T> */
+   * @param <A> type of next actionable item for a step. </A></T>
+   */
   @JvmStatic
-  fun <T, A : ActionableItem> assertStepEmitted(
-    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
+  public fun <T, A : ActionableItem> assertStepEmitted(
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
   ) {
     testSubscriber.assertValueCount(1)
     val stepData: Optional<Step.Data<T, A>> = testSubscriber.values()[0]

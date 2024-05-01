@@ -14,20 +14,21 @@
  * limitations under the License.
  */
 
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "com.vanniktech.maven.publish"
-
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.mavenPublish)
+}
 
 dependencies {
-    implementation deps.external.checkerQual
-    implementation deps.external.rxrelay2
-    implementation project(':libraries:rib-base')
-    compileOnly deps.androidx.annotations
-    compileOnly deps.apt.androidApi
+    implementation(libs.checkerqual)
+    implementation(libs.autodispose.coroutines)
+    implementation(libs.coroutines.android)
+    implementation(libs.coroutines.rx2)
+    implementation(project(':libraries:rib-base'))
+    compileOnly(libs.annotation)
+    compileOnly(libs.android.api)
 
-    testImplementation deps.test.junit
-    testImplementation deps.test.mockitoKotlin
-    testImplementation deps.test.truth
+    testImplementation(testLibs.junit)
+    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.truth)
 }

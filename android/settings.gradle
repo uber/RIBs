@@ -1,3 +1,30 @@
+import org.gradle.api.initialization.resolve.RepositoriesMode
+
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    // rib-intellij-plugin project applies the IntelliJ plugin, which applies custom repositories.
+    // Otherwise, this should be FAIL_ON_PROJECT_REPO.
+    repositoriesMode.set(RepositoriesMode.PREFER_PROJECT)
+    repositories {
+        google()
+        mavenCentral()
+    }
+    versionCatalogs {
+        testLibs {
+            from(files("gradle/test-libs.versions.toml"))
+        }
+    }
+}
+
+includeBuild 'conventions'
+
 include ':libraries:rib-test'
 include ':libraries:rib-android'
 include ':libraries:rib-android-compose'
@@ -25,3 +52,4 @@ include ':demos:flipper'
 include ':demos:intellij'
 include ':demos:memory-leaks'
 include ':demos:compose'
+include ':demos:rib-workers'

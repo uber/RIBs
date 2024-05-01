@@ -27,11 +27,11 @@ import com.uber.intellij.plugin.android.rib.io.RibActivity
 import javax.swing.Icon
 
 /** Node descriptor used to render a Rib activities. */
-class RibHierarchyActivityDescriptor(
+public class RibHierarchyActivityDescriptor(
   project: Project,
   parentDescriptor: HierarchyNodeDescriptor?,
   private val clazz: PsiClass,
-  val ribActivity: RibActivity
+  public val ribActivity: RibActivity,
 ) : RibHierarchyDescriptor(project, parentDescriptor, clazz, false) {
 
   override fun updateText(text: CompositeAppearance) {

@@ -15,4 +15,4 @@
  */
 package com.uber.rib.core
 
-class FakePresenter : Presenter()
+public class FakePresenter : Presenter()

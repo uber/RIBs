@@ -22,7 +22,7 @@ To get started with RIBs, please refer to the [RIBs documentation](https://githu
 
 To get more hands on with RIBs, we have written a [series of tutorials](https://github.com/uber/RIBs/wiki) that run you through the main aspects of the architecture with hands-on examples.
 
-To read about the backstory on why we created RIBs, see [this blog post](https://eng.uber.com/new-rider-app/) we wrote when releasing RIBs in production the first time and see [this short video](https://www.youtube.com/watch?v=Q5cTT0M0YXg) where we discussed how the RIBs architecture works.
+To read about the backstory on why we created RIBs, see [this blog post](https://www.uber.com/blog/new-rider-app-architecture/) we wrote when releasing RIBs in production the first time and see [this short video](https://www.youtube.com/watch?v=Q5cTT0M0YXg) where we discussed how the RIBs architecture works.
 
 #### What is the difference between RIBs and MV*/VIPER?
 
@@ -49,9 +49,9 @@ To integrate the recommended minimum setup for RIBs add the following to your `b
 
 ```gradle
 dependencies {
-  annotationProcessor 'com.uber.rib:rib-compiler-test:0.13.0'
-  implementation 'com.uber.rib:rib-android:0.13.0'
-  testImplementation 'com.uber.rib:rib-test:0.13.0'
+  annotationProcessor 'com.uber.rib:rib-compiler-test:0.16.2'
+  implementation 'com.uber.rib:rib-android:0.16.2'
+  testImplementation 'com.uber.rib:rib-test:0.16.2'
 }
 ```
 There are a number of extension packages available as well including Kotlin extensions, Jetpack Compose support, Coroutines support

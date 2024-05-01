@@ -18,11 +18,18 @@ package com.uber.rib.core
 /**
  * Drop-in replacement for com.facebook.infer.annotation.Initializer.
  *
- *
  * Method, annotated as @Initializer, should be call before object is used externally. It can be
  * used as a marker for different late-init methods of Android lifecycle, methods called indirectly
  * by the constructor or builder methods necessary to complete before build.
  */
 @Retention(AnnotationRetention.BINARY)
-@Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS, AnnotationTarget.FIELD, AnnotationTarget.CONSTRUCTOR, AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
-annotation class Initializer
+@Target(
+  AnnotationTarget.ANNOTATION_CLASS,
+  AnnotationTarget.CLASS,
+  AnnotationTarget.FIELD,
+  AnnotationTarget.CONSTRUCTOR,
+  AnnotationTarget.FUNCTION,
+  AnnotationTarget.PROPERTY_GETTER,
+  AnnotationTarget.PROPERTY_SETTER,
+)
+public annotation class Initializer

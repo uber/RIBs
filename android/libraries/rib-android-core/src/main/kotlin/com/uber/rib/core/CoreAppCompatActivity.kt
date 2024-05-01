@@ -20,8 +20,11 @@ import android.os.Bundle
 import androidx.annotation.CallSuper
 import androidx.annotation.IntRange
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewTreeLifecycleOwner
+import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 
-/** Core Support v7 AppCompat Activity.  */
+/** Core Support v7 AppCompat Activity. */
 abstract class CoreAppCompatActivity : AppCompatActivity() {
 
   private var activityDelegate: ActivityDelegate? = null
@@ -32,6 +35,7 @@ abstract class CoreAppCompatActivity : AppCompatActivity() {
       activityDelegate = (applicationContext as HasActivityDelegate).activityDelegate()
     }
     super.onCreate(savedInstanceState)
+    initViewTreeOwners()
     activityDelegate?.onCreate(savedInstanceState)
   }
 
@@ -70,7 +74,7 @@ abstract class CoreAppCompatActivity : AppCompatActivity() {
   override fun onRequestPermissionsResult(
     @IntRange(from = 0, to = 255) requestCode: Int,
     permissions: Array<String>,
-    grantResults: IntArray
+    grantResults: IntArray,
   ) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     activityDelegate?.onRequestPermissionsResult(this, requestCode, permissions, grantResults)
@@ -80,5 +84,17 @@ abstract class CoreAppCompatActivity : AppCompatActivity() {
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
     activityDelegate?.onActivityResult(this, requestCode, resultCode, data)
+  }
+
+  /**
+   * [RibActivity] must call this since it does not use [ComponentActivity.setContentView] which
+   * already handles this.
+   */
+  private fun initViewTreeOwners() {
+    // Set the view tree owners before setting the content view so that the inflation process
+    // and attach listeners will see them already present
+    ViewTreeLifecycleOwner.set(window.decorView, this)
+    ViewTreeViewModelStoreOwner.set(window.decorView, this)
+    ViewTreeSavedStateRegistryOwner.set(window.decorView, this)
   }
 }

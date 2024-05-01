@@ -27,21 +27,24 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
   /** @return the router's view. */
   open val view: V
 
-  constructor(view: V, interactor: I, component: InteractorBaseComponent<*>) : super(interactor, component) {
+  constructor(
+    view: V,
+    interactor: I,
+    component: InteractorBaseComponent<*>,
+  ) : super(interactor, component) {
     this.view = view
     if (XRay.isEnabled()) {
       XRay.apply(this, view)
     }
   }
 
-  protected constructor(view: V, interactor: I) : super(null, interactor, RibRefWatcher.getInstance(), getMainThread()) {
+  protected constructor(
+    view: V,
+    interactor: I,
+  ) : super(null, interactor, RibRefWatcher.getInstance(), getMainThread()) {
     this.view = view
     if (XRay.isEnabled()) {
       XRay.apply(this, view)
     }
-  }
-
-  internal fun saveInstanceStateInternal(outState: Bundle) {
-    saveInstanceState(outState)
   }
 }

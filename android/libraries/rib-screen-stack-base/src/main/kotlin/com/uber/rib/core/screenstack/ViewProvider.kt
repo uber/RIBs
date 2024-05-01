@@ -18,16 +18,21 @@ package com.uber.rib.core.screenstack
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
-import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.rib.core.screenstack.lifecycle.ScreenStackEvent
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
-/** Interface to provide [View] instances to [ScreenStackBase].  */
+/** Interface to provide [View] instances to [ScreenStackBase]. */
 abstract class ViewProvider {
-  private val lifecycleRelay = BehaviorRelay.create<ScreenStackEvent>().toSerialized()
+  private val _lifecycleFlow = MutableSharedFlow<ScreenStackEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  open val lifecycleFlow: SharedFlow<ScreenStackEvent>
+    get() = _lifecycleFlow
 
   open fun buildViewInternal(parentView: ViewGroup): View {
-    lifecycleRelay.accept(ScreenStackEvent.BUILT)
+    _lifecycleFlow.tryEmit(ScreenStackEvent.BUILT)
     return buildView(parentView)
   }
 
@@ -39,20 +44,18 @@ abstract class ViewProvider {
    */
   abstract fun buildView(parentView: ViewGroup): View
 
-  /** @return an observable that emits events for this view provider's lifecycle.
-   */
-  open fun lifecycle(): Observable<ScreenStackEvent> {
-    return lifecycleRelay.hide()
-  }
+  /** @return an observable that emits events for this view provider's lifecycle. */
+  fun lifecycle(): Observable<ScreenStackEvent> = lifecycleFlow.asObservable()
 
   /**
-   * Callers can implement this in order to complete additional work when a call to [ ][.onViewRemoved] is performed.
+   * Callers can implement this in order to complete additional work when a call to
+   * [ ][.onViewRemoved] is performed.
    */
-  protected fun doOnViewRemoved() {}
+  protected open fun doOnViewRemoved() {}
 
-  /** Notifies the view provider that the view has been popped from the stack.  */
+  /** Notifies the view provider that the view has been popped from the stack. */
   fun onViewRemoved() {
-    lifecycleRelay.accept(ScreenStackEvent.REMOVED)
+    _lifecycleFlow.tryEmit(ScreenStackEvent.REMOVED)
     doOnViewRemoved()
   }
 
@@ -65,15 +68,15 @@ abstract class ViewProvider {
     return false
   }
 
-  /** Notifies the view provider that view is at the top of the stack and visible.  */
+  /** Notifies the view provider that view is at the top of the stack and visible. */
   @CallSuper
   open fun onViewAppeared() {
-    lifecycleRelay.accept(ScreenStackEvent.APPEARED)
+    _lifecycleFlow.tryEmit(ScreenStackEvent.APPEARED)
   }
 
-  /** Notifies the view provider that the view is no longer at the top of the stack.  */
+  /** Notifies the view provider that the view is no longer at the top of the stack. */
   @CallSuper
   open fun onViewHidden() {
-    lifecycleRelay.accept(ScreenStackEvent.HIDDEN)
+    _lifecycleFlow.tryEmit(ScreenStackEvent.HIDDEN)
   }
 }

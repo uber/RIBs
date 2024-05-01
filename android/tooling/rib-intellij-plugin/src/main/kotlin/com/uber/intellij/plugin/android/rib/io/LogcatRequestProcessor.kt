@@ -30,8 +30,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * Implementation of the request processor interface, relying on emitting broadcast and parsing
  * logcat output.
  */
-class LogcatRequestProcessor : RequestProcessor {
-  companion object {
+public class LogcatRequestProcessor : RequestProcessor {
+  public companion object {
     private const val SHELL_COMMAND_TEMPLATE: String =
       "am broadcast -a com.uber.debug.intent.action.COMMAND --ei SEQ %d --es CMD %s"
     private const val LOGCAT_COMMAND_TEMPLATE: String =
@@ -57,8 +57,7 @@ class LogcatRequestProcessor : RequestProcessor {
         val sequence: Int = counter.getAndIncrement() % MAX_SEQUENCE
 
         // Send command to Android device via intent broadcast
-        var shellCommand: String =
-          String.format(SHELL_COMMAND_TEMPLATE, sequence, request.command)
+        var shellCommand: String = String.format(SHELL_COMMAND_TEMPLATE, sequence, request.command)
         request.params.forEach {
           shellCommand += String.format(PARAM_TEMPLATE, it.first, it.second)
         }
@@ -98,14 +97,14 @@ class LogcatRequestProcessor : RequestProcessor {
           error("Command failed: ${response.errorDescription}")
         }
         result as T
-      }
+      },
     )
   }
 
   private inner class LogCatOutputReceiver<T>(
     private val device: IDevice,
     private val clazz: Class<T>,
-    private val parser: LogCatMessageParser
+    private val parser: LogCatMessageParser,
   ) : MultiLineReceiver() {
 
     private val decoder: LogcatMessageDecoder = LogcatMessageDecoder()

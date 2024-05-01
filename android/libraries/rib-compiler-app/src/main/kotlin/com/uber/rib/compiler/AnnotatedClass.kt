@@ -17,10 +17,10 @@ package com.uber.rib.compiler
 
 import javax.lang.model.element.TypeElement
 
-/** Information to a class.  */
-open abstract class AnnotatedClass(
+/** Information to a class. */
+public abstract class AnnotatedClass(
   /** @return the type element that this wraps. */
-  open val typeElement: TypeElement
+  public open val typeElement: TypeElement,
 ) {
 
   /**
@@ -29,13 +29,13 @@ open abstract class AnnotatedClass(
    *
    * @return the root name.
    */
-  open val rootName: String by lazy {
+  public open val rootName: String by lazy {
     typeElement.simpleName.toString().substringBefore(nameSuffix)
   }
 
   /** Set if code has been generated. */
-  open var isCodeGenerated = false
+  public open var isCodeGenerated: Boolean = false
 
   /** @return the annotated class name suffix */
-  abstract val nameSuffix: String
+  public abstract val nameSuffix: String
 }

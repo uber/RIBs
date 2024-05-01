@@ -25,14 +25,15 @@ import kotlinx.coroutines.flow.onEach
 class MainInteractor(
   presenter: ComposePresenter,
   private val authStream: AuthStream,
-  private val childContent: MainRouter.ChildContent
+  private val childContent: MainRouter.ChildContent,
 ) : BasicInteractor<ComposePresenter, MainRouter>(presenter) {
 
   override fun didBecomeActive(savedInstanceState: Bundle?) {
     super.didBecomeActive(savedInstanceState)
 
     router.view.setContent { MainView(childContent = childContent) }
-    authStream.observe()
+    authStream
+      .observe()
       .onEach {
         if (it.isLoggedIn) {
           router.detachLoggedOut()
@@ -41,6 +42,7 @@ class MainInteractor(
           router.detachLoggedIn()
           router.attachLoggedOut()
         }
-      }.launchIn(coroutineScope)
+      }
+      .launchIn(coroutineScope)
   }
 }

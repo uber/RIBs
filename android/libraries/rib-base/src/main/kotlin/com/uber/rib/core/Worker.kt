@@ -15,22 +15,51 @@
  */
 package com.uber.rib.core
 
+import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.EmptyCoroutineContext
+import kotlinx.coroutines.CoroutineDispatcher
+
 /**
  * Interface used when creating a manager or helper class that should be bound to an interactor's
- * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the
- * interactor's actual lifecycle so that we're not stuck moving these classes around if there are
- * other lifecycles we're interested in.
+ * lifecycle using a binder like [WorkerBinder]. The worker event is decoupled from the interactor's
+ * actual lifecycle so that we're not stuck moving these classes around if there are other
+ * lifecycles we're interested in.
+ *
+ * By default a [Worker] will be bound on the [CoroutineDispatcher] defined at [WorkerBinder.bind]
+ * call, except when the [Worker]'s [coroutineContext] is overriden with any other value than the
+ * default [EmptyCoroutineContext]. The new resulting binding dispatcher (e.g.
+ * RibDispatchers.Default) from [Worker] will take priority over the one passed via a
+ * [WorkerBinder.bind] call
  */
-interface Worker {
+@Deprecated(
+  message =
+    """
+      com.uber.rib.core.Worker is deprecated in favor of com.uber.rib.core.RibCoroutineWorker
+    """,
+  replaceWith = ReplaceWith("RibCoroutineWorker"),
+)
+public interface Worker : RibActionEmitter {
+
+  /**
+   * When overriden, will specify on which [CoroutineContext] the [Worker] will be bound via
+   * [WorkerBinder] (ignoring any [CoroutineDispatcher] being passed via [WorkerBinder])
+   *
+   * For example given list of workers:
+   * 1) workers = listOf(defaultWorker, uiWorker)
+   * 2) Where [uiWorker] overrides [coroutinesContext] with [RibDispatchers.Main]
+   * 3) After calling WorkerBinder.bind(interactor, workers, RibDispatchers.IO). [uiWorker] will be
+   *    guaranteed to be called on RibDispatchers.Main
+   */
+  public val coroutineContext: CoroutineContext
+    get() = EmptyCoroutineContext
+
   /**
    * Called when worker is started.
    *
    * @param lifecycle The lifecycle of the worker to use for subscriptions.
    */
-  @JvmDefault
-  fun onStart(lifecycle: WorkerScopeProvider) {}
+  public fun onStart(lifecycle: WorkerScopeProvider) {}
 
-  /** Called when the worker is stopped.  */
-  @JvmDefault
-  fun onStop() {}
+  /** Called when the worker is stopped. */
+  public fun onStop() {}
 }

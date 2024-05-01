@@ -25,11 +25,11 @@ import com.uber.intellij.plugin.android.rib.io.RibApplication
 import javax.swing.Icon
 
 /** Node descriptor used to render a Rib Application. */
-class RibHierarchyApplicationDescriptor(
+public class RibHierarchyApplicationDescriptor(
   project: Project,
   parentDescriptor: HierarchyNodeDescriptor?,
   private val clazz: PsiClass,
-  val ribApplication: RibApplication
+  public val ribApplication: RibApplication,
 ) : RibHierarchyDescriptor(project, parentDescriptor, clazz, false) {
 
   override fun updateText(text: CompositeAppearance) {

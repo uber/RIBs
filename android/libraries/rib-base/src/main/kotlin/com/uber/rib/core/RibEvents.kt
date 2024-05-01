@@ -15,29 +15,156 @@
  */
 package com.uber.rib.core
 
-import com.jakewharton.rxrelay2.PublishRelay
+import androidx.annotation.VisibleForTesting
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.rx2.asObservable
 
-class RibEvents private constructor() {
+public object RibEvents {
 
-  private val eventRelay: PublishRelay<RibEvent> = PublishRelay.create()
+  private val mutableRouterEvents =
+    MutableSharedFlow<RibRouterEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+  private val mutableRibDurationEvents =
+    MutableSharedFlow<RibActionInfo>(0, 1, BufferOverflow.DROP_OLDEST)
 
-  open val events: Observable<RibEvent> = eventRelay.hide()
+  @JvmStatic
+  public val routerEvents: Observable<RibRouterEvent> = mutableRouterEvents.asObservable()
+
+  @JvmStatic
+  public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
+
+  /** Indicates if [ribActionEvents] will be emitting. */
+  public var areRibActionEmissionsAllowed: Boolean = false
+    @VisibleForTesting internal set
+
+  /**
+   * To be called before start observing/collecting on [ribActionEvents] (usually at your earliest
+   * application point)
+   */
+  @JvmStatic
+  public fun enableRibActionEmissions() {
+    this.areRibActionEmissionsAllowed = true
+  }
 
   /**
    * @param eventType [RibEventType]
    * @param child [Router]
    * @param parent [Router] and null for the root ribs that are directly attached to
-   * RibActivity/Fragment
+   *   RibActivity/Fragment
    */
-  open fun emitEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
-    eventRelay.accept(RibEvent(eventType, child, parent))
+  @JvmStatic
+  public fun emitRouterEvent(eventType: RibEventType, child: Router<*>, parent: Router<*>?) {
+    mutableRouterEvents.tryEmit(RibRouterEvent(eventType, child, parent))
   }
 
-  companion object {
-    private val instance: RibEvents = RibEvents()
-
-    @JvmStatic
-    fun getInstance() = instance
+  /**
+   * Calls related RIB action (e.g. didBecomeActive) and emits emission of ATTACHED/DETACHED events
+   * for each [RibActionEmitter] (e.g. Concrete Interactor, Presenter, Router, Worker).
+   *
+   * @param ribActionEmitter The related Rib Action emitter class
+   * @param ribActionEmitterType The RIB component type (e.g. Interactor, Router, Presenter, Worker)
+   * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
+   * @param ribAction The related RIB action type. e.g. didBecomeActive, willLoad, etc
+   */
+  internal inline fun triggerRibActionAndEmitEvents(
+    ribActionEmitter: RibActionEmitter,
+    ribActionEmitterType: RibActionEmitterType,
+    ribEventType: RibEventType,
+    ribAction: () -> Unit,
+  ) {
+    emitRibEventActionIfNeeded(
+      ribActionEmitter,
+      ribActionEmitterType,
+      ribEventType,
+      RibActionState.STARTED,
+    )
+    ribAction()
+    emitRibEventActionIfNeeded(
+      ribActionEmitter,
+      ribActionEmitterType,
+      ribEventType,
+      RibActionState.COMPLETED,
+    )
   }
+
+  /**
+   * Emits ATTACHED/DETACHED events for each RIB component.
+   *
+   * @param ribActionEmitter The related Rib Action emitter class
+   * @param ribActionEmitterType The RIB component type (e.g. Interactor, Router, Presenter)
+   * @param ribEventType RIB event type (e.g. ATTACH/DETACH)
+   * @param ribActionState: RIB action state (STARTED/COMPLETED). For example prior and after call
+   *   of Interactor.didBecomeActive
+   */
+  private fun emitRibEventActionIfNeeded(
+    ribActionEmitter: RibActionEmitter,
+    ribActionEmitterType: RibActionEmitterType,
+    ribEventType: RibEventType,
+    ribActionState: RibActionState,
+  ) {
+    if (!areRibActionEmissionsAllowed) {
+      // Unless specified explicitly via [RibEvents.enableRibActionEmissions()] there is no need
+      // to create unnecessary objects if there is no intention on observing/collecting RibAction
+      // events
+      return
+    }
+
+    val ribActionInfo =
+      RibActionInfo(
+        ribActionEmitter.javaClass.name,
+        ribActionEmitterType,
+        ribEventType,
+        ribActionState,
+        Thread.currentThread().name,
+      )
+    mutableRibDurationEvents.tryEmit(ribActionInfo)
+  }
+}
+
+/** Holds relevant RIB event information */
+public data class RibActionInfo(
+  /** Related RIB Action concrete class name */
+  val ribActionEmitterName: String,
+
+  /** The current RIB event type being bound (e.g. INTERACTOR/PRESENTER/ROUTER/WORKER) */
+  val ribActionEmitterType: RibActionEmitterType,
+
+  /**
+   * Represents the RIB event type (ATTACHED/DETACHED).
+   *
+   * For example for interactor:
+   * - Interactor.didBecomeActive -> ATTACHED
+   * - Interactor.willResignActive -> DETACHED
+   *
+   * For Worker:
+   * - Worker.onStart() -> ATTACHED
+   * - Worker.onStop() -> DETACHED
+   */
+  val ribEventType: RibEventType,
+
+  /** RIB Action state (e.g. event to be called before/after didBecomeActive, willLoad, etc) */
+  val ribActionState: RibActionState,
+
+  /** Original caller thread where the RIB action happens */
+  val originalCallerThreadName: String,
+)
+
+/**
+ * Contract for all related Rib Action Types (Interactor, Presenter, Router, Worker) where will be
+ * emitting via [ribActionEvents] observable
+ */
+public interface RibActionEmitter
+
+public enum class RibActionEmitterType {
+  ROUTER,
+  PRESENTER,
+  INTERACTOR,
+  DEPRECATED_WORKER,
+}
+
+/** Represents status for each RibAction */
+public enum class RibActionState {
+  STARTED,
+  COMPLETED,
 }

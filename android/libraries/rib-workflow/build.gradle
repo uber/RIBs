@@ -14,34 +14,23 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: "com.vanniktech.maven.publish"
+plugins {
+    id("ribs.kotlin-android-library-conventions")
+    alias(libs.plugins.mavenPublish)
+}
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
-    }
+    namespace "com.uber.rib.workflow"
 }
 
 dependencies {
-    implementation deps.androidx.annotations
-    implementation deps.external.rxandroid2
-    implementation deps.external.rxkotlin
-    implementation deps.kotlin.stdlib
-    api deps.external.guavaAndroid
-    api deps.external.rxjava2
-    api project(":libraries:rib-android")
-    testImplementation deps.test.junit
-    testImplementation deps.test.truth
-    testImplementation deps.test.mockito
+    implementation(libs.annotation)
+    implementation(libs.rxandroid2)
+    implementation(libs.rxkotlin)
+    api(libs.guava.android)
+    api(libs.rxjava2)
+    api(project(":libraries:rib-android"))
+    testImplementation(testLibs.junit)
+    testImplementation(testLibs.truth)
+    testImplementation(testLibs.mockito)
 }

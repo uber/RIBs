@@ -16,11 +16,15 @@
 package com.uber.rib.core
 
 import androidx.annotation.CallSuper
-import com.jakewharton.rxrelay2.BehaviorRelay
 import com.uber.autodispose.ScopeProvider
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.PresenterEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
+import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.rx2.asObservable
 import org.checkerframework.checker.guieffect.qual.UIEffect
 
 /**
@@ -30,46 +34,50 @@ import org.checkerframework.checker.guieffect.qual.UIEffect
  * practice this caused confusion: if both a presenter and interactor can perform complex rx logic
  * it becomes unclear where you should write your bussiness logic.
  */
-abstract class Presenter : ScopeProvider {
-  private val behaviorRelay = BehaviorRelay.create<PresenterEvent>()
-  private val lifecycleRelay = behaviorRelay.toSerialized()
+public abstract class Presenter : ScopeProvider, RibActionEmitter {
+  private val _lifecycleFlow = MutableSharedFlow<PresenterEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  public open val lifecycleFlow: SharedFlow<PresenterEvent>
+    get() = _lifecycleFlow
+
+  @Volatile private var _lifecycleObservable: Observable<PresenterEvent>? = null
+
+  @OptIn(CoreFriendModuleApi::class)
+  private val lifecycleObservable
+    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
 
   /** @return `true` if the presenter is loaded, `false` if not. */
-  protected var isLoaded = false
+  protected var isLoaded: Boolean = false
     private set
 
   public open fun dispatchLoad() {
     isLoaded = true
-    lifecycleRelay.accept(PresenterEvent.LOADED)
+    _lifecycleFlow.tryEmit(PresenterEvent.LOADED)
     didLoad()
   }
 
   public open fun dispatchUnload() {
     isLoaded = false
     willUnload()
-    lifecycleRelay.accept(PresenterEvent.UNLOADED)
+    _lifecycleFlow.tryEmit(PresenterEvent.UNLOADED)
   }
 
-  /** Tells the presenter that it has finished loading.  */
-  @CallSuper
-  protected open fun didLoad() {
-  }
+  /** Tells the presenter that it has finished loading. */
+  @CallSuper protected open fun didLoad() {}
 
   /**
    * Tells the presenter that it will be destroyed. Presenter subclasses should perform any required
    * cleanup here.
    */
-  @UIEffect
-  @CallSuper
-  protected open fun willUnload() {
-  }
+  @UIEffect @CallSuper protected open fun willUnload() {}
 
   /** @return an observable of this controller's lifecycle events. */
-  open fun lifecycle(): Observable<PresenterEvent> {
-    return lifecycleRelay.hide()
-  }
+  public fun lifecycle(): Observable<PresenterEvent> = lifecycleObservable
 
-  override fun requestScope(): CompletableSource {
-    return lifecycleRelay.skip(1).firstElement().ignoreElement()
+  @OptIn(CoreFriendModuleApi::class)
+  final override fun requestScope(): CompletableSource =
+    lifecycleFlow.asScopeCompletable(lifecycleRange)
+
+  internal companion object {
+    @get:JvmSynthetic internal val lifecycleRange = PresenterEvent.LOADED..PresenterEvent.UNLOADED
   }
 }

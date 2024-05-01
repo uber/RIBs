@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeView
+<com.uber.rib.root.loggedin.tictactoe.TicTacToeView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/tic_tac_toe"
@@ -108,4 +108,4 @@
         app:layout_widthPercent="30%"
         android:background="#808080"/>
 
-</com.uber.rib.root.logged_in.tic_tac_toe.TicTacToeView>
+</com.uber.rib.root.loggedin.tictactoe.TicTacToeView>

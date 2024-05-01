@@ -20,9 +20,10 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.lifecycle.findViewTreeLifecycleOwner
+import androidx.lifecycle.findViewTreeViewModelStoreOwner
+import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import com.google.common.truth.Truth.assertThat
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.mock
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.android.R
@@ -36,6 +37,8 @@ import io.reactivex.observers.TestObserver
 import io.reactivex.subjects.PublishSubject
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.doReturn
+import org.mockito.kotlin.mock
 import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
@@ -49,15 +52,12 @@ class RibActivityTest {
     interactorBundle.putString(TEST_BUNDLE_KEY, TEST_BUNDLE_VALUE)
     val testBundle = android.os.Bundle()
     testBundle.putBundle(Router.KEY_INTERACTOR, interactorBundle)
-    val activityController: ActivityController<EmptyActivity> = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activityController: ActivityController<EmptyActivity> =
+      Robolectric.buildActivity(EmptyActivity::class.java)
     activityController.create(testBundle)
     assertThat(
-      activityController
-        .get()
-        .testInteractor
-        .savedInstanceState
-        ?.getString(TEST_BUNDLE_KEY)
-    )
+        activityController.get().testInteractor.savedInstanceState?.getString(TEST_BUNDLE_KEY),
+      )
       .isEqualTo(TEST_BUNDLE_VALUE)
   }
 
@@ -129,9 +129,9 @@ class RibActivityTest {
     subject
       .hide()
       .delaySubscription(
-        activity
-          .lifecycle()
-          .filter { activityEvent -> activityEvent.type === ActivityLifecycleEvent.Type.RESUME }
+        activity.lifecycle().filter { activityEvent ->
+          activityEvent.type === ActivityLifecycleEvent.Type.RESUME
+        },
       )
       .subscribe(o)
     subject.onNext(Any())
@@ -170,9 +170,46 @@ class RibActivityTest {
   }
 
   @Test
+  fun rxActivity_shouldCallback_onWindowFocusChanged() {
+    val activityController = Robolectric.buildActivity(EmptyActivity::class.java)
+    val activity: EmptyActivity = activityController.setup().get()
+    val testSub = TestObserver<ActivityCallbackEvent.WindowFocus>()
+    activity.callbacks(ActivityCallbackEvent.WindowFocus::class.java).subscribe(testSub)
+    activity.onWindowFocusChanged(true)
+    activity.onWindowFocusChanged(false)
+    testSub.assertValueCount(2)
+    val receivedEvent1 = testSub.values()[0]
+    assertThat(receivedEvent1.type).isEqualTo(ActivityCallbackEvent.Type.WINDOW_FOCUS)
+    assertThat(receivedEvent1.hasFocus).isTrue()
+    val receivedEvent2 = testSub.values()[1]
+    assertThat(receivedEvent2.type).isEqualTo(ActivityCallbackEvent.Type.WINDOW_FOCUS)
+    assertThat(receivedEvent2.hasFocus).isFalse()
+  }
+
+  @Test
   fun getController() {
     val activity: RibActivity = Robolectric.setupActivity(EmptyActivity::class.java)
     assertThat(activity.interactor).isNotNull()
+  }
+
+  @Test
+  fun onCreate_setsViewTreeOwners_forDecorView() {
+    val activity = Robolectric.buildActivity(EmptyActivity::class.java).create(null).get()
+    val decorView = activity.window.decorView
+    assertThat(decorView.findViewTreeLifecycleOwner()).isNotNull()
+    assertThat(decorView.findViewTreeSavedStateRegistryOwner()).isNotNull()
+    assertThat(decorView.findViewTreeViewModelStoreOwner()).isNotNull()
+  }
+
+  @Test
+  fun onCreate_setsViewTreeOwners_forViewAddedToDecorView() {
+    val activity = Robolectric.buildActivity(EmptyActivity::class.java).create(null).get()
+    val contentView = activity.findViewById<FrameLayout>(android.R.id.content)
+    val rootView = View(RuntimeEnvironment.application)
+    contentView.addView(rootView)
+    assertThat(rootView.findViewTreeLifecycleOwner()).isNotNull()
+    assertThat(rootView.findViewTreeSavedStateRegistryOwner()).isNotNull()
+    assertThat(rootView.findViewTreeViewModelStoreOwner()).isNotNull()
   }
 
   @Test(expected = IllegalArgumentException::class)
@@ -190,7 +227,7 @@ class RibActivityTest {
       val view = FrameLayout(RuntimeEnvironment.application)
       val presenter = object : ViewPresenter<View>(view) {}
       val component: InteractorComponent<ViewPresenter<*>, *> = mock {
-        on { presenter() } doReturn(presenter)
+        on { presenter() } doReturn (presenter)
       }
       return EmptyRouter(view, TestInteractor(presenter), component)
     }
@@ -206,11 +243,11 @@ class RibActivityTest {
   private class EmptyRouter(
     view: FrameLayout,
     interactor: Interactor<ViewPresenter<*>, *>,
-    component: InteractorComponent<ViewPresenter<*>, *>
+    component: InteractorComponent<ViewPresenter<*>, *>,
   ) : ViewRouter<FrameLayout, Interactor<ViewPresenter<*>, *>>(view, interactor, component)
 
   private class TestInteractor(
-    presenter: ViewPresenter<*>
+    presenter: ViewPresenter<*>,
   ) : Interactor<ViewPresenter<*>, FakeRouter<*>>(presenter) {
     var savedInstanceState: Bundle? = null
       private set

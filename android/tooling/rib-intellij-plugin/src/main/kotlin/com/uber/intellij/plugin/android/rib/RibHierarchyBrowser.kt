@@ -28,6 +28,7 @@ import com.intellij.openapi.actionSystem.AnAction
 import com.intellij.openapi.actionSystem.AnActionEvent
 import com.intellij.openapi.actionSystem.DefaultActionGroup
 import com.intellij.openapi.application.ApplicationManager
+import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
 import com.intellij.openapi.ui.MessageType
 import com.intellij.psi.PsiClass
@@ -53,22 +54,22 @@ import javax.swing.tree.DefaultMutableTreeNode
 
 /** UI component used to render tree of Ribs. */
 @SuppressWarnings("TooManyFunctions")
-class RibHierarchyBrowser(
+public class RibHierarchyBrowser(
   project: Project,
   initialModel: Model,
   private val rootElement: PsiElement,
-  private val selectionListener: Listener?
+  private val selectionListener: Listener?,
 ) : HierarchyBrowserBase(project, rootElement) {
 
-  companion object {
+  public companion object {
     /** Go to previous Rib label */
-    const val LABEL_GO_PREVIOUS_RIB: String = "Go to previous Scope."
+    public const val LABEL_GO_PREVIOUS_RIB: String = "Go to previous Scope."
 
     /** Go to next Rib label */
-    const val LABEL_GO_NEXT_RIB: String = "Go to next Scope"
+    public const val LABEL_GO_NEXT_RIB: String = "Go to next Scope"
 
     /** Type of the Rib hierarchy */
-    const val TYPE_HIERARCHY_TYPE: String = "Ribs"
+    public const val TYPE_HIERARCHY_TYPE: String = "Ribs"
 
     private const val ENABLE_LOCATE_MODE: String = "Enable selecting RIB on device"
 
@@ -77,7 +78,7 @@ class RibHierarchyBrowser(
   }
 
   /** Enum used to represent the status of the component */
-  enum class Status {
+  public enum class Status {
     UNINITIALIZED,
     INITIALIZING,
     INITIALIZED,
@@ -91,11 +92,13 @@ class RibHierarchyBrowser(
    * @param selectedRibId the RIB ID of the RIB selected by user (if any)
    * @param selectedViewId the view ID of the view selected by user (if any)
    */
-  data class Model(
+  public data class Model(
     val host: RibHost,
     val selectedRibId: String = "",
-    val selectedViewId: String = ""
+    val selectedViewId: String = "",
   )
+
+  private val ribProjectService: RibProjectService = project.service()
 
   private var status: Status = Status.UNINITIALIZED
 
@@ -166,12 +169,15 @@ class RibHierarchyBrowser(
 
   override fun createHierarchyTreeStructure(
     typeName: String,
-    psiElement: PsiElement
+    psiElement: PsiElement,
   ): HierarchyTreeStructure? {
     if (psiElement == rootElement) {
       val rootDescriptor =
         RibHierarchyRootNodeDescriptor(
-          project, getPsiClass(project, model.host.name), model.host, status
+          project,
+          getPsiClass(project, model.host.name),
+          model.host,
+          status,
         )
       return RibHierarchyTreeStructure(project, rootDescriptor)
     }
@@ -204,13 +210,11 @@ class RibHierarchyBrowser(
       }
       else -> {}
     }
-    ApplicationManager.getApplication().invokeLater {
-      RibProjectComponent.getInstance(project).refreshRibHierarchy()
-    }
+    ApplicationManager.getApplication().invokeLater { ribProjectService.refreshRibHierarchy() }
   }
 
   /** Request to update hierarchy with provided model */
-  fun onModelUpdated(model: Model) {
+  public fun onModelUpdated(model: Model) {
     this.status = Status.INITIALIZED
     this.model = model
     this.refreshComplete = false
@@ -236,7 +240,7 @@ class RibHierarchyBrowser(
     com.intellij.ide.actions.RefreshAction(
       IdeBundle.message("action.refresh"),
       IdeBundle.message("action.refresh"),
-      AllIcons.Actions.Refresh
+      AllIcons.Actions.Refresh,
     ) {
 
     override fun actionPerformed(e: AnActionEvent) {
@@ -245,7 +249,7 @@ class RibHierarchyBrowser(
 
     override fun update(event: AnActionEvent) {
       val presentation = event.presentation
-      val hasDevices = RibProjectComponent.getInstance(project).hasSelectedDevice()
+      val hasDevices = ribProjectService.hasSelectedDevice()
       presentation.isEnabled = hasDevices && !isUpdating()
     }
   }
@@ -256,16 +260,20 @@ class RibHierarchyBrowser(
     private var popupDisplayed = false
 
     override fun actionPerformed(e: AnActionEvent) {
-      RibProjectComponent.getInstance(project).enableLocateMode()
+      ribProjectService.enableLocateMode()
 
       if (!popupDisplayed) {
-        displayPopup(LOCATE_VIEW, RelativePoint.getSouthOf(this@RibHierarchyBrowser), MessageType.INFO)
+        displayPopup(
+          LOCATE_VIEW,
+          RelativePoint.getSouthOf(this@RibHierarchyBrowser),
+          MessageType.INFO,
+        )
         popupDisplayed = true
       }
     }
 
     override fun update(event: AnActionEvent) {
-      event.presentation.isEnabled = !RibProjectComponent.getInstance(project).isLocating()
+      event.presentation.isEnabled = !ribProjectService.isLocating()
     }
   }
 
@@ -273,11 +281,13 @@ class RibHierarchyBrowser(
     AnAction(
       IdeBundle.message("action.help"),
       IdeBundle.message("action.help"),
-      AllIcons.General.TodoQuestion
+      AllIcons.General.TodoQuestion,
     ) {
 
     override fun actionPerformed(e: AnActionEvent) {
-      BrowserUtil.open("https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android")
+      BrowserUtil.open(
+        "https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android",
+      )
     }
 
     override fun update(event: AnActionEvent) {
@@ -289,9 +299,9 @@ class RibHierarchyBrowser(
    * Interface used to notify that an new element was selected in {@ScopeHierarchyBrowser}
    * component.
    */
-  interface Listener {
+  public interface Listener {
 
     /** Callback indicating the selected Rib has changed. */
-    fun onSelectedRibChanged(id: UUID)
+    public fun onSelectedRibChanged(id: UUID)
   }
 }

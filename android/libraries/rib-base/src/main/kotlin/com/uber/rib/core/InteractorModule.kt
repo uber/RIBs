@@ -20,4 +20,4 @@ package com.uber.rib.core
  *
  * @param <I> type of interactor.
  */
-abstract class InteractorModule<I : Interactor<*, *>>(protected val interactor: I)
+public abstract class InteractorModule<I : Interactor<*, *>>(protected val interactor: I)

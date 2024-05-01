@@ -15,7 +15,7 @@
  */
 package com.uber.rib.core
 
-/** The annotation to mark that some object is an Interactor.  */
+/** The annotation to mark that some object is an Interactor. */
 @Target(AnnotationTarget.ANNOTATION_CLASS, AnnotationTarget.CLASS)
 @Retention(AnnotationRetention.SOURCE)
-annotation class RibInteractor
+public annotation class RibInteractor

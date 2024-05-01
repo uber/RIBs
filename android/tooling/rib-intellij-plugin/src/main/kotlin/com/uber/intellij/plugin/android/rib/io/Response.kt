@@ -16,16 +16,16 @@
 package com.uber.intellij.plugin.android.rib.io
 
 /** Class representing a response. */
-open class Response<T> {
+public open class Response<T> {
   /** Whether request was successful */
-  var success: Boolean = false
+  public var success: Boolean = false
 
   /** Protocol version of the response message */
-  var version: Int = 0
+  public var version: Int = 0
 
   /** Description of the error (if any) */
-  var errorDescription: String? = null
+  public var errorDescription: String? = null
 
   /** Payload of the response */
-  var payload: T? = null
+  public var payload: T? = null
 }

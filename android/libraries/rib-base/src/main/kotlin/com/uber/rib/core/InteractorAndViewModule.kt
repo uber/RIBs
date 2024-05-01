@@ -23,7 +23,7 @@ import android.view.View
  * @param <I> type of interactor.
  * @param <V> type of view.
  */
-abstract class InteractorAndViewModule<I : Interactor<*, *>, V : View>(
+public abstract class InteractorAndViewModule<I : Interactor<*, *>, V : View>(
   interactor: I,
-  protected val view: V
+  protected val view: V,
 ) : InteractorModule<I>(interactor)

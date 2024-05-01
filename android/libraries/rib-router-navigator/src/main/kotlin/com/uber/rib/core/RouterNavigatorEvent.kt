@@ -16,13 +16,13 @@
 package com.uber.rib.core
 
 /** Event which is triggered when [StackRouterNavigator] is used to navigate between routers. */
-open class RouterNavigatorEvent(
+public open class RouterNavigatorEvent(
   /** @return the [RouterNavigatorEventType] */
-  open val eventType: RouterNavigatorEventType,
+  public open val eventType: RouterNavigatorEventType,
 
   /** @return the instance of Parent [Router] */
-  open val parentRouter: Router<*>,
+  public open val parentRouter: Router<*>,
 
   /** @return the instance of child [Router] */
-  open val router: Router<*>
+  public open val router: Router<*>,
 )

@@ -18,13 +18,13 @@ package com.uber.intellij.plugin.android.rib.io
 import com.android.ddmlib.IDevice
 
 /** Data class representing the host of a Rib application, i.e an android device. */
-data class RibHost(val name: String, val application: RibApplication?)
+public data class RibHost(val name: String, val application: RibApplication?)
 
 /** Data class representing a Rib application. */
-data class RibApplication(val name: String, val activities: List<RibActivity>)
+public data class RibApplication(val name: String, val activities: List<RibActivity>)
 
 /** Data class representing a Rib activity. */
-data class RibActivity(val name: String, val rootRib: RibNode)
+public data class RibActivity(val name: String, val rootRib: RibNode)
 
 /**
  * Data class representing a Rib node.
@@ -34,11 +34,11 @@ data class RibActivity(val name: String, val rootRib: RibNode)
  * @param children the list of children for this node
  * @param view the view for this rib node
  */
-data class RibNode(
+public data class RibNode(
   val id: String,
   val name: String,
   val children: List<RibNode>,
-  val view: RibView
+  val view: RibView,
 )
 
 /**
@@ -50,17 +50,17 @@ data class RibNode(
  * @param layoutId the name of the layout this view was inflated from
  * @param children the list of children for this view
  */
-data class RibView(
+public data class RibView(
   val id: String,
   val name: String,
   val viewId: String,
   val layoutId: String,
-  val children: List<RibView>
+  val children: List<RibView>,
 )
 
 /** Data class representing the response of the Rib hierarchy request. */
-data class RibHierarchyResponse(val host: RibHost) : Response<RibHost>()
+public data class RibHierarchyResponse(val host: RibHost) : Response<RibHost>()
 
 /** Data class representing the request for a Rib hierarchy. */
-class RibHierarchyRequest(device: IDevice) :
+public class RibHierarchyRequest(device: IDevice) :
   Request<RibHierarchyResponse>(device, "RIB_HIERARCHY", RibHierarchyResponse::class.java)

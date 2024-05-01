@@ -36,16 +36,16 @@ import javax.swing.tree.TreeSelectionModel
  * It enables speed search configurations to search non-expanded nodes too. It is needed when
  * searching for given scope(s) in the entire graph hierarchy (which can be pretty large).
  */
-abstract class HierarchyBrowserBase(val project: Project, private val rootElement: PsiElement) :
-  HierarchyBrowserBaseEx(project, rootElement) {
+public abstract class HierarchyBrowserBase(
+  public val project: Project,
+  private val rootElement: PsiElement,
+) : HierarchyBrowserBaseEx(project, rootElement) {
 
   override fun doRefresh(currentBuilderOnly: Boolean) {
+    super.doRefresh(currentBuilderOnly)
     ApplicationManager.getApplication().invokeLater {
-      super.doRefresh(currentBuilderOnly)
-      ApplicationManager.getApplication().invokeLater {
-        expandAll()
-        onRefreshComplete()
-      }
+      expandAll()
+      onRefreshComplete()
     }
   }
 
@@ -57,27 +57,27 @@ abstract class HierarchyBrowserBase(val project: Project, private val rootElemen
     TreeSpeedSearch(tree, { path -> path.lastPathComponent.toString() }, true)
     TreeUtil.installActions(tree)
     object : AutoScrollToSourceHandler() {
-      override fun isAutoScrollMode(): Boolean {
-        return HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE
-      }
+        override fun isAutoScrollMode(): Boolean {
+          return HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE
+        }
 
-      override fun setAutoScrollMode(state: Boolean) {
-        HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE = state
+        override fun setAutoScrollMode(state: Boolean) {
+          HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE = state
+        }
       }
-    }
       .install(tree)
   }
 
   /** Refresh completion callback. */
-  open fun onRefreshComplete() {}
+  public open fun onRefreshComplete() {}
 
   /** Expand entire hierarchy */
-  fun expandAll() {
+  public fun expandAll() {
     TreeUtil.expandAll(currentTree)
   }
 
   /** Select a given item in the hierarchy, based on provided id. */
-  fun selectById(id: String) {
+  public fun selectById(id: String) {
     TreeUtil.promiseSelect(
       currentTree,
       object : TreeVisitor {
@@ -93,7 +93,7 @@ abstract class HierarchyBrowserBase(val project: Project, private val rootElemen
           }
           return TreeVisitor.Action.CONTINUE
         }
-      }
+      },
     )
   }
 }

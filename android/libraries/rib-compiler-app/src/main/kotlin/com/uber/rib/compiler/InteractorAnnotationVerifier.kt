@@ -26,11 +26,11 @@ import javax.lang.model.util.ElementFilter
 import javax.lang.model.util.Elements
 import javax.lang.model.util.Types
 
-/** Verify that an [RibInteractor] annotation is applied correctly.  */
+/** Verify that an [RibInteractor] annotation is applied correctly. */
 internal open class InteractorAnnotationVerifier(
   errorReporter: ErrorReporter,
   elementUtils: Elements,
-  typesUtils: Types
+  typesUtils: Types,
 ) : AnnotationVerifier<InteractorAnnotatedClass>(errorReporter, elementUtils, typesUtils) {
 
   /**
@@ -49,11 +49,12 @@ internal open class InteractorAnnotationVerifier(
       throw VerificationFailedException()
     } else {
       val fields: List<VariableElement>
-      fields = if (hasConstructor) {
-        getConstructorParameters(type)
-      } else {
-        getInjectFields(type)
-      }
+      fields =
+        if (hasConstructor) {
+          getConstructorParameters(type)
+        } else {
+          getInjectFields(type)
+        }
       InteractorAnnotatedClass(type, fields, hasConstructor)
     }
   }
@@ -91,15 +92,16 @@ internal open class InteractorAnnotationVerifier(
    */
   private fun validateInteractorSubclass(type: TypeElement): Boolean {
     val interactorElement = elementUtils.getTypeElement(Interactor::class.java.name)
-    val rawElement = typesUtils.getDeclaredType(
-      interactorElement,
-      typesUtils.getWildcardType(null, null),
-      typesUtils.getWildcardType(null, null)
-    )
+    val rawElement =
+      typesUtils.getDeclaredType(
+        interactorElement,
+        typesUtils.getWildcardType(null, null),
+        typesUtils.getWildcardType(null, null),
+      )
     return if (!typesUtils.isSubtype(type.asType(), rawElement)) {
       errorReporter.reportError(
         "$type is annotated with @RibInteractor but is not an Interactor subclass.",
-        type
+        type,
       )
       false
     } else {

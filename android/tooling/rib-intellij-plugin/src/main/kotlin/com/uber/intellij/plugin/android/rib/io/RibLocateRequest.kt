@@ -25,11 +25,11 @@ import com.android.ddmlib.IDevice
  * @param selectedRibId the RIB ID of the RIB selected by user
  * @param selectedViewId the view ID of the view selected by user
  */
-data class RibHostWithSelection(
+public data class RibHostWithSelection(
   val name: String,
   val application: RibApplication?,
   val selectedRibId: String,
-  val selectedViewId: String
+  val selectedViewId: String,
 )
 
 /**
@@ -37,20 +37,20 @@ data class RibHostWithSelection(
  *
  * @param host the host
  */
-data class RibHierarchyWithSelectionResponse(val host: RibHostWithSelection) :
+public data class RibHierarchyWithSelectionResponse(val host: RibHostWithSelection) :
   Response<RibHostWithSelection>()
 
 /** Rib locate request object. */
-class EnableLocateModeRequest(device: IDevice, enabled: Boolean) :
+public class EnableLocateModeRequest(device: IDevice, enabled: Boolean) :
   Request<RibHierarchyWithSelectionResponse>(
     device,
     "RIB_LOCATE",
     RibHierarchyWithSelectionResponse::class.java,
     listOf(Pair("VISIBLE", enabled)),
     TIMEOUT_MS,
-    NUM_RETRIES
+    NUM_RETRIES,
   ) {
-  companion object {
+  public companion object {
     private const val TIMEOUT_MS = 1000
     private const val NUM_RETRIES = 5
   }

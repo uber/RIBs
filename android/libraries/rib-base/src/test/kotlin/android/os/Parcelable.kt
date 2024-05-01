@@ -15,5 +15,5 @@
  */
 package android.os
 
-/** Stub class to have pure Java unit tests.  */
+/** Stub class to have pure Java unit tests. */
 interface Parcelable

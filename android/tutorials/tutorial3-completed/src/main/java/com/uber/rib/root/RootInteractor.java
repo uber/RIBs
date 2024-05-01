@@ -19,7 +19,7 @@ import androidx.annotation.Nullable;
 import com.uber.rib.core.Bundle;
 import com.uber.rib.core.Interactor;
 import com.uber.rib.core.RibInteractor;
-import com.uber.rib.root.logged_out.LoggedOutInteractor;
+import com.uber.rib.root.loggedout.LoggedOutInteractor;
 import javax.inject.Inject;
 
 /** Coordinates Business Logic for {@link RootBuilder.RootScope}. */

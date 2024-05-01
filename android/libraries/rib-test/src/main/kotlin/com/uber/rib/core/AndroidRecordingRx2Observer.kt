@@ -28,7 +28,7 @@ import java.util.concurrent.TimeUnit
  *
  * @param <T> Parametrized type.
  */
-open class AndroidRecordingRx2Observer<T : Any> : Observer<T> {
+public open class AndroidRecordingRx2Observer<T : Any> : Observer<T> {
   private val events: BlockingDeque<Any> = LinkedBlockingDeque()
 
   override fun onSubscribe(disposable: Disposable) {}
@@ -45,27 +45,28 @@ open class AndroidRecordingRx2Observer<T : Any> : Observer<T> {
     events.addLast(OnNext(t))
   }
 
-  open fun takeNext(): T {
+  public open fun takeNext(): T {
     val event: OnNext = takeEvent(OnNext::class.java)
     return event.value as T
   }
 
-  open fun takeError(): Throwable {
+  public open fun takeError(): Throwable {
     val event: OnError = takeEvent(OnError::class.java)
     return event.throwable
   }
 
   private inline fun <E> takeEvent(wanted: Class<E>): E {
-    val event: Any = try {
-      events.pollFirst(1, TimeUnit.SECONDS)
-    } catch (e: InterruptedException) {
-      throw RuntimeException(e)
-    } ?: throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
+    val event: Any =
+      try {
+        events.pollFirst(1, TimeUnit.SECONDS)
+      } catch (e: InterruptedException) {
+        throw RuntimeException(e)
+      } ?: throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
     assertThat(event).isInstanceOf(wanted)
     return event as E
   }
 
-  open fun assertNoMoreEvents() {
+  public open fun assertNoMoreEvents() {
     try {
       val event: Any = takeEvent(Any::class.java)
       throw IllegalStateException("Expected no more events but got $event")

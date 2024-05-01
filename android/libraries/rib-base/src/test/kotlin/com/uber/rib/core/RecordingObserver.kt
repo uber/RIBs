@@ -51,11 +51,12 @@ internal class RecordingObserver<T : Any> : Observer<T> {
   }
 
   private fun <E> takeEvent(wanted: Class<E>): E {
-    val event: Any? = try {
-      events.pollFirst(1, TimeUnit.SECONDS)
-    } catch (e: InterruptedException) {
-      throw RuntimeException(e)
-    }
+    val event: Any? =
+      try {
+        events.pollFirst(1, TimeUnit.SECONDS)
+      } catch (e: InterruptedException) {
+        throw RuntimeException(e)
+      }
     if (event == null) {
       throw NoSuchElementException("No event found while waiting for " + wanted.simpleName)
     }

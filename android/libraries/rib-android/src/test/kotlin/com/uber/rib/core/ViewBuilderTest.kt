@@ -22,10 +22,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.google.common.truth.Truth
-import com.nhaarman.mockitokotlin2.mock
 import com.uber.rib.android.R
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.RuntimeEnvironment
 
@@ -35,13 +35,14 @@ class ViewBuilderTest {
   fun createView_shouldUseInflateViewToCreateView() {
     val parentViewGroup: ViewGroup = FrameLayout(RuntimeEnvironment.application)
     val holder = Holder()
-    val viewBuilder: ViewBuilder<*, *, *> = object : ViewBuilder<View, Router<*>, Any>(Any()) {
-      override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): View {
-        holder.inflaterContext = inflater.context
-        holder.inflaterViewGroup = parentViewGroup
-        return mock()
+    val viewBuilder: ViewBuilder<*, *, *> =
+      object : ViewBuilder<View, Router<*>, Any>(Any()) {
+        override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): View {
+          holder.inflaterContext = inflater.context
+          holder.inflaterViewGroup = parentViewGroup
+          return mock()
+        }
       }
-    }
     viewBuilder.createView(parentViewGroup)
     Truth.assertThat(holder.inflaterContext).isEqualTo(parentViewGroup.context)
     Truth.assertThat(holder.inflaterViewGroup).isEqualTo(parentViewGroup)
@@ -52,17 +53,18 @@ class ViewBuilderTest {
     val parentViewGroup: ViewGroup = FrameLayout(RuntimeEnvironment.application)
     val customContext = ContextThemeWrapper(RuntimeEnvironment.application, R.style.Theme_AppCompat)
     val holder = Holder()
-    val viewBuilder: ViewBuilder<*, *, *> = object : ViewBuilder<View, Router<*>, Any>(Any()) {
-      override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): View {
-        holder.inflaterContext = inflater.context
-        holder.inflaterViewGroup = parentViewGroup
-        return mock()
-      }
+    val viewBuilder: ViewBuilder<*, *, *> =
+      object : ViewBuilder<View, Router<*>, Any>(Any()) {
+        override fun inflateView(inflater: LayoutInflater, parentViewGroup: ViewGroup): View {
+          holder.inflaterContext = inflater.context
+          holder.inflaterViewGroup = parentViewGroup
+          return mock()
+        }
 
-      override fun onThemeContext(parentContext: Context): Context {
-        return customContext
+        override fun onThemeContext(parentContext: Context): Context {
+          return customContext
+        }
       }
-    }
     viewBuilder.createView(parentViewGroup)
     Truth.assertThat(holder.inflaterContext).isEqualTo(customContext)
     Truth.assertThat(holder.inflaterViewGroup).isEqualTo(parentViewGroup)

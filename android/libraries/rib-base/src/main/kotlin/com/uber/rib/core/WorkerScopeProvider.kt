@@ -16,15 +16,20 @@
 package com.uber.rib.core
 
 import com.uber.autodispose.ScopeProvider
+import com.uber.rib.core.internal.CoreFriendModuleApi
 import com.uber.rib.core.lifecycle.WorkerEvent
 import io.reactivex.CompletableSource
 import io.reactivex.Observable
 
-/** [ScopeProvider] for [Worker] instances.  */
-open class WorkerScopeProvider internal constructor(
-  private val workerLifecycleObservable: Observable<WorkerEvent>
-) : ScopeProvider {
-  override fun requestScope(): CompletableSource {
-    return workerLifecycleObservable.skip(1).firstElement().ignoreElement()
-  }
+/** [ScopeProvider] for [Worker] instances. */
+public open class WorkerScopeProvider internal constructor(delegate: ScopeProvider) :
+  ScopeProvider by delegate {
+  @CoreFriendModuleApi
+  public constructor(lifecycle: Observable<WorkerEvent>) : this(lifecycle.asScopeProvider())
 }
+
+private fun Observable<*>.asScopeProvider() = asCompletableSource().asScopeProvider()
+
+private fun Observable<*>.asCompletableSource() = skip(1).firstElement().ignoreElement()
+
+private fun CompletableSource.asScopeProvider() = ScopeProvider { this }

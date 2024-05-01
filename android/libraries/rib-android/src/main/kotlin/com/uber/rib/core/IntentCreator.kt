@@ -17,7 +17,7 @@ package com.uber.rib.core
 
 import android.content.Intent
 
-/** Creates intent objects.  */
+/** Creates intent objects. */
 interface IntentCreator {
   /**
    * Create an explicit intent targeted at a particular class, which is guaranteed to be limited to

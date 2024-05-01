@@ -13,47 +13,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-buildscript {
-    dependencies {
-        classpath deps.build.gradlePlugins.apt
-    }
+plugins {
+    id("ribs.kotlin-library-conventions")
+    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.mavenPublish)
 }
-
-apply plugin: "org.jetbrains.kotlin.jvm"
-apply plugin: "org.jetbrains.kotlin.kapt"
-apply plugin: "com.vanniktech.maven.publish"
-
-sourceCompatibility = deps.build.javaVersion.toString()
-targetCompatibility = deps.build.javaVersion.toString()
 
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
     // in order to invert a dependency. With a bit of work this could be removed.
-    kapt deps.apt.daggerCompiler
-    kapt deps.apt.androidApi
+    kapt(libs.dagger.compiler)
+    kapt(libs.android.api)
 
-    implementation deps.external.guavaAndroid
-    implementation deps.external.reactiveStreams
-    implementation deps.external.rxrelay2
-    implementation deps.external.rxjava2
-    implementation deps.kotlin.stdlib
-    implementation deps.uber.autodispose
-    api deps.uber.autodisposeLifecycle
-    implementation deps.apt.javaxInject
+    implementation(libs.guava.android)
+    implementation(libs.reactivestreams)
+    implementation(libs.rxrelay2)
+    implementation(libs.rxjava2)
+    implementation(libs.autodispose.library)
+    api(libs.autodispose.lifecycle)
+    implementation(libs.javax.inject)
 
-    compileOnly deps.apt.daggerCompiler
-    compileOnly deps.androidx.annotations
-    compileOnly deps.apt.androidApi
-    compileOnly deps.external.checkerQual
+    implementation(libs.autodispose.coroutines)
+    implementation(libs.coroutines.rx2)
+    api(libs.kotlin.stdlib)
+    api(libs.coroutines.core)
+    api(project(":libraries:rib-coroutines"))
 
-    testImplementation deps.androidx.annotations
-    testImplementation deps.apt.androidApi
-    testImplementation deps.kotlin.stdlib
-    testImplementation deps.test.junit
-    testImplementation deps.test.mockito
-    testImplementation deps.test.mockitoKotlin
-    testImplementation deps.test.truth
+    compileOnly(libs.dagger.compiler)
+    compileOnly(libs.annotation)
+    compileOnly(libs.android.api)
+    compileOnly(libs.checkerqual)
+
+    testImplementation(project(":libraries:rib-coroutines-test"))
+    testImplementation(libs.annotation)
+    testImplementation(libs.android.api)
+    testImplementation(testLibs.junit)
+    testImplementation(testLibs.mockito)
+    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.truth)
     testImplementation(project(":libraries:rib-test")) {
         transitive = false
     }

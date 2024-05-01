@@ -22,7 +22,7 @@ import androidx.annotation.MainThread
  * leaks.
  */
 @MainThread
-open class RibRefWatcher {
+public open class RibRefWatcher {
   private var referenceWatcher: ReferenceWatcher? = null
 
   /**
@@ -30,7 +30,7 @@ open class RibRefWatcher {
    *
    * @param watcher the watcher.
    */
-  open fun setReferenceWatcher(watcher: ReferenceWatcher?) {
+  public open fun setReferenceWatcher(watcher: ReferenceWatcher?) {
     referenceWatcher = watcher
   }
 
@@ -39,7 +39,7 @@ open class RibRefWatcher {
    *
    * @param objectToWatch the object to watch.
    */
-  open fun watchDeletedObject(objectToWatch: Any?) {
+  public open fun watchDeletedObject(objectToWatch: Any?) {
     if (objectToWatch == null) {
       return
     }
@@ -55,7 +55,7 @@ open class RibRefWatcher {
    * @param data breadcrumb data
    * @param parent breadcrumb parent if any
    */
-  open fun logBreadcrumb(eventType: String, child: String?, parent: String?) {
+  public open fun logBreadcrumb(eventType: String, child: String?, parent: String?) {
     if (referenceWatcher != null && breadcrumbsEnabled) {
       if (child == null || parent == null) {
         referenceWatcher?.logBreadcrumb(eventType, eventType, eventType)
@@ -65,39 +65,39 @@ open class RibRefWatcher {
     }
   }
 
-  /** Enables Breadcrumb logging.  */
-  open fun enableBreadcrumbLogging() {
+  /** Enables Breadcrumb logging. */
+  public open fun enableBreadcrumbLogging() {
     breadcrumbsEnabled = true
   }
 
-  /** Enables LeakCanary.  */
-  open fun enableLeakCanary() {
+  /** Enables LeakCanary. */
+  public open fun enableLeakCanary() {
     isLeakCanaryEnabled = true
   }
 
-  /** Disables LeakCanary.  */
-  open fun disableLeakCanary() {
+  /** Disables LeakCanary. */
+  public open fun disableLeakCanary() {
     isLeakCanaryEnabled = false
   }
 
-  /** Enables ULeak's Lifecycle tracking functionality. ULeak itself is behind a plugin.  */
-  open fun enableULeakLifecycleTracking() {
+  /** Enables ULeak's Lifecycle tracking functionality. ULeak itself is behind a plugin. */
+  public open fun enableULeakLifecycleTracking() {
     uLeakEnabled = true
   }
 
-  /** Disables ULeak's Lifecycle Tracking.  */
-  open fun disableULeakLifecycleTracking() {
+  /** Disables ULeak's Lifecycle Tracking. */
+  public open fun disableULeakLifecycleTracking() {
     uLeakEnabled = false
   }
 
-  /** Interface for classes that watch objects.  */
-  interface ReferenceWatcher {
+  /** Interface for classes that watch objects. */
+  public interface ReferenceWatcher {
     /**
      * Watch this object to verify it has no inbound references.
      *
-     * @param object the object to watch.
+     * @param objectToWatch the object to watch.
      */
-    fun watch(objectToWatch: Any)
+    public fun watch(objectToWatch: Any)
 
     /**
      * Method to pipe breadcrumbs into the Breadcrumb logger.
@@ -106,10 +106,10 @@ open class RibRefWatcher {
      * @param data The breadcrumb data
      * @param parent The breadcrumb parent
      */
-    fun logBreadcrumb(eventType: String, data: String, parent: String)
+    public fun logBreadcrumb(eventType: String, data: String, parent: String)
   }
 
-  companion object {
+  public companion object {
     private var ribRefWatcher: RibRefWatcher? = null
 
     /**
@@ -118,7 +118,7 @@ open class RibRefWatcher {
      * @return the [RibRefWatcher] instance.
      */
     @JvmStatic
-    fun getInstance(): RibRefWatcher {
+    public fun getInstance(): RibRefWatcher {
       if (ribRefWatcher == null) {
         ribRefWatcher = RibRefWatcher()
       }
@@ -131,7 +131,7 @@ open class RibRefWatcher {
      * @return whether or not LeakCanary is enabled.
      */
     @JvmStatic
-    var isLeakCanaryEnabled = false
+    public var isLeakCanaryEnabled: Boolean = false
       private set
     private var uLeakEnabled = false
     private var breadcrumbsEnabled = false

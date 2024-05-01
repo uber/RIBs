@@ -21,14 +21,15 @@ import com.google.common.collect.ImmutableSet
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.Processor
 
-/** Process the annotations for all added annotation processor pipelines.  */
+/** Process the annotations for all added annotation processor pipelines. */
 @AutoService(Processor::class)
-open class RibTestProcessor : RibProcessor() {
+public open class RibTestProcessor : RibProcessor() {
   private var interactorTestGenerator: InteractorTestGenerator? = null
 
   @Synchronized
   override fun init(processingEnv: ProcessingEnvironment) {
-    interactorTestGenerator = InteractorTestGenerator(processingEnv, ErrorReporter(processingEnv.messager))
+    interactorTestGenerator =
+      InteractorTestGenerator(processingEnv, ErrorReporter(processingEnv.messager))
     super.init(processingEnv)
   }
 
@@ -38,7 +39,7 @@ open class RibTestProcessor : RibProcessor() {
 
   override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
     return ImmutableList.of<ProcessorPipeline>(
-      RibInteractorProcessorPipeline(processContext, interactorTestGenerator)
+      RibInteractorProcessorPipeline(processContext, interactorTestGenerator),
     )
   }
 }

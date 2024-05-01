@@ -17,9 +17,9 @@ package com.uber.rib.compiler
 
 import com.google.common.collect.ImmutableSet
 import com.google.testing.compile.JavaFileObjects
-import org.junit.Before
 import java.util.ArrayList
 import javax.tools.JavaFileObject
+import org.junit.Before
 
 abstract class InteractorProcessorTestBase {
   protected lateinit var ribProcessor: RibProcessor
@@ -27,19 +27,22 @@ abstract class InteractorProcessorTestBase {
 
   @Before
   fun setup() {
-    ribProcessor = object : RibProcessor() {
-      override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
-        return listOf(
-          RibInteractorProcessorPipeline(processContext, null)
-        )
-      }
+    ribProcessor =
+      object : RibProcessor() {
+        override fun getProcessorPipelines(
+          processContext: ProcessContext,
+        ): List<ProcessorPipeline> {
+          return listOf(
+            RibInteractorProcessorPipeline(processContext, null),
+          )
+        }
 
-      override fun getSupportedAnnotationTypes(): Set<String> {
-        return ImmutableSet.of(
-          RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName
-        )
+        override fun getSupportedAnnotationTypes(): Set<String> {
+          return ImmutableSet.of(
+            RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName,
+          )
+        }
       }
-    }
     sources = ArrayList()
   }
 

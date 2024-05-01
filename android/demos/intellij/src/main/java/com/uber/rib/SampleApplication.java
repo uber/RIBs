@@ -34,7 +34,7 @@ public class SampleApplication extends Application {
           this,
           Arrays.asList(
               new RibHierarchyDebugBroadcastHandler(
-                  getApplicationContext(), RibEvents.getInstance().getEvents())));
+                  getApplicationContext(), RibEvents.getRouterEvents())));
     }
   }
 }

@@ -14,36 +14,19 @@
  * limitations under the License.
  */
 
-apply plugin: 'com.android.library'
-apply plugin: 'org.jetbrains.kotlin.android'
-apply plugin: "com.vanniktech.maven.publish"
+plugins {
+    id("ribs.kotlin-android-library-conventions")
+    alias(libs.plugins.mavenPublish)
+}
 
 android {
-    compileSdkVersion deps.build.compileSdkVersion
-    buildToolsVersion deps.build.buildToolsVersion
-
-    defaultConfig {
-        minSdkVersion deps.build.minSdkVersion
-        targetSdkVersion deps.build.targetSdkVersion
-    }
-
-    compileOptions {
-        sourceCompatibility deps.build.javaVersion
-        targetCompatibility deps.build.javaVersion
-    }
-
-    testOptions {
-        unitTests {
-            includeAndroidResources = true
-        }
-    }
+    namespace "com.uber.rib.android.core"
 }
 
 dependencies {
-    implementation deps.apt.javaxInject
-    implementation deps.androidx.annotations
-    implementation deps.androidx.appcompat
-    implementation deps.kotlin.stdlib
-    testImplementation deps.androidx.appcompat
-    testImplementation deps.external.roboelectricBase
+    implementation(libs.javax.inject)
+    implementation(libs.annotation)
+    implementation(libs.appcompat)
+    testImplementation(libs.appcompat)
+    testImplementation(testLibs.robolectric)
 }
