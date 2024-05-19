@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("invisible_reference", "invisible_member")
+
 package com.uber.rib.core
 
 import io.reactivex.Observable
@@ -26,7 +28,7 @@ public class RouterNavigatorEvents private constructor() {
   private val _events = MutableSharedFlow<RouterNavigatorEvent>(0, 1, BufferOverflow.DROP_OLDEST)
 
   /** @return the stream which can be subcribed to listen for [RouterNavigatorEvent] */
-  public val events: Observable<RouterNavigatorEvent> = _events.asObservable()
+  public val events: Observable<RouterNavigatorEvent> = _events.asObservable(DirectDispatcher)
 
   @JvmSynthetic // Hide from Java consumers. In Java, `getEvents` resolves to the `events` property.
   @JvmName("_getEvents")

@@ -27,6 +27,7 @@ dependencies {
     api(libs.rxjava2)
     api(libs.rxrelay2)
     api(libs.rxbinding)
+    implementation(project(":libraries:rib-coroutines"))
     implementation(libs.annotation)
     implementation(libs.autodispose.coroutines)
     implementation(libs.coroutines.android)
