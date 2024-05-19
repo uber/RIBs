@@ -82,6 +82,7 @@ class RibCoroutineWorkerTest {
         worker.doOnStart { error(onStartErrorMsg) }
         worker.doOnStop { error(onStopErrorMsg) }
         bind(worker).join()
+        runCurrent()
         assertThat(throwable).isInstanceOf(IllegalStateException::class.java)
         assertThat(throwable).hasMessageThat().isEqualTo(onStartErrorMsg)
         val suppressed = throwable?.suppressed?.firstOrNull()
