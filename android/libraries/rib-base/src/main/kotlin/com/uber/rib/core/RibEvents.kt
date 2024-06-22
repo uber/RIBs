@@ -18,15 +18,16 @@ package com.uber.rib.core
 import androidx.annotation.VisibleForTesting
 import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
 public object RibEvents {
 
   private val mutableRouterEvents =
-    MutableSharedFlow<RibRouterEvent>(0, 1, BufferOverflow.DROP_OLDEST)
+    MutableSharedFlow<RibRouterEvent>(0, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
   private val mutableRibDurationEvents =
-    MutableSharedFlow<RibActionInfo>(0, 1, BufferOverflow.DROP_OLDEST)
+    MutableSharedFlow<RibActionInfo>(0, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
 
   @JvmStatic
   public val routerEvents: Observable<RibRouterEvent> = mutableRouterEvents.asObservable()
