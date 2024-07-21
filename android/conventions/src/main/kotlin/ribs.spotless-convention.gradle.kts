@@ -26,6 +26,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
     endWithNewline()
   }
   kotlin {
+    toggleOffOn()
     target("**/*.kt")
     ktlint(libs.versions.ktlint.get()).editorConfigOverride(
         mapOf(

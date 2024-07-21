@@ -13,11 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+@file:Suppress("invisible_reference", "invisible_member")
+
 package com.uber.rib.core.screenstack
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.CallSuper
+import com.uber.rib.core.DirectDispatcher
 import com.uber.rib.core.screenstack.lifecycle.ScreenStackEvent
 import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
@@ -45,7 +48,7 @@ abstract class ViewProvider {
   abstract fun buildView(parentView: ViewGroup): View
 
   /** @return an observable that emits events for this view provider's lifecycle. */
-  fun lifecycle(): Observable<ScreenStackEvent> = lifecycleFlow.asObservable()
+  fun lifecycle(): Observable<ScreenStackEvent> = lifecycleFlow.asObservable(DirectDispatcher)
 
   /**
    * Callers can implement this in order to complete additional work when a call to
