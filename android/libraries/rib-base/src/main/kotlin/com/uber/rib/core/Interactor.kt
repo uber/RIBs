@@ -28,6 +28,7 @@ import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.rx2.asObservable
@@ -42,7 +43,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   @Inject public lateinit var injectedPresenter: P
 
   @CoreFriendModuleApi public var actualPresenter: P? = null
-  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
   public open val lifecycleFlow: SharedFlow<InteractorEvent>
     get() = _lifecycleFlow
 
