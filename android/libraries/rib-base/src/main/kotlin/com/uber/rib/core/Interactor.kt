@@ -43,7 +43,8 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   @Inject public lateinit var injectedPresenter: P
 
   @CoreFriendModuleApi public var actualPresenter: P? = null
-  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
+  private val _lifecycleFlow =
+    MutableSharedFlow<InteractorEvent>(1, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
   public open val lifecycleFlow: SharedFlow<InteractorEvent>
     get() = _lifecycleFlow
 
