@@ -38,9 +38,8 @@ public object CommandLineUtils {
    * @throws ExecutionException
    * @throws IOException
    */
-  public fun which(project: Project, command: String): String {
-    return executeWithLineOutput(project, "which", command).output()[0]
-  }
+  public fun which(project: Project, command: String): String =
+    executeWithLineOutput(project, "which", command).output()[0]
 
   /**
    * Executes the given `command` appending the given `params` and returns the output.
@@ -96,13 +95,9 @@ public object CommandLineUtils {
   public class ProcessOutput(private val output: List<String>, private val error: List<String>) {
 
     /** Returns the process std output */
-    public fun output(): List<String> {
-      return output
-    }
+    public fun output(): List<String> = output
 
     /** Returns the process error output */
-    public fun error(): List<String> {
-      return error
-    }
+    public fun error(): List<String> = error
   }
 }

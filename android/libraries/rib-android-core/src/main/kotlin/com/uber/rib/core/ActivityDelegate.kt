@@ -45,12 +45,7 @@ interface ActivityDelegate {
   fun onDestroy() {}
 
   /** @see [Activity.onActivityResult] */
-  fun onActivityResult(
-    activity: Activity,
-    requestCode: Int,
-    resultCode: Int,
-    data: Intent?,
-  ) {}
+  fun onActivityResult(activity: Activity, requestCode: Int, resultCode: Int, data: Intent?) {}
 
   /** @see [Activity.onRequestPermissionsResult] */
   fun onRequestPermissionsResult(

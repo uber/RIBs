@@ -37,11 +37,7 @@ public class RibHierarchyNodeDescriptor(
   }
 
   /** Method used to get the unique id of descriptor. Used for programmatic selection. */
-  override fun getUniqueId(): String? {
-    return ribNode.id
-  }
+  override fun getUniqueId(): String? = ribNode.id
 
-  override fun toString(): String {
-    return ribNode.name
-  }
+  override fun toString(): String = ribNode.name
 }

@@ -22,6 +22,7 @@ package com.uber.rib.core
  */
 public class FakeRouter<I : Interactor<*, *>> : Router<I> {
   public constructor(interactor: I) : super(interactor)
+
   public constructor(
     interactor: I,
     ribRefWatcher: RibRefWatcher,

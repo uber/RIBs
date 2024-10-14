@@ -21,7 +21,7 @@ import kotlin.coroutines.CoroutineContext
 import kotlinx.coroutines.asCoroutineDispatcher
 
 /** A Rib Worker to be guaranteed on a background thread with a limited pool size of 1 */
-class BackgroundWorker() : Worker {
+class BackgroundWorker : Worker {
 
   override val coroutineContext: CoroutineContext =
     Executors.newFixedThreadPool(1).asCoroutineDispatcher()

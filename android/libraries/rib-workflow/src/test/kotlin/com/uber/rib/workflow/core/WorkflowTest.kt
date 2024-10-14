@@ -53,9 +53,8 @@ class WorkflowTest {
 
     val workflow: Workflow<Any, ActionableItem> =
       object : Workflow<Any, ActionableItem>() {
-        override fun getSteps(rootActionableItem: ActionableItem): Step<Any, ActionableItem> {
-          return from(returnValueSubject.singleOrError())
-        }
+        override fun getSteps(rootActionableItem: ActionableItem): Step<Any, ActionableItem> =
+          from(returnValueSubject.singleOrError())
       }
 
     val testSubscriber = TestObserver<Optional<Any>>()

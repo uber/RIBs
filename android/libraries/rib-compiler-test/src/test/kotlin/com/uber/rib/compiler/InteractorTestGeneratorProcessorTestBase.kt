@@ -40,18 +40,12 @@ abstract class InteractorTestGeneratorProcessorTestBase {
         }
 
         override fun getProcessorPipelines(
-          processContext: ProcessContext,
-        ): List<ProcessorPipeline> {
-          return listOf(
-            RibInteractorProcessorPipeline(processContext, interactorTestGenerator),
-          )
-        }
+          processContext: ProcessContext
+        ): List<ProcessorPipeline> =
+          listOf(RibInteractorProcessorPipeline(processContext, interactorTestGenerator))
 
-        override fun getSupportedAnnotationTypes(): Set<String> {
-          return ImmutableSet.of(
-            RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName,
-          )
-        }
+        override fun getSupportedAnnotationTypes(): Set<String> =
+          ImmutableSet.of(RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName)
       }
     sources = ArrayList()
   }
@@ -60,7 +54,5 @@ abstract class InteractorTestGeneratorProcessorTestBase {
     sources.add(getResourceFile(file))
   }
 
-  protected fun getResourceFile(file: String): JavaFileObject {
-    return JavaFileObjects.forResource(file)
-  }
+  protected fun getResourceFile(file: String): JavaFileObject = JavaFileObjects.forResource(file)
 }

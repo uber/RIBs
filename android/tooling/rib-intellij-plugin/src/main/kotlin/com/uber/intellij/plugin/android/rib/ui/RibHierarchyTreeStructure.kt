@@ -41,7 +41,7 @@ public class RibHierarchyTreeStructure(
               descriptor,
               RibHierarchyUtils.getPsiClass(project, descriptor.ribHost.name),
               it,
-            ),
+            )
           )
         }
       }
@@ -53,7 +53,7 @@ public class RibHierarchyTreeStructure(
               descriptor,
               RibHierarchyUtils.getPsiClass(project, activity.name),
               activity,
-            ),
+            )
           )
         }
       }
@@ -64,7 +64,7 @@ public class RibHierarchyTreeStructure(
             descriptor,
             RibHierarchyUtils.getPsiClass(project, descriptor.ribActivity.name),
             descriptor.ribActivity.rootRib,
-          ),
+          )
         )
       }
       is RibHierarchyNodeDescriptor -> {
@@ -75,7 +75,7 @@ public class RibHierarchyTreeStructure(
               descriptor,
               RibHierarchyUtils.getPsiClass(project, childRibNode.name),
               childRibNode,
-            ),
+            )
           )
         }
       }
@@ -87,7 +87,7 @@ public class RibHierarchyTreeStructure(
               RibHierarchyUtils.getPsiClass(project, view.id),
               descriptor.ribNode,
               view,
-            ),
+            )
           )
         }
       }
@@ -99,7 +99,7 @@ public class RibHierarchyTreeStructure(
               RibHierarchyUtils.getPsiClass(project, view.id),
               descriptor.ribNode,
               view,
-            ),
+            )
           )
         }
       }

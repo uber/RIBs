@@ -39,9 +39,7 @@ fun MainView(childContent: MainRouter.ChildContent) {
       Modifier.fillMaxSize().padding(all = 4.dp).padding(top = 14.dp).background(Color(0xFFFFA500)),
   ) {
     Text("Main RIB (Compose w/ CompView)")
-    Box(
-      modifier = Modifier.fillMaxWidth().weight(1.0f).padding(4.dp).background(Color.Yellow),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().weight(1.0f).padding(4.dp).background(Color.Yellow)) {
       childContent.fullScreenSlot.value.invoke()
     }
   }

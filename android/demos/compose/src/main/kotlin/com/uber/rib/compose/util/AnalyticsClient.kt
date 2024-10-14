@@ -42,10 +42,12 @@ class AnalyticsClientImpl(private val application: Application) : AnalyticsClien
 
 object NoOpAnalyticsClient : AnalyticsClient {
   override fun trackClick(id: String) = Unit
+
   override fun trackImpression(id: String) = Unit
 }
 
 interface AnalyticsClient {
   fun trackClick(id: String)
+
   fun trackImpression(id: String)
 }

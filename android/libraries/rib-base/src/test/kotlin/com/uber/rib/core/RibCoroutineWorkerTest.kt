@@ -336,15 +336,15 @@ private class TestWorker : RibCoroutineWorker {
   var innerCoroutineIdle = false
   var innerCoroutineCompleted = false
 
-  private var _doOnStart: suspend () -> Unit = {}
-  private var _doOnStop: () -> Unit = {}
+  private var doOnStartField: suspend () -> Unit = {}
+  private var doOnStopField: () -> Unit = {}
 
   fun doOnStart(block: suspend () -> Unit) {
-    _doOnStart = block
+    doOnStartField = block
   }
 
   fun doOnStop(block: () -> Unit) {
-    _doOnStop = block
+    doOnStopField = block
   }
 
   override suspend fun onStart(scope: CoroutineScope) {
@@ -362,7 +362,7 @@ private class TestWorker : RibCoroutineWorker {
         }
       }
       delay(ON_START_DELAY_DURATION_MILLIS)
-      _doOnStart()
+      doOnStartField()
     } finally {
       onStartFinished = true
     }
@@ -372,7 +372,7 @@ private class TestWorker : RibCoroutineWorker {
     onStopThread = Thread.currentThread()
     onStopCause = cause
     try {
-      _doOnStop()
+      doOnStopField()
     } finally {
       onStopRan = true
     }
@@ -393,9 +393,11 @@ private class WorkerAndRibCoroutineWorker(
 ) : Worker, RibCoroutineWorker {
   // Worker impl
   override fun onStart(lifecycle: WorkerScopeProvider) = workerOnStart(lifecycle)
+
   override fun onStop() = workerOnStop()
 
   // RibCoroutineWorker impl
   override suspend fun onStart(scope: CoroutineScope) = ribCoroutineWorkerOnStart(scope)
+
   override fun onStop(cause: Throwable) = ribCoroutineWorkerOnStop(cause)
 }

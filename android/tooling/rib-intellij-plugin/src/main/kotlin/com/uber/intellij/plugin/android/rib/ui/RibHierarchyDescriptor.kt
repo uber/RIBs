@@ -38,9 +38,7 @@ public open class RibHierarchyDescriptor(
   public open fun updateText(text: CompositeAppearance) {}
 
   /** Method used to get the unique id of descriptor. Used for programmatic selection. */
-  public open fun getUniqueId(): String? {
-    return null
-  }
+  public open fun getUniqueId(): String? = null
 
   override fun update(): Boolean {
     val changes = super.update()
@@ -67,12 +65,9 @@ public open class RibHierarchyDescriptor(
   }
 
   /** Return icon to display. */
-  override fun getIcon(element: PsiElement): Icon? {
-    return null
-  }
+  override fun getIcon(element: PsiElement): Icon? = null
 
   /** Compare 2 instances of text appearance. */
-  public fun CompositeAppearance.compareTo(another: CompositeAppearance): Boolean {
-    return Comparing.equal(this, another)
-  }
+  public fun CompositeAppearance.compareTo(another: CompositeAppearance): Boolean =
+    Comparing.equal(this, another)
 }

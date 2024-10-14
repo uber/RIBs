@@ -22,7 +22,7 @@ import android.os.Bundle
 open class ActivityCallbackEvent
 private constructor(
   /** @return this event's type. */
-  override val type: Type,
+  override val type: Type
 ) : ActivityEvent {
 
   /** Types of activity events that can occur. */
@@ -38,6 +38,7 @@ private constructor(
 
   /** An [ActivityCallbackEvent] that represents [Activity.onNewIntent] event */
   open class NewIntent(open val intent: Intent) : ActivityCallbackEvent(Type.NEW_INTENT)
+
   open class PictureInPictureMode(open val isInPictureInPictureMode: Boolean) :
     ActivityCallbackEvent(Type.PICTURE_IN_PICTURE_MODE)
 
@@ -63,7 +64,7 @@ private constructor(
    */
   open class SaveInstanceState(
     /** @return this event's outState data. */
-    open val outState: Bundle?,
+    open val outState: Bundle?
   ) : ActivityCallbackEvent(Type.SAVE_INSTANCE_STATE)
 
   companion object {
@@ -82,9 +83,7 @@ private constructor(
       requestCode: Int,
       resultCode: Int,
       resultData: Intent?,
-    ): ActivityResult {
-      return ActivityResult(resultData, requestCode, resultCode)
-    }
+    ): ActivityResult = ActivityResult(resultData, requestCode, resultCode)
 
     /**
      * Creates an activity event for a given type.
@@ -93,15 +92,14 @@ private constructor(
      * @return The corresponding ActivityEvent.
      */
     @JvmStatic
-    fun create(type: Type): ActivityCallbackEvent {
-      return when (type) {
+    fun create(type: Type): ActivityCallbackEvent =
+      when (type) {
         Type.LOW_MEMORY -> LOW_MEMORY_EVENT
         else ->
           throw IllegalArgumentException(
-            "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!",
+            "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!"
           )
       }
-    }
 
     /**
      * Creates an event for onSaveInstanceState.
@@ -110,9 +108,8 @@ private constructor(
      * @return the created ActivityEvent.
      */
     @JvmStatic
-    fun createOnSaveInstanceStateEvent(outState: Bundle?): ActivityCallbackEvent {
-      return SaveInstanceState(outState)
-    }
+    fun createOnSaveInstanceStateEvent(outState: Bundle?): ActivityCallbackEvent =
+      SaveInstanceState(outState)
 
     /**
      * Creates an event for [Activity.onTrimMemory]
@@ -121,14 +118,11 @@ private constructor(
      * @return the created [TrimMemory]
      */
     @JvmStatic
-    fun createTrimMemoryEvent(trimMemoryType: Int): TrimMemory {
-      return TrimMemory(trimMemoryType)
-    }
+    fun createTrimMemoryEvent(trimMemoryType: Int): TrimMemory = TrimMemory(trimMemoryType)
 
     @JvmStatic
-    fun createPictureInPictureMode(isInPictureInPictureMode: Boolean): PictureInPictureMode {
-      return PictureInPictureMode(isInPictureInPictureMode)
-    }
+    fun createPictureInPictureMode(isInPictureInPictureMode: Boolean): PictureInPictureMode =
+      PictureInPictureMode(isInPictureInPictureMode)
 
     /**
      * Creates an event for onNewIntent.
@@ -136,10 +130,7 @@ private constructor(
      * @param intent is the new intent received
      * @return the created [NewIntent].
      */
-    @JvmStatic
-    fun createNewIntent(intent: Intent): NewIntent {
-      return NewIntent(intent)
-    }
+    @JvmStatic fun createNewIntent(intent: Intent): NewIntent = NewIntent(intent)
 
     /**
      * Creates an event for onWindowFocusChanged
@@ -147,9 +138,6 @@ private constructor(
      * @param hasFocus determines whether the window of this activity got focus or not
      * @return the newly created [WindowFocus]
      */
-    @JvmStatic
-    fun createWindowFocusEvent(hasFocus: Boolean): WindowFocus {
-      return WindowFocus(hasFocus)
-    }
+    @JvmStatic fun createWindowFocusEvent(hasFocus: Boolean): WindowFocus = WindowFocus(hasFocus)
   }
 }

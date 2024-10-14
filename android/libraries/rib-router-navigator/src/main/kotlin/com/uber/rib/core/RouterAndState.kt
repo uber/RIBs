@@ -66,18 +66,17 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
   }
 
   private fun wrapDetachTransitionIfNeed(
-    detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
-  ): RouterNavigator.DetachCallback<R, StateT>? {
-    return (detachTransition as? RouterNavigator.DetachCallback)
+    detachTransition: RouterNavigator.DetachTransition<R, StateT>?
+  ): RouterNavigator.DetachCallback<R, StateT>? =
+    (detachTransition as? RouterNavigator.DetachCallback)
       ?: detachTransition?.let { DetachCallbackWrapper(it) }
-  }
 
   /**
    * Wrapper class to wrap [transitionCallback] calls into the new [RouterNavigator.DetachCallback]
    * format.
    */
   private inner class DetachCallbackWrapper(
-    private val transitionCallback: RouterNavigator.DetachTransition<R, StateT>,
+    private val transitionCallback: RouterNavigator.DetachTransition<R, StateT>
   ) : RouterNavigator.DetachCallback<R, StateT>() {
 
     override fun willDetachFromHost(
@@ -112,9 +111,7 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
     }
   }
 
-  private class SafeRouterAccessor<R : Router<*>>(
-    private val routerBuilder: () -> R,
-  ) {
+  private class SafeRouterAccessor<R : Router<*>>(private val routerBuilder: () -> R) {
     private val lock = ReentrantLock()
     private var _router: R? = null
 
@@ -137,8 +134,7 @@ internal class RouterAndState<R : Router<*>, StateT : RouterNavigatorState>(
           _router?.javaClass?.simpleName?.let { routerName ->
             log("Destroying router $routerName was destroyed")
             _router = null
-          }
-            ?: run { log("Router of ${state.stateName()} state already destroyed") }
+          } ?: run { log("Router of ${state.stateName()} state already destroyed") }
         }
       }
   }

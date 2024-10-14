@@ -17,5 +17,6 @@ package com.uber.rib.compose.root.main.loggedin.tictactoe
 
 sealed class TicTacToeEvent {
   object XpButtonClick : TicTacToeEvent()
+
   class BoardClick(val coordinate: BoardCoordinate) : TicTacToeEvent()
 }

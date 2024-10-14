@@ -22,30 +22,20 @@ import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicReference
 
 class DelegatingScheduler
-private constructor(
-  @get:VisibleForTesting val schedulerType: SchedulerType,
-) : Scheduler() {
+private constructor(@get:VisibleForTesting val schedulerType: SchedulerType) : Scheduler() {
 
   private val activeScheduler = AtomicReference(Schedulers.trampoline())
 
   @VisibleForTesting
   enum class SchedulerType {
-    MAIN_THREAD,
+    MAIN_THREAD
   }
 
-  override fun createWorker(): Worker {
-    return activeScheduler().createWorker()
-  }
+  override fun createWorker(): Worker = activeScheduler().createWorker()
 
-  override fun now(unit: TimeUnit): Long {
-    return activeScheduler().now(unit)
-  }
+  override fun now(unit: TimeUnit): Long = activeScheduler().now(unit)
 
-  @VisibleForTesting
-  @Synchronized
-  fun activeScheduler(): Scheduler {
-    return activeScheduler.get()
-  }
+  @VisibleForTesting @Synchronized fun activeScheduler(): Scheduler = activeScheduler.get()
 
   @Synchronized
   fun setActiveScheduler(activeScheduler: Scheduler) {

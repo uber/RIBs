@@ -93,14 +93,7 @@ class RibWorkerSelectionInteractor(
   }
 
   private fun updateViewModel(workerBound: String?) {
-    with(stateStream) {
-      dispatch(
-        current()
-          .copy(
-            workerInfo = workerBound + WORKER_BOUND_MESSAGE,
-          ),
-      )
-    }
+    with(stateStream) { dispatch(current().copy(workerInfo = workerBound + WORKER_BOUND_MESSAGE)) }
   }
 
   private companion object {

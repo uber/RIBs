@@ -33,15 +33,14 @@ abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
    * @return an Rx [Single] that will return the workflow when subscribed to.
    */
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
-  open fun createSingle(rootActionableItem: TRootActionableItem): Single<Optional<TReturnValue>> {
-    return getSteps(rootActionableItem).asResultObservable().singleOrError()
-  }
+  open fun createSingle(rootActionableItem: TRootActionableItem): Single<Optional<TReturnValue>> =
+    getSteps(rootActionableItem).asResultObservable().singleOrError()
 
   /**
    * @param rootActionableItem to create steps from.
    * @return steps to be performed for this workflow.
    */
   protected abstract fun getSteps(
-    rootActionableItem: TRootActionableItem,
+    rootActionableItem: TRootActionableItem
   ): Step<TReturnValue, out ActionableItem>
 }

@@ -19,13 +19,9 @@ package android.os
 class Bundle : Parcelable {
   private val testData: MutableMap<String, Any> = mutableMapOf()
 
-  fun getString(key: String): String? {
-    return testData[key] as String?
-  }
+  fun getString(key: String): String? = testData[key] as String?
 
-  fun <T : Parcelable?> getParcelable(key: String): T? {
-    return testData[key] as T?
-  }
+  fun <T : Parcelable?> getParcelable(key: String): T? = testData[key] as T?
 
   fun putParcelable(key: String, value: Parcelable) {
     testData[key] = value

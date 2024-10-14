@@ -253,7 +253,7 @@ class WorkerBinderTest(private val adaptFromRibCoroutineWorker: Boolean) {
   }
 }
 
-private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit) =
+private fun Worker(onStartBlock: (WorkerScopeProvider) -> Unit): Worker =
   object : Worker {
     override fun onStart(lifecycle: WorkerScopeProvider) {
       onStartBlock(lifecycle)

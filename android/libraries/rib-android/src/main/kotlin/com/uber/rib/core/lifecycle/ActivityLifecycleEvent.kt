@@ -48,7 +48,7 @@ import android.os.Bundle
 open class ActivityLifecycleEvent
 private constructor(
   /** @return this event's type. */
-  override val type: Type,
+  override val type: Type
 ) : ActivityEvent, Comparable<ActivityLifecycleEvent> {
 
   /** Types of activity events that can occur. */
@@ -70,7 +70,7 @@ private constructor(
    */
   open class Create(
     /** @return this event's savedInstanceState data. */
-    open val savedInstanceState: Bundle?,
+    open val savedInstanceState: Bundle?
   ) : ActivityLifecycleEvent(Type.CREATE)
 
   companion object {
@@ -87,10 +87,7 @@ private constructor(
      * @param stateData the instate bundle.
      * @return the created ActivityEvent.
      */
-    @JvmStatic
-    fun createOnCreateEvent(stateData: Bundle?): Create {
-      return Create(stateData)
-    }
+    @JvmStatic fun createOnCreateEvent(stateData: Bundle?): Create = Create(stateData)
 
     /**
      * Creates an activity event for a given type.
@@ -99,8 +96,8 @@ private constructor(
      * @return The corresponding ActivityEvent.
      */
     @JvmStatic
-    fun create(type: Type): ActivityLifecycleEvent {
-      return when (type) {
+    fun create(type: Type): ActivityLifecycleEvent =
+      when (type) {
         Type.START -> START_EVENT
         Type.RESUME -> RESUME_EVENT
         Type.USER_LEAVING -> USER_LEAVING_EVENT
@@ -109,9 +106,8 @@ private constructor(
         Type.DESTROY -> DESTROY_EVENT
         else ->
           throw IllegalArgumentException(
-            "Use the createOn${type.name.lowercase().replaceFirstChar(Char::titlecase)}Event() method for this type!",
+            "Use the createOn${type.name.lowercase().replaceFirstChar(Char::titlecase)}Event() method for this type!"
           )
       }
-    }
   }
 }

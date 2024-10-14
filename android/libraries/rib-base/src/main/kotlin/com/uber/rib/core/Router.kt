@@ -44,6 +44,7 @@ protected constructor(
   @CoreFriendModuleApi
   public var tag: String? = null
     private set
+
   private var savedInstanceState: Bundle? = null
   private var isLoaded = false
 
@@ -51,8 +52,9 @@ protected constructor(
     interactor: I,
     component: InteractorBaseComponent<*>?,
   ) : this(component, interactor, RibRefWatcher.getInstance(), getMainThread())
+
   protected constructor(
-    interactor: I,
+    interactor: I
   ) : this(null, interactor, RibRefWatcher.getInstance(), getMainThread())
 
   @Suppress("UNCHECKED_CAST")
@@ -109,21 +111,13 @@ protected constructor(
       if (tag == child.tag) {
         Rib.getConfiguration()
           .handleNonFatalWarning(
-            String.format(
-              Locale.getDefault(),
-              "There is already a child router with tag: %s",
-              tag,
-            ),
+            String.format(Locale.getDefault(), "There is already a child router with tag: %s", tag),
             null,
           )
       }
     }
 
-    triggerRibActionAndEmitEvents(
-      childRouter,
-      RibActionEmitterType.ROUTER,
-      RibEventType.ATTACHED,
-    ) {
+    triggerRibActionAndEmitEvents(childRouter, RibActionEmitterType.ROUTER, RibEventType.ATTACHED) {
       children.add(childRouter)
     }
 
@@ -172,11 +166,7 @@ protected constructor(
       }
     }
 
-    triggerRibActionAndEmitEvents(
-      childRouter,
-      RibActionEmitterType.ROUTER,
-      RibEventType.DETACHED,
-    ) {
+    triggerRibActionAndEmitEvents(childRouter, RibActionEmitterType.ROUTER, RibEventType.DETACHED) {
       childRouter.dispatchDetach()
     }
 
@@ -224,10 +214,7 @@ protected constructor(
    *
    * @return Children.
    */
-  @CoreFriendModuleApi
-  public open fun getChildren(): List<Router<*>> {
-    return children
-  }
+  @CoreFriendModuleApi public open fun getChildren(): List<Router<*>> = children
 
   @CoreFriendModuleApi
   public fun saveInstanceStateInternal(outState: Bundle) {
@@ -262,13 +249,12 @@ protected constructor(
     @JvmField @VisibleForTesting public val KEY_INTERACTOR: String = "Router.interactor"
 
     @JvmStatic
-    public fun getMainThread(): Thread {
-      return try {
+    public fun getMainThread(): Thread =
+      try {
         Looper.getMainLooper().thread
       } catch (e: Exception) {
         Thread.currentThread()
       }
-    }
   }
 
   init {

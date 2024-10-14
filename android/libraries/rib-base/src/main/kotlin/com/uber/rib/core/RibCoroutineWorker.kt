@@ -44,7 +44,7 @@ public fun interface RibCoroutineWorker : RibActionEmitter {
 
 /** A manager or helper class bound to a [CoroutineScope] by using a binder like [bind]. */
 public inline fun RibCoroutineWorker(
-  crossinline onStart: suspend CoroutineScope.() -> Unit,
+  crossinline onStart: suspend CoroutineScope.() -> Unit
 ): RibCoroutineWorker {
   /*
    * 'RibCoroutineWorker' is already a functional interface; the purpose of this builder is to allow consumers
@@ -76,10 +76,8 @@ public sealed interface BindWorkerHandle : Job {
   public fun unbind(): Job
 }
 
-private class BindWorkerHandleImpl(
-  bindJob: Job,
-  private val unbindJob: Job,
-) : BindWorkerHandle, Job by bindJob {
+private class BindWorkerHandleImpl(bindJob: Job, private val unbindJob: Job) :
+  BindWorkerHandle, Job by bindJob {
   override fun unbind(): Job {
     unbindJob.cancel("Worker was manually unbound.")
     return unbindJob
@@ -193,12 +191,11 @@ public fun Worker.asRibCoroutineWorker(): RibCoroutineWorker =
  */
 @JvmOverloads
 public fun RibCoroutineWorker.asWorker(
-  coroutineContext: CoroutineContext = RibDispatchers.Default,
+  coroutineContext: CoroutineContext = RibDispatchers.Default
 ): Worker = this as? Worker ?: RibCoroutineWorkerToWorkerAdapter(this, coroutineContext)
 
-internal open class WorkerToRibCoroutineWorkerAdapter(
-  private val worker: Worker,
-) : RibCoroutineWorker {
+internal open class WorkerToRibCoroutineWorkerAdapter(private val worker: Worker) :
+  RibCoroutineWorker {
   override suspend fun onStart(scope: CoroutineScope) {
     withContext(worker.coroutineContext ?: EmptyCoroutineContext) {
       worker.onStart(scope.asWorkerScopeProvider())

@@ -30,9 +30,7 @@ import io.reactivex.functions.BiFunction
  * @param <A> type of [ActionableItem] this step returns when finished.
  */
 open class Step<T, A : ActionableItem>
-private constructor(
-  private val stepDataSingle: Single<Optional<Data<T, A>>>,
-) {
+private constructor(private val stepDataSingle: Single<Optional<Data<T, A>>>) {
 
   /**
    * Chains another step to be performed after this step completes. If the previous step results in
@@ -48,9 +46,9 @@ private constructor(
   @OptIn(WorkflowFriendModuleApi::class)
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
   public open fun <T2, A2 : ActionableItem> onStep(
-    func: BiFunction<T, A, Step<T2, A2>>,
-  ): Step<T2, A2> {
-    return Step(
+    func: BiFunction<T, A, Step<T2, A2>>
+  ): Step<T2, A2> =
+    Step(
       asObservable()
         .flatMap { data: Optional<Data<T, A>> ->
           if (data.isPresent) {
@@ -59,14 +57,12 @@ private constructor(
             Observable.just(Optional.absent())
           }
         }
-        .singleOrError(),
+        .singleOrError()
     )
-  }
 
   @OptIn(WorkflowFriendModuleApi::class)
-  internal open fun asResultObservable(): Observable<Optional<T>> {
-    return asObservable().map { data -> Optional.fromNullable(data.orNull()?.getValue()) }
-  }
+  internal open fun asResultObservable(): Observable<Optional<T>> =
+    asObservable().map { data -> Optional.fromNullable(data.orNull()?.getValue()) }
 
   @WorkflowFriendModuleApi
   public open fun asObservable(): Observable<Optional<Data<T, A>>> {
@@ -111,9 +107,8 @@ private constructor(
        * @return a new [Step.Data] instance. </A>
        */
       @JvmStatic
-      public fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> {
-        return Data(NoValueHolder.INSTANCE, actionableItem)
-      }
+      public fun <A : ActionableItem> toActionableItem(actionableItem: A): Data<NoValue, A> =
+        Data(NoValueHolder.INSTANCE, actionableItem)
     }
   }
 
@@ -135,9 +130,8 @@ private constructor(
      * @return a new [Step].
      */
     @JvmStatic
-    fun <T, A : ActionableItem> from(stepDataSingle: Single<Data<T, A>>): Step<T, A> {
-      return Step(stepDataSingle.map { Optional.of(it) })
-    }
+    fun <T, A : ActionableItem> from(stepDataSingle: Single<Data<T, A>>): Step<T, A> =
+      Step(stepDataSingle.map { Optional.of(it) })
 
     /**
      * Create a new step with a single that can emit an absent result.
@@ -152,7 +146,7 @@ private constructor(
      */
     @JvmStatic
     fun <T, A : ActionableItem> fromOptional(
-      stepDataSingle: Single<Optional<Data<T, A>>>,
+      stepDataSingle: Single<Optional<Data<T, A>>>
     ): Step<T, A> = Step(stepDataSingle)
   }
 }

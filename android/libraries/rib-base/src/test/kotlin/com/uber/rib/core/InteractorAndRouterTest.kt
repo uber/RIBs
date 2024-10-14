@@ -138,9 +138,8 @@ class InteractorAndRouterTest {
     val component: InteractorComponent<TestPresenter, TestInteractorA> =
       object : InteractorComponent<TestPresenter, TestInteractorA> {
         override fun inject(interactor: TestInteractorA) {}
-        override fun presenter(): TestPresenter {
-          return TestPresenter()
-        }
+
+        override fun presenter(): TestPresenter = TestPresenter()
       }
     val router = TestRouterA(parentInteractor, component)
     val parentObserver = RecordingObserver<InteractorEvent>()
@@ -151,9 +150,8 @@ class InteractorAndRouterTest {
     val childComponent: InteractorComponent<TestPresenter, TestChildInteractor> =
       object : InteractorComponent<TestPresenter, TestChildInteractor> {
         override fun inject(interactor: TestChildInteractor) {}
-        override fun presenter(): TestPresenter {
-          return TestPresenter()
-        }
+
+        override fun presenter(): TestPresenter = TestPresenter()
       }
     val childRouter = TestChildRouter(childA, childComponent)
     val childObserverA = RecordingObserver<InteractorEvent>()
@@ -178,9 +176,8 @@ class InteractorAndRouterTest {
     val component: InteractorComponent<TestPresenter, TestInteractorB> =
       object : InteractorComponent<TestPresenter, TestInteractorB> {
         override fun inject(interactor: TestInteractorB) {}
-        override fun presenter(): TestPresenter {
-          return TestPresenter()
-        }
+
+        override fun presenter(): TestPresenter = TestPresenter()
       }
     val router = TestRouterB(component, rootInteractor, ribRefWatcher)
     router.dispatchAttach(null)
@@ -201,9 +198,8 @@ class InteractorAndRouterTest {
     val component: InteractorComponent<TestPresenter, TestInteractorB> =
       object : InteractorComponent<TestPresenter, TestInteractorB> {
         override fun inject(interactor: TestInteractorB) {}
-        override fun presenter(): TestPresenter {
-          return TestPresenter()
-        }
+
+        override fun presenter(): TestPresenter = TestPresenter()
       }
     val rootRouter = TestRouterB(component, TestInteractorB(), ribRefWatcher)
     val child = addTwoNestedChildInteractors()
@@ -220,9 +216,8 @@ class InteractorAndRouterTest {
     val component: InteractorComponent<TestPresenter, TestInteractorB> =
       object : InteractorComponent<TestPresenter, TestInteractorB> {
         override fun inject(interactor: TestInteractorB) {}
-        override fun presenter(): TestPresenter {
-          return TestPresenter()
-        }
+
+        override fun presenter(): TestPresenter = TestPresenter()
       }
     router.dispatchAttach(null)
     val childRouter1 = TestRouterB(component, TestInteractorB(), ribRefWatcher)
@@ -235,6 +230,7 @@ class InteractorAndRouterTest {
   private class TestInteractor(private val mChildInteractor: Interactor<*, *>) :
     Interactor<TestPresenter, Router<TestInteractor>>() {
     val mockedWorker: Worker = mock()
+
     override fun didBecomeActive(savedInstanceState: Bundle?) {
       super.didBecomeActive(savedInstanceState)
       val router: Router<*> = FakeRouter(mChildInteractor, getInstance(), Thread.currentThread())
@@ -264,6 +260,7 @@ class InteractorAndRouterTest {
     component: InteractorComponent<TestPresenter, TestInteractorA>,
   ) : Router<TestInteractorA>(component, interactor, getInstance(), Thread.currentThread()) {
     private var savedInstanceState: Bundle? = null
+
     override fun dispatchAttach(savedInstanceState: Bundle?, tag: String) {
       super.dispatchAttach(savedInstanceState, tag)
       this.savedInstanceState = savedInstanceState
@@ -275,7 +272,9 @@ class InteractorAndRouterTest {
   }
 
   private class TestInteractorA : Interactor<TestPresenter, Router<TestInteractorA>>()
+
   private class TestInteractorB : Interactor<TestPresenter, Router<TestInteractorB>>()
+
   private class TestRouterB : Router<TestInteractorB> {
     constructor(
       interactor: TestInteractorB,
@@ -294,6 +293,7 @@ class InteractorAndRouterTest {
   }
 
   private class TestChildInteractor : Interactor<TestPresenter, Router<TestChildInteractor>>()
+
   private class TestChildRouter(
     interactor: TestChildInteractor,
     component: InteractorComponent<TestPresenter, TestChildInteractor>,

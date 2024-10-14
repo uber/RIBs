@@ -16,22 +16,16 @@
 package com.uber.rib.core
 
 public class FakeComponent<P : Presenter, T : Interactor<P, *>>
-private constructor(
-  private val presenter: P,
-) : InteractorComponent<P, T> {
+private constructor(private val presenter: P) : InteractorComponent<P, T> {
 
   override fun inject(interactor: T) {}
 
-  override fun presenter(): P {
-    return presenter
-  }
+  override fun presenter(): P = presenter
 
   public companion object {
     @JvmStatic
     public fun <T : Interactor<FakePresenter, *>> withFakePresenterFor(
-      interactorClass: Class<T>,
-    ): FakeComponent<FakePresenter, T> {
-      return FakeComponent(FakePresenter())
-    }
+      interactorClass: Class<T>
+    ): FakeComponent<FakePresenter, T> = FakeComponent(FakePresenter())
   }
 }

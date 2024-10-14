@@ -51,8 +51,8 @@ public class LogcatRequestProcessor : RequestProcessor {
   private var result: Any? = null
   private var error: String? = null
 
-  override fun <T> execute(request: Request<T>): ListenableFuture<T> {
-    return service.submit(
+  override fun <T> execute(request: Request<T>): ListenableFuture<T> =
+    service.submit(
       Callable<T> {
         val sequence: Int = counter.getAndIncrement() % MAX_SEQUENCE
 
@@ -97,9 +97,8 @@ public class LogcatRequestProcessor : RequestProcessor {
           error("Command failed: ${response.errorDescription}")
         }
         result as T
-      },
+      }
     )
-  }
 
   private inner class LogCatOutputReceiver<T>(
     private val device: IDevice,
@@ -113,9 +112,7 @@ public class LogcatRequestProcessor : RequestProcessor {
       setTrimLine(false)
     }
 
-    override fun isCancelled(): Boolean {
-      return false
-    }
+    override fun isCancelled(): Boolean = false
 
     @SuppressWarnings("TooGenericExceptionCaught")
     override fun processNewLines(lines: Array<String>) {
@@ -147,8 +144,6 @@ public class LogcatRequestProcessor : RequestProcessor {
       }
     }
 
-    override fun isCancelled(): Boolean {
-      return false
-    }
+    override fun isCancelled(): Boolean = false
   }
 }

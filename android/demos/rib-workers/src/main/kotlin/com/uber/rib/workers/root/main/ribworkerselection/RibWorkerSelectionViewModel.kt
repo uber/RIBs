@@ -15,6 +15,4 @@
  */
 package com.uber.rib.workers.root.main.ribworkerselection
 
-data class RibWorkerSelectionViewModel(
-  val workerInfo: String = "",
-)
+data class RibWorkerSelectionViewModel(val workerInfo: String = "")

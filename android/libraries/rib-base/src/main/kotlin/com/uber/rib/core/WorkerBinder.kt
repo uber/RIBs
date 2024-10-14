@@ -63,14 +63,8 @@ public object WorkerBinder {
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bind(
-    interactor: Interactor<*, *>,
-    worker: Worker,
-  ): WorkerUnbinder =
-    worker.bind(
-      interactor.lifecycleFlow,
-      Interactor.lifecycleRange,
-    )
+  public fun bind(interactor: Interactor<*, *>, worker: Worker): WorkerUnbinder =
+    worker.bind(interactor.lifecycleFlow, Interactor.lifecycleRange)
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an interactor's lifecycle)
@@ -81,10 +75,7 @@ public object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  public fun bind(
-    interactor: Interactor<*, *>,
-    workers: List<Worker>,
-  ) {
+  public fun bind(interactor: Interactor<*, *>, workers: List<Worker>) {
     bind(interactor, workers as Iterable<Worker>)
   }
 
@@ -97,10 +88,7 @@ public object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  public fun bind(
-    interactor: Interactor<*, *>,
-    workers: Iterable<Worker>,
-  ) {
+  public fun bind(interactor: Interactor<*, *>, workers: Iterable<Worker>) {
     for (interactorWorker in workers) {
       bind(interactor, interactorWorker)
     }
@@ -115,14 +103,8 @@ public object WorkerBinder {
    * @return [WorkerUnbinder] to unbind [Worker]'s lifecycle.
    */
   @JvmStatic
-  public fun bind(
-    presenter: Presenter,
-    worker: Worker,
-  ): WorkerUnbinder =
-    worker.bind(
-      presenter.lifecycleFlow,
-      Presenter.lifecycleRange,
-    )
+  public fun bind(presenter: Presenter, worker: Worker): WorkerUnbinder =
+    worker.bind(presenter.lifecycleFlow, Presenter.lifecycleRange)
 
   /**
    * Bind a list of workers (ie. a manager or any other class that needs an presenter's lifecycle)
@@ -133,10 +115,7 @@ public object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  public fun bind(
-    presenter: Presenter,
-    workers: List<Worker>,
-  ) {
+  public fun bind(presenter: Presenter, workers: List<Worker>) {
     bind(presenter, workers as Iterable<Worker>)
   }
 
@@ -149,10 +128,7 @@ public object WorkerBinder {
    * @param workers A list of classes that want to be informed when to start and stop doing work.
    */
   @JvmStatic
-  public fun bind(
-    presenter: Presenter,
-    workers: Iterable<Worker>,
-  ) {
+  public fun bind(presenter: Presenter, workers: Iterable<Worker>) {
     for (worker in workers) {
       bind(presenter, worker)
     }
@@ -181,7 +157,7 @@ public object WorkerBinder {
 
   @JvmStatic
   public fun mapInteractorLifecycleToWorker(
-    interactorEventObservable: Observable<InteractorEvent>,
+    interactorEventObservable: Observable<InteractorEvent>
   ): Observable<WorkerEvent> {
     return interactorEventObservable.map { interactorEvent: InteractorEvent ->
       when (interactorEvent) {
@@ -193,7 +169,7 @@ public object WorkerBinder {
 
   @JvmStatic
   public fun mapPresenterLifecycleToWorker(
-    presenterEventObservable: Observable<PresenterEvent>,
+    presenterEventObservable: Observable<PresenterEvent>
   ): Observable<WorkerEvent> {
     return presenterEventObservable.map { presenterEvent: PresenterEvent ->
       when (presenterEvent) {
@@ -213,12 +189,9 @@ public object WorkerBinder {
   @JvmStatic
   @Deprecated(
     """this method uses {@code LifecycleScopeProvider} for purposes other than
-        AutoDispose. Usage is strongly discouraged as this method may be removed in the future.""",
+        AutoDispose. Usage is strongly discouraged as this method may be removed in the future."""
   )
-  public fun bindTo(
-    lifecycle: LifecycleScopeProvider<InteractorEvent>,
-    worker: Worker,
-  ) {
+  public fun bindTo(lifecycle: LifecycleScopeProvider<InteractorEvent>, worker: Worker) {
     bind(mapInteractorLifecycleToWorker(lifecycle.lifecycle()), worker)
   }
 
@@ -238,10 +211,7 @@ public object WorkerBinder {
     """,
     replaceWith = ReplaceWith("bind(workerLifecycle, worker)"),
   )
-  public fun bindToWorkerLifecycle(
-    workerLifecycle: Observable<WorkerEvent>,
-    worker: Worker,
-  ) {
+  public fun bindToWorkerLifecycle(workerLifecycle: Observable<WorkerEvent>, worker: Worker) {
     workerLifecycle.subscribe { workerEvent: WorkerEvent ->
       when (workerEvent) {
         WorkerEvent.START -> worker.onStart(WorkerScopeProvider(workerLifecycle.hide()))
@@ -268,11 +238,7 @@ private fun <T : Comparable<T>> Worker.bind(
   lifecycleRange: ClosedRange<T>,
 ): WorkerUnbinder {
   val dispatcherAtBinder = RibCoroutinesConfig.deprecatedWorkerDispatcher
-  val coroutineContext =
-    getJobCoroutineContext(
-      dispatcherAtBinder,
-      worker = this,
-    )
+  val coroutineContext = getJobCoroutineContext(dispatcherAtBinder, worker = this)
   val coroutineStart =
     if (coroutineContext == RibDispatchers.Unconfined) {
       CoroutineStart.UNDISPATCHED
@@ -293,10 +259,7 @@ private fun <T : Comparable<T>> Worker.bind(
    */
   @OptIn(DelicateCoroutinesApi::class)
   val job =
-    GlobalScope.launch(
-      coroutineContext,
-      start = coroutineStart,
-    ) {
+    GlobalScope.launch(coroutineContext, start = coroutineStart) {
       lifecycle
         .takeWhile { it < lifecycleRange.endInclusive }
         .onCompletion {

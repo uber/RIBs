@@ -17,5 +17,5 @@ package com.uber.rib.core
 
 /** Enum consisting of event types that occur when [RouterNavigator] is used for transition. */
 public enum class RouterNavigatorEventType {
-  WILL_ATTACH_TO_HOST,
+  WILL_ATTACH_TO_HOST
 }

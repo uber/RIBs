@@ -32,8 +32,7 @@ import kotlin.reflect.KMutableProperty0
  * To properly support concurrency, the backing mutable property should be [Volatile].
  */
 @CoreFriendModuleApi
-public inline fun <T : Any> KMutableProperty0<T?>.setIfNullAndGet(
-  initializer: () -> T,
-): T = get() ?: synchronized(Lock) { get() ?: initializer().also { set(it) } }
+public inline fun <T : Any> KMutableProperty0<T?>.setIfNullAndGet(initializer: () -> T): T =
+  get() ?: synchronized(Lock) { get() ?: initializer().also { set(it) } }
 
 @CoreFriendModuleApi public object Lock

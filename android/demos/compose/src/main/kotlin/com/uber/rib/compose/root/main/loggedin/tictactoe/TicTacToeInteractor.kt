@@ -76,12 +76,7 @@ class TicTacToeInteractor(
               }
 
             stateStream.dispatch(
-              stateStream
-                .current()
-                .copy(
-                  board = board,
-                  currentPlayer = newPlayerName,
-                ),
+              stateStream.current().copy(board = board, currentPlayer = newPlayerName)
             )
           }
           TicTacToeEvent.XpButtonClick -> TODO("Go somewhere")

@@ -46,13 +46,12 @@ internal class RibEventPayload(
   val eventName: String
     get() = eventType.toString()
 
-  fun toFlipperPayload(): FlipperObject {
-    return FlipperObject.Builder()
+  fun toFlipperPayload(): FlipperObject =
+    FlipperObject.Builder()
       .put(EVENT_PARAMETER_SESSION_ID, sessionId)
       .put(EVENT_PARAMETER_ROUTER, routerInfo.toFlipperPayload())
       .put(EVENT_PARAMETER_PARENT, parentRouterInfo.toFlipperPayload())
       .build()
-  }
 
   internal class RouterInfo(
     val id: String,
@@ -86,14 +85,13 @@ internal class RibEventPayload(
       }
     }
 
-    fun toFlipperPayload(): FlipperObject {
-      return FlipperObject.Builder()
+    fun toFlipperPayload(): FlipperObject =
+      FlipperObject.Builder()
         .put(EVENT_PARAMETER_ID, id)
         .put(EVENT_PARAMETER_NAME, name)
         .put(EVENT_PARAMETER_ROUTER_CLASSNAME, className)
         .put(EVENT_PARAMETER_HAS_VIEW, hasView)
         .put(EVENT_PARAMETER_HOST_CLASSNAME, activityClassName)
         .build()
-    }
   }
 }

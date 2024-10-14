@@ -55,7 +55,7 @@ class OffGameInteractor(
           currentState.copy(
             playerOneWins = it[currentState.playerOne] ?: 0,
             playerTwoWins = it[currentState.playerTwo] ?: 0,
-          ),
+          )
         )
       }
       .launchIn(coroutineScope)

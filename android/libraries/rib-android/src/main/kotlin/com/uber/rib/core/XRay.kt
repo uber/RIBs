@@ -28,6 +28,7 @@ import android.view.View
 class XRay private constructor() {
   private var isEnabled = false
   private var textPaint: Paint? = null
+
   private fun writeOnBitmap(bitmap: Bitmap, text: String) {
     val canvas = Canvas(bitmap)
     val textPaint = getTextPaint()
@@ -62,10 +63,7 @@ class XRay private constructor() {
     }
 
     /** @return `true` if XRay is enabled, `false` otherwise. */
-    @JvmStatic
-    fun isEnabled(): Boolean {
-      return INSTANCE.isEnabled
-    }
+    @JvmStatic fun isEnabled(): Boolean = INSTANCE.isEnabled
 
     /**
      * Puts [ViewBuilder]s riblet name in the background of the [View]
@@ -110,8 +108,7 @@ class XRay private constructor() {
       return bitmap
     }
 
-    private fun getRibletName(viewRouter: ViewRouter<*, *>): String {
-      return viewRouter.javaClass.simpleName.replace("Router", "")
-    }
+    private fun getRibletName(viewRouter: ViewRouter<*, *>): String =
+      viewRouter.javaClass.simpleName.replace("Router", "")
   }
 }

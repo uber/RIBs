@@ -165,6 +165,7 @@ internal class RibScopesTest {
     var exceptions = mutableListOf<Throwable>()
 
     override val key: CoroutineContext.Key<*> = CoroutineExceptionHandler
+
     override fun handleException(context: CoroutineContext, exception: Throwable) {
       exceptions.add(exception)
     }

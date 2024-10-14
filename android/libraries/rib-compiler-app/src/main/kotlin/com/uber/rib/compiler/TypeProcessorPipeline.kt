@@ -21,9 +21,8 @@ import javax.lang.model.element.Element
 import javax.lang.model.element.TypeElement
 
 /** Base ProcessorPipeline that parses the annotated elements as type element. */
-public abstract class TypeProcessorPipeline(
-  processContext: ProcessContext,
-) : ProcessorPipeline(processContext) {
+public abstract class TypeProcessorPipeline(processContext: ProcessContext) :
+  ProcessorPipeline(processContext) {
   /**
    * Process the annotations.
    *

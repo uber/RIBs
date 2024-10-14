@@ -30,18 +30,11 @@ abstract class InteractorProcessorTestBase {
     ribProcessor =
       object : RibProcessor() {
         override fun getProcessorPipelines(
-          processContext: ProcessContext,
-        ): List<ProcessorPipeline> {
-          return listOf(
-            RibInteractorProcessorPipeline(processContext, null),
-          )
-        }
+          processContext: ProcessContext
+        ): List<ProcessorPipeline> = listOf(RibInteractorProcessorPipeline(processContext, null))
 
-        override fun getSupportedAnnotationTypes(): Set<String> {
-          return ImmutableSet.of(
-            RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName,
-          )
-        }
+        override fun getSupportedAnnotationTypes(): Set<String> =
+          ImmutableSet.of(RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName)
       }
     sources = ArrayList()
   }

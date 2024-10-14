@@ -41,23 +41,17 @@ interface RootScope {
 
     abstract fun presenter(): EmptyPresenter
 
-    fun view(parentViewGroup: ViewGroup): RootView {
-      return RootView(parentViewGroup.context)
-    }
+    fun view(parentViewGroup: ViewGroup): RootView = RootView(parentViewGroup.context)
 
     @Expose
-    fun analyticsClient(activity: RibActivity): AnalyticsClient {
-      return AnalyticsClientImpl(activity.application)
-    }
+    fun analyticsClient(activity: RibActivity): AnalyticsClient =
+      AnalyticsClientImpl(activity.application)
 
     @Expose
-    fun experimentClient(activity: RibActivity): ExperimentClient {
-      return ExperimentClientImpl(activity.application)
-    }
+    fun experimentClient(activity: RibActivity): ExperimentClient =
+      ExperimentClientImpl(activity.application)
 
     @Expose
-    fun loggerClient(activity: RibActivity): LoggerClient {
-      return LoggerClientImpl(activity.application)
-    }
+    fun loggerClient(activity: RibActivity): LoggerClient = LoggerClientImpl(activity.application)
   }
 }
