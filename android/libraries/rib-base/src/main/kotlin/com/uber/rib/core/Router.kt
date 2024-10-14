@@ -212,11 +212,11 @@ protected constructor(
   public open fun dispatchDetach() {
     checkForMainThread()
 
-    interactorGeneric.dispatchDetach()
     willDetach()
     for (child in children) {
       detachChild(child)
     }
+    interactorGeneric.dispatchDetach()
   }
 
   /**
