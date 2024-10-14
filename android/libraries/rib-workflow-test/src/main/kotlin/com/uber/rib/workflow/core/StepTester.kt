@@ -32,10 +32,8 @@ public object StepTester {
    */
   @JvmStatic
   public fun <T, A : ActionableItem> exposeObservable(
-    step: Step<T, A>,
-  ): Observable<Optional<Step.Data<T, A>>> {
-    return step.asObservable()
-  }
+    step: Step<T, A>
+  ): Observable<Optional<Step.Data<T, A>>> = step.asObservable()
 
   /**
    * Exposes the [com.uber.rib.workflow.core.Step.Data] of a [Step]
@@ -46,9 +44,7 @@ public object StepTester {
    * @return the data of the step </A></T>
    */
   @JvmStatic
-  public fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? {
-    return step.getValue()
-  }
+  public fun <T, A : ActionableItem> exposeStepData(step: Step.Data<T, A>): T? = step.getValue()
 
   /**
    * Asserts that no [Step] has been emitted from the [TestObserver]
@@ -59,7 +55,7 @@ public object StepTester {
    */
   @JvmStatic
   public fun <T, A : ActionableItem> assertStepNotYetEmitted(
-    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
   ) {
     testSubscriber.run {
       assertNoValues()
@@ -77,7 +73,7 @@ public object StepTester {
    */
   @JvmStatic
   public fun <T, A : ActionableItem> assertStepEmitted(
-    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
   ) {
     testSubscriber.assertValueCount(1)
     val stepData: Optional<Step.Data<T, A>> = testSubscriber.values()[0]

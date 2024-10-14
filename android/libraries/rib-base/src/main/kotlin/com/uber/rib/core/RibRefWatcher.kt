@@ -133,6 +133,7 @@ public open class RibRefWatcher {
     @JvmStatic
     public var isLeakCanaryEnabled: Boolean = false
       private set
+
     private var uLeakEnabled = false
     private var breadcrumbsEnabled = false
   }

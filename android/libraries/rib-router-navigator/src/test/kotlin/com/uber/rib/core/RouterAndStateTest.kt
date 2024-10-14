@@ -159,12 +159,7 @@ class RouterAndStateTest {
       destroyedRouters.add(it.arguments[0] as Router<*>)
     }
 
-    val routerAndState =
-      RouterAndState(
-        state,
-        attachTransition,
-        detachCallback,
-      )
+    val routerAndState = RouterAndState(state, attachTransition, detachCallback)
 
     val threadsCount = 10
     val latch = CountDownLatch(threadsCount)

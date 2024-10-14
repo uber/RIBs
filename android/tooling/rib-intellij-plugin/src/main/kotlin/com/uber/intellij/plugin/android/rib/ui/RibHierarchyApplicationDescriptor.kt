@@ -36,7 +36,5 @@ public class RibHierarchyApplicationDescriptor(
     text.ending.addText(ribApplication.name, getDefaultTextAttributes())
   }
 
-  override fun getIcon(element: PsiElement): Icon? {
-    return AllIcons.Nodes.Parameter
-  }
+  override fun getIcon(element: PsiElement): Icon? = AllIcons.Nodes.Parameter
 }

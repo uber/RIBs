@@ -64,9 +64,7 @@ abstract class ViewProvider {
    *
    * @return TRUE if the provider handled the back press.
    */
-  open fun onBackPress(): Boolean {
-    return false
-  }
+  open fun onBackPress(): Boolean = false
 
   /** Notifies the view provider that view is at the top of the stack and visible. */
   @CallSuper

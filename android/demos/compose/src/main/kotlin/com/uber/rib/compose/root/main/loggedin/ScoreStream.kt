@@ -23,18 +23,12 @@ import kotlinx.coroutines.withContext
 
 class ScoreStream(playerOne: String, playerTwo: String) {
 
-  private val _scoresFlow =
-    MutableStateFlow(
-      mapOf(
-        playerOne to 0,
-        playerTwo to 0,
-      ),
-    )
-  private val scoresFlow = _scoresFlow.asStateFlow()
+  private val mutableScoresFlow = MutableStateFlow(mapOf(playerOne to 0, playerTwo to 0))
+  private val scoresFlow = mutableScoresFlow.asStateFlow()
 
   suspend fun addVictory(userName: String) =
     withContext(RibDispatchers.Default) {
-      _scoresFlow.update { scores ->
+      mutableScoresFlow.update { scores ->
         scores
           .toMutableMap()
           .apply {

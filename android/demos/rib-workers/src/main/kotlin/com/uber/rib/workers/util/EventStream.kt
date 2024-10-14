@@ -19,10 +19,10 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 
 class EventStream<T> {
-  private val _sharedFlow = MutableSharedFlow<T>(extraBufferCapacity = 1)
-  private val sharedFlow = _sharedFlow.asSharedFlow()
+  private val mutableEventFlow = MutableSharedFlow<T>(extraBufferCapacity = 1)
+  private val eventFlow = mutableEventFlow.asSharedFlow()
 
-  fun notify(event: T) = _sharedFlow.tryEmit(event)
+  fun notify(event: T) = mutableEventFlow.tryEmit(event)
 
-  fun observe() = sharedFlow
+  fun observe() = eventFlow
 }

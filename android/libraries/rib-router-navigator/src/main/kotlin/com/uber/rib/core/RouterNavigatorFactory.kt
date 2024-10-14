@@ -33,10 +33,9 @@ public class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
    * @return A new [RouterNavigator]
    */
   public open fun <StateT : RouterNavigatorState> create(
-    hostRouter: Router<*>,
-  ): RouterNavigator<StateT> {
-    return creationStrategy?.create(hostRouter) ?: StackRouterNavigator(hostRouter)
-  }
+    hostRouter: Router<*>
+  ): RouterNavigator<StateT> =
+    creationStrategy?.create(hostRouter) ?: StackRouterNavigator(hostRouter)
 
   /** Strategy to employ when using this factory to generate new [RouterNavigator]s. */
   public interface Strategy {
@@ -48,7 +47,7 @@ public class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
      * @return A new [RouterNavigator]
      */
     public fun <StateT : RouterNavigatorState> create(
-      hostRouter: Router<*>,
+      hostRouter: Router<*>
     ): RouterNavigator<StateT>
   }
 }

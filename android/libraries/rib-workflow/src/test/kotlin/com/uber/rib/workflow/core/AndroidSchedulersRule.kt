@@ -30,9 +30,7 @@ import org.junit.runner.Description
  */
 class AndroidSchedulersRule
 @JvmOverloads
-constructor(
-  private val restoreHandlers: Boolean = false,
-) : TestWatcher() {
+constructor(private val restoreHandlers: Boolean = false) : TestWatcher() {
 
   private val delegatingMainThreadScheduler =
     DelegatingScheduler.forType(DelegatingScheduler.SchedulerType.MAIN_THREAD)

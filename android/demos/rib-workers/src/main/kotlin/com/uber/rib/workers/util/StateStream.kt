@@ -20,10 +20,10 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class StateStream<T : Any>(default: T) {
-  private val _stateFlow = MutableStateFlow(default)
-  private val stateFlow = _stateFlow.asStateFlow()
+  private val mutableStateFlow = MutableStateFlow(default)
+  private val stateFlow = mutableStateFlow.asStateFlow()
 
-  fun dispatch(viewModel: T) = _stateFlow.update { viewModel }
+  fun dispatch(viewModel: T) = mutableStateFlow.update { viewModel }
 
   fun observe() = stateFlow
 

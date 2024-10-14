@@ -55,10 +55,7 @@ fun LoggedOutView(viewModel: State<LoggedOutViewModel>, eventStream: EventStream
     )
     Button(
       colors =
-        ButtonDefaults.buttonColors(
-          backgroundColor = Color.Black,
-          contentColor = Color.White,
-        ),
+        ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
       onClick = { eventStream.notify(LoggedOutEvent.LogInClick) },
       modifier = Modifier.fillMaxWidth(),
     ) {

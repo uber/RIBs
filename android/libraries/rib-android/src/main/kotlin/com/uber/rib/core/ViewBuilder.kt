@@ -28,7 +28,7 @@ import android.view.ViewGroup
  * @param <DependencyT> dependency required to create this router.
  */
 abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
-  dependency: DependencyT,
+  dependency: DependencyT
 ) : Builder<RouterT, DependencyT>(dependency) {
   /**
    * Utility method to create the view for this router.
@@ -59,7 +59,5 @@ abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
    *   overridden.
    * @return the possibly themed context.
    */
-  protected open fun onThemeContext(parentContext: Context): Context {
-    return parentContext
-  }
+  protected open fun onThemeContext(parentContext: Context): Context = parentContext
 }

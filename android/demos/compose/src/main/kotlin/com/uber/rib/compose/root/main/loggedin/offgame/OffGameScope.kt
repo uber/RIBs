@@ -35,8 +35,8 @@ interface OffGameScope {
     fun presenter(
       stateStream: StateStream<OffGameViewModel>,
       eventStream: EventStream<OffGameEvent>,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    ): ComposePresenter =
+      object : ComposePresenter() {
         override val composable =
           @Composable {
             OffGameView(
@@ -45,16 +45,10 @@ interface OffGameScope {
             )
           }
       }
-    }
 
     fun eventStream() = EventStream<OffGameEvent>()
 
     fun stateStream(authInfo: AuthInfo) =
-      StateStream(
-        OffGameViewModel(
-          playerOne = authInfo.playerOne,
-          playerTwo = authInfo.playerTwo,
-        ),
-      )
+      StateStream(OffGameViewModel(playerOne = authInfo.playerOne, playerTwo = authInfo.playerTwo))
   }
 }

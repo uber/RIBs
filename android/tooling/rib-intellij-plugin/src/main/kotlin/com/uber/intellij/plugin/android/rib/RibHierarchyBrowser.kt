@@ -108,21 +108,14 @@ public class RibHierarchyBrowser(
 
   private var refreshComplete: Boolean = false
 
-  private fun isUpdating(): Boolean {
-    return status == Status.INITIALIZING || status == Status.REFRESHING
-  }
+  private fun isUpdating(): Boolean = status == Status.INITIALIZING || status == Status.REFRESHING
 
-  override fun isApplicableElement(element: PsiElement): Boolean {
-    return element is PsiClass
-  }
+  override fun isApplicableElement(element: PsiElement): Boolean = element is PsiClass
 
-  override fun getActionPlace(): String {
-    return ActionPlaces.METHOD_HIERARCHY_VIEW_TOOLBAR
-  }
+  override fun getActionPlace(): String = ActionPlaces.METHOD_HIERARCHY_VIEW_TOOLBAR
 
-  override fun getComparator(): Comparator<NodeDescriptor<*>> {
-    return JavaHierarchyUtil.getComparator(myProject)
-  }
+  override fun getComparator(): Comparator<NodeDescriptor<*>> =
+    JavaHierarchyUtil.getComparator(myProject)
 
   override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
     if (isRootElement(descriptor.psiElement)) {
@@ -131,17 +124,12 @@ public class RibHierarchyBrowser(
     return descriptor.psiElement
   }
 
-  override fun getPrevOccurenceActionNameImpl(): String {
-    return LABEL_GO_PREVIOUS_RIB
-  }
+  override fun getPrevOccurenceActionNameImpl(): String = LABEL_GO_PREVIOUS_RIB
 
-  override fun createLegendPanel(): JPanel? {
-    return null
-  }
+  override fun createLegendPanel(): JPanel? = null
 
-  override fun getNextOccurenceActionNameImpl(): String {
-    return LABEL_GO_NEXT_RIB
-  }
+  override fun getNextOccurenceActionNameImpl(): String = LABEL_GO_NEXT_RIB
+
   override fun createTrees(trees: MutableMap<in String, in JTree>) {
     trees[TYPE_HIERARCHY_TYPE] = createTree(true)
   }
@@ -286,7 +274,7 @@ public class RibHierarchyBrowser(
 
     override fun actionPerformed(e: AnActionEvent) {
       BrowserUtil.open(
-        "https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android",
+        "https://github.com/uber/RIBs/wiki/Android-Tooling#ribs-intellij-plugin-for-android"
       )
     }
 

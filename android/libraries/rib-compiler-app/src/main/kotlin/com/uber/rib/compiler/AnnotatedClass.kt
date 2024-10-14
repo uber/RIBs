@@ -20,7 +20,7 @@ import javax.lang.model.element.TypeElement
 /** Information to a class. */
 public abstract class AnnotatedClass(
   /** @return the type element that this wraps. */
-  public open val typeElement: TypeElement,
+  public open val typeElement: TypeElement
 ) {
 
   /**

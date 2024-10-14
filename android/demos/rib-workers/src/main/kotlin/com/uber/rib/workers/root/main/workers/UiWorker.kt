@@ -31,11 +31,6 @@ class UiWorker(private val activityContext: Application) : Worker {
   override val coroutineContext: CoroutineContext = RibDispatchers.Main
 
   override fun onStart(lifecycle: WorkerScopeProvider) {
-    Toast.makeText(
-        activityContext,
-        "Ui Worker (onStart) call",
-        Toast.LENGTH_LONG,
-      )
-      .show()
+    Toast.makeText(activityContext, "Ui Worker (onStart) call", Toast.LENGTH_LONG).show()
   }
 }

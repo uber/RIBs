@@ -46,9 +46,7 @@ fun LoggedInView(
   ) {
     Text("Logged In! (Compose RIB)")
     Spacer(Modifier.height(16.dp))
-    Box(
-      modifier = Modifier.fillMaxWidth().weight(1.0f).padding(4.dp).background(Color.LightGray),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().weight(1.0f).padding(4.dp).background(Color.LightGray)) {
       childContent.fullScreenSlot.value.invoke()
     }
     CustomButton(

@@ -85,10 +85,7 @@ fun RibWorkerSelectionView(
       "RibCoroutineWorker <> Worker",
     )
 
-    Text(
-      viewModel.value.workerInfo,
-      modifier = Modifier.fillMaxSize(),
-    )
+    Text(viewModel.value.workerInfo, modifier = Modifier.fillMaxSize())
   }
 }
 
@@ -99,11 +96,7 @@ fun AddButton(
   buttonText: String,
 ) {
   Button(
-    colors =
-      ButtonDefaults.buttonColors(
-        backgroundColor = Color.Black,
-        contentColor = Color.White,
-      ),
+    colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black, contentColor = Color.White),
     onClick = { eventStream.notify(ribWorkerBindTypeClickType) },
     modifier = Modifier.fillMaxWidth(),
   ) {

@@ -33,13 +33,11 @@ public open class RibTestProcessor : RibProcessor() {
     super.init(processingEnv)
   }
 
-  override fun getSupportedAnnotationTypes(): Set<String> {
-    return ImmutableSet.of(RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName)
-  }
+  override fun getSupportedAnnotationTypes(): Set<String> =
+    ImmutableSet.of(RibInteractorProcessorPipeline.SUPPORT_ANNOTATION_TYPE.canonicalName)
 
-  override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> {
-    return ImmutableList.of<ProcessorPipeline>(
-      RibInteractorProcessorPipeline(processContext, interactorTestGenerator),
+  override fun getProcessorPipelines(processContext: ProcessContext): List<ProcessorPipeline> =
+    ImmutableList.of<ProcessorPipeline>(
+      RibInteractorProcessorPipeline(processContext, interactorTestGenerator)
     )
-  }
 }

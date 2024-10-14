@@ -23,11 +23,8 @@ import android.widget.TextView
 
 class RootView
 @JvmOverloads
-constructor(
-  context: Context,
-  attrs: AttributeSet? = null,
-  defStyle: Int = 0,
-) : FrameLayout(context, attrs, defStyle) {
+constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) :
+  FrameLayout(context, attrs, defStyle) {
 
   init {
     setBackgroundColor(Color.RED)
@@ -35,7 +32,7 @@ constructor(
       TextView(context).apply {
         text = "root (view)"
         setTextColor(Color.WHITE)
-      },
+      }
     )
   }
 }

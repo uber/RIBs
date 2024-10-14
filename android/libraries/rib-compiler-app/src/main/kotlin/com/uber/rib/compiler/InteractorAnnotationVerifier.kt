@@ -75,14 +75,13 @@ internal open class InteractorAnnotationVerifier(
    * @param type
    * @return if given type element is valid.
    */
-  private fun validateInteractorSuffix(type: TypeElement): Boolean {
-    return if (!type.simpleName.toString().endsWith(Constants.INTERACTOR_SUFFIX)) {
+  private fun validateInteractorSuffix(type: TypeElement): Boolean =
+    if (!type.simpleName.toString().endsWith(Constants.INTERACTOR_SUFFIX)) {
       errorReporter.reportError("$type does not end in Interactor.")
       false
     } else {
       true
     }
-  }
 
   /**
    * Validate if current class is a subclass of Interactor.

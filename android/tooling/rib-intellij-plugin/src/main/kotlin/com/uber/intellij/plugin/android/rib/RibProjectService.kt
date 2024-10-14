@@ -114,7 +114,7 @@ public class RibProjectService(public val project: Project) :
                 )
               }
             }
-          },
+          }
         )
     }
   }
@@ -129,9 +129,7 @@ public class RibProjectService(public val project: Project) :
     LogcatRequestProcessor().execute(RibHighlightRequest(device, id))
   }
 
-  public fun isLocating(): Boolean {
-    return isLocating
-  }
+  public fun isLocating(): Boolean = isLocating
 
   public fun enableLocateMode() {
     if (isLocating) {
@@ -172,7 +170,7 @@ public class RibProjectService(public val project: Project) :
               )
             }
           }
-        },
+        }
       )
   }
 
@@ -190,9 +188,7 @@ public class RibProjectService(public val project: Project) :
     refreshRibHierarchy()
   }
 
-  public fun hasSelectedDevice(): Boolean {
-    return selectedDevice != null
-  }
+  public fun hasSelectedDevice(): Boolean = selectedDevice != null
 
   override fun onAvailableDevicesChanged(devices: List<IDevice>) {
     this.devices = devices

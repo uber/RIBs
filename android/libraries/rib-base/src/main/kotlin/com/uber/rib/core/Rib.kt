@@ -59,11 +59,11 @@ public open class Rib {
 
   /** Default, internal implementation that is used when host app does not set a configuration. */
   private class DefaultConfiguration : Configuration {
-    override fun handleNonFatalError(errorMessage: String, throwable: Throwable?) {
+    override fun handleNonFatalError(errorMessage: String, throwable: Throwable?): Unit =
       throw RuntimeException(errorMessage, throwable)
-    }
 
     override fun handleNonFatalWarning(warningMessage: String, throwable: Throwable?) {}
+
     override fun handleDebugMessage(format: String, vararg args: Any?) {}
   }
 
@@ -85,7 +85,7 @@ public open class Rib {
           throw IllegalStateException("Attempting to set a configuration after using RIB code.")
         } else {
           throw IllegalStateException(
-            "Attempting to set a configuration after one has previously been set.",
+            "Attempting to set a configuration after one has previously been set."
           )
         }
       }

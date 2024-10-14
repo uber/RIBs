@@ -17,5 +17,6 @@ package com.uber.rib.compose.root.main.loggedout
 
 sealed class LoggedOutEvent {
   class PlayerNameChanged(val name: String, val num: Int) : LoggedOutEvent()
+
   object LogInClick : LoggedOutEvent()
 }

@@ -34,17 +34,12 @@ interface MainScope {
 
     abstract fun interactor(): MainInteractor
 
-    fun presenter(
-      childContent: MainRouter.ChildContent,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    fun presenter(childContent: MainRouter.ChildContent): ComposePresenter =
+      object : ComposePresenter() {
         override val composable = @Composable { MainView(childContent) }
       }
-    }
 
-    fun view(parentViewGroup: ViewGroup): ComposeView {
-      return ComposeView(parentViewGroup.context)
-    }
+    fun view(parentViewGroup: ViewGroup): ComposeView = ComposeView(parentViewGroup.context)
 
     abstract fun childContent(): MainRouter.ChildContent
   }

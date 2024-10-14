@@ -19,13 +19,12 @@ package com.uber.rib.core
 public interface RouterNavigatorState {
 
   /** @return identifier for a [StackRouterNavigator] state. */
-  public fun stateName(): String {
-    return if (this.javaClass.isEnum) {
+  public fun stateName(): String =
+    if (this.javaClass.isEnum) {
       (this as Enum<*>).name
     } else {
       throw java.lang.AssertionError("Must be implemented by enum or override stateName()")
     }
-  }
 
   /**
    * @return Boolean flag configure router caching behavior between transactions.

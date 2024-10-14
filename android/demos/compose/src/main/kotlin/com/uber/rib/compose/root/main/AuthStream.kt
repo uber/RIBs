@@ -20,13 +20,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
 class AuthStream {
-  private val _authFlow = MutableStateFlow(AuthInfo(false, "", ""))
-  private val authFlow = _authFlow.asStateFlow()
+  private val mutableAuthFlow = MutableStateFlow(AuthInfo(false, "", ""))
+  private val authFlow = mutableAuthFlow.asStateFlow()
 
   fun observe() = authFlow
 
   fun accept(value: AuthInfo) {
-    _authFlow.update { value }
+    mutableAuthFlow.update { value }
   }
 }
 

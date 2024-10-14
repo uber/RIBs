@@ -57,9 +57,8 @@ public abstract class HierarchyBrowserBase(
     TreeSpeedSearch(tree, { path -> path.lastPathComponent.toString() }, true)
     TreeUtil.installActions(tree)
     object : AutoScrollToSourceHandler() {
-        override fun isAutoScrollMode(): Boolean {
-          return HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE
-        }
+        override fun isAutoScrollMode(): Boolean =
+          HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE
 
         override fun setAutoScrollMode(state: Boolean) {
           HierarchyBrowserManager.getSettings(myProject).IS_AUTOSCROLL_TO_SOURCE = state

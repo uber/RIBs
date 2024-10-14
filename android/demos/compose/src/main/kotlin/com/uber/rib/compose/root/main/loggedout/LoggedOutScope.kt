@@ -34,8 +34,8 @@ interface LoggedOutScope {
     fun presenter(
       stateStream: StateStream<LoggedOutViewModel>,
       eventStream: EventStream<LoggedOutEvent>,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    ): ComposePresenter =
+      object : ComposePresenter() {
         override val composable =
           @Composable {
             LoggedOutView(
@@ -44,7 +44,6 @@ interface LoggedOutScope {
             )
           }
       }
-    }
 
     fun eventStream() = EventStream<LoggedOutEvent>()
 

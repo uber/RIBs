@@ -42,15 +42,16 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   @Inject public lateinit var injectedPresenter: P
 
   @CoreFriendModuleApi public var actualPresenter: P? = null
-  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
+  private val mutableLifecycleFlow =
+    MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
   public open val lifecycleFlow: SharedFlow<InteractorEvent>
-    get() = _lifecycleFlow
+    get() = mutableLifecycleFlow
 
-  @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
+  @Volatile private var lifecycleObservableField: Observable<InteractorEvent>? = null
 
   @OptIn(CoreFriendModuleApi::class)
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() = ::lifecycleObservableField.setIfNullAndGet { lifecycleFlow.asObservable() }
 
   private val routerDelegate = InitOnceProperty<R>()
 
@@ -79,7 +80,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   // ---- InteractorType overrides ---- //
 
   override fun isAttached(): Boolean =
-    _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+    mutableLifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   override fun handleBackPress(): Boolean = false
 
@@ -108,24 +109,16 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   protected open fun onSaveInstanceState(outState: Bundle) {}
 
   public open fun dispatchAttach(savedInstanceState: Bundle?) {
-    _lifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
+    mutableLifecycleFlow.tryEmit(InteractorEvent.ACTIVE)
 
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
-      triggerRibActionAndEmitEvents(
-        it,
-        RibActionEmitterType.PRESENTER,
-        RibEventType.ATTACHED,
-      ) {
+      triggerRibActionAndEmitEvents(it, RibActionEmitterType.PRESENTER, RibEventType.ATTACHED) {
         it.dispatchLoad()
       }
     }
 
-    triggerRibActionAndEmitEvents(
-      this,
-      RibActionEmitterType.INTERACTOR,
-      RibEventType.ATTACHED,
-    ) {
+    triggerRibActionAndEmitEvents(this, RibActionEmitterType.INTERACTOR, RibEventType.ATTACHED) {
       didBecomeActive(savedInstanceState)
     }
   }
@@ -133,24 +126,16 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   public open fun dispatchDetach(): P {
     val presenter = (getPresenter() as? Presenter)
     presenter?.let {
-      triggerRibActionAndEmitEvents(
-        it,
-        RibActionEmitterType.PRESENTER,
-        RibEventType.DETACHED,
-      ) {
+      triggerRibActionAndEmitEvents(it, RibActionEmitterType.PRESENTER, RibEventType.DETACHED) {
         it.dispatchUnload()
       }
     }
 
-    triggerRibActionAndEmitEvents(
-      this,
-      RibActionEmitterType.INTERACTOR,
-      RibEventType.DETACHED,
-    ) {
+    triggerRibActionAndEmitEvents(this, RibActionEmitterType.INTERACTOR, RibEventType.DETACHED) {
       willResignActive()
     }
 
-    _lifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
+    mutableLifecycleFlow.tryEmit(InteractorEvent.INACTIVE)
 
     return getPresenter()
   }

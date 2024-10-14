@@ -19,7 +19,7 @@ plugins {
 
 val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
 
-configure<com.diffplug.gradle.spotless.SpotlessExtension> {
+spotless {
   format("misc") {
     target("**/*.md", "**/.gitignore")
     trimTrailingWhitespace()
@@ -31,6 +31,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         mapOf(
             "indent_size" to "2",
             "continuation_indent_size" to "4",
+            "ktlint_function_naming_ignore_when_annotated_with" to "Composable",
         )
     )
     ktfmt(libs.versions.ktfmt.get()).googleStyle()
@@ -40,7 +41,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   }
   java {
     target("src/*/java/**/*.java")
-    googleJavaFormat(libs.versions.gjf.get())
+    googleJavaFormat(libs.versions.google.java.format.get())
     licenseHeaderFile(rootProject.file("config/spotless/copyright.java"))
     removeUnusedImports()
     trimTrailingWhitespace()

@@ -63,13 +63,9 @@ public open class RibViewNodeDescriptor(
   }
 
   /** Method used to get the unique id of descriptor. Used for programmatic selection. */
-  override fun getUniqueId(): String? {
-    return ribView?.id ?: null
-  }
+  override fun getUniqueId(): String? = ribView?.id ?: null
 
-  override fun toString(): String {
-    return ribView?.viewId ?: ""
-  }
+  override fun toString(): String = ribView?.viewId ?: ""
 
   @SuppressWarnings("ReturnCount")
   override fun getIcon(element: PsiElement): Icon? {
@@ -87,7 +83,5 @@ public open class RibViewNodeDescriptor(
     return AllIcons.General.InspectionsEye
   }
 
-  private fun hasLayoutId(): Boolean {
-    return ribView != null && ribView.layoutId.isNotEmpty()
-  }
+  private fun hasLayoutId(): Boolean = ribView != null && ribView.layoutId.isNotEmpty()
 }

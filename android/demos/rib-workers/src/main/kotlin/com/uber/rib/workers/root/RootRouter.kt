@@ -18,11 +18,8 @@ package com.uber.rib.workers.root
 import com.uber.rib.core.BasicViewRouter
 import com.uber.rib.workers.root.main.MainRouter
 
-class RootRouter(
-  view: RootView,
-  interactor: RootInteractor,
-  private val scope: RootScope,
-) : BasicViewRouter<RootView, RootInteractor>(view, interactor) {
+class RootRouter(view: RootView, interactor: RootInteractor, private val scope: RootScope) :
+  BasicViewRouter<RootView, RootInteractor>(view, interactor) {
 
   private var mainRouter: MainRouter? = null
 

@@ -24,10 +24,11 @@ import org.junit.runner.Description
  * facilitate install and cleanup of Test Dispatchers
  */
 public class RibCoroutinesRule(
-  public val ribDispatchers: TestRibDispatchers = TestRibDispatchers(),
+  public val ribDispatchers: TestRibDispatchers = TestRibDispatchers()
 ) : TestWatcher() {
 
   private var originalDeprecatedWorkerDispatcher: CoroutineDispatcher? = null
+
   override fun starting(description: Description) {
     ribDispatchers.installTestDispatchers()
     originalDeprecatedWorkerDispatcher = RibCoroutinesConfig.deprecatedWorkerDispatcher

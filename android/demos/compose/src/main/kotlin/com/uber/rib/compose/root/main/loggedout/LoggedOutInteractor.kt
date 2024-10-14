@@ -45,7 +45,7 @@ class LoggedOutInteractor(
                   .copy(
                     playerOne = if (it.num == 1) it.name else current().playerOne,
                     playerTwo = if (it.num == 2) it.name else current().playerTwo,
-                  ),
+                  )
               )
             }
           }

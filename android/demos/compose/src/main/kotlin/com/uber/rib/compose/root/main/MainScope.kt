@@ -46,15 +46,12 @@ interface MainScope {
       analyticsClient: AnalyticsClient,
       experimentClient: ExperimentClient,
       loggerClient: LoggerClient,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    ): ComposePresenter =
+      object : ComposePresenter() {
         override val composable = @Composable { MainView(childContent) }
       }
-    }
 
-    fun view(parentViewGroup: ViewGroup): ComposeView {
-      return ComposeView(parentViewGroup.context)
-    }
+    fun view(parentViewGroup: ViewGroup): ComposeView = ComposeView(parentViewGroup.context)
 
     abstract fun childContent(): MainRouter.ChildContent
 
