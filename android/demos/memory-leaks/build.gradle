@@ -15,7 +15,7 @@
  */
 plugins {
     id("ribs.kotlin-android-application-errorprone-conventions")
-    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -30,7 +30,6 @@ dependencies {
     implementation(project(":libraries:rib-android"))
     kapt(project(":libraries:rib-compiler-app"))
     kapt(project(":libraries:rib-compiler-test"))
-    kapt(libs.autodispose.errorprone)
     kapt(libs.dagger.compiler)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)

@@ -15,7 +15,7 @@
  */
 plugins {
     id("ribs.kotlin-android-application-conventions")
-    alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {

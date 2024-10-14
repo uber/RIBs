@@ -40,9 +40,9 @@ dependencies {
     implementation(libs.autodispose.coroutines)
     implementation(libs.motif.library)
 
-    debugImplementation 'com.facebook.flipper:flipper:0.93.0'
-    debugImplementation 'com.facebook.soloader:soloader:0.10.1'
-    releaseImplementation 'com.facebook.flipper:flipper-noop:0.93.0'
+    debugImplementation(libs.flipper)
+    debugImplementation(libs.soloader)
+    releaseImplementation(libs.flipper.noop)
 
     implementation(project(":tooling:rib-flipper-plugin"))
 }

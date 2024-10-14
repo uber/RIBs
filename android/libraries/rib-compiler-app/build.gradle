@@ -16,7 +16,7 @@
 
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
@@ -30,7 +30,7 @@ dependencies {
     compileOnly(libs.autoservice)
     compileOnly(libs.android.api)
 
-    testImplementation(testLibs.compileTesting)
+    testImplementation(testLibs.compile.testing)
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887

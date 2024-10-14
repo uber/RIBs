@@ -33,25 +33,14 @@ dependencies {
     testImplementation(libs.javax.inject)
     testImplementation(libs.dagger.library)
     testImplementation(testLibs.truth)
-    testImplementation(testLibs.compileTesting)
-    testImplementation(testLibs.mockito)
+    testImplementation(testLibs.compile.testing)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(libs.annotation)
     testImplementation(libs.android.api)
 }
 
-// Determines if the machine has Maven credentials.
-def hasMavenCredentials() {
-    return ext.mavenUser && ext.mavenPassword
-}
-
-// Determines if it is a release build.
-def isReleaseBuild() {
-    return System.env.ENABLE_RELEASE_BUILD.equals("true")
-}
-
 ext.pluginXml = new XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
 version = pluginXml.version
-
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     archiveClassifier = "sources"

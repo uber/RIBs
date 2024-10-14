@@ -15,7 +15,7 @@
  */
 plugins {
     id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.maven.publish)
 }
 
 android {
@@ -35,6 +35,6 @@ dependencies {
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)
     testImplementation(testLibs.robolectric)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(project(":libraries:rib-test"))
 }
