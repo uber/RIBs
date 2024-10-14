@@ -16,7 +16,7 @@
 package com.uber.rib.flipper
 
 /** Types of messages used by Rib Flipper Plugin. */
-enum class RibTreeMessageType {
+public enum class RibTreeMessageType {
   SHOW_HIGHLIGHT,
   HIDE_HIGHLIGHT,
 }

@@ -18,7 +18,7 @@ package com.uber.rib.core
 import android.content.Intent
 
 /** Creates intent objects. */
-interface IntentCreator {
+public interface IntentCreator {
   /**
    * Create an explicit intent targeted at a particular class, which is guaranteed to be limited to
    * your app's package.
@@ -26,7 +26,7 @@ interface IntentCreator {
    * @param cls The class that you intend to receive this intent.
    * @return The intent.
    */
-  fun create(cls: Class<*>): Intent
+  public fun create(cls: Class<*>): Intent
 
   /**
    * Create an implicit intent targeted at an action, which may end up resolving to your app or to
@@ -37,5 +37,5 @@ interface IntentCreator {
    * @param action The intent action, which any app may register to receive.
    * @return The intent.
    */
-  fun create(action: String): Intent
+  public fun create(action: String): Intent
 }

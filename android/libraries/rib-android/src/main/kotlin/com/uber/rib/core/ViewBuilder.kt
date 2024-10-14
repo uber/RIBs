@@ -27,7 +27,7 @@ import android.view.ViewGroup
  * @param <RouterT> type of router built by this builder.
  * @param <DependencyT> dependency required to create this router.
  */
-abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
+public abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
   dependency: DependencyT,
 ) : Builder<RouterT, DependencyT>(dependency) {
   /**
@@ -36,7 +36,7 @@ abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
    * @param parentViewGroup to inflate view with.
    * @return the view for a new router.
    */
-  fun createView(parentViewGroup: ViewGroup): ViewType {
+  public fun createView(parentViewGroup: ViewGroup): ViewType {
     val context = parentViewGroup.context
     return inflateView(LayoutInflater.from(onThemeContext(context)), parentViewGroup)
   }
@@ -59,7 +59,5 @@ abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
    *   overridden.
    * @return the possibly themed context.
    */
-  protected open fun onThemeContext(parentContext: Context): Context {
-    return parentContext
-  }
+  protected open fun onThemeContext(parentContext: Context): Context = parentContext
 }

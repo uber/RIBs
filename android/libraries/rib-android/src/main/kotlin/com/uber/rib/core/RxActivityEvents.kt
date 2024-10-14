@@ -20,32 +20,30 @@ import com.uber.rib.core.lifecycle.ActivityLifecycleEvent
 import io.reactivex.Observable
 
 /** Interface for reactive activities. */
-interface RxActivityEvents {
+public interface RxActivityEvents {
   /** @return an observable of this activity's lifecycle events. */
-  fun lifecycle(): Observable<ActivityLifecycleEvent>
+  public fun lifecycle(): Observable<ActivityLifecycleEvent>
 
   /** @return an observable of this activity's lifecycle events. */
-  fun callbacks(): Observable<ActivityCallbackEvent>
+  public fun callbacks(): Observable<ActivityCallbackEvent>
 
   /**
    * @param <T> The type of [ActivityLifecycleEvent] subclass you want.
    * @param clazz The [ActivityLifecycleEvent] subclass you want.
    * @return an observable of this activity's lifecycle events.
    */
-  fun <T : ActivityLifecycleEvent> lifecycle(clazz: Class<T>): Observable<T> {
-    return lifecycle()
+  public fun <T : ActivityLifecycleEvent> lifecycle(clazz: Class<T>): Observable<T> =
+    lifecycle()
       .filter { activityEvent -> clazz.isAssignableFrom(activityEvent.javaClass) }
       .cast(clazz)
-  }
 
   /**
    * @param <T> The type of [ActivityCallbackEvent] subclass you want.
    * @param clazz The [ActivityCallbackEvent] subclass you want.
    * @return an observable of this activity's callbacks events.
    */
-  fun <T : ActivityCallbackEvent> callbacks(clazz: Class<T>): Observable<T> {
-    return callbacks()
+  public fun <T : ActivityCallbackEvent> callbacks(clazz: Class<T>): Observable<T> =
+    callbacks()
       .filter { activityEvent -> clazz.isAssignableFrom(activityEvent.javaClass) }
       .cast(clazz)
-  }
 }

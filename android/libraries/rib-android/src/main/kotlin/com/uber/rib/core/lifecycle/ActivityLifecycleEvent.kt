@@ -45,14 +45,14 @@ import android.os.Bundle
  * [total order](https://en.wikipedia.org/wiki/Total_order): it is reflexive, transitive, strongly
  * connected, but **not** antisymmetric.
  */
-open class ActivityLifecycleEvent
+public open class ActivityLifecycleEvent
 private constructor(
   /** @return this event's type. */
   override val type: Type,
 ) : ActivityEvent, Comparable<ActivityLifecycleEvent> {
 
   /** Types of activity events that can occur. */
-  enum class Type : ActivityEvent.BaseType {
+  public enum class Type : ActivityEvent.BaseType {
     CREATE,
     START,
     RESUME,
@@ -68,12 +68,12 @@ private constructor(
    * An [ActivityLifecycleEvent] that encapsulates information from
    * [Activity.onCreate][android.app.Activity.onCreate].
    */
-  open class Create(
+  public open class Create(
     /** @return this event's savedInstanceState data. */
-    open val savedInstanceState: Bundle?,
+    public open val savedInstanceState: Bundle?,
   ) : ActivityLifecycleEvent(Type.CREATE)
 
-  companion object {
+  public companion object {
     private val START_EVENT = ActivityLifecycleEvent(Type.START)
     private val RESUME_EVENT = ActivityLifecycleEvent(Type.RESUME)
     private val USER_LEAVING_EVENT = ActivityLifecycleEvent(Type.USER_LEAVING)
@@ -87,10 +87,7 @@ private constructor(
      * @param stateData the instate bundle.
      * @return the created ActivityEvent.
      */
-    @JvmStatic
-    fun createOnCreateEvent(stateData: Bundle?): Create {
-      return Create(stateData)
-    }
+    @JvmStatic public fun createOnCreateEvent(stateData: Bundle?): Create = Create(stateData)
 
     /**
      * Creates an activity event for a given type.
@@ -99,8 +96,8 @@ private constructor(
      * @return The corresponding ActivityEvent.
      */
     @JvmStatic
-    fun create(type: Type): ActivityLifecycleEvent {
-      return when (type) {
+    public fun create(type: Type): ActivityLifecycleEvent =
+      when (type) {
         Type.START -> START_EVENT
         Type.RESUME -> RESUME_EVENT
         Type.USER_LEAVING -> USER_LEAVING_EVENT
@@ -112,6 +109,5 @@ private constructor(
             "Use the createOn${type.name.lowercase().replaceFirstChar(Char::titlecase)}Event() method for this type!",
           )
       }
-    }
   }
 }

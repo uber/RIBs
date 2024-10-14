@@ -19,8 +19,8 @@ import android.content.Context
 import android.content.Intent
 
 /** A default implementation of [IntentCreator]. */
-open class IntentCreatorImpl(private val context: Context) : IntentCreator {
-  override fun create(cls: Class<*>) = Intent(context, cls)
+public open class IntentCreatorImpl(private val context: Context) : IntentCreator {
+  override fun create(cls: Class<*>): Intent = Intent(context, cls)
 
-  override fun create(action: String) = Intent(action)
+  override fun create(action: String): Intent = Intent(action)
 }
