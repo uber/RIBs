@@ -25,7 +25,7 @@ import androidx.lifecycle.ViewTreeViewModelStoreOwner
 import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 
 /** Core Support v7 AppCompat Activity. */
-abstract class CoreAppCompatActivity : AppCompatActivity() {
+public abstract class CoreAppCompatActivity : AppCompatActivity() {
 
   private var activityDelegate: ActivityDelegate? = null
 

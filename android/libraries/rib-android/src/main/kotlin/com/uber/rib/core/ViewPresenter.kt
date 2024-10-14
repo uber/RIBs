@@ -22,7 +22,7 @@ import android.view.View
  *
  * @param <V> the view type.
  */
-abstract class ViewPresenter<V : View>(
+public abstract class ViewPresenter<V : View>(
   /** @return the view fronted by the page. */
-  val view: V,
+  public val view: V,
 ) : Presenter()

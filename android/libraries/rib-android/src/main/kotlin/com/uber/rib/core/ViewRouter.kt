@@ -23,11 +23,11 @@ import android.view.View
  * @param <V> type of view owned by the router.
  * @param <I> type of interactor owned by the router.
  */
-abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
+public abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
   /** @return the router's view. */
-  open val view: V
+  public val view: V
 
-  constructor(
+  public constructor(
     view: V,
     interactor: I,
     component: InteractorBaseComponent<*>,

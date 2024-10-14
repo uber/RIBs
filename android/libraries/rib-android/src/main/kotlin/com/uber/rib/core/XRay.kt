@@ -25,9 +25,10 @@ import android.view.Gravity
 import android.view.View
 
 /** Utility class that shows riblets name in its background. */
-class XRay private constructor() {
+public class XRay private constructor() {
   private var isEnabled = false
   private var textPaint: Paint? = null
+
   private fun writeOnBitmap(bitmap: Bitmap, text: String) {
     val canvas = Canvas(bitmap)
     val textPaint = getTextPaint()
@@ -47,7 +48,7 @@ class XRay private constructor() {
     return textPaint!!
   }
 
-  companion object {
+  public companion object {
     private val INSTANCE = XRay()
     private const val FRAME_WIDTH = 500
     private const val FRAME_HEIGHT = 150
@@ -57,15 +58,12 @@ class XRay private constructor() {
 
     /** Toggles state of XRay. */
     @JvmStatic
-    fun toggle() {
+    public fun toggle() {
       INSTANCE.isEnabled = !INSTANCE.isEnabled
     }
 
     /** @return `true` if XRay is enabled, `false` otherwise. */
-    @JvmStatic
-    fun isEnabled(): Boolean {
-      return INSTANCE.isEnabled
-    }
+    @JvmStatic public fun isEnabled(): Boolean = INSTANCE.isEnabled
 
     /**
      * Puts [ViewBuilder]s riblet name in the background of the [View]
@@ -74,7 +72,7 @@ class XRay private constructor() {
      * @param view a [View] to put the name behind.
      */
     @JvmStatic
-    fun apply(viewRouter: ViewRouter<*, *>, view: View) {
+    public fun apply(viewRouter: ViewRouter<*, *>, view: View) {
       val oldBackground = view.background
       val bitmap: Bitmap =
         if (oldBackground != null) {
@@ -110,8 +108,7 @@ class XRay private constructor() {
       return bitmap
     }
 
-    private fun getRibletName(viewRouter: ViewRouter<*, *>): String {
-      return viewRouter.javaClass.simpleName.replace("Router", "")
-    }
+    private fun getRibletName(viewRouter: ViewRouter<*, *>): String =
+      viewRouter.javaClass.simpleName.replace("Router", "")
   }
 }
