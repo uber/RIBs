@@ -16,11 +16,11 @@
 package com.uber.rib.core
 
 /** Interface to indicate an object has an [ActivityDelegate]. */
-interface HasActivityDelegate {
+public interface HasActivityDelegate {
   /**
    * Get the delegate.
    *
    * @return The delegate.
    */
-  fun activityDelegate(): ActivityDelegate
+  public fun activityDelegate(): ActivityDelegate
 }

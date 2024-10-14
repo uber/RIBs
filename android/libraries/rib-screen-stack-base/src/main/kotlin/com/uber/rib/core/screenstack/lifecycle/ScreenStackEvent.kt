@@ -18,7 +18,7 @@ package com.uber.rib.core.screenstack.lifecycle
 import com.uber.rib.core.screenstack.ScreenStackBase
 
 /** Lifecycle events that can be emitted by [ScreenStackBase] view providers. */
-enum class ScreenStackEvent {
+public enum class ScreenStackEvent {
   BUILT,
   APPEARED,
   HIDDEN,

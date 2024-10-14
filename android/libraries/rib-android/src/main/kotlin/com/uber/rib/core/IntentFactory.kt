@@ -18,12 +18,12 @@ package com.uber.rib.core
 import android.content.Intent
 
 /** Factory for an [Intent] that opens an activity. */
-interface IntentFactory {
+public interface IntentFactory {
   /**
    * Create a view router to be displayed for an [Intent].
    *
    * @param intentCreator to create the [Intent].
    * @return the activity [Intent].
    */
-  fun create(intentCreator: IntentCreator): Intent
+  public fun create(intentCreator: IntentCreator): Intent
 }
