@@ -46,7 +46,7 @@ private constructor(private val stepDataSingle: Single<Optional<Data<T, A>>>) {
   @OptIn(WorkflowFriendModuleApi::class)
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
   public open fun <T2 : Any, A2 : ActionableItem> onStep(
-    func: BiFunction<T, A, Step<T2, A2>>,
+    func: BiFunction<T, A, Step<T2, A2>>
   ): Step<T2, A2> =
     Step(
       asObservable()
@@ -57,7 +57,7 @@ private constructor(private val stepDataSingle: Single<Optional<Data<T, A>>>) {
             Observable.just(Optional.absent())
           }
         }
-        .singleOrError(),
+        .singleOrError()
     )
 
   @OptIn(WorkflowFriendModuleApi::class)
@@ -146,7 +146,7 @@ private constructor(private val stepDataSingle: Single<Optional<Data<T, A>>>) {
      */
     @JvmStatic
     public fun <T : Any, A : ActionableItem> fromOptional(
-      stepDataSingle: Single<Optional<Data<T, A>>>,
+      stepDataSingle: Single<Optional<Data<T, A>>>
     ): Step<T, A> = Step(stepDataSingle)
   }
 }

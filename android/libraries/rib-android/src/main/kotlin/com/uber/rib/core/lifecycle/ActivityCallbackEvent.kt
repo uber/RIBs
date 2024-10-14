@@ -22,7 +22,7 @@ import android.os.Bundle
 public open class ActivityCallbackEvent
 private constructor(
   /** @return this event's type. */
-  override val type: Type,
+  override val type: Type
 ) : ActivityEvent {
 
   /** Types of activity events that can occur. */
@@ -66,7 +66,7 @@ private constructor(
    */
   public open class SaveInstanceState(
     /** @return this event's outState data. */
-    public open val outState: Bundle?,
+    public open val outState: Bundle?
   ) : ActivityCallbackEvent(Type.SAVE_INSTANCE_STATE)
 
   public companion object {
@@ -99,7 +99,7 @@ private constructor(
         Type.LOW_MEMORY -> LOW_MEMORY_EVENT
         else ->
           throw IllegalArgumentException(
-            "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!",
+            "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!"
           )
       }
 

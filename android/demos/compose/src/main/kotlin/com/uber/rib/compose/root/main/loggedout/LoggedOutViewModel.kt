@@ -15,7 +15,4 @@
  */
 package com.uber.rib.compose.root.main.loggedout
 
-data class LoggedOutViewModel(
-  val playerOne: String = "",
-  val playerTwo: String = "",
-)
+data class LoggedOutViewModel(val playerOne: String = "", val playerTwo: String = "")

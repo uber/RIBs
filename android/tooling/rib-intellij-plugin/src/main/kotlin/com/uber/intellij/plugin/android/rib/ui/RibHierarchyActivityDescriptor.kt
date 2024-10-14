@@ -39,7 +39,5 @@ public class RibHierarchyActivityDescriptor(
     text.ending.addText(" (${formatQualifiedName(ribActivity.name)})", getPackageNameAttributes())
   }
 
-  override fun getIcon(element: PsiElement): Icon? {
-    return AllIcons.Actions.Execute
-  }
+  override fun getIcon(element: PsiElement): Icon? = AllIcons.Actions.Execute
 }

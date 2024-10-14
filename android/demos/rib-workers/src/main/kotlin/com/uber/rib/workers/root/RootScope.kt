@@ -33,8 +33,6 @@ interface RootScope {
 
     abstract fun presenter(): EmptyPresenter
 
-    fun view(parentViewGroup: ViewGroup): RootView {
-      return RootView(parentViewGroup.context)
-    }
+    fun view(parentViewGroup: ViewGroup): RootView = RootView(parentViewGroup.context)
   }
 }

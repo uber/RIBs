@@ -23,7 +23,7 @@ package com.uber.rib.core
   message =
     """
       com.uber.rib.core.Worker is deprecated in favor of com.uber.rib.core.RibCoroutineWorker
-    """,
+    """
 )
 public fun interface WorkerUnbinder {
   /** Unbind from bound lifecycle and end worker's lifecycle. */

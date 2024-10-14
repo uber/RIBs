@@ -35,8 +35,8 @@ class Board @Inject constructor() {
   }
 
   /** Return true if the player with "theSeed" has won after placing at (currentRow, currentCol) */
-  fun hasWon(theSeed: MarkerType): Boolean {
-    return (cells[currentRow][0] == theSeed &&
+  fun hasWon(theSeed: MarkerType): Boolean =
+    (cells[currentRow][0] == theSeed &&
       cells[currentRow][1] == theSeed &&
       cells[currentRow][2] == theSeed ||
       cells[0][currentCol] == theSeed &&
@@ -50,7 +50,6 @@ class Board @Inject constructor() {
         cells[0][2] == theSeed &&
         cells[1][1] == theSeed &&
         cells[2][0] == theSeed)
-  }
 
   enum class MarkerType {
     CROSS,

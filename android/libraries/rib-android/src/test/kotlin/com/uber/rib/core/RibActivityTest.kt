@@ -56,7 +56,7 @@ class RibActivityTest {
       Robolectric.buildActivity(EmptyActivity::class.java)
     activityController.create(testBundle)
     assertThat(
-        activityController.get().testInteractor.savedInstanceState?.getString(TEST_BUNDLE_KEY),
+        activityController.get().testInteractor.savedInstanceState?.getString(TEST_BUNDLE_KEY)
       )
       .isEqualTo(TEST_BUNDLE_VALUE)
   }
@@ -131,7 +131,7 @@ class RibActivityTest {
       .delaySubscription(
         activity.lifecycle().filter { activityEvent ->
           activityEvent.type === ActivityLifecycleEvent.Type.RESUME
-        },
+        }
       )
       .subscribe(o)
     subject.onNext(Any())
@@ -246,9 +246,8 @@ class RibActivityTest {
     component: InteractorComponent<ViewPresenter<*>, *>,
   ) : ViewRouter<FrameLayout, Interactor<ViewPresenter<*>, *>>(view, interactor, component)
 
-  private class TestInteractor(
-    presenter: ViewPresenter<*>,
-  ) : Interactor<ViewPresenter<*>, FakeRouter<*>>(presenter) {
+  private class TestInteractor(presenter: ViewPresenter<*>) :
+    Interactor<ViewPresenter<*>, FakeRouter<*>>(presenter) {
     var savedInstanceState: Bundle? = null
       private set
 

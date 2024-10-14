@@ -40,8 +40,8 @@ interface RibWorkerSelectionScope {
     fun presenter(
       stateStream: StateStream<RibWorkerSelectionViewModel>,
       eventStream: EventStream<RibWorkerBindTypeClickType>,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    ): ComposePresenter =
+      object : ComposePresenter() {
         override val composable =
           @Composable {
             RibWorkerSelectionView(
@@ -50,7 +50,6 @@ interface RibWorkerSelectionScope {
             )
           }
       }
-    }
 
     fun eventStream() = EventStream<RibWorkerBindTypeClickType>()
 

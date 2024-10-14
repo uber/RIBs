@@ -73,10 +73,12 @@ public class LazyCoroutineScope<This : Any>(private val initializer: This.() -> 
 
     // Used to get and set Test overrides from rib-coroutines-test utils
     public operator fun get(provider: Any): CoroutineScope? = values[provider]
+
     public operator fun set(provider: Any, scope: CoroutineScope?) {
       values[provider] = scope
     }
   }
+
   public operator fun getValue(thisRef: This, property: KProperty<*>): CoroutineScope =
     synchronized(LazyCoroutineScope) {
       return values.getOrPut(thisRef) {

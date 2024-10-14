@@ -26,11 +26,10 @@ import motif.ScopeFactory
 
 class RootActivity : RibActivity() {
 
-  override fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *> {
-    return ScopeFactory.create(Parent::class.java)
+  override fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *> =
+    ScopeFactory.create(Parent::class.java)
       .rootScope(application, this, findViewById(android.R.id.content))
       .router()
-  }
 
   @motif.Scope
   interface Parent : Creatable<NoDependencies> {

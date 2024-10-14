@@ -20,9 +20,7 @@ import android.os.Parcelable
 /** Uber wrapper around Android Bundle to avoid Android and Robolectric dependencies. */
 public open class Bundle
 @JvmOverloads
-constructor(
-  private val androidBundle: android.os.Bundle = android.os.Bundle(),
-) {
+constructor(private val androidBundle: android.os.Bundle = android.os.Bundle()) {
 
   /**
    * Returns the value associated with the given key, or defaultValue if no mapping of the desired
@@ -33,9 +31,8 @@ constructor(
    * @return the boolean value associated with the given key or null if there is no string value in
    *   the bundle.
    */
-  public open fun getBoolean(key: String, defaultValue: Boolean): Boolean {
-    return androidBundle.getBoolean(key, defaultValue)
-  }
+  public open fun getBoolean(key: String, defaultValue: Boolean): Boolean =
+    androidBundle.getBoolean(key, defaultValue)
 
   /**
    * Inserts a boolean value into the mapping of this Bundle, replacing any existing value for the
@@ -85,9 +82,7 @@ constructor(
    * @param key to get.
    * @return the value, or `null`.
    */
-  public open fun getParcelable(key: String): Parcelable? {
-    return androidBundle.getParcelable(key)
-  }
+  public open fun getParcelable(key: String): Parcelable? = androidBundle.getParcelable(key)
 
   /**
    * Inserts a Parcelable value into the mapping of this Bundle, replacing any existing value for
@@ -108,9 +103,7 @@ constructor(
    * @return the String value associated with the given key or null if there is no string value in
    *   the bundle.
    */
-  public open fun getString(key: String): String? {
-    return androidBundle.getString(key)
-  }
+  public open fun getString(key: String): String? = androidBundle.getString(key)
 
   /**
    * Inserts a String value into the mapping of this Bundle, replacing any existing value for the
@@ -142,7 +135,6 @@ constructor(
    * @return the int value associated with the given key or defaultValue if there is no int value in
    *   the bundle.
    */
-  public open fun getInt(key: String, defaultValue: Int): Int {
-    return androidBundle.getInt(key, defaultValue)
-  }
+  public open fun getInt(key: String, defaultValue: Int): Int =
+    androidBundle.getInt(key, defaultValue)
 }

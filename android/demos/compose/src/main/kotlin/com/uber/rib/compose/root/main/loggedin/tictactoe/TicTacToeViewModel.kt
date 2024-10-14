@@ -15,7 +15,4 @@
  */
 package com.uber.rib.compose.root.main.loggedin.tictactoe
 
-data class TicTacToeViewModel(
-  val currentPlayer: String,
-  val board: Board,
-)
+data class TicTacToeViewModel(val currentPlayer: String, val board: Board)

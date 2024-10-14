@@ -27,7 +27,6 @@ public object WorkerHelper {
    * @return a [WorkerScopeProvider].
    */
   @JvmStatic
-  public fun createScopeProvider(lifecycle: Observable<WorkerEvent>): WorkerScopeProvider {
-    return WorkerScopeProvider(lifecycle)
-  }
+  public fun createScopeProvider(lifecycle: Observable<WorkerEvent>): WorkerScopeProvider =
+    WorkerScopeProvider(lifecycle)
 }

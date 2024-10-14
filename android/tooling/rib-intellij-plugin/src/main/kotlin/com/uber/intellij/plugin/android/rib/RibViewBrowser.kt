@@ -82,17 +82,12 @@ public class RibViewBrowser(
 
   private var hasFocus: Boolean = false
 
-  override fun isApplicableElement(element: PsiElement): Boolean {
-    return element is PsiClass
-  }
+  override fun isApplicableElement(element: PsiElement): Boolean = element is PsiClass
 
-  override fun getActionPlace(): String {
-    return ActionPlaces.METHOD_HIERARCHY_VIEW_TOOLBAR
-  }
+  override fun getActionPlace(): String = ActionPlaces.METHOD_HIERARCHY_VIEW_TOOLBAR
 
-  override fun getComparator(): Comparator<NodeDescriptor<*>> {
-    return JavaHierarchyUtil.getComparator(myProject)
-  }
+  override fun getComparator(): Comparator<NodeDescriptor<*>> =
+    JavaHierarchyUtil.getComparator(myProject)
 
   override fun getElementFromDescriptor(descriptor: HierarchyNodeDescriptor): PsiElement? {
     if (isRootElement(descriptor.psiElement)) {
@@ -101,21 +96,15 @@ public class RibViewBrowser(
     return descriptor.psiElement
   }
 
-  override fun getPrevOccurenceActionNameImpl(): String {
-    return LABEL_GO_PREVIOUS_RIB
-  }
+  override fun getPrevOccurenceActionNameImpl(): String = LABEL_GO_PREVIOUS_RIB
 
-  override fun createLegendPanel(): JPanel? {
-    return null
-  }
+  override fun createLegendPanel(): JPanel? = null
 
   override fun createTrees(trees: MutableMap<in String, in JTree>) {
     trees[TYPE_HIERARCHY_TYPE] = createTree(true)
   }
 
-  override fun getNextOccurenceActionNameImpl(): String {
-    return LABEL_GO_NEXT_RIB
-  }
+  override fun getNextOccurenceActionNameImpl(): String = LABEL_GO_NEXT_RIB
 
   override fun getContentDisplayName(typeName: String, element: PsiElement): String? {
     if (element !is PsiClass) {
@@ -150,7 +139,7 @@ public class RibViewBrowser(
           hasFocus = true
           notifySelectedViewChanged()
         }
-      },
+      }
     )
 
     tree.addTreeSelectionListener { notifySelectedViewChanged() }
@@ -163,8 +152,7 @@ public class RibViewBrowser(
           RibHierarchyUtils.findRibViewRecursive(
             this.model.rootRib.view,
             UUID.fromString(model.selectedViewId),
-          )
-            ?: return@invokeLater
+          ) ?: return@invokeLater
         selectionListener?.onSelectedViewChanged(ribView)
 
         ApplicationManager.getApplication().invokeLater { selectById(model.selectedViewId) }

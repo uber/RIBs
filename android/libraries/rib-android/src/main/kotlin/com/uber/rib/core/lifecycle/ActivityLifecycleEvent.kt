@@ -48,7 +48,7 @@ import android.os.Bundle
 public open class ActivityLifecycleEvent
 private constructor(
   /** @return this event's type. */
-  override val type: Type,
+  override val type: Type
 ) : ActivityEvent, Comparable<ActivityLifecycleEvent> {
 
   /** Types of activity events that can occur. */
@@ -70,7 +70,7 @@ private constructor(
    */
   public open class Create(
     /** @return this event's savedInstanceState data. */
-    public open val savedInstanceState: Bundle?,
+    public open val savedInstanceState: Bundle?
   ) : ActivityLifecycleEvent(Type.CREATE)
 
   public companion object {
@@ -106,7 +106,7 @@ private constructor(
         Type.DESTROY -> DESTROY_EVENT
         else ->
           throw IllegalArgumentException(
-            "Use the createOn${type.name.lowercase().replaceFirstChar(Char::titlecase)}Event() method for this type!",
+            "Use the createOn${type.name.lowercase().replaceFirstChar(Char::titlecase)}Event() method for this type!"
           )
       }
   }

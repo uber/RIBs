@@ -31,12 +31,7 @@ class RouterTest {
     val didLoad = AtomicBoolean(false)
     val router: Router<*> =
       object :
-        Router<Interactor<*, *>>(
-          component,
-          interactor,
-          ribRefWatcher,
-          Thread.currentThread(),
-        ) {
+        Router<Interactor<*, *>>(component, interactor, ribRefWatcher, Thread.currentThread()) {
         override fun attachToInteractor() {
           // ignore the Interactor since we're only testing the Router
         }

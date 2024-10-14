@@ -18,6 +18,7 @@ package com.uber.rib.core
 import com.google.common.truth.Truth.assertThat
 import com.uber.rib.core.internal.CoreFriendModuleApi
 import io.reactivex.Observable
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.channels.produce
 import kotlinx.coroutines.channels.toList
 import kotlinx.coroutines.launch
@@ -26,12 +27,13 @@ import org.junit.Test
 import org.mockito.kotlin.mock
 
 class LazyBackingPropertyTest {
-  @Volatile private var _expensiveObject: ExpensiveObject? = null
+  @Volatile private var expensiveObjectField: ExpensiveObject? = null
 
   @OptIn(CoreFriendModuleApi::class)
   private val expensiveObject
-    get() = ::_expensiveObject.setIfNullAndGet { ExpensiveObject() }
+    get() = ::expensiveObjectField.setIfNullAndGet { ExpensiveObject() }
 
+  @OptIn(ExperimentalCoroutinesApi::class)
   @Test
   fun `Stress test fetching a LazyBackingProperty from multiple concurrent coroutines`() = runTest {
     val set =

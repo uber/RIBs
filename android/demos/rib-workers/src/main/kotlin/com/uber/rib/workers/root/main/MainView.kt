@@ -36,9 +36,7 @@ fun MainView(childContent: MainRouter.ChildContent) {
     verticalArrangement = Arrangement.Top,
     modifier = Modifier.fillMaxSize().padding(all = 4.dp).padding(top = 14.dp),
   ) {
-    Box(
-      modifier = Modifier.fillMaxWidth().weight(1.0f).padding(4.dp).background(Color.White),
-    ) {
+    Box(modifier = Modifier.fillMaxWidth().weight(1.0f).padding(4.dp).background(Color.White)) {
       childContent.fullScreenSlot.value.invoke()
     }
   }

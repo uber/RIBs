@@ -39,11 +39,11 @@ public abstract class Presenter : ScopeProvider, RibActionEmitter {
   public open val lifecycleFlow: SharedFlow<PresenterEvent>
     get() = _lifecycleFlow
 
-  @Volatile private var _lifecycleObservable: Observable<PresenterEvent>? = null
+  @Volatile private var lifecycleObservableField: Observable<PresenterEvent>? = null
 
   @OptIn(CoreFriendModuleApi::class)
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() = ::lifecycleObservableField.setIfNullAndGet { lifecycleFlow.asObservable() }
 
   /** @return `true` if the presenter is loaded, `false` if not. */
   protected var isLoaded: Boolean = false

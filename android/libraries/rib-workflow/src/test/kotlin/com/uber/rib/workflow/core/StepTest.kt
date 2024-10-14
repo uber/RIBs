@@ -53,7 +53,7 @@ class StepTest {
     testSubscriber.assertNoErrors()
     testSubscriber.assertNotComplete()
     returnValueSubject.onNext(
-      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })),
+      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() }))
     )
     returnValueSubject.onComplete()
     testSubscriber.assertNoValues()
@@ -77,7 +77,7 @@ class StepTest {
     testSubscriber.assertNoErrors()
     testSubscriber.assertNotComplete()
     returnValueSubject.onNext(
-      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })),
+      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() }))
     )
     returnValueSubject.onComplete()
     testSubscriber.assertValueCount(1)
@@ -95,14 +95,12 @@ class StepTest {
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE)
     step
       .onStep { o, actionableItem ->
-        Step.from(
-          Observable.just(Data(secondReturnValue, actionableItem)).singleOrError(),
-        )
+        Step.from(Observable.just(Data(secondReturnValue, actionableItem)).singleOrError())
       }
       .asObservable()
       .subscribe(testSubscriber)
     returnValueSubject.onNext(
-      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() })),
+      Optional.of(Data(returnValue, ActionableItem { interactorLifecycleSubject.hide() }))
     )
     returnValueSubject.onComplete()
     testSubscriber.assertValueCount(1)
@@ -119,9 +117,7 @@ class StepTest {
     interactorLifecycleSubject.onNext(InteractorEvent.ACTIVE)
     step
       .onStep { _, actionableItem ->
-        Step.from(
-          Observable.just(Data(secondReturnValue, actionableItem)).singleOrError(),
-        )
+        Step.from(Observable.just(Data(secondReturnValue, actionableItem)).singleOrError())
       }
       .asObservable()
       .subscribe(testSubscriber)

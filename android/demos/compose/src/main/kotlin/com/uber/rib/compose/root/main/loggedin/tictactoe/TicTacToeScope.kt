@@ -35,8 +35,8 @@ interface TicTacToeScope {
     fun presenter(
       stateStream: StateStream<TicTacToeViewModel>,
       eventStream: EventStream<TicTacToeEvent>,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    ): ComposePresenter =
+      object : ComposePresenter() {
         override val composable =
           @Composable {
             TicTacToeView(
@@ -45,7 +45,6 @@ interface TicTacToeScope {
             )
           }
       }
-    }
 
     fun eventStream() = EventStream<TicTacToeEvent>()
 

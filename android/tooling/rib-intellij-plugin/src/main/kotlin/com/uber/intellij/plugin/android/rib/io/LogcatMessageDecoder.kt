@@ -34,13 +34,9 @@ public class LogcatMessageDecoder {
       part = message.substring(spaceIndex + 1)
     }
 
-    override fun compareTo(other: MessagePart): Int {
-      return partNumber.compareTo(other.partNumber)
-    }
+    override fun compareTo(other: MessagePart): Int = partNumber.compareTo(other.partNumber)
 
-    override fun toString(): String {
-      return part
-    }
+    override fun toString(): String = part
   }
 
   private var partCount: Int = 0

@@ -15,6 +15,7 @@
  */
 package com.uber.rib.core
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
@@ -50,24 +51,24 @@ public abstract class RibActivity :
   RxActivityEvents {
   private var router: ViewRouter<*, *>? = null
 
-  private val _lifecycleFlow =
+  private val mutableLifecycleFlow =
     MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
 
   public open val lifecycleFlow: SharedFlow<ActivityLifecycleEvent>
-    get() = _lifecycleFlow
+    get() = mutableLifecycleFlow
 
-  @Volatile private var _lifecycleObservable: Observable<ActivityLifecycleEvent>? = null
+  @Volatile private var mutableLifecycleObservable: Observable<ActivityLifecycleEvent>? = null
   private val lifecycleObservable
-    get() = ::_lifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
+    get() = ::mutableLifecycleObservable.setIfNullAndGet { lifecycleFlow.asObservable() }
 
-  private val _callbacksFlow =
+  private val mutableCallbacksFlow =
     MutableSharedFlow<ActivityCallbackEvent>(0, 1, BufferOverflow.DROP_OLDEST)
   public open val callbacksFlow: SharedFlow<ActivityCallbackEvent>
-    get() = _callbacksFlow
+    get() = mutableCallbacksFlow
 
-  @Volatile private var _callbacksObservable: Observable<ActivityCallbackEvent>? = null
+  @Volatile private var mutableCallbacksObservable: Observable<ActivityCallbackEvent>? = null
   private val callbacksObservable
-    get() = ::_callbacksObservable.setIfNullAndGet { callbacksFlow.asObservable() }
+    get() = ::mutableCallbacksObservable.setIfNullAndGet { callbacksFlow.asObservable() }
 
   /** @return an observable of this activity's lifecycle events. */
   final override fun lifecycle(): Observable<ActivityLifecycleEvent> = lifecycleObservable
@@ -89,7 +90,7 @@ public abstract class RibActivity :
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     super.onCreate(savedInstanceState)
     val rootViewGroup = findViewById<ViewGroup>(android.R.id.content)
-    _lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
+    mutableLifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
     val wrappedBundle: Bundle? =
       if (savedInstanceState != null) Bundle(savedInstanceState) else null
     router = createRouter(rootViewGroup)
@@ -103,7 +104,7 @@ public abstract class RibActivity :
   @CallSuper
   override fun onSaveInstanceState(outState: android.os.Bundle) {
     super.onSaveInstanceState(outState)
-    _callbacksFlow.tryEmit(createOnSaveInstanceStateEvent(outState))
+    mutableCallbacksFlow.tryEmit(createOnSaveInstanceStateEvent(outState))
     router?.saveInstanceStateInternal(Bundle(outState))
       ?: throw NullPointerException("Router should not be null")
   }
@@ -111,42 +112,42 @@ public abstract class RibActivity :
   @CallSuper
   override fun onStart() {
     super.onStart()
-    _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.START))
+    mutableLifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.START))
   }
 
   @CallSuper
   override fun onResume() {
     super.onResume()
-    _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.RESUME))
+    mutableLifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.RESUME))
   }
 
   @CallSuper
   override fun onNewIntent(intent: Intent) {
     super.onNewIntent(intent)
-    _callbacksFlow.tryEmit(createNewIntent(intent))
+    mutableCallbacksFlow.tryEmit(createNewIntent(intent))
   }
 
   @CallSuper
   override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
     super.onActivityResult(requestCode, resultCode, data)
-    _callbacksFlow.tryEmit(createOnActivityResultEvent(requestCode, resultCode, data))
+    mutableCallbacksFlow.tryEmit(createOnActivityResultEvent(requestCode, resultCode, data))
   }
 
   @CallSuper
   override fun onPause() {
-    _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.PAUSE))
+    mutableLifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.PAUSE))
     super.onPause()
   }
 
   @CallSuper
   override fun onStop() {
-    _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.STOP))
+    mutableLifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.STOP))
     super.onStop()
   }
 
   @CallSuper
   override fun onDestroy() {
-    _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.DESTROY))
+    mutableLifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.DESTROY))
     router?.let {
       it.dispatchDetach()
       RibEvents.emitRouterEvent(RibEventType.DETACHED, it, null)
@@ -158,22 +159,21 @@ public abstract class RibActivity :
   @CallSuper
   override fun onLowMemory() {
     super.onLowMemory()
-    _callbacksFlow.tryEmit(create(ActivityCallbackEvent.Type.LOW_MEMORY))
+    mutableCallbacksFlow.tryEmit(create(ActivityCallbackEvent.Type.LOW_MEMORY))
   }
 
   @CallSuper
   override fun onTrimMemory(level: Int) {
     super.onTrimMemory(level)
-    _callbacksFlow.tryEmit(createTrimMemoryEvent(level))
+    mutableCallbacksFlow.tryEmit(createTrimMemoryEvent(level))
   }
 
+  @SuppressLint("MissingSuperCall")
   override fun onPictureInPictureModeChanged(
     isInPictureInPictureMode: Boolean,
     newConfig: Configuration,
   ) {
-    _callbacksFlow.tryEmit(
-      createPictureInPictureMode(isInPictureInPictureMode),
-    )
+    mutableCallbacksFlow.tryEmit(createPictureInPictureMode(isInPictureInPictureMode))
   }
 
   override fun onBackPressed() {
@@ -194,13 +194,13 @@ public abstract class RibActivity :
   }
 
   override fun onUserLeaveHint() {
-    _lifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.USER_LEAVING))
+    mutableLifecycleFlow.tryEmit(create(ActivityLifecycleEvent.Type.USER_LEAVING))
     super.onUserLeaveHint()
   }
 
   override fun onWindowFocusChanged(hasFocus: Boolean) {
     super.onWindowFocusChanged(hasFocus)
-    _callbacksFlow.tryEmit(createWindowFocusEvent(hasFocus))
+    mutableCallbacksFlow.tryEmit(createWindowFocusEvent(hasFocus))
   }
 
   /**
@@ -219,7 +219,7 @@ public abstract class RibActivity :
         router?.interactor as Interactor<*, *>
       } else {
         throw IllegalStateException(
-          "Attempting to get a router when activity is not created or has been destroyed.",
+          "Attempting to get a router when activity is not created or has been destroyed."
         )
       }
 
@@ -244,9 +244,7 @@ public abstract class RibActivity :
           ActivityLifecycleEvent.Type.PAUSE -> create(ActivityLifecycleEvent.Type.STOP)
           ActivityLifecycleEvent.Type.STOP -> create(ActivityLifecycleEvent.Type.DESTROY)
           ActivityLifecycleEvent.Type.DESTROY ->
-            throw LifecycleEndedException(
-              "Cannot bind to Activity lifecycle when outside of it.",
-            )
+            throw LifecycleEndedException("Cannot bind to Activity lifecycle when outside of it.")
         }
       }
   }

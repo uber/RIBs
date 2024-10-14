@@ -50,7 +50,7 @@ public object RibCoroutinesConfig {
       """
       This dispatcher is only intended to be used within the [com.uber.rib.core.WorkerBinder].
       For adding and binding new RIB workers please use [RibCoroutineWorker]
-      """,
+      """
   )
   @JvmStatic
   public var deprecatedWorkerDispatcher: CoroutineDispatcher = RibDispatchers.Unconfined

@@ -29,8 +29,10 @@ public abstract class RibProcessor : AbstractProcessor(), ProcessContext {
 
   override var errorReporter: ErrorReporter? = null
     protected set
+
   override var elementUtils: Elements? = null
     protected set
+
   override var typesUtils: Types? = null
     protected set
 
@@ -45,9 +47,7 @@ public abstract class RibProcessor : AbstractProcessor(), ProcessContext {
     processorPipelines.addAll(getProcessorPipelines(this))
   }
 
-  override fun getSupportedSourceVersion(): SourceVersion {
-    return SourceVersion.latestSupported()
-  }
+  override fun getSupportedSourceVersion(): SourceVersion = SourceVersion.latestSupported()
 
   override fun process(annotations: Set<TypeElement>, roundEnv: RoundEnvironment): Boolean {
     if (roundEnv.processingOver()) {
@@ -58,7 +58,7 @@ public abstract class RibProcessor : AbstractProcessor(), ProcessContext {
         processorPipeline.process(annotations, roundEnv)
       } catch (e: Throwable) {
         errorReporter?.reportError(
-          "Fatal error running ${processorPipeline.annotationType.simpleName} processor: ${e.message}",
+          "Fatal error running ${processorPipeline.annotationType.simpleName} processor: ${e.message}"
         )
       }
     }
@@ -72,6 +72,6 @@ public abstract class RibProcessor : AbstractProcessor(), ProcessContext {
    * @return the list of processor pipelines.
    */
   protected abstract fun getProcessorPipelines(
-    processContext: ProcessContext,
+    processContext: ProcessContext
   ): List<ProcessorPipeline>
 }

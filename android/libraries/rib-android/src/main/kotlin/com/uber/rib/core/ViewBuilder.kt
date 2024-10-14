@@ -28,7 +28,7 @@ import android.view.ViewGroup
  * @param <DependencyT> dependency required to create this router.
  */
 public abstract class ViewBuilder<ViewType : View, RouterT : Router<*>, DependencyT>(
-  dependency: DependencyT,
+  dependency: DependencyT
 ) : Builder<RouterT, DependencyT>(dependency) {
   /**
    * Utility method to create the view for this router.

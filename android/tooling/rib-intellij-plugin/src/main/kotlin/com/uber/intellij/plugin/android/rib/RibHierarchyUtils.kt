@@ -88,9 +88,8 @@ public class RibHierarchyUtils {
     }
 
     /** Check if the element supplied is a root element. */
-    public fun isRootElement(element: PsiElement?): Boolean {
-      return element is PsiClass && element.qualifiedName == Object::class.java.name
-    }
+    public fun isRootElement(element: PsiElement?): Boolean =
+      element is PsiClass && element.qualifiedName == Object::class.java.name
 
     /** Format fully qualified class name. */
     public fun formatQualifiedName(qualifiedName: String): String {
@@ -158,11 +157,10 @@ public class RibHierarchyUtils {
     }
 
     /** Returns whether virtual file belongs to project and appears to be a layout file */
-    public fun isProjectLayoutFile(project: Project, file: VirtualFile): Boolean {
-      return ProjectRootManager.getInstance(project).fileIndex.isInContent(file) &&
+    public fun isProjectLayoutFile(project: Project, file: VirtualFile): Boolean =
+      ProjectRootManager.getInstance(project).fileIndex.isInContent(file) &&
         file.fileType is XmlFileType &&
         file.path.contains("/$LAYOUT_FOLDER_NAME/")
-    }
 
     /** Display popup balloon. */
     public fun displayPopup(

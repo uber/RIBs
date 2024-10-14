@@ -32,7 +32,7 @@ import org.mockito.kotlin.mock
   """
     Test only passes when running in isolation: RibEvents flows might've been accessed
     when running full suite.
-  """,
+  """
 )
 class RibEventsTest {
   private val extraBufferCapacity = 16

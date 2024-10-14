@@ -61,9 +61,7 @@ class ViewBuilderTest {
           return mock()
         }
 
-        override fun onThemeContext(parentContext: Context): Context {
-          return customContext
-        }
+        override fun onThemeContext(parentContext: Context): Context = customContext
       }
     viewBuilder.createView(parentViewGroup)
     Truth.assertThat(holder.inflaterContext).isEqualTo(customContext)

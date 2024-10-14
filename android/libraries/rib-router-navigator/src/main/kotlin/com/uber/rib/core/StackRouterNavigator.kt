@@ -51,7 +51,7 @@ constructor(
           Locale.getDefault(),
           "Preparing to pop existing transient state for router: %s",
           fromRouterName,
-        ),
+        )
       )
     } else {
       if (!navigationStack.isEmpty()) {
@@ -62,7 +62,7 @@ constructor(
             Locale.getDefault(),
             "Preparing to pop existing state for router: %s",
             fromRouterName,
-          ),
+          )
         )
       }
     }
@@ -184,10 +184,7 @@ constructor(
     return top.state
   }
 
-  @IntRange(from = 0)
-  override fun size(): Int {
-    return navigationStack.size
-  }
+  @IntRange(from = 0) override fun size(): Int = navigationStack.size
 
   /**
    * This will pop the current active router and clear the entire stack.
@@ -200,7 +197,7 @@ constructor(
         Locale.getDefault(),
         "Detaching RouterNavigator from host -> %s",
         hostRouterName,
-      ),
+      )
     )
     val currentRouterAndState = peekCurrentRouterAndState()
     detachInternal(currentRouterAndState, null as StateT?, false)
@@ -212,14 +209,13 @@ constructor(
     newState: StateT,
     attachTransition: RouterNavigator.AttachTransition<R, StateT>,
     detachTransition: RouterNavigator.DetachTransition<R, StateT>?,
-  ): RouterAndState<R, StateT> {
-    return RouterAndState(
+  ): RouterAndState<R, StateT> =
+    RouterAndState(
       newState,
       attachTransition,
       detachTransition,
       forceRouterCaching = forceRouterCaching,
     )
-  }
 
   /**
    * Handles the attachment logic for a router.
@@ -247,7 +243,7 @@ constructor(
         "Attaching %s as a child of %s",
         toRouterName,
         hostRouterName,
-      ),
+      )
     )
     hostRouter.attachChild(toRouterState.router)
   }
@@ -279,13 +275,12 @@ constructor(
     fromRouterState.onPostDetachFromHost(toState, isPush)
   }
 
-  private fun peekCurrentRouterAndState(): RouterAndState<*, StateT>? {
-    return if (currentTransientRouterAndState != null) {
+  private fun peekCurrentRouterAndState(): RouterAndState<*, StateT>? =
+    if (currentTransientRouterAndState != null) {
       currentTransientRouterAndState
     } else {
       navigationStack.peek()
     }
-  }
 
   private fun <R : Router<*>> clearTop(
     currentRouterAndState: RouterAndState<*, StateT>?,
@@ -413,7 +408,7 @@ constructor(
         Locale.getDefault(),
         "Installed new RouterNavigator: Hosting Router -> %s",
         hostRouterName,
-      ),
+      )
     )
   }
 }

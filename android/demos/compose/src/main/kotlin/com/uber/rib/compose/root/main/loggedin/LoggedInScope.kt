@@ -48,18 +48,16 @@ interface LoggedInScope {
     fun presenter(
       eventStream: EventStream<LoggedInEvent>,
       childContent: LoggedInRouter.ChildContent,
-    ): ComposePresenter {
-      return object : ComposePresenter() {
+    ): ComposePresenter =
+      object : ComposePresenter() {
         override val composable = @Composable { LoggedInView(eventStream, childContent) }
       }
-    }
 
     fun eventStream() = EventStream<LoggedInEvent>()
 
     @Expose
-    fun scoreSteam(authInfo: AuthInfo): ScoreStream {
-      return ScoreStream(authInfo.playerOne, authInfo.playerTwo)
-    }
+    fun scoreSteam(authInfo: AuthInfo): ScoreStream =
+      ScoreStream(authInfo.playerOne, authInfo.playerTwo)
 
     @Expose
     abstract fun startGameListener(interactor: LoggedInInteractor): OffGameInteractor.Listener

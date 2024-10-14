@@ -34,7 +34,7 @@ public abstract class Workflow<TReturnValue : Any, TRootActionableItem : Actiona
    */
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
   public open fun createSingle(
-    rootActionableItem: TRootActionableItem,
+    rootActionableItem: TRootActionableItem
   ): Single<Optional<TReturnValue>> =
     getSteps(rootActionableItem).asResultObservable().singleOrError()
 
@@ -43,6 +43,6 @@ public abstract class Workflow<TReturnValue : Any, TRootActionableItem : Actiona
    * @return steps to be performed for this workflow.
    */
   protected abstract fun getSteps(
-    rootActionableItem: TRootActionableItem,
+    rootActionableItem: TRootActionableItem
   ): Step<TReturnValue, out ActionableItem>
 }

@@ -27,10 +27,13 @@ import kotlinx.coroutines.MainScope
 public object RibDispatchers : RibDispatchersProvider {
   override val Default: CoroutineDispatcher
     get() = RibCoroutinesConfig.dispatchers.Default
+
   override val Main: MainCoroutineDispatcher
     get() = RibCoroutinesConfig.dispatchers.Main
+
   override val IO: CoroutineDispatcher
     get() = RibCoroutinesConfig.dispatchers.IO
+
   override val Unconfined: CoroutineDispatcher
     get() = RibCoroutinesConfig.dispatchers.Unconfined
 }
@@ -43,6 +46,7 @@ public data class DefaultRibDispatchers(
 ) : RibDispatchersProvider
 
 /** Allows providing default Dispatchers used for Rib CoroutineScopes */
+@Suppress("PropertyName")
 public interface RibDispatchersProvider {
 
   /**

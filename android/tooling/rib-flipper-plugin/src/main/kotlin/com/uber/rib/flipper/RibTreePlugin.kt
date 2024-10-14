@@ -67,9 +67,7 @@ public class RibTreePlugin : FlipperPlugin {
       .subscribe(events)
   }
 
-  override fun getId(): String {
-    return "ribtree"
-  }
+  override fun getId(): String = "ribtree"
 
   override fun onConnect(connection: FlipperConnection) {
     android.util.Log.d("RibTreeFlipperPlugin", "onConnect()")
@@ -110,9 +108,7 @@ public class RibTreePlugin : FlipperPlugin {
     connection = null
   }
 
-  override fun runInBackground(): Boolean {
-    return true
-  }
+  override fun runInBackground(): Boolean = true
 
   @Synchronized
   private fun getRouterById(id: String): Router<*>? {

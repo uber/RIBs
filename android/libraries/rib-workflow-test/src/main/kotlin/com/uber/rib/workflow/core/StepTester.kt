@@ -32,7 +32,7 @@ public object StepTester {
    */
   @JvmStatic
   public fun <T : Any, A : ActionableItem> exposeObservable(
-    step: Step<T, A>,
+    step: Step<T, A>
   ): Observable<Optional<Step.Data<T, A>>> = step.asObservable()
 
   /**
@@ -56,7 +56,7 @@ public object StepTester {
    */
   @JvmStatic
   public fun <T : Any, A : ActionableItem> assertStepNotYetEmitted(
-    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
   ) {
     testSubscriber.run {
       assertNoValues()
@@ -74,7 +74,7 @@ public object StepTester {
    */
   @JvmStatic
   public fun <T : Any, A : ActionableItem> assertStepEmitted(
-    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>,
+    testSubscriber: TestObserver<Optional<Step.Data<T, A>>>
   ) {
     testSubscriber.assertValueCount(1)
     val stepData: Optional<Step.Data<T, A>> = testSubscriber.values()[0]

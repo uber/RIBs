@@ -39,7 +39,7 @@ public val ScopeProvider.testScopeOverride: TestScope?
  * testing. Accessible directly as [TestScope] via [ScopeProvider.TestScopeOverride].
  */
 public fun ScopeProvider.enableTestScopeOverride(
-  context: CoroutineContext = SupervisorJob(),
+  context: CoroutineContext = SupervisorJob()
 ): Unit = synchronized(LazyCoroutineScope) { LazyCoroutineScope[this] = asTestScope(context) }
 
 /** Disables the [ScopeProvider.coroutineScope] override with [TestScope] */
@@ -67,9 +67,8 @@ public fun Application.disableTestScopeOverride(): Unit =
   synchronized(LazyCoroutineScope) { LazyCoroutineScope[this] = null }
 
 /** Returns a new [TestScope] from the [ScopeProvider] */
-public fun ScopeProvider.asTestScope(context: CoroutineContext = SupervisorJob()): TestScope {
-  return requestScope().asTestScope(context)
-}
+public fun ScopeProvider.asTestScope(context: CoroutineContext = SupervisorJob()): TestScope =
+  requestScope().asTestScope(context)
 
 /** Returns a new [TestScope] from the [CompletableSource] */
 public fun CompletableSource.asTestScope(context: CoroutineContext = SupervisorJob()): TestScope {
