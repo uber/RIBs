@@ -15,8 +15,8 @@
  */
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.kotlinKapt)
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
@@ -47,9 +47,7 @@ dependencies {
     testImplementation(project(":libraries:rib-coroutines-test"))
     testImplementation(libs.annotation)
     testImplementation(libs.android.api)
-    testImplementation(testLibs.junit)
-    testImplementation(testLibs.mockito)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
     testImplementation(project(":libraries:rib-test")) {
         transitive = false

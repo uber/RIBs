@@ -15,7 +15,7 @@
  */
 plugins {
     id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.maven.publish)
 }
 
 android {

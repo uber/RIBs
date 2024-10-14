@@ -16,7 +16,7 @@
 
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
@@ -29,6 +29,6 @@ dependencies {
     compileOnly(libs.android.api)
 
     testImplementation(testLibs.junit)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
 }

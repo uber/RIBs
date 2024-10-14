@@ -16,7 +16,7 @@
 
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.maven.publish)
 }
 
 kotlin {

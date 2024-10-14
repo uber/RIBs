@@ -40,7 +40,7 @@ configure<com.diffplug.gradle.spotless.SpotlessExtension> {
   }
   java {
     target("src/*/java/**/*.java")
-    googleJavaFormat(libs.versions.gjf.get())
+    googleJavaFormat(libs.versions.google.java.format.get())
     licenseHeaderFile(rootProject.file("config/spotless/copyright.java"))
     removeUnusedImports()
     trimTrailingWhitespace()

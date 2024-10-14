@@ -16,7 +16,7 @@
 
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    alias(libs.plugins.maven.publish)
 }
 
 kotlin {
@@ -39,8 +39,7 @@ dependencies {
     testImplementation(project(":libraries:rib-base"))
     testImplementation(project(":libraries:rib-test"))
     testImplementation(testLibs.junit)
-    testImplementation(testLibs.mockito)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
     testImplementation(testLibs.coroutines.test)
     testImplementation(libs.coroutines.android)
