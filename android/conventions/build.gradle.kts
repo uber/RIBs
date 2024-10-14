@@ -27,7 +27,7 @@ repositories {
 dependencies {
     // Workaround for using version catalog on precompiled scripts.
     // https://github.com/gradle/gradle/issues/15383#issuecomment-779893192
-    implementation(files(libs.javaClass.superclass.protectionDomain.codeSource.location))
+    implementation(files((libs as Any).javaClass.superclass.protectionDomain.codeSource.location))
     implementation(gradleApi())
     implementation(libs.gradle.android.plugin)
     implementation(libs.gradle.kotlin.plugin)
