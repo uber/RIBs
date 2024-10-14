@@ -36,5 +36,4 @@ dependencies {
     api(testLibs.truth)
     api(testLibs.mockito.kotlin)
     api(testLibs.coroutines.test)
-    implementation(testLibs.mockito.kotlin)
 }

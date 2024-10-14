@@ -24,40 +24,36 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 }
 
 android {
-    compileSdk = 33
-
+    compileSdk = 34
     defaultConfig {
         minSdk = 21
-        targetSdk = 28
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
     }
-
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+    buildFeatures {
+        buildConfig = true
     }
-
     // No need for lint. Those are just tutorials.
     lint {
         abortOnError = false
         quiet = true
     }
-
     buildTypes {
         debug {
             matchingFallbacks.add("release")
         }
     }
-
-    sourceSets {
-        getByName("main").java.srcDir("src/main/kotlin")
-        getByName("test").java.srcDir("src/test/kotlin")
-        getByName("androidTest").java.srcDir("src/androidTest/kotlin")
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+    kotlinOptions {
+        jvmTarget = "11"
     }
 }
 
@@ -71,9 +67,6 @@ androidComponents {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xjvm-default=all",
-            "-opt-in=kotlin.RequiresOptIn",
-        )
+        freeCompilerArgs.add("-Xjvm-default=all")
     }
 }

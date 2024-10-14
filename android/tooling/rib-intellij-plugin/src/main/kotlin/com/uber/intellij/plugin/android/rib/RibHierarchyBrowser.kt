@@ -265,7 +265,7 @@ public class RibHierarchyBrowser(
     }
   }
 
-  private inner class HelpAction internal constructor() :
+  private inner class HelpAction :
     AnAction(
       IdeBundle.message("action.help"),
       IdeBundle.message("action.help"),

@@ -1,42 +1,43 @@
 [versions]
 android-api = "4.1.1.4"
-androidx-activity = "1.7.0"
-androidx-annotations = "1.1.0"
-androidx-appcompat = "1.3.0"
-androidx-lifecycle = "2.6.1"
-autocommon = "0.8"
+androidx-activity = "1.9.2"
+androidx-annotations = "1.8.2"
+androidx-appcompat = "1.7.0"
+androidx-lifecycle = "2.8.3"
+autocommon = "0.10"
 autodispose = "1.4.0"
 autoservice = "1.0-rc4"
-autovalue = "1.7"
-checkerqual = "2.5.1"
-compose-compiler = "1.4.6"
-compose-libraries = "1.4.0"
-compose-navigation = "2.4.0-alpha03"
-coroutines = "1.7.3"
-dagger = "2.43.2"
-errorprone = "2.3.3"
+autoservice-ksp = "1.2.0"
+autovalue = "1.8.1"
+checkerqual = "3.42.0"
+compose-bom = "2024.09.00"
+compose-navigation = "2.8.2"
+coroutines = "1.8.0"
+dagger = "2.48"
+errorprone = "2.23.0"
 errorprone-javac = "9+181-r4173-1"
 flipper = "0.93.0"
 google-java-format = "1.24.0"
-gradle-android-plugin = "7.4.2"
-gradle-errorprone-plugin = "1.3.0"
-gradle-intellij-plugin = "1.15.0"
-gradle-maven-publish-plugin = "0.25.2"
-gradle-nullaway-plugin = "1.0.2"
+gradle-android-plugin = "8.7.0"
+gradle-errorprone-plugin = "4.0.1"
+gradle-intellij-plugin = "1.17.4"
+gradle-maven-publish-plugin = "0.29.0"
+gradle-nullaway-plugin = "1.3.0"
 gradle-spotless-plugin = "6.25.0"
-gson = "2.8.7"
-guava-android = "27.1-android"
-guava-jre = "27.1-jre"
+gson = "2.10.1"
+guava-android = "31.0.1-android"
+guava-jre = "31.0.1-jre"
 intellij = "2023.2"
-javapoet = "1.11.1"
+javapoet = "1.13.0"
 jsr250 = "1.0"
-kotlin = "1.8.20"
+kotlin = "2.0.0"
+ksp = "2.0.0-1.0.24"
 ktfmt = "0.52"
 ktlint = "1.3.1"
-leakcanary = "1.5.4"
-motif = "0.3.4"
+leakcanary = "2.14"
+motif = "0.4.0-alpha05"
 percent = "1.0.0"
-reactivestreams = "1.0.0"
+reactivestreams = "1.0.3"
 rxandroid2 = "2.1.1"
 rxbinding = "2.0.0"
 rxjava2 = "2.2.8"
@@ -57,18 +58,20 @@ autodispose-errorprone = { group = "com.uber.autodispose", name = "autodispose-e
 autodispose-library = { group = "com.uber.autodispose", name = "autodispose", version.ref = "autodispose" }
 autodispose-lifecycle = { group = "com.uber.autodispose", name = "autodispose-lifecycle", version.ref = "autodispose" }
 autoservice = { group = "com.google.auto.service", name = "auto-service", version.ref = "autoservice" }
+autoservice-ksp = { group = "dev.zacsweers.autoservice", name = "auto-service-ksp", version.ref = "autoservice-ksp" }
 autovalue-annotations = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autovalue" }
 autovalue-library = { group = "com.google.auto.value", name = "auto-value", version.ref = "autovalue" }
 checkerqual = { group = "org.checkerframework", name = "checker-qual", version.ref = "checkerqual" }
-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-libraries" }
-compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "compose-libraries" }
-compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose-libraries" }
-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose-libraries" }
+compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "compose-bom" }
+compose-animation = { group = "androidx.compose.animation", name = "animation" }
+compose-compiler = { group = "androidx.compose.compiler", name = "compiler" }
+compose-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+compose-material = { group = "androidx.compose.material", name = "material" }
+compose-runtime-rx2 = { group = "androidx.compose.runtime", name = "runtime-rxjava2" }
+compose-ui = { group = "androidx.compose.ui", name = "ui" }
+compose-uitooling = { group = "androidx.compose.ui", name = "ui-tooling" }
+compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose" }
 compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
-compose-runtime-rx2 = { group = "androidx.compose.runtime", name = "runtime-rxjava2", version.ref = "compose-libraries" }
-compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose-libraries" }
-compose-uitooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose-libraries" }
-compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-libraries" }
 coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
 coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "coroutines" }
 coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "coroutines" }
@@ -89,7 +92,6 @@ guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava-j
 javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
 jsr250 = { group = "javax.annotation", name = "jsr250-api", version.ref = "jsr250" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidx-lifecycle" }
 motif-compiler = { group = "com.uber.motif", name = "motif-compiler", version.ref = "motif" }
@@ -111,6 +113,8 @@ android-library = { id = "com.android.library", version.ref = "gradle-android-pl
 errorprone = { id = "net.ltgt.errorprone", version.ref = "gradle-errorprone-plugin" }
 intellij = { id = "org.jetbrains.intellij", version.ref = "gradle-intellij-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-symbol-processor = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-compiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "gradle-maven-publish-plugin" }
 nullaway = { id = "net.ltgt.nullaway", version.ref = "gradle-nullaway-plugin" }

@@ -2,10 +2,21 @@ import org.gradle.api.initialization.resolve.RepositoriesMode
 
 pluginManagement {
     repositories {
-        gradlePluginPortal()
-        google()
+        google {
+            content {
+                includeGroupByRegex("com\\.android.*")
+                includeGroupByRegex("com\\.google.*")
+                includeGroupByRegex("androidx.*")
+            }
+        }
         mavenCentral()
+        gradlePluginPortal()
     }
+}
+
+plugins {
+    // Provides repository for downloading JDKs. Used by JVM toolchain gradle config.
+    id("org.gradle.toolchains.foojay-resolver-convention") version("0.8.0")
 }
 
 dependencyResolutionManagement {

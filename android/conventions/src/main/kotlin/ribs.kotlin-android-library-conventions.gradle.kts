@@ -24,30 +24,28 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(17)
+    explicitApi()
 }
 
 android {
-    compileSdk = 33
+    compileSdk = 34
 
     defaultConfig {
         minSdk = 21
     }
 
-    // This can be removed on AGP 8.1.0-alpha09 onwards, since we are using JVM Toolchain
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = "11"
     }
 
     buildFeatures {
         buildConfig = false
-    }
-
-    sourceSets {
-        getByName("main").java.srcDir("src/main/kotlin")
-        getByName("test").java.srcDir("src/test/kotlin")
-        getByName("androidTest").java.srcDir("src/androidTest/kotlin")
     }
 
     testOptions {
@@ -67,10 +65,6 @@ androidComponents {
 
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xexplicit-api=warning",
-            "-Xjvm-default=all",
-            "-opt-in=kotlin.RequiresOptIn",
-        )
+        freeCompilerArgs.add("-Xjvm-default=all")
     }
 }

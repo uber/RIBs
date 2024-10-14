@@ -34,8 +34,12 @@ dependencies {
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
+tasks {
+    register<Copy>("copyTestResources") {
+        from("${projectDir}/src/test/resources")
+        into("${buildDir}/classes/test")
+    }
+    processTestResources {
+        dependsOn("copyTestResources")
+    }
 }
-processTestResources.dependsOn copyTestResources

@@ -27,6 +27,7 @@ dependencies {
     implementation(libs.javax.inject)
     implementation(libs.annotation)
     implementation(libs.appcompat)
+    implementation(libs.lifecycle.runtime)
     testImplementation(libs.appcompat)
     testImplementation(testLibs.robolectric)
 }

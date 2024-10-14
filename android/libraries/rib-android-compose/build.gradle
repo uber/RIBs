@@ -16,6 +16,7 @@
 plugins {
     id("ribs.kotlin-android-library-conventions")
     alias(libs.plugins.maven.publish)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -24,13 +25,13 @@ android {
     buildFeatures {
         compose true
     }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
-    }
 }
 
 dependencies {
+    def composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
     api(project(":libraries:rib-android"))
     implementation(libs.compose.foundation)
     implementation(libs.compose.ui)

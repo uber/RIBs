@@ -21,8 +21,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.R
 import com.google.common.truth.Truth
-import com.uber.rib.android.R
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.mock

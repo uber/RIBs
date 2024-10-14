@@ -19,7 +19,11 @@ plugins {
 }
 
 android {
-    namespace "com.uber.debug.broadcast.rib"
+    namespace = "com.uber.debug.broadcast.rib"
+}
+
+kotlin {
+    jvmToolchain(11)
 }
 
 dependencies {

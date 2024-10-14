@@ -32,7 +32,7 @@ public class RouterNavigatorFactory(private val creationStrategy: Strategy?) {
    * @param <StateT> [StateT] type for the [RouterNavigator]
    * @return A new [RouterNavigator]
    */
-  public open fun <StateT : RouterNavigatorState> create(
+  public fun <StateT : RouterNavigatorState> create(
     hostRouter: Router<*>
   ): RouterNavigator<StateT> =
     creationStrategy?.create(hostRouter) ?: StackRouterNavigator(hostRouter)

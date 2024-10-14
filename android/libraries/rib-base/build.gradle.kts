@@ -15,15 +15,15 @@
  */
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.symbol.processor)
     alias(libs.plugins.maven.publish)
 }
 
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
     // in order to invert a dependency. With a bit of work this could be removed.
-    kapt(libs.dagger.compiler)
-    kapt(libs.android.api)
+    ksp(libs.dagger.compiler)
+    ksp(libs.android.api)
 
     implementation(libs.guava.android)
     implementation(libs.reactivestreams)
@@ -35,7 +35,6 @@ dependencies {
 
     implementation(libs.autodispose.coroutines)
     implementation(libs.coroutines.rx2)
-    api(libs.kotlin.stdlib)
     api(libs.coroutines.core)
     api(project(":libraries:rib-coroutines"))
 
@@ -50,6 +49,6 @@ dependencies {
     testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
     testImplementation(project(":libraries:rib-test")) {
-        transitive = false
+        isTransitive = false
     }
 }

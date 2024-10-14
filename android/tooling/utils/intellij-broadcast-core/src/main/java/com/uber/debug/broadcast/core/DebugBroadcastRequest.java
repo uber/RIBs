@@ -22,6 +22,7 @@ import androidx.annotation.Nullable;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.util.Locale;
+import java.util.Objects;
 
 /** Class representing incoming request to debug broadcast receiver. */
 public class DebugBroadcastRequest {
@@ -33,17 +34,13 @@ public class DebugBroadcastRequest {
   private static final String TAG_TEMPLATE = DebugBroadcastReceiver.class.getSimpleName();
   private static final Gson GSON = new GsonBuilder().create();
 
-  private int sequence;
-  private String command;
-  private @Nullable Bundle extras;
+  private final int sequence;
+  private final String command;
+  private final @Nullable Bundle extras;
 
   protected DebugBroadcastRequest(int sequence, @Nullable String command, @Nullable Bundle extras) {
     this.sequence = sequence;
-    if (command != null) {
-      this.command = command;
-    } else {
-      this.command = "";
-    }
+    this.command = Objects.requireNonNullElse(command, "");
     this.extras = extras;
   }
 

@@ -113,11 +113,10 @@ public fun CoroutineScope.bind(
   var bindJob: CompletableJob? = null // A job that completes once worker's onStart completes
   val unbindJob =
     launch(context, CoroutineStart.UNDISPATCHED) {
-      val job = createBindingJob()
-      bindJob = job
+      bindJob = createBindingJob()
       // launch again -- this time, we will dispatch if installed dispatcher
       // tell us to (CoroutineDispatcher.isDispatchNeeded()).
-      launch { bindAndAwaitCancellation(worker, job) }
+      launch { bindAndAwaitCancellation(worker, bindJob) }
     }
   // !! is safe here -- outer coroutine was started undispatched.
   return BindWorkerHandleImpl(bindJob!!, unbindJob)

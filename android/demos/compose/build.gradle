@@ -1,6 +1,7 @@
 plugins {
     id("ribs.kotlin-android-application-conventions")
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.symbol.processor)
 }
 
 android {
@@ -12,13 +13,14 @@ android {
     buildFeatures {
         compose true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
-    }
 }
 
 dependencies {
-    kapt(libs.motif.compiler)
+    def composeBom = platform(libs.compose.bom)
+    implementation(composeBom)
+    androidTestImplementation(composeBom)
+
+    ksp(libs.motif.compiler)
     implementation(project(":libraries:rib-android"))
     implementation(project(":libraries:rib-android-compose"))
     implementation(project(":libraries:rib-coroutines"))

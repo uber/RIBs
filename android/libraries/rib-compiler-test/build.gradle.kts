@@ -1,5 +1,3 @@
-import org.gradle.internal.jvm.Jvm
-
 /*
  * Copyright (C) 2017. Uber Technologies
  *
@@ -18,7 +16,7 @@ import org.gradle.internal.jvm.Jvm
 
 plugins {
     id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.symbol.processor)
     alias(libs.plugins.maven.publish)
 }
 
@@ -29,16 +27,26 @@ dependencies {
     compileOnly(libs.annotation)
     compileOnly(libs.autoservice)
     compileOnly(libs.android.api)
-    kapt(libs.autoservice)
+    ksp(libs.autoservice.ksp)
 
     testImplementation(libs.annotation)
     testImplementation(testLibs.compile.testing)
-    testImplementation files("libs/tools.jar")
+    testImplementation(files("libs/tools.jar"))
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
+tasks {
+    register<Copy>("copyTestResources") {
+        from("${projectDir}/src/test/resources")
+        into("${buildDir}/classes/test")
+    }
+    processTestResources {
+        dependsOn("copyTestResources")
+    }
+    test {
+        // See: https://github.com/google/compile-testing/issues/222
+        jvmArgs("--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED")
+        jvmArgs("--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED")
+        jvmArgs("--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED")
+    }
 }
-processTestResources.dependsOn copyTestResources

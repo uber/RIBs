@@ -20,13 +20,13 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.appcompat.R
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
 import com.google.common.truth.Truth.assertThat
 import com.uber.autodispose.AutoDispose
 import com.uber.autodispose.lifecycle.LifecycleEndedException
-import com.uber.rib.android.R
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent.Companion.create
 import com.uber.rib.core.lifecycle.ActivityCallbackEvent.SaveInstanceState

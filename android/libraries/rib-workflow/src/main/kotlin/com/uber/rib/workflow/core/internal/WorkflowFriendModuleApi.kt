@@ -20,4 +20,6 @@ package com.uber.rib.workflow.core.internal
  *
  * Anything marked with this annotation is not intended for public use.
  */
-@RequiresOptIn(level = RequiresOptIn.Level.ERROR) internal annotation class WorkflowFriendModuleApi
+@Suppress("ExperimentalAnnotationRetention") // false positive
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+internal annotation class WorkflowFriendModuleApi

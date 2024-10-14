@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 import com.android.build.gradle.AbstractAppExtension
-import com.android.build.gradle.LibraryExtension
-import com.android.build.gradle.TestedExtension
 import com.android.build.gradle.api.BaseVariant
 import net.ltgt.gradle.errorprone.CheckSeverity
 import net.ltgt.gradle.errorprone.errorprone
@@ -23,25 +21,18 @@ import net.ltgt.gradle.nullaway.nullaway
 
 fun AbstractAppExtension.errorprone() {
   applicationVariants.configureEach { errorprone() }
-  testErrorprone()
-}
-
-fun LibraryExtension.errorprone() {
-  libraryVariants.configureEach { errorprone() }
-  testErrorprone()
-}
-
-fun TestedExtension.testErrorprone() {
   testVariants.configureEach { errorprone() }
   unitTestVariants.configureEach { errorprone() }
 }
 
-fun BaseVariant.errorprone() {
+private fun BaseVariant.errorprone() {
   javaCompileProvider.configure {
-    options.errorprone.nullaway {
-      severity.set(CheckSeverity.ERROR)
-      annotatedPackages.add("com.uber")
+    options.errorprone {
+      nullaway {
+        severity.set(CheckSeverity.ERROR)
+        annotatedPackages.add("com.uber")
+      }
+      excludedPaths.set(".*/build/generated/.*")
     }
-    options.errorprone.excludedPaths.set(".*/build/generated/.*")
   }
 }

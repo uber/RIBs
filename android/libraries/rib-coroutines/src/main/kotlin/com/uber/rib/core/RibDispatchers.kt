@@ -17,7 +17,6 @@ package com.uber.rib.core
 
 import kotlin.coroutines.ContinuationInterceptor
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO_PARALLELISM_PROPERTY_NAME
@@ -53,8 +52,8 @@ public interface RibDispatchersProvider {
    * The Default [CoroutineDispatcher] that behaves as [Dispatchers.Default].
    *
    * The default [CoroutineDispatcher] that is used by all standard builders like
-   * [launch][CoroutineScope.launch], [async][CoroutineScope.async], etc if no dispatcher nor any
-   * other [ContinuationInterceptor] is specified in their context.
+   * [launch][kotlinx.coroutines.launch], [async][kotlinx.coroutines.async], etc if no dispatcher
+   * nor any other [ContinuationInterceptor] is specified in their context.
    *
    * It is backed by a shared pool of threads on JVM. By default, the maximal level of parallelism
    * used by this dispatcher is equal to the number of CPU cores, but is at least two. Level of

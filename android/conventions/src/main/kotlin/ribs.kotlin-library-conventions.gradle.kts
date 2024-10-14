@@ -13,18 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.jvm.JvmTargetValidationMode
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     kotlin("jvm")
     id("ribs.spotless-convention")
 }
 
-kotlin {
-    jvmToolchain(8)
-    explicitApi()
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
-tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
+kotlin {
+    jvmToolchain(17)
+    explicitApi()
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
+        jvmTarget = JvmTarget.JVM_11
     }
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    jvmTargetValidationMode = JvmTargetValidationMode.WARNING
 }
