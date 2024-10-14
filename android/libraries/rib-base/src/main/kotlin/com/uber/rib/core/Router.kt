@@ -155,7 +155,10 @@ protected constructor(
   public open fun detachChild(childRouter: Router<*>) {
     val isChildRemoved = children.remove(childRouter)
     val interactor = childRouter.interactor
-    ribRefWatcher.watchDeletedObject(interactor)
+    ribRefWatcher.watchDeletedObject(
+      interactor,
+      "detached child router ${childRouter.javaClass.name}",
+    )
     ribRefWatcher.logBreadcrumb(
       "DETACHED",
       childRouter.javaClass.simpleName,
