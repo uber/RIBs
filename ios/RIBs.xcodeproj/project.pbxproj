@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -29,10 +29,12 @@
 		AF90B4111FBA185E00920384 /* ComponentTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF90B4101FBA185E00920384 /* ComponentTests.swift */; };
 		AF90B4141FBA18DB00920384 /* WorkerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF90B4131FBA18DB00920384 /* WorkerTests.swift */; };
 		AF90B4191FBA1F8500920384 /* WorkflowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF90B4181FBA1F8400920384 /* WorkflowTests.swift */; };
-		AF9966B21FC40D7E00CAEAA2 /* RxSwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */; };
 		AFB7D4031FC81C8F00045D2B /* Foundation+ExtensionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AF82F6731FC81B5F006DF7BC /* Foundation+ExtensionsTests.swift */; };
 		AFB7D4051FC81D6100045D2B /* LaunchRouterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */; };
-		BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF5FC0F022808377004235F1 /* RxRelay.framework */; };
+		DBA6777426C2C41900F13983 /* RxRelay.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA6777226C2C41900F13983 /* RxRelay.xcframework */; };
+		DBA6777626C2C41900F13983 /* RxSwift.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = DBA6777326C2C41900F13983 /* RxSwift.xcframework */; };
+		DB64C327273ED46E00CB2E5D /* ComponentizedBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64C326273ED46E00CB2E5D /* ComponentizedBuilder.swift */; };
+		DB64C329273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB64C328273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -72,9 +74,11 @@
 		AF90B4101FBA185E00920384 /* ComponentTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ComponentTests.swift; sourceTree = "<group>"; };
 		AF90B4131FBA18DB00920384 /* WorkerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkerTests.swift; sourceTree = "<group>"; };
 		AF90B4181FBA1F8400920384 /* WorkflowTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkflowTests.swift; sourceTree = "<group>"; };
-		AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxSwift.framework; path = ../Carthage/Build/iOS/RxSwift.framework; sourceTree = "<group>"; };
 		AFB7D4041FC81D6100045D2B /* LaunchRouterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LaunchRouterTests.swift; sourceTree = "<group>"; };
-		BF5FC0F022808377004235F1 /* RxRelay.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = RxRelay.framework; path = ../Carthage/Build/iOS/RxRelay.framework; sourceTree = "<group>"; };
+		DBA6777226C2C41900F13983 /* RxRelay.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = RxRelay.xcframework; path = ../Carthage/Build/RxRelay.xcframework; sourceTree = "<group>"; };
+		DBA6777326C2C41900F13983 /* RxSwift.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = RxSwift.xcframework; path = ../Carthage/Build/RxSwift.xcframework; sourceTree = "<group>"; };
+		DB64C326273ED46E00CB2E5D /* ComponentizedBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ComponentizedBuilder.swift; sourceTree = "<group>"; };
+		DB64C328273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MultiStageComponentizedBuilder.swift; sourceTree = "<group>"; };
 		E8E789432378AD000043E59E /* Package.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Package.swift; path = ../Package.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
@@ -83,8 +87,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF5FC0F122808377004235F1 /* RxRelay.framework in Frameworks */,
-				AF9966B21FC40D7E00CAEAA2 /* RxSwift.framework in Frameworks */,
+				DBA6777426C2C41900F13983 /* RxRelay.xcframework in Frameworks */,
+				DBA6777626C2C41900F13983 /* RxSwift.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,8 +107,10 @@
 			isa = PBXGroup;
 			children = (
 				413177291F8EEFF0005F08F0 /* Builder.swift */,
+				DB64C326273ED46E00CB2E5D /* ComponentizedBuilder.swift */,
 				413177221F8EEFEF005F08F0 /* Interactor.swift */,
 				413177261F8EEFEF005F08F0 /* LaunchRouter.swift */,
+				DB64C328273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift */,
 				413177231F8EEFEF005F08F0 /* PresentableInteractor.swift */,
 				413177251F8EEFEF005F08F0 /* Presenter.swift */,
 				413177271F8EEFEF005F08F0 /* Router.swift */,
@@ -209,8 +215,8 @@
 		AF5101421FBBA64A009C0DB3 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				BF5FC0F022808377004235F1 /* RxRelay.framework */,
-				AF9966B11FC40D7E00CAEAA2 /* RxSwift.framework */,
+				DBA6777226C2C41900F13983 /* RxRelay.xcframework */,
+				DBA6777326C2C41900F13983 /* RxSwift.xcframework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -356,27 +362,6 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		AF8C6C9B1FBC8D3D00C61033 /* Carthage */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/../Carthage/Build/iOS/RxSwift.framework",
-				"$(SRCROOT)/../Carthage/Build/iOS/RxRelay.framework",
-			);
-			name = Carthage;
-			outputPaths = (
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxSwift.framework",
-				"$(BUILT_PRODUCTS_DIR)/$(FRAMEWORKS_FOLDER_PATH)/RxRelay.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "/usr/local/bin/carthage copy-frameworks\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXSourcesBuildPhase section */
 		8B9882DD1F86E1CF00ABE009 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -386,6 +371,7 @@
 				418C175C1F97F19F003C03F7 /* Component.swift in Sources */,
 				4131773D1F8EF98A005F08F0 /* Foundation+Extensions.swift in Sources */,
 				4131772E1F8EF5FF005F08F0 /* LaunchRouter.swift in Sources */,
+				DB64C329273ED47600CB2E5D /* MultiStageComponentizedBuilder.swift in Sources */,
 				413177391F8EF70F005F08F0 /* Executor.swift in Sources */,
 				413177341F8EF602005F08F0 /* Worker.swift in Sources */,
 				418C175D1F97F1A1003C03F7 /* Dependency.swift in Sources */,
@@ -393,6 +379,7 @@
 				413177321F8EF5FF005F08F0 /* ViewableRouter.swift in Sources */,
 				413177351F8EF605005F08F0 /* Workflow.swift in Sources */,
 				4131772F1F8EF5FF005F08F0 /* PresentableInteractor.swift in Sources */,
+				DB64C327273ED46E00CB2E5D /* ComponentizedBuilder.swift in Sources */,
 				4131772C1F8EF5FF005F08F0 /* Builder.swift in Sources */,
 				413177331F8EF5FF005F08F0 /* ViewControllable.swift in Sources */,
 				413177311F8EF5FF005F08F0 /* Router.swift in Sources */,
@@ -536,7 +523,8 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 5.0;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -561,7 +549,11 @@
 				INFOPLIST_FILE = RIBs/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBs;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -588,7 +580,11 @@
 				INFOPLIST_FILE = RIBs/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBs;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
@@ -607,7 +603,11 @@
 					"$(PRODUCTS_DIR)../Carthage/Build/iOS/",
 				);
 				INFOPLIST_FILE = RIBsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
@@ -625,7 +625,11 @@
 					"$(PRODUCTS_DIR)../Carthage/Build/iOS/",
 				);
 				INFOPLIST_FILE = RIBsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.uber.RIBsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 5.0;
