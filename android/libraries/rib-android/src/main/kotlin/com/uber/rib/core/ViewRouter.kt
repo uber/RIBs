@@ -34,7 +34,8 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
   ) : super(interactor, component) {
     this.view = view
     if (XRay.isEnabled()) {
-      XRay.apply(this, view)
+      XRay.toggle()
+      XRay.apply(getName(), view)
     }
   }
 
@@ -44,7 +45,7 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
   ) : super(null, interactor, RibRefWatcher.getInstance(), getMainThread()) {
     this.view = view
     if (XRay.isEnabled()) {
-      XRay.apply(this, view)
+      XRay.apply(getName(), view)
     }
   }
 }

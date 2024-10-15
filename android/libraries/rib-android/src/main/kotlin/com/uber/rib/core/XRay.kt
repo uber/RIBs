@@ -23,95 +23,109 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.view.Gravity
 import android.view.View
+import androidx.annotation.VisibleForTesting
 
 /** Utility class that shows riblets name in its background. */
-class XRay private constructor() {
-  private var isEnabled = false
-  private var textPaint: Paint? = null
+public object XRay {
+  private var config = XRayConfig()
+  private val textPaint =
+    Paint().apply {
+      textSize = TEXT_SIZE.toFloat()
+      color = TEXT_COLOR
+    }
+
   private fun writeOnBitmap(bitmap: Bitmap, text: String) {
-    val canvas = Canvas(bitmap)
-    val textPaint = getTextPaint()
-    val xStartPoint = (bitmap.width - textPaint.measureText(text)) / 2f
-    val yStartPoint = bitmap.height / 2f
-    canvas.drawText(text, xStartPoint, yStartPoint, textPaint)
+    Canvas(bitmap).run {
+      val xStartPoint = (bitmap.width - textPaint.measureText(text)) / 2f
+      val yStartPoint = bitmap.height / 2f
+      drawText(text, xStartPoint, yStartPoint, textPaint)
+    }
   }
 
-  private fun getTextPaint(): Paint {
-    if (textPaint == null) {
-      textPaint =
-        Paint().apply {
-          textSize = TEXT_SIZE.toFloat()
-          color = TEXT_COLOR
-        }
-    }
-    return textPaint!!
+  /** Setup XRay using a [XRayConfig] */
+  @JvmStatic
+  public fun setup(config: XRayConfig) {
+    this.config = config
   }
 
-  companion object {
-    private val INSTANCE = XRay()
-    private const val FRAME_WIDTH = 500
-    private const val FRAME_HEIGHT = 150
-    private const val XRAY_ALFA = 0.9f
-    private const val TEXT_SIZE = 30
-    private const val TEXT_COLOR = Color.RED
+  /** Toggles state of XRay. */
+  @Deprecated(
+    message = "toggle() may lead to switch-on-switch-off behavior. Use setup() instead.",
+    replaceWith = ReplaceWith("setup(XRayConfig(enabled = !config.enabled))"),
+  )
+  @JvmStatic
+  public fun toggle() {
+    setup(config.copy(enabled = !config.enabled))
+  }
 
-    /** Toggles state of XRay. */
-    @JvmStatic
-    fun toggle() {
-      INSTANCE.isEnabled = !INSTANCE.isEnabled
-    }
+  /** @return `true` if XRay is enabled, `false` otherwise. */
+  @JvmStatic
+  public fun isEnabled(): Boolean {
+    return this.config.enabled
+  }
 
-    /** @return `true` if XRay is enabled, `false` otherwise. */
-    @JvmStatic
-    fun isEnabled(): Boolean {
-      return INSTANCE.isEnabled
-    }
-
-    /**
-     * Puts [ViewBuilder]s riblet name in the background of the [View]
-     *
-     * @param viewRouter a [ViewRouter] which riblets name should be written.
-     * @param view a [View] to put the name behind.
-     */
-    @JvmStatic
-    fun apply(viewRouter: ViewRouter<*, *>, view: View) {
-      val oldBackground = view.background
-      val bitmap: Bitmap =
-        if (oldBackground != null) {
-          drawableToBitmap(oldBackground)
-        } else {
-          Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
-        }
-      INSTANCE.writeOnBitmap(bitmap, getRibletName(viewRouter))
-      val newBackground = BitmapDrawable(view.context.resources, bitmap)
-      newBackground.gravity = Gravity.CENTER
-      view.background = newBackground
-      view.alpha = XRAY_ALFA
-    }
-
-    private fun drawableToBitmap(drawable: Drawable): Bitmap {
-      if (drawable is BitmapDrawable) {
-        if (drawable.bitmap != null) {
-          return drawable.bitmap
-        }
+  /**
+   * Puts [ViewBuilder]s riblet name in the background of the [View]
+   *
+   * @param routerName the riblets name to be written.
+   * @param view a [View] to put the name behind.
+   */
+  @JvmStatic
+  internal fun apply(routerName: String, view: View) {
+    val oldBackground = view.background
+    val bitmap: Bitmap =
+      if (oldBackground != null) {
+        drawableToBitmap(oldBackground)
+      } else {
+        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
       }
-      val bitmap: Bitmap =
-        if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
-          Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
-        } else {
-          Bitmap.createBitmap(
-            drawable.intrinsicWidth,
-            drawable.intrinsicHeight,
-            Bitmap.Config.ARGB_8888,
-          )
-        }
-      val canvas = Canvas(bitmap)
-      drawable.draw(canvas)
-      return bitmap
-    }
+    writeOnBitmap(bitmap, getShortRibletName(routerName))
+    view.background =
+      BitmapDrawable(view.context.resources, bitmap).apply { gravity = Gravity.CENTER }
 
-    private fun getRibletName(viewRouter: ViewRouter<*, *>): String {
-      return viewRouter.javaClass.simpleName.replace("Router", "")
+    if (config.alphaEnabled) {
+      view.alpha = XRAY_ALPHA
     }
   }
+
+  private fun drawableToBitmap(drawable: Drawable): Bitmap {
+    if (drawable is BitmapDrawable) {
+      if (drawable.bitmap != null) {
+        return drawable.bitmap
+      }
+    }
+    val bitmap: Bitmap =
+      if (drawable.intrinsicWidth <= 0 || drawable.intrinsicHeight <= 0) {
+        Bitmap.createBitmap(FRAME_WIDTH, FRAME_HEIGHT, Bitmap.Config.ARGB_8888)
+      } else {
+        Bitmap.createBitmap(
+          drawable.intrinsicWidth,
+          drawable.intrinsicHeight,
+          Bitmap.Config.ARGB_8888,
+        )
+      }
+    val canvas = Canvas(bitmap)
+    drawable.draw(canvas)
+    return bitmap
+  }
+
+  @VisibleForTesting
+  internal fun getShortRibletName(originalName: String): String {
+    return if (originalName != "Router") {
+      originalName.replace("Router", "")
+    } else {
+      originalName
+    }
+  }
+
+  private const val FRAME_WIDTH = 500
+  private const val FRAME_HEIGHT = 150
+  private const val XRAY_ALPHA = 0.9f
+  private const val TEXT_SIZE = 30
+  private const val TEXT_COLOR = Color.RED
 }
+
+public data class XRayConfig(
+  val enabled: Boolean = false,
+  val alphaEnabled: Boolean = true,
+)
