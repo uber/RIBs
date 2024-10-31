@@ -5,8 +5,8 @@
 [![Android CI](https://github.com/uber/RIBs/actions/workflows/android.yml/badge.svg?branch=main)](https://github.com/uber/RIBs/actions/workflows/android.yml)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/com.uber.rib/rib-android.svg)](https://search.maven.org/artifact/com.uber.rib/rib-android)
-[![Cocoapods Compatible](https://img.shields.io/cocoapods/v/RIBs.svg)](https://cocoapods.org/pods/ribs)
-[![Carthage Compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg)](https://github.com/Carthage/Carthage)
+
+> ⚠️ **Alert:** RIBs for IOS has been has been moved to a [separate repo](github.com/uber/ribs-ios)
 
 RIBs is the cross-platform architecture framework behind many mobile apps at Uber. The name RIBs is short for Router, Interactor and Builder, which are core components of this architecture. This framework is designed for mobile apps with a large number of engineers and nested states.
 
@@ -56,27 +56,10 @@ dependencies {
 ```
 There are a number of extension packages available as well including Kotlin extensions, Jetpack Compose support, Coroutines support
 
-
-## Installation for iOS
-#### CocoaPods
-
-To integrate RIBs into your project add the following to your `Podfile`:
-
-```ruby
-pod 'RIBs', '~> 0.9'
-```
-
-#### Carthage
-
-To integrate RIBs into your project using Carthage add the following to your `Cartfile`:
-
-```ruby
-github "uber/RIBs" ~> 0.9
-```
-
 ## Related projects
 
 If you like RIBs, check out other related open source projects from our team:
+- [RIBs-iOS](github.com/uber/ribs-ios): The iOS version of RIBs
 - [Needle](https://github.com/uber/needle): a compile-time safe Swift dependency injection framework.
 - [Motif](https://github.com/uber/motif): An abstract on top of Dagger offering simpler APIs for nested scopes.
 - [Swift Concurrency](https://github.com/uber/swift-concurrency): a set of concurrency utility classes used by Uber, inspired by the equivalent [java.util.concurrent](https://docs.oracle.com/javase/8/docs/api/java/util/concurrent/package-summary.html) package classes.
