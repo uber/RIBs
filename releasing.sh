@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 ROOT_DIR="$(git rev-parse --show-toplevel)"
-ANDROID_DIR="$ROOT_DIR/android"
+ANDROID_DIR="$ROOT_DIR"
 
 # Change the version in `gradle.properties` to a non-SNAPSHOT version
 sed -i '' 's|-SNAPSHOT||' $ANDROID_DIR/gradle.properties
@@ -10,7 +10,7 @@ echo "Preparing to release: $NEW_VERSION"
 
 # Update the `README.md` with the new version
 OLD_VERSION=$(grep -iE "'com.uber.rib:rib-" $ROOT_DIR/README.md | grep -Eo "\d+\.\d+\.\d+" | sort | uniq)
-find $ROOT_DIR -type f -name 'README.md' | grep -v 'ios' | xargs sed -i '' "s|$OLD_VERSION|$NEW_VERSION|g"
+find $ROOT_DIR -type f -name 'README.md' | xargs sed -i '' "s|$OLD_VERSION|$NEW_VERSION|g"
 
 # Update the `CHANGELOG.md` for the impending release
 vim $ROOT_DIR/CHANGELOG.md
