@@ -189,6 +189,11 @@ public abstract class Generator {
         String name = entries.nextElement().getName();
         if (name.startsWith(path)) { // filter according to the path
           String entry = name.substring(path.length());
+          java.nio.file.Path normalizedPath = new File(entry).toPath().normalize();
+          java.nio.file.Path basePath = new File(path).toPath().normalize();
+          if (!normalizedPath.startsWith(basePath)) {
+            throw new IOException("Invalid JAR entry: " + name);
+          }
           int checkSubdir = entry.indexOf("/");
           if (checkSubdir >= 0) {
             // if it is a subdirectory, we just return the directory name
