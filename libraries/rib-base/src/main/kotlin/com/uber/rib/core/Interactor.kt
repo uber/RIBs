@@ -28,8 +28,10 @@ import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
 import kotlinx.coroutines.channels.BufferOverflow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.rx2.asObservable
 
 /**
@@ -42,9 +44,23 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   @Inject public lateinit var injectedPresenter: P
 
   @CoreFriendModuleApi public var actualPresenter: P? = null
-  private val _lifecycleFlow = MutableSharedFlow<InteractorEvent>(1, 0, BufferOverflow.DROP_OLDEST)
-  public open val lifecycleFlow: SharedFlow<InteractorEvent>
-    get() = _lifecycleFlow
+
+  private val useStateFlow
+    get() = RibEvents.useStateFlowInteractorEvent
+
+  @VisibleForTesting
+  internal val _lifecycleFlow: MutableSharedFlow<InteractorEvent?> =
+    if (useStateFlow) {
+      MutableStateFlow(null)
+    } else {
+      MutableSharedFlow(
+        1,
+        0,
+        BufferOverflow.DROP_OLDEST,
+      )
+    }
+  public open val lifecycleFlow: Flow<InteractorEvent>
+    get() = _lifecycleFlow.filterNotNull()
 
   @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
 
@@ -70,11 +86,11 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   final override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> =
     LIFECYCLE_MAP_FUNCTION
 
-  final override fun peekLifecycle(): InteractorEvent? = lifecycleFlow.replayCache.lastOrNull()
+  final override fun peekLifecycle(): InteractorEvent? = _lifecycleFlow.replayCache.lastOrNull()
 
   @OptIn(CoreFriendModuleApi::class)
   final override fun requestScope(): CompletableSource =
-    lifecycleFlow.asScopeCompletable(lifecycleRange)
+    _lifecycleFlow.asScopeCompletable(lifecycleRange)
 
   // ---- InteractorType overrides ---- //
 

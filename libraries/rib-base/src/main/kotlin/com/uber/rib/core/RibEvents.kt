@@ -35,6 +35,9 @@ public object RibEvents {
   @JvmStatic
   public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
 
+  internal var useStateFlowInteractorEvent: Boolean = false
+    private set
+
   /** Indicates if [ribActionEvents] will be emitting. */
   public var areRibActionEmissionsAllowed: Boolean = false
     @VisibleForTesting internal set
@@ -46,6 +49,12 @@ public object RibEvents {
   @JvmStatic
   public fun enableRibActionEmissions() {
     this.areRibActionEmissionsAllowed = true
+  }
+
+  /** If true, the [Interactor] will use [MutableStateFlow] for the interactor events. */
+  @JvmStatic
+  public fun useStateFlowInteractorEvent() {
+    this.useStateFlowInteractorEvent = true
   }
 
   /**

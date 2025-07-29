@@ -18,11 +18,18 @@ package com.uber.rib.core
 import com.google.common.truth.Truth
 import com.google.common.truth.Truth.assertThat
 import com.uber.autodispose.lifecycle.LifecycleEndedException
+import com.uber.autodispose.lifecycle.LifecycleNotStartedException
 import com.uber.rib.core.RibEvents.ribActionEvents
 import com.uber.rib.core.RibEventsUtils.assertRibActionInfo
 import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
+import io.reactivex.Completable
 import io.reactivex.observers.TestObserver
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.test.runTest
+import kotlinx.coroutines.withTimeoutOrNull
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
@@ -214,6 +221,128 @@ class InteractorAndRouterTest {
 
     // Verify: called four times. Twice for each interactor.
     verify(ribRefWatcher, times(2)).watchDeletedObject(any())
+  }
+
+  @Test
+  fun init_useStateFlow_eventIsNotFired() = runTest {
+    // Given
+    setupInteractorForStateFlow()
+    var eventCount = 0
+    val lifecycleFlow = interactor.lifecycleFlow
+    val _lifecycleFlow = interactor._lifecycleFlow
+
+    // When
+    withTimeoutOrNull(10) { lifecycleFlow.collect { eventCount++ } }
+
+    // Then
+    assertThat(_lifecycleFlow).isInstanceOf(MutableStateFlow::class.java)
+    assertThat(eventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun init_eventIsNotFired() = runTest {
+    // When
+    var eventCount = 0
+    val lifecycleFlow = interactor.lifecycleFlow
+    val _lifecycleFlow = interactor._lifecycleFlow
+
+    // When
+    withTimeoutOrNull(10) { lifecycleFlow.collect { eventCount++ } }
+
+    // Then
+    assertThat(_lifecycleFlow).isInstanceOf(MutableSharedFlow::class.java)
+    assertThat(eventCount).isEqualTo(0)
+  }
+
+  @Test
+  fun requestScope_initAndUseStateFlow_throwsAnError() {
+    // Given
+    setupInteractorForStateFlow()
+
+    // When
+    try {
+      interactor.requestScope()
+      fail("Expected LifecycleEndedException")
+    } catch (e: LifecycleNotStartedException) {
+      // Then
+      // Expected exception, do nothing
+    }
+  }
+
+  @Test
+  fun requestScope_initWith_throwsAnError() {
+    // When
+    try {
+      interactor.requestScope()
+      fail("Expected LifecycleEndedException")
+    } catch (e: LifecycleNotStartedException) {
+      // Then
+      // Expected exception, do nothing
+    }
+  }
+
+  @Test
+  fun requestScope_useStateFlowAndAttached_requestScopeIsNotCompleted() {
+    // Given
+    setupInteractorForStateFlow()
+    interactor.dispatchAttach(null)
+
+    // When
+    Completable.wrap(interactor.requestScope())
+      .test()
+      // Then
+      .assertNotComplete()
+  }
+
+  @Test
+  fun requestScope_attached_requestScopeIsNotCompleted() {
+    // Given
+    interactor.dispatchAttach(null)
+
+    // When
+    Completable.wrap(interactor.requestScope())
+      .test()
+      // Then
+      .assertNotComplete()
+  }
+
+  @Test
+  fun requestScope_useStateFlowAndDetached_requestScopeIsCompleted() {
+    // Given
+    setupInteractorForStateFlow()
+    interactor.dispatchAttach(null)
+    val requestScope = Completable.wrap(interactor.requestScope())
+    interactor.dispatchDetach()
+
+    // When
+    requestScope
+      .test()
+      // Then
+      .assertComplete()
+  }
+
+  @Test
+  fun requestScope_detached_requestScopeIsCompleted() {
+    // Given
+    interactor.dispatchAttach(null)
+    val requestScope = Completable.wrap(interactor.requestScope())
+    interactor.dispatchDetach()
+
+    // When
+    requestScope
+      .test()
+      // Then
+      .assertComplete()
+  }
+
+  private fun setupInteractorForStateFlow() {
+    RibEvents.useStateFlowInteractorEvent()
+    val presenter: TestPresenter = mock()
+    val component: InteractorComponent<TestPresenter, TestInteractor> = mock {
+      on { presenter() } doReturn (presenter)
+    }
+    interactor = TestInteractor(childInteractor)
+    router = TestRouter(interactor, component)
   }
 
   private fun addTwoNestedChildInteractors(): Router<TestInteractorB> {
