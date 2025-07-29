@@ -31,7 +31,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineStart
 import kotlinx.coroutines.DelicateCoroutinesApi
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.onCompletion
 import kotlinx.coroutines.flow.takeWhile
 import kotlinx.coroutines.launch
@@ -264,7 +264,7 @@ private fun getJobCoroutineContext(
 }
 
 private fun <T : Comparable<T>> Worker.bind(
-  lifecycle: SharedFlow<T>,
+  lifecycle: Flow<T>,
   lifecycleRange: ClosedRange<T>,
 ): WorkerUnbinder {
   val dispatcherAtBinder = RibCoroutinesConfig.deprecatedWorkerDispatcher

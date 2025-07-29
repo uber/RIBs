@@ -38,17 +38,17 @@ import kotlinx.coroutines.rx2.rxCompletable
  *    [range].
  */
 @CoreFriendModuleApi
-public fun <T : Comparable<T>> SharedFlow<T>.asScopeCompletable(
+public fun <T : Comparable<T>> SharedFlow<T?>.asScopeCompletable(
   range: ClosedRange<T>,
   context: CoroutineContext = EmptyCoroutineContext,
 ): CompletableSource {
   ensureAlive(range)
   return rxCompletable(RibDispatchers.Unconfined + context) {
-    takeWhile { it < range.endInclusive }.collect()
+    takeWhile { it == null || it < range.endInclusive }.collect()
   }
 }
 
-private fun <T : Comparable<T>> SharedFlow<T>.ensureAlive(range: ClosedRange<T>) {
+private fun <T : Comparable<T>> SharedFlow<T?>.ensureAlive(range: ClosedRange<T>) {
   val lastEmitted = replayCache.lastOrNull()
   when {
     lastEmitted == null || lastEmitted < range.start -> throw LifecycleNotStartedException()
