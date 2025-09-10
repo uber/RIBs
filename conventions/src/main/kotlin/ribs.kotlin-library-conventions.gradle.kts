@@ -19,12 +19,23 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(8)
+    jvmToolchain(11)
     explicitApi()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
+    }
+}
+
+tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 }
