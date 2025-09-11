@@ -39,6 +39,14 @@ public object RibCoroutinesConfig {
   @JvmStatic public var exceptionHandler: CoroutineExceptionHandler? = null
 
   /**
+   * When set, the `coroutineScope` extension property will fail silently (i.e. not throw) when
+   * accessed after the scope has completed.
+   *
+   * Defaults to `false`.
+   */
+  @JvmStatic public var shouldCoroutineScopeFailSilentlyOnLifecycleEnded: Boolean = false
+
+  /**
    * Specify the [CoroutineDispatcher] to be used while binding a [com.uber.rib.Worker] via
    * [WorkerBinder]
    *

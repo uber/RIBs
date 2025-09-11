@@ -13,22 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
     id("ribs.kotlin.library")
     alias(libs.plugins.maven.publish)
 }
 
 dependencies {
-
     api(libs.autodispose.coroutines)
     api(libs.kotlinx.coroutines.android)
     api(libs.kotlinx.coroutines.rx2)
 
     compileOnly(libs.android.api)
 
+    implementation(libs.autodispose.lifecycle)
+
     testImplementation(project(":libraries:rib-base"))
     testImplementation(project(":libraries:rib-test"))
+    testImplementation(project(":libraries:rib-coroutines-test"))
     testImplementation(testLibs.junit)
     testImplementation(testLibs.mockito)
     testImplementation(testLibs.mockito.kotlin)

@@ -17,8 +17,10 @@ package com.uber.rib.core
 
 import android.app.Application
 import com.uber.autodispose.ScopeProvider
-import com.uber.autodispose.coroutinesinterop.asCoroutineScope
+import com.uber.autodispose.lifecycle.LifecycleEndedException
 import com.uber.rib.core.internal.CoroutinesFriendModuleApi
+import io.reactivex.CompletableObserver
+import io.reactivex.disposables.Disposable
 import java.util.WeakHashMap
 import kotlin.coroutines.CoroutineContext
 import kotlin.coroutines.EmptyCoroutineContext
@@ -26,6 +28,7 @@ import kotlin.reflect.KProperty
 import kotlinx.coroutines.CoroutineName
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.job
 
 /**
@@ -33,19 +36,29 @@ import kotlinx.coroutines.job
  * completed
  *
  * This scope is bound to
- * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
+ * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate].
+ *
+ * Calling this property outside of the lifecycle of the [ScopeProvider] will throw
+ * [OutsideScopeException][com.uber.autodispose.OutsideScopeException]. By setting
+ * [RibCoroutinesConfig.shouldCoroutineScopeFailSilentlyOnLifecycleEnded] to `true`, accessing this
+ * property after the [ScopeProvider] has completed will instead return a [CoroutineScope] that is
+ * immediately cancelled.
  */
 @OptIn(CoroutinesFriendModuleApi::class)
-public val ScopeProvider.coroutineScope: CoroutineScope by
-  LazyCoroutineScope<ScopeProvider> {
-    val context: CoroutineContext =
-      SupervisorJob() +
-        RibDispatchers.Main.immediate +
-        CoroutineName("${this::class.simpleName}:coroutineScope") +
-        (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
-
-    asCoroutineScope(context)
+public val ScopeProvider.coroutineScope: CoroutineScope by LazyCoroutineScope {
+  val context = createCoroutineContext()
+  try {
+    ScopeProviderCoroutineScope(this, context)
+  } catch (e: LifecycleEndedException) {
+    if (RibCoroutinesConfig.shouldCoroutineScopeFailSilentlyOnLifecycleEnded) {
+      CoroutineScope(context).also {
+        it.cancel("ScopeProvider is outside of scope. context = $context", e)
+      }
+    } else {
+      throw e
+    }
   }
+}
 
 /**
  * [CoroutineScope] tied to this [Application]. This scope will not be cancelled, it lives for the
@@ -55,16 +68,40 @@ public val ScopeProvider.coroutineScope: CoroutineScope by
  * [RibDispatchers.Main.immediate][kotlinx.coroutines.MainCoroutineDispatcher.immediate]
  */
 @OptIn(CoroutinesFriendModuleApi::class)
-public val Application.coroutineScope: CoroutineScope by
-  LazyCoroutineScope<Application> {
-    val context: CoroutineContext =
-      SupervisorJob() +
-        RibDispatchers.Main.immediate +
-        CoroutineName("${this::class.simpleName}:coroutineScope") +
-        (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+public val Application.coroutineScope: CoroutineScope by LazyCoroutineScope {
+  CoroutineScope(createCoroutineContext())
+}
 
-    CoroutineScope(context)
+private fun Any.createCoroutineContext() =
+  SupervisorJob() +
+    RibDispatchers.Main.immediate +
+    CoroutineName("${this::class.simpleName}:coroutineScope") +
+    (RibCoroutinesConfig.exceptionHandler ?: EmptyCoroutineContext)
+
+private class ScopeProviderCoroutineScope(
+  scopeProvider: ScopeProvider,
+  coroutineContext: CoroutineContext,
+) :
+  ScopeProvider by scopeProvider,
+  CoroutineScope by CoroutineScope(coroutineContext),
+  CompletableObserver {
+
+  init {
+    requestScope().subscribe(this)
   }
+
+  override fun onSubscribe(d: Disposable) {
+    coroutineContext.job.invokeOnCompletion { d.dispose() }
+  }
+
+  override fun onComplete() {
+    cancel()
+  }
+
+  override fun onError(e: Throwable) {
+    cancel("ScopeProvider completed with error", e)
+  }
+}
 
 @CoroutinesFriendModuleApi
 public class LazyCoroutineScope<This : Any>(private val initializer: This.() -> CoroutineScope) {
