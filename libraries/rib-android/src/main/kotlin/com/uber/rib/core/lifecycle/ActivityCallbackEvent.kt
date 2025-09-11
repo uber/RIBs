@@ -17,6 +17,7 @@ package com.uber.rib.core.lifecycle
 
 import android.content.Intent
 import android.os.Bundle
+import java.util.Locale
 
 /** Callback events that can be emitted by Activities. */
 open class ActivityCallbackEvent
@@ -96,10 +97,14 @@ private constructor(
     fun create(type: Type): ActivityCallbackEvent {
       return when (type) {
         Type.LOW_MEMORY -> LOW_MEMORY_EVENT
-        else ->
-          throw IllegalArgumentException(
-            "Use the createOn${type.name.toLowerCase().capitalize()}Event() method for this type!",
-          )
+        else -> {
+          val locale = Locale.getDefault()
+          val name =
+            type.name.lowercase(locale).replaceFirstChar {
+              if (it.isLowerCase()) it.titlecase(locale) else it.toString()
+            }
+          throw IllegalArgumentException("Use the createOn${name}Event() method for this type!")
+        }
       }
     }
 
