@@ -22,10 +22,10 @@ import android.graphics.Paint
 import android.graphics.PixelFormat
 import android.graphics.drawable.Drawable
 
-open class RibDebugOverlay : Drawable() {
+public open class RibDebugOverlay : Drawable() {
   private var enabled = true
 
-  open fun setEnabled(enabled: Boolean) {
+  public open fun setEnabled(enabled: Boolean) {
     this.enabled = enabled
   }
 
@@ -43,9 +43,9 @@ open class RibDebugOverlay : Drawable() {
 
   override fun setColorFilter(colorFilter: ColorFilter?) {}
 
-  override fun getOpacity() = PixelFormat.TRANSLUCENT
+  @Deprecated("Deprecated in Java") override fun getOpacity(): Int = PixelFormat.TRANSLUCENT
 
-  companion object {
+  public companion object {
     private const val OVERLAY_COLOR = Color.RED
     private const val OVERLAY_ALPHA = 35
   }

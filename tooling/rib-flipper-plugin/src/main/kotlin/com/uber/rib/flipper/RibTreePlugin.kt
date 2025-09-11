@@ -34,7 +34,7 @@ import java.util.UUID
 import java.util.WeakHashMap
 
 /** Flipper debug tool plugin to help with RIBs developement. */
-class RibTreePlugin : FlipperPlugin {
+public class RibTreePlugin : FlipperPlugin {
   private var connection: FlipperConnection? = null
   private var disposable: Disposable? = null
   private val events: ReplaySubject<RibEventPayload> = ReplaySubject.create(EVENTS_CAPACITY)
@@ -43,7 +43,7 @@ class RibTreePlugin : FlipperPlugin {
     HashMap<String, WeakReference<RibDebugOverlay>>()
   private val routersToId: WeakHashMap<Router<*>, String> = WeakHashMap<Router<*>, String>()
 
-  companion object {
+  public companion object {
     private val TAG: String = RibTreePlugin::class.java.simpleName
     private const val EVENTS_CAPACITY = 1000
   }

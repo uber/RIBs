@@ -23,7 +23,7 @@ plugins {
 
 kotlin {
     jvmToolchain(17)
-    explicitApiWarning()
+    explicitApi()
 
     compilerOptions {
         jvmTarget = JvmTarget.JVM_1_8

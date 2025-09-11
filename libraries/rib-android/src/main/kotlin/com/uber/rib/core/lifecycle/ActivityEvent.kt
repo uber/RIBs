@@ -19,10 +19,10 @@ package com.uber.rib.core.lifecycle
  * Base class for Activity events, useful for when you want a stream of both lifecycle and callback
  * events.
  */
-interface ActivityEvent {
+public interface ActivityEvent {
   /** @return This activity event type. */
-  val type: BaseType
+  public val type: BaseType
 
   /** Base interface of Activity event types. */
-  interface BaseType
+  public interface BaseType
 }

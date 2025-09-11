@@ -18,7 +18,7 @@ package com.uber.rib.core.screenstack
 import androidx.annotation.IntRange
 
 /** Implementation of a view based screen stack. */
-interface ScreenStackBase {
+public interface ScreenStackBase {
   /**
    * Pushes a new screen into the stack. The new screen view will have its type inspected in order
    * to manipulate the status bar background and icon colors.
@@ -27,7 +27,7 @@ interface ScreenStackBase {
    *
    * @param viewProvider to create a new view to be displayed.
    */
-  fun pushScreen(viewProvider: ViewProvider)
+  public fun pushScreen(viewProvider: ViewProvider)
 
   /**
    * Pushes a new screen into the stack. The new screen view will have its type inspected in order
@@ -37,10 +37,10 @@ interface ScreenStackBase {
    * @param shouldAnimate whether the addition of the screen should be animated using the default
    *   transition.
    */
-  fun pushScreen(viewProvider: ViewProvider, shouldAnimate: Boolean)
+  public fun pushScreen(viewProvider: ViewProvider, shouldAnimate: Boolean)
 
   /** Removes the current screen from the stack. This will use animations. */
-  fun popScreen()
+  public fun popScreen()
 
   /**
    * Removes the current screen from the stack. Allows enabling/disabling of the animation used in
@@ -48,7 +48,7 @@ interface ScreenStackBase {
    *
    * @param shouldAnimate Whether the removal of the screen should be animated.
    */
-  fun popScreen(shouldAnimate: Boolean)
+  public fun popScreen(shouldAnimate: Boolean)
 
   /**
    * Pops back to the specified index. (Starting at 0).
@@ -59,7 +59,7 @@ interface ScreenStackBase {
    * @param shouldAnimate If true, we should animate to the final entry that we are popping to. If
    *   false, no animations will be used.
    */
-  fun popBackTo(@IntRange(from = -1) index: Int, shouldAnimate: Boolean)
+  public fun popBackTo(@IntRange(from = -1) index: Int, shouldAnimate: Boolean)
 
   /**
    * Try to handle a back press. Pass the back press to children, if they exist. Or pop the top item
@@ -67,7 +67,7 @@ interface ScreenStackBase {
    *
    * @return True if the back press is handled.
    */
-  fun handleBackPress(): Boolean
+  public fun handleBackPress(): Boolean
 
   /**
    * Try to handle a back press. Pass the back press to children, if they exist. Or pop the top item
@@ -76,12 +76,12 @@ interface ScreenStackBase {
    * @param shouldAnimate True if we should use animations. False otherwise.
    * @return TRUE if the back press is handled.
    */
-  fun handleBackPress(shouldAnimate: Boolean): Boolean
+  public fun handleBackPress(shouldAnimate: Boolean): Boolean
 
   /**
    * Gets the size of the stack.
    *
    * @return Size.
    */
-  @IntRange(from = 0) fun size(): Int
+  @IntRange(from = 0) public fun size(): Int
 }
