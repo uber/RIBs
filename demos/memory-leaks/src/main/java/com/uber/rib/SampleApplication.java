@@ -16,12 +16,11 @@
 package com.uber.rib;
 
 import android.app.Application;
-import com.squareup.leakcanary.LeakCanary;
-import com.squareup.leakcanary.RefWatcher;
 import com.uber.rib.core.ActivityDelegate;
 import com.uber.rib.core.HasActivityDelegate;
 import com.uber.rib.core.RibRefWatcher;
-import java.util.concurrent.TimeUnit;
+import leakcanary.AppWatcher;
+import leakcanary.ObjectWatcher;
 
 public class SampleApplication extends Application implements HasActivityDelegate {
 
@@ -31,24 +30,19 @@ public class SampleApplication extends Application implements HasActivityDelegat
   public void onCreate() {
     activityDelegate = new SampleActivityDelegate();
     super.onCreate();
-    if (!LeakCanary.isInAnalyzerProcess(this)) {
-      // This process is dedicated to LeakCanary for heap analysis. You should not init your app in
-      // this process.
-      installLeakCanary();
-    }
+    installLeakCanary();
   }
 
   /** Install leak canary for both activities and RIBs. */
-  private void installLeakCanary() {
-    final RefWatcher refWatcher =
-        LeakCanary.refWatcher(this).watchDelay(2, TimeUnit.SECONDS).buildAndInstall();
-    LeakCanary.install(this);
+  private static void installLeakCanary() {
+    ObjectWatcher objectWatcher = AppWatcher.INSTANCE.getObjectWatcher();
     RibRefWatcher.getInstance()
         .setReferenceWatcher(
             new RibRefWatcher.ReferenceWatcher() {
               @Override
-              public void watch(Object object) {
-                refWatcher.watch(object);
+              public void watch(Object objectToWatch) {
+                String description = objectToWatch.getClass().getSimpleName() + " is detached";
+                objectWatcher.expectWeaklyReachable(objectToWatch, description);
               }
 
               @Override
