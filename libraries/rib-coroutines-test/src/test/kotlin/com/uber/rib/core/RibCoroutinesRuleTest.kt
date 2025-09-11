@@ -16,6 +16,7 @@
 package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.test.advanceTimeBy
@@ -24,6 +25,7 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class RibCoroutinesRuleTest {
   @get:Rule val ribCoroutinesRule = RibCoroutinesRule()
 

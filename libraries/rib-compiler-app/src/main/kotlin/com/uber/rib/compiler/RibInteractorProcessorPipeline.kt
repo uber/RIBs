@@ -17,16 +17,16 @@ package com.uber.rib.compiler
 
 import com.uber.rib.core.RibInteractor
 import java.io.IOException
-import java.util.ArrayList
 import javax.lang.model.element.TypeElement
 
 /** The processor pipeline for [RibInteractor] */
 public open class RibInteractorProcessorPipeline(
   processContext: ProcessContext,
-  private var interactorGenerator: Generator<InteractorAnnotatedClass>?,
+  private val interactorGenerator: Generator<InteractorAnnotatedClass>?,
 ) : TypeProcessorPipeline(processContext) {
-  private val annotationVerifier: AnnotationVerifier<InteractorAnnotatedClass>
-  private val builderAnnotatedClassesList: MutableList<InteractorAnnotatedClass?> = ArrayList()
+  private val annotationVerifier =
+    InteractorAnnotationVerifier(errorReporter!!, elementUtils!!, typesUtils!!)
+  private val builderAnnotatedClassesList = mutableListOf<InteractorAnnotatedClass>()
 
   /** @return the annotation type this processor pipeline deals with. */
   override val annotationType: Class<out Annotation>
@@ -35,12 +35,12 @@ public open class RibInteractorProcessorPipeline(
   /**
    * Process the type elements.
    *
-   * @param annotatedTypes annotation types.
+   * @param annotatedClasses annotation types.
    * @throws Throwable exception during annotation process.
    */
   @Throws(Throwable::class)
-  override fun processTypeElements(annotatedTypes: List<TypeElement>) {
-    parseTypeElements(annotatedTypes)
+  override fun processTypeElements(annotatedClasses: List<TypeElement>) {
+    parseTypeElements(annotatedClasses)
     generateSource()
   }
 
@@ -51,7 +51,7 @@ public open class RibInteractorProcessorPipeline(
       return
     }
     for (interactorAnnotatedClass in builderAnnotatedClassesList) {
-      interactorGenerator?.generate(interactorAnnotatedClass!!)
+      interactorGenerator.generate(interactorAnnotatedClass!!)
     }
   }
 
@@ -70,16 +70,5 @@ public open class RibInteractorProcessorPipeline(
 
   public companion object {
     @JvmField public val SUPPORT_ANNOTATION_TYPE: Class<RibInteractor> = RibInteractor::class.java
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param processContext the [ProcessContext].
-   * @param interactorGenerator the code generator.
-   */
-  init {
-    annotationVerifier = InteractorAnnotationVerifier(errorReporter!!, elementUtils!!, typesUtils!!)
-    this.interactorGenerator = interactorGenerator
   }
 }

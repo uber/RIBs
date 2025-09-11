@@ -25,7 +25,7 @@ import android.view.Gravity
 import android.view.View
 
 /** Utility class that shows riblets name in its background. */
-class XRay private constructor() {
+public class XRay private constructor() {
   private var isEnabled = false
   private var textPaint: Paint? = null
   private fun writeOnBitmap(bitmap: Bitmap, text: String) {
@@ -47,7 +47,7 @@ class XRay private constructor() {
     return textPaint!!
   }
 
-  companion object {
+  public companion object {
     private val INSTANCE = XRay()
     private const val FRAME_WIDTH = 500
     private const val FRAME_HEIGHT = 150
@@ -57,13 +57,13 @@ class XRay private constructor() {
 
     /** Toggles state of XRay. */
     @JvmStatic
-    fun toggle() {
+    public fun toggle() {
       INSTANCE.isEnabled = !INSTANCE.isEnabled
     }
 
     /** @return `true` if XRay is enabled, `false` otherwise. */
     @JvmStatic
-    fun isEnabled(): Boolean {
+    public fun isEnabled(): Boolean {
       return INSTANCE.isEnabled
     }
 
@@ -74,7 +74,7 @@ class XRay private constructor() {
      * @param view a [View] to put the name behind.
      */
     @JvmStatic
-    fun apply(viewRouter: ViewRouter<*, *>, view: View) {
+    public fun apply(viewRouter: ViewRouter<*, *>, view: View) {
       val oldBackground = view.background
       val bitmap: Bitmap =
         if (oldBackground != null) {

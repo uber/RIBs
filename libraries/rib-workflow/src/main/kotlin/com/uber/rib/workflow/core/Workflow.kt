@@ -25,7 +25,7 @@ import io.reactivex.Single
  * @param <TRootActionableItem> initial [ActionableItem] type for this workflow.
  *   </TRootActionableItem></TReturnValue>
  */
-abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
+public abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
   /**
    * Creates a single to execute a workflow.
    *
@@ -33,7 +33,7 @@ abstract class Workflow<TReturnValue, TRootActionableItem : ActionableItem> {
    * @return an Rx [Single] that will return the workflow when subscribed to.
    */
   @SuppressWarnings("RxJavaToSingle") // Replace singleOrError() with firstOrError()
-  open fun createSingle(
+  public open fun createSingle(
     rootActionableItem: TRootActionableItem,
   ): Single<Optional<TReturnValue & Any>> {
     return getSteps(rootActionableItem).asResultObservable().singleOrError()

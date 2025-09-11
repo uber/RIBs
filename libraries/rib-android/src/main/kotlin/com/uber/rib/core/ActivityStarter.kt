@@ -21,13 +21,13 @@ import android.content.Intent
  * Start activities. A much cleaner dependency than an entire activity or context, and easier to
  * inject and mock in tests.
  */
-interface ActivityStarter {
+public interface ActivityStarter {
   /**
    * Start an activity with the given intent.
    *
    * @param intent The intent to open a new activity.
    */
-  fun startActivity(intent: Intent)
+  public fun startActivity(intent: Intent)
 
   /**
    * Start an activity with the given intent, to be notified when that activity finishes.
@@ -37,5 +37,5 @@ interface ActivityStarter {
    *   from this request.
    */
   @Deprecated("""use plain Activity instead""")
-  fun startActivityForResult(intent: Intent, requestCode: Int)
+  public fun startActivityForResult(intent: Intent, requestCode: Int)
 }

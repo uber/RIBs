@@ -25,27 +25,27 @@ import androidx.annotation.IntRange
  * functionality. This allows [RibActivity] and any other type of [Activity] that you need to
  * support to share [CoreAppCompatActivity] as a common parent.
  */
-interface ActivityDelegate {
+public interface ActivityDelegate {
   /** @see [Activity.onCreate] */
-  fun onCreate(savedInstanceState: Bundle?) {}
+  public fun onCreate(savedInstanceState: Bundle?) {}
 
   /** @see [Activity.onStart] */
-  fun onStart() {}
+  public fun onStart() {}
 
   /** @see [Activity.onResume] */
-  fun onResume() {}
+  public fun onResume() {}
 
   /** @see [Activity.onPause] */
-  fun onPause() {}
+  public fun onPause() {}
 
   /** @see [Activity.onStop] */
-  fun onStop() {}
+  public fun onStop() {}
 
   /** @see [Activity.onDestroy] */
-  fun onDestroy() {}
+  public fun onDestroy() {}
 
   /** @see [Activity.onActivityResult] */
-  fun onActivityResult(
+  public fun onActivityResult(
     activity: Activity,
     requestCode: Int,
     resultCode: Int,
@@ -53,7 +53,7 @@ interface ActivityDelegate {
   ) {}
 
   /** @see [Activity.onRequestPermissionsResult] */
-  fun onRequestPermissionsResult(
+  public fun onRequestPermissionsResult(
     activity: Activity,
     @IntRange(from = 0, to = 255) requestCode: Int,
     permissions: Array<String>,

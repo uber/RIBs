@@ -22,7 +22,7 @@ import android.view.View
  *
  * @param <I> type of interactor.
  */
-abstract class BasicViewRouter<V : View, I : Interactor<*, *>>(
+public abstract class BasicViewRouter<V : View, I : Interactor<*, *>>(
   view: V,
   interactor: I,
 ) : ViewRouter<V, I>(view, interactor)
