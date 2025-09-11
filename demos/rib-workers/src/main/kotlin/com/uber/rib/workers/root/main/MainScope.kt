@@ -26,7 +26,7 @@ import com.uber.rib.workers.root.main.ribworkerselection.RibWorkerSelectionScope
 interface MainScope {
   fun router(): MainRouter
 
-  fun ribWorkerSelectionScope(slot: MutableState<(@Composable () -> Unit)>): RibWorkerSelectionScope
+  fun ribWorkerSelectionScope(slot: MutableState<@Composable () -> Unit>): RibWorkerSelectionScope
 
   @motif.Objects
   abstract class Objects {

@@ -25,5 +25,5 @@ import com.uber.rib.core.ComposePresenter
 open class RibWorkerSelectionRouter(
   presenter: ComposePresenter,
   interactor: RibWorkerSelectionInteractor,
-  slot: MutableState<(@Composable () -> Unit)>,
+  slot: MutableState<@Composable () -> Unit>,
 ) : BasicComposeRouter<RibWorkerSelectionInteractor>(presenter, interactor, slot)

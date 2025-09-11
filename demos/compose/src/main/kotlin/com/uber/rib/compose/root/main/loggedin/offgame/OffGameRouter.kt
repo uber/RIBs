@@ -23,5 +23,5 @@ import com.uber.rib.core.ComposePresenter
 class OffGameRouter(
   presenter: ComposePresenter,
   interactor: OffGameInteractor,
-  slot: MutableState<(@Composable () -> Unit)>,
+  slot: MutableState<@Composable () -> Unit>,
 ) : BasicComposeRouter<OffGameInteractor>(presenter, interactor, slot)

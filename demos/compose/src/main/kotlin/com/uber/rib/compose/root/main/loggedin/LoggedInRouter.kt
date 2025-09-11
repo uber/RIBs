@@ -27,7 +27,7 @@ import com.uber.rib.core.ComposePresenter
 class LoggedInRouter(
   presenter: ComposePresenter,
   interactor: LoggedInInteractor,
-  slot: MutableState<(@Composable () -> Unit)>,
+  slot: MutableState<@Composable () -> Unit>,
   private val scope: LoggedInScope,
   private val childContent: ChildContent,
 ) : BasicComposeRouter<LoggedInInteractor>(presenter, interactor, slot) {
@@ -62,6 +62,6 @@ class LoggedInRouter(
   }
 
   class ChildContent {
-    internal var fullScreenSlot: MutableState<(@Composable () -> Unit)> = mutableStateOf({})
+    internal var fullScreenSlot: MutableState<@Composable () -> Unit> = mutableStateOf({})
   }
 }

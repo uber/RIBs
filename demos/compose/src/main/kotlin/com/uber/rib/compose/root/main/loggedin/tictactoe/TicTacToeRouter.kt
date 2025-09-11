@@ -23,5 +23,5 @@ import com.uber.rib.core.ComposePresenter
 class TicTacToeRouter(
   presenter: ComposePresenter,
   interactor: TicTacToeInteractor,
-  slot: MutableState<(@Composable () -> Unit)>,
+  slot: MutableState<@Composable () -> Unit>,
 ) : BasicComposeRouter<TicTacToeInteractor>(presenter, interactor, slot)
