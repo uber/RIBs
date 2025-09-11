@@ -70,6 +70,6 @@ class MainRouter(
   }
 
   class ChildContent {
-    internal var fullScreenSlot: MutableState<(@Composable () -> Unit)> = mutableStateOf({})
+    internal var fullScreenSlot: MutableState<@Composable () -> Unit> = mutableStateOf({})
   }
 }

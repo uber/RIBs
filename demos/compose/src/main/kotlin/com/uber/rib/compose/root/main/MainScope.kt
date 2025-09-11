@@ -21,9 +21,6 @@ import androidx.compose.runtime.MutableState
 import androidx.compose.ui.platform.ComposeView
 import com.uber.rib.compose.root.main.loggedin.LoggedInScope
 import com.uber.rib.compose.root.main.loggedout.LoggedOutScope
-import com.uber.rib.compose.util.AnalyticsClient
-import com.uber.rib.compose.util.ExperimentClient
-import com.uber.rib.compose.util.LoggerClient
 import com.uber.rib.core.ComposePresenter
 import motif.Expose
 
@@ -31,9 +28,9 @@ import motif.Expose
 interface MainScope {
   fun router(): MainRouter
 
-  fun loggedOutScope(slot: MutableState<(@Composable () -> Unit)>): LoggedOutScope
+  fun loggedOutScope(slot: MutableState<@Composable () -> Unit>): LoggedOutScope
 
-  fun loggedInScope(slot: MutableState<(@Composable () -> Unit)>, authInfo: AuthInfo): LoggedInScope
+  fun loggedInScope(slot: MutableState<@Composable () -> Unit>, authInfo: AuthInfo): LoggedInScope
 
   @motif.Objects
   abstract class Objects {
@@ -41,12 +38,7 @@ interface MainScope {
 
     abstract fun interactor(): MainInteractor
 
-    fun presenter(
-      childContent: MainRouter.ChildContent,
-      analyticsClient: AnalyticsClient,
-      experimentClient: ExperimentClient,
-      loggerClient: LoggerClient,
-    ): ComposePresenter {
+    fun presenter(childContent: MainRouter.ChildContent): ComposePresenter {
       return object : ComposePresenter() {
         override val composable = @Composable { MainView(childContent) }
       }

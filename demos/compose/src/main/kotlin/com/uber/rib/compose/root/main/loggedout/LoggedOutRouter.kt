@@ -23,5 +23,5 @@ import com.uber.rib.core.ComposePresenter
 class LoggedOutRouter(
   presenter: ComposePresenter,
   interactor: LoggedOutInteractor,
-  slot: MutableState<(@Composable () -> Unit)>,
+  slot: MutableState<@Composable () -> Unit>,
 ) : BasicComposeRouter<LoggedOutInteractor>(presenter, interactor, slot)

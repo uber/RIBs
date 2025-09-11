@@ -30,10 +30,10 @@ import motif.Expose
 interface LoggedInScope {
   fun router(): LoggedInRouter
 
-  fun offGameScope(slot: MutableState<(@Composable (() -> Unit))>, authInfo: AuthInfo): OffGameScope
+  fun offGameScope(slot: MutableState<@Composable () -> Unit>, authInfo: AuthInfo): OffGameScope
 
   fun ticTacToeScope(
-    slot: MutableState<(@Composable (() -> Unit))>,
+    slot: MutableState<@Composable () -> Unit>,
     authInfo: AuthInfo,
   ): TicTacToeScope
 
