@@ -13,18 +13,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.uber.rib.root;
+package com.uber.rib.root
 
-import androidx.annotation.NonNull;
-import com.google.auto.value.AutoValue;
-
-@AutoValue
-public abstract class UserName {
-
-  @NonNull
-  public static UserName create(String userName) {
-    return new AutoValue_UserName(userName);
-  }
-
-  public abstract String getUserName();
-}
+data class UserName(val userName: String)

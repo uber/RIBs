@@ -27,7 +27,6 @@ android {
 }
 
 dependencies {
-    kapt(libs.autovalue.library)
     kapt(libs.dagger.compiler)
     kapt(project(":libraries:rib-compiler-test"))
     implementation(project(":libraries:rib-android"))
@@ -39,6 +38,5 @@ dependencies {
     implementation(libs.percent)
     implementation(libs.guava.android)
     compileOnly(libs.jsr250)
-    compileOnly(libs.autovalue.annotations)
     testImplementation(project(":libraries:rib-test"))
 }
