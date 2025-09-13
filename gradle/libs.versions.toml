@@ -7,7 +7,6 @@ androidx-lifecycle = "2.6.1"
 autocommon = "0.8"
 autodispose = "1.4.0"
 autoservice = "1.0-rc4"
-autovalue = "1.7"
 checkerqual = "2.5.1"
 compile-testing = "0.17"
 compose-compiler = "1.4.6"
@@ -62,8 +61,6 @@ autodispose-errorprone = { group = "com.uber.autodispose", name = "autodispose-e
 autodispose-library = { group = "com.uber.autodispose", name = "autodispose", version.ref = "autodispose" }
 autodispose-lifecycle = { group = "com.uber.autodispose", name = "autodispose-lifecycle", version.ref = "autodispose" }
 autoservice = { group = "com.google.auto.service", name = "auto-service", version.ref = "autoservice" }
-autovalue-annotations = { group = "com.google.auto.value", name = "auto-value-annotations", version.ref = "autovalue" }
-autovalue-library = { group = "com.google.auto.value", name = "auto-value", version.ref = "autovalue" }
 checkerqual = { group = "org.checkerframework", name = "checker-qual", version.ref = "checkerqual" }
 compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-libraries" }
 compose-compiler = { group = "androidx.compose.compiler", name = "compiler", version.ref = "compose-libraries" }

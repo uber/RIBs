@@ -44,8 +44,7 @@ public class LoggedOutInteractor
               @Override
               public void accept(Pair<String, String> names) throws Exception {
                 if (!isEmpty(names.first) && !isEmpty(names.second)) {
-                  listener.requestLogin(
-                      UserName.create(names.first), UserName.create(names.second));
+                  listener.requestLogin(new UserName(names.first), new UserName(names.second));
                 }
               }
             });
