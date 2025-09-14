@@ -15,36 +15,52 @@
  */
 import groovy.xml.XmlSlurper
 import groovy.xml.slurpersupport.GPathResult
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    id("ribs.kotlin.library")
-    alias(libs.plugins.intellij)
+    kotlin("jvm")
+    alias(libs.plugins.intellij.platform)
 }
 
 group = "com.uber.rib"
+
+val pluginXml: GPathResult = XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
+val pluginVersion: String = pluginXml.getProperty("version").toString()
+version = pluginVersion
 
 repositories {
     mavenLocal()
     google()
     mavenCentral()
-}
 
-intellij {
-    plugins.addAll("java", "Kotlin", "android")
-    version.set(libs.versions.intellij)
-    pluginName.set("uber-ribs")
-    updateSinceUntilBuild.set(false)
-    sandboxDir.set("${project.gradle.gradleHomeDir}/caches/intellij")
-    downloadSources.set(false)
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+    intellijPlatform {
+        defaultRepositories()
     }
 }
 
+intellijPlatform {
+    pluginConfiguration {
+        version.set(pluginVersion)
+        ideaVersion {
+            sinceBuild = "223"
+        }
+        name.set("uber-ribs")
+    }
+    sandboxContainer.set(File("${project.gradle.gradleHomeDir}/caches/intellij"))
+}
+
+kotlin {
+    jvmToolchain(17)
+}
+
 dependencies {
+    intellijPlatform {
+        bundledPlugin("com.intellij.java")
+        bundledPlugin("org.jetbrains.android")
+        androidStudio(libs.versions.android.studio)
+        testFramework(org.jetbrains.intellij.platform.gradle.TestFrameworkType.Platform)
+    }
     testImplementation(project(":libraries:rib-test"))
     testImplementation(project(":libraries:rib-compiler-test"))
     testImplementation(libs.dagger.compiler)
@@ -57,13 +73,20 @@ dependencies {
     testImplementation(libs.android.api)
 }
 
-val pluginXml: GPathResult = XmlSlurper().parse(file("src/main/resources/META-INF/plugin.xml"))
-version = pluginXml.getProperty("version")
-
 tasks.register<Jar>("sourcesJar") {
     dependsOn(tasks.classes)
     archiveClassifier.set("sources")
     from(sourceSets.main.get().allSource)
+}
+
+tasks {
+    withType<JavaCompile>().configureEach {
+        sourceCompatibility = JavaVersion.VERSION_17.toString()
+        targetCompatibility = JavaVersion.VERSION_17.toString()
+    }
+    withType<KotlinCompile>().configureEach {
+        compilerOptions.jvmTarget.set(JvmTarget.JVM_17)
+    }
 }
 
 afterEvaluate {

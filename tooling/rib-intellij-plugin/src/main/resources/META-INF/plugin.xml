@@ -1,4 +1,4 @@
-<idea-plugin version="2">
+<idea-plugin>
     <id>com.uber.rib.intellij-plugin</id>
     <name>RIBs</name>
     <version>0.1.5</version>
@@ -46,7 +46,7 @@
     </extensions>
 
     <actions>
-        <group description="RIB architecture templates" id="RibActionGroup" text="RIB" type="">
+        <group description="RIB architecture templates" id="RibActionGroup" text="RIB">
             <separator/>
             <action
                     class="com.uber.presidio.intellij_plugin.action.rib.GenerateRibAction"
@@ -54,7 +54,7 @@
                     icon="/icons/generate_rib.png"
                     id="GenerateRib"
                     text="New RIB...">
-                <add-to-group anchor="last" group-id="NewGroup" relative-to-group="NewGroup"/>
+                <add-to-group anchor="last" group-id="NewGroup" />
             </action>
         </group>
     </actions>
