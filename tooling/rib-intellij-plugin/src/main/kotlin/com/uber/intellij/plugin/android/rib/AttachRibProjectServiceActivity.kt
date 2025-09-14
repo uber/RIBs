@@ -17,10 +17,10 @@ package com.uber.intellij.plugin.android.rib
 
 import com.intellij.openapi.components.service
 import com.intellij.openapi.project.Project
-import com.intellij.openapi.startup.StartupActivity
+import com.intellij.openapi.startup.ProjectActivity
 
-public class AttachRibProjectServiceActivity : StartupActivity.Background {
-  override fun runActivity(project: Project) {
+public class AttachRibProjectServiceActivity : ProjectActivity {
+  override suspend fun execute(project: Project) {
     project.service<RibProjectService>().attach()
   }
 }

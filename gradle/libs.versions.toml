@@ -1,5 +1,6 @@
 [versions]
 android-api = "4.1.1.4"
+android-studio = "2023.3.1.20"
 androidx-activity = "1.7.0"
 androidx-annotation = "1.1.0"
 androidx-appcompat = "1.3.0"
@@ -18,14 +19,13 @@ flipper = "0.93.0"
 gjf = "1.16.0"
 gradle-android-plugin = "8.13.0"
 gradle-errorprone-plugin = "1.3.0"
-gradle-intellij-plugin = "1.17.4"
+gradle-intellij-platform-plugin = "2.9.0"
 gradle-maven-publish-plugin = "0.25.2"
 gradle-nullaway-plugin = "1.0.2"
 gradle-spotless-plugin = "6.18.0"
 gson = "2.8.7"
 guava-android = "27.1-android"
 guava-jre = "27.1-jre"
-intellij = "2023.2"
 javapoet = "1.11.1"
 jsr250 = "1.0"
 kotlin = "1.8.20"
@@ -99,7 +99,7 @@ uber-nullaway = { group = "com.uber.nullaway", name = "nullaway", version.ref = 
 android-application = { id = "com.android.application", version.ref = "gradle-android-plugin" }
 android-library = { id = "com.android.library", version.ref = "gradle-android-plugin" }
 errorprone = { id = "net.ltgt.errorprone", version.ref = "gradle-errorprone-plugin" }
-intellij = { id = "org.jetbrains.intellij", version.ref = "gradle-intellij-plugin" }
+intellij-platform = { id = "org.jetbrains.intellij.platform", version.ref = "gradle-intellij-platform-plugin" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 maven-publish = { id = "com.vanniktech.maven.publish", version.ref = "gradle-maven-publish-plugin" }

@@ -21,6 +21,6 @@ plugins {
     alias(libs.plugins.maven.publish) apply false
     alias(libs.plugins.errorprone) apply false
     alias(libs.plugins.nullaway) apply false
-    alias(libs.plugins.intellij) apply false
+    alias(libs.plugins.intellij.platform) apply false
     alias(libs.plugins.spotless) apply false
 }
