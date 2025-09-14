@@ -31,7 +31,14 @@ dependencies {
     implementation(gradleApi())
     implementation(libs.gradle.android.plugin)
     implementation(libs.gradle.kotlin.plugin)
-    implementation(libs.gradle.errorprone.plugin)
-    implementation(libs.gradle.nullaway.plugin)
-    implementation(libs.gradle.spotless.plugin)
+    implementation(plugin(libs.plugins.errorprone))
+    implementation(plugin(libs.plugins.nullaway))
+    implementation(plugin(libs.plugins.spotless))
 }
+
+// Helper function that transforms a Gradle Plugin alias from a
+// Version Catalog into a valid dependency notation for buildSrc
+// See https://docs.gradle.org/current/userguide/version_catalogs.html
+@Suppress("UnusedReceiverParameter")
+fun DependencyHandlerScope.plugin(plugin: Provider<PluginDependency>) =
+    plugin.map { "${it.pluginId}:${it.pluginId}.gradle.plugin:${it.version}" }
