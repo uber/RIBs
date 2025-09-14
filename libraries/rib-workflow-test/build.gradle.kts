@@ -29,14 +29,8 @@ android {
     }
 }
 
-kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.workflow.core.internal.WorkflowFriendModuleApi")
-            }
-        }
-    }
+kotlin.compilerOptions {
+    optIn.add("com.uber.rib.workflow.core.internal.WorkflowFriendModuleApi")
 }
 
 dependencies {

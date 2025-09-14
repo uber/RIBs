@@ -19,14 +19,8 @@ plugins {
     alias(libs.plugins.maven.publish)
 }
 
-kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.core.internal.CoroutinesFriendModuleApi")
-            }
-        }
-    }
+kotlin.compilerOptions {
+    optIn.add("com.uber.rib.core.internal.CoroutinesFriendModuleApi")
 }
 
 dependencies {

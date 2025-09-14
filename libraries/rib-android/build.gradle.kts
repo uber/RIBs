@@ -22,14 +22,8 @@ android {
     namespace = "com.uber.rib.android"
 }
 
-kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
-            }
-        }
-    }
+kotlin.compilerOptions {
+    optIn.add("com.uber.rib.core.internal.CoreFriendModuleApi")
 }
 
 dependencies {
