@@ -43,6 +43,6 @@ dependencies {
 tasks.withType<JavaCompile>().configureEach {
     // Disable error prone checks I don't want.
     options.errorprone {
-        disable("CheckReturnValue")
+        disable("CheckReturnValue", "AutoDispose")
     }
 }

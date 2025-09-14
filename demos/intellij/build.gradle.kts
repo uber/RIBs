@@ -24,6 +24,10 @@ android {
     defaultConfig {
         applicationId = "com.uber.rib.intellij"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {

@@ -24,6 +24,10 @@ android {
     defaultConfig {
         applicationId = "com.uber.rib.flipper"
     }
+
+    buildFeatures {
+        buildConfig = true
+    }
 }
 
 dependencies {
