@@ -70,10 +70,7 @@ errorprone-core = { group = "com.google.errorprone", name = "error_prone_core", 
 errorprone-javac = { group = "com.google.errorprone", name = "javac", version.ref = "errorprone-javac" }
 flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
 gradle-android-plugin = { module = "com.android.tools.build:gradle", version.ref = "gradle-android-plugin" }
-gradle-errorprone-plugin = { module = "net.ltgt.gradle:gradle-errorprone-plugin", version.ref = "gradle-errorprone-plugin" }
 gradle-kotlin-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-gradle-nullaway-plugin = { module = "net.ltgt.gradle:gradle-nullaway-plugin", version.ref = "gradle-nullaway-plugin" }
-gradle-spotless-plugin = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "gradle-spotless-plugin" }
 gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
 guava-android = { group = "com.google.guava", name = "guava", version.ref = "guava-android" }
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava-jre" }
