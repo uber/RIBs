@@ -22,7 +22,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
 
     compilerOptions {
         jvmTarget = JvmTarget.JVM_1_8

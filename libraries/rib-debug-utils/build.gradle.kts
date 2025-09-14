@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     id("ribs.kotlin.library")
@@ -20,15 +21,13 @@ plugins {
 }
 
 kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
-            }
-        }
-    }
     explicitApi()
-    jvmToolchain(11)
+    jvmToolchain(17)
+
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+        optIn.add("com.uber.rib.core.internal.CoreFriendModuleApi")
+    }
 }
 
 dependencies {

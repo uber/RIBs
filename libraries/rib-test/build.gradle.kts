@@ -13,20 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
     id("ribs.kotlin.library")
     alias(libs.plugins.maven.publish)
 }
 
-kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
-            }
-        }
-    }
+kotlin.compilerOptions {
+    optIn.add("com.uber.rib.core.internal.CoreFriendModuleApi")
 }
 
 dependencies {

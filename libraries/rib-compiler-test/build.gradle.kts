@@ -42,3 +42,15 @@ tasks.register<Copy>("copyTestResources") {
 tasks.processTestResources {
     dependsOn("copyTestResources")
 }
+
+tasks.test.configure {
+    // See: https://github.com/google/compile-testing/releases/tag/v0.22.0
+    jvmArgs(
+        "--add-exports=jdk.compiler/com.sun.tools.javac.api=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.main=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.util=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.file=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.parser=ALL-UNNAMED",
+        "--add-exports=jdk.compiler/com.sun.tools.javac.tree=ALL-UNNAMED",
+    )
+}

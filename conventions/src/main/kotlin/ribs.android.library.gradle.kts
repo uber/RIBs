@@ -22,7 +22,7 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(11)
+    jvmToolchain(17)
     explicitApiWarning()
 
     compilerOptions {
@@ -32,6 +32,11 @@ kotlin {
         // TODO: For Kotlin 2.2, delete the line above and uncomment the line below.
         // jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
     }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 }
 
 android {
@@ -47,6 +52,8 @@ android {
     }
 
     testOptions {
+        targetSdk = 35
+
         unitTests {
             isIncludeAndroidResources = true
         }
