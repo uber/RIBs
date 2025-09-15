@@ -52,7 +52,7 @@ class RouterAndStateTest {
     routerAndState.onPostDetachFromHost(mock(), false)
     val router2 = routerAndState.router
 
-    assertThat(router1).isNotSameAs(router2)
+    assertThat(router1).isNotSameInstanceAs(router2)
   }
 
   @Test
@@ -66,7 +66,7 @@ class RouterAndStateTest {
     routerAndState.onPostDetachFromHost(mock(), false)
     val router2 = routerAndState.router
 
-    assertThat(router1).isSameAs(router2)
+    assertThat(router1).isSameInstanceAs(router2)
   }
 
   @Test
@@ -80,7 +80,7 @@ class RouterAndStateTest {
     routerAndState.onPostDetachFromHost(mock(), false)
     val router2 = routerAndState.router
 
-    assertThat(router1).isSameAs(router2)
+    assertThat(router1).isSameInstanceAs(router2)
   }
 
   @Test
@@ -94,7 +94,7 @@ class RouterAndStateTest {
     routerAndState.onPostDetachFromHost(mock(), false)
     val router2 = routerAndState.router
 
-    assertThat(router1).isSameAs(router2)
+    assertThat(router1).isSameInstanceAs(router2)
   }
 
   @Test

@@ -17,7 +17,7 @@ package com.uber.rib.core
 
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.TestCoroutineDispatcher
+import kotlinx.coroutines.test.TestDispatcher
 import org.junit.Test
 
 internal class RibDispatchersTest {
@@ -32,10 +32,10 @@ internal class RibDispatchersTest {
 
   @Test
   internal fun testSetConfigDelegate() {
-    assertThat(RibDispatchers.Default).isNotInstanceOf(TestCoroutineDispatcher::class.java)
-    assertThat(RibDispatchers.IO).isNotInstanceOf(TestCoroutineDispatcher::class.java)
-    assertThat(RibDispatchers.Main).isNotInstanceOf(TestCoroutineDispatcher::class.java)
-    assertThat(RibDispatchers.Unconfined).isNotInstanceOf(TestCoroutineDispatcher::class.java)
+    assertThat(RibDispatchers.Default).isNotInstanceOf(TestDispatcher::class.java)
+    assertThat(RibDispatchers.IO).isNotInstanceOf(TestDispatcher::class.java)
+    assertThat(RibDispatchers.Main).isNotInstanceOf(TestDispatcher::class.java)
+    assertThat(RibDispatchers.Unconfined).isNotInstanceOf(TestDispatcher::class.java)
 
     val testDispatchers = TestRibDispatchers()
     testDispatchers.installTestDispatchers()

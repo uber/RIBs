@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UnstableApiUsage")
-
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("android")
@@ -25,6 +23,14 @@ plugins {
 
 kotlin {
     jvmToolchain(11)
+
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+        optIn.add("kotlin.RequiresOptIn")
+        freeCompilerArgs.add("-Xjvm-default=all")
+        // TODO: For Kotlin 2.2, delete the line above and uncomment the line below.
+        // jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+    }
 }
 
 android {
@@ -38,8 +44,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
     // No need for lint. Those are just tutorials.
@@ -66,14 +72,5 @@ androidComponents {
         if (variantBuilder.buildType == "release") {
             variantBuilder.enable = false
         }
-    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xjvm-default=all",
-            "-opt-in=kotlin.RequiresOptIn",
-        )
     }
 }

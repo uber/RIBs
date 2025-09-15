@@ -29,7 +29,7 @@ import io.reactivex.functions.BiFunction
  * @param <T> type of return value (if any) for this step.
  * @param <A> type of [ActionableItem] this step returns when finished.
  */
-open class Step<T, A : ActionableItem>
+public open class Step<T, A : ActionableItem>
 private constructor(
   private val stepDataSingle: Single<Optional<Data<T, A>>>,
 ) {
@@ -52,9 +52,12 @@ private constructor(
   ): Step<T2, A2> {
     return Step(
       asObservable()
-        .flatMap { data: Optional<Data<T, A>> ->
-          if (data.isPresent) {
-            func.apply(data.get().getValue(), data.get().actionableItem).asObservable()
+        .flatMap { optionalData: Optional<Data<T, A>> ->
+          if (optionalData.isPresent) {
+            val data = optionalData.get()
+            val value =
+              checkNotNull(data.getValue()) { "RxJava BiFunction can't accept null values." }
+            func.apply(value, data.actionableItem).asObservable()
           } else {
             Observable.just(Optional.absent())
           }
@@ -64,7 +67,7 @@ private constructor(
   }
 
   @OptIn(WorkflowFriendModuleApi::class)
-  internal open fun asResultObservable(): Observable<Optional<T>> {
+  internal open fun asResultObservable(): Observable<Optional<T & Any>> {
     return asObservable().map { data -> Optional.fromNullable(data.orNull()?.getValue()) }
   }
 
@@ -99,9 +102,9 @@ private constructor(
     internal val actionableItem: A,
   ) {
 
-    @WorkflowFriendModuleApi public open fun getValue() = value
+    @WorkflowFriendModuleApi public open fun getValue(): T = value
 
-    companion object {
+    public companion object {
       /**
        * Convenience function to create a [Step.Data] instance that does not have a return value
        * type.
@@ -118,14 +121,14 @@ private constructor(
   }
 
   /** Used to indicate that a step has no return value. */
-  open class NoValue
+  public open class NoValue
 
   /** Initialization On Demand Singleton for [NoValue]. */
   private object NoValueHolder {
     val INSTANCE = NoValue()
   }
 
-  companion object {
+  public companion object {
     /**
      * Create a new step with a single that always returns a value.
      *
@@ -135,7 +138,7 @@ private constructor(
      * @return a new [Step].
      */
     @JvmStatic
-    fun <T, A : ActionableItem> from(stepDataSingle: Single<Data<T, A>>): Step<T, A> {
+    public fun <T, A : ActionableItem> from(stepDataSingle: Single<Data<T, A>>): Step<T, A> {
       return Step(stepDataSingle.map { Optional.of(it) })
     }
 
@@ -151,7 +154,7 @@ private constructor(
      * @return a new [Step].
      */
     @JvmStatic
-    fun <T, A : ActionableItem> fromOptional(
+    public fun <T, A : ActionableItem> fromOptional(
       stepDataSingle: Single<Optional<Data<T, A>>>,
     ): Step<T, A> = Step(stepDataSingle)
   }

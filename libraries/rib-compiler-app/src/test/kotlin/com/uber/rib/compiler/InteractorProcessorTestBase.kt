@@ -46,7 +46,7 @@ abstract class InteractorProcessorTestBase {
     sources = ArrayList()
   }
 
-  protected fun addResourceToSources(file: String?) {
+  protected fun addResourceToSources(file: String) {
     sources.add(JavaFileObjects.forResource(file))
   }
 }

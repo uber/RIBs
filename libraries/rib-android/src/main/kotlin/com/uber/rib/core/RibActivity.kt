@@ -167,6 +167,7 @@ public abstract class RibActivity :
     _callbacksFlow.tryEmit(createTrimMemoryEvent(level))
   }
 
+  @Suppress("MissingSuperCall") // TODO: check if calling super is safe.
   override fun onPictureInPictureModeChanged(
     isInPictureInPictureMode: Boolean,
     newConfig: Configuration,

@@ -19,14 +19,13 @@ plugins {
 }
 
 dependencies {
-    implementation(project(":libraries:rib-base"))
+    api(project(":libraries:rib-base"))
 
     implementation(libs.autocommon)
     implementation(libs.javapoet)
     implementation(libs.dagger.library)
 
     compileOnly(libs.androidx.annotation)
-    compileOnly(libs.autoservice)
     compileOnly(libs.android.api)
 
     testImplementation(testLibs.compile.testing)

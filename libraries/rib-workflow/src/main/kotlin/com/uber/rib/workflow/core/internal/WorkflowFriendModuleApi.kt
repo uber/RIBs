@@ -20,4 +20,6 @@ package com.uber.rib.workflow.core.internal
  *
  * Anything marked with this annotation is not intended for public use.
  */
-@RequiresOptIn(level = RequiresOptIn.Level.ERROR) internal annotation class WorkflowFriendModuleApi
+@RequiresOptIn(level = RequiresOptIn.Level.ERROR)
+@Retention(AnnotationRetention.BINARY)
+internal annotation class WorkflowFriendModuleApi

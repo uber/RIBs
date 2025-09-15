@@ -13,6 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     kotlin("jvm")
     id("ribs.spotless")
@@ -21,14 +23,10 @@ plugins {
 kotlin {
     jvmToolchain(11)
     explicitApi()
-}
 
-tasks.compileKotlin {
     compilerOptions {
         freeCompilerArgs.add("-Xjvm-default=all")
-    }
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
+        jvmTarget = JvmTarget.JVM_1_8
     }
 }
 

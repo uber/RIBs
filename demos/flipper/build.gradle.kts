@@ -42,9 +42,9 @@ dependencies {
     testImplementation(project(":libraries:rib-test"))
 
     // Flipper Debug tool integration
-    debugImplementation("com.facebook.flipper:flipper:0.93.0")
-    debugImplementation("com.facebook.soloader:soloader:0.10.1")
-    releaseImplementation("com.facebook.flipper:flipper-noop:0.93.0")
+    debugImplementation(libs.flipper)
+    debugImplementation(libs.soloader)
+    releaseImplementation(libs.flipper.noop)
 
     // Flipper RIBs plugin
     implementation(project(":tooling:rib-flipper-plugin"))
