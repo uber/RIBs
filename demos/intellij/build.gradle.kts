@@ -16,6 +16,7 @@
 plugins {
     id("ribs.android.application")
     alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.ksp)
 }
 
 android {
@@ -31,7 +32,7 @@ android {
 }
 
 dependencies {
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     kapt(project(":libraries:rib-compiler-test"))
     implementation(project(":libraries:rib-android"))
     implementation(libs.androidx.appcompat)

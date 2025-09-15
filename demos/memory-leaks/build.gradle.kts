@@ -30,10 +30,10 @@ android {
 
 dependencies {
     implementation(project(":libraries:rib-android"))
-    kapt(project(":libraries:rib-compiler-app"))
+    ksp(project(":libraries:rib-compiler-app"))
     kapt(project(":libraries:rib-compiler-test"))
-    kapt(libs.autodispose.errorprone)
-    kapt(libs.dagger.compiler)
+    ksp(libs.autodispose.errorprone)
+    ksp(libs.dagger.compiler)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
     implementation(libs.leakcanary)

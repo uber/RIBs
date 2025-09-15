@@ -16,6 +16,7 @@
 
 plugins {
     id("ribs.android.application.errorprone")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -28,7 +29,7 @@ android {
 
 dependencies {
     kapt(project(":libraries:rib-compiler-test"))
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     implementation(project(":libraries:rib-android"))
     implementation(libs.androidx.appcompat)
     implementation(libs.dagger.library)

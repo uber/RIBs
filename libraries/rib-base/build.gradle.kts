@@ -15,15 +15,15 @@
  */
 plugins {
     id("ribs.kotlin.library")
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.maven.publish)
 }
 
 dependencies {
     // RIBs themselves don't need to use dagger. But the base library does use dagger
     // in order to invert a dependency. With a bit of work this could be removed.
-    kapt(libs.dagger.compiler)
-    kapt(libs.android.api)
+    ksp(libs.dagger.compiler)
+    ksp(libs.android.api)
 
     implementation(libs.guava.android)
     implementation(libs.reactivestreams)

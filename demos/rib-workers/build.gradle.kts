@@ -15,7 +15,6 @@
  */
 plugins {
     id("ribs.android.application.errorprone")
-    alias(libs.plugins.kotlin.ksp)
     alias(libs.plugins.compose.compiler)
 }
 

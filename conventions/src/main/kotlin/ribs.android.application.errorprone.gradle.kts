@@ -17,7 +17,7 @@ val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
 
 plugins {
     id("ribs.android.application")
-    kotlin("kapt")
+    id("com.google.devtools.ksp")
     id("net.ltgt.errorprone")
     id("net.ltgt.nullaway")
     id("ribs.spotless")
@@ -28,8 +28,8 @@ android {
 }
 
 dependencies {
-    kapt(libs.autodispose.errorprone)
-    kapt(libs.uber.nullaway)
+    ksp(libs.autodispose.errorprone)
+    ksp(libs.uber.nullaway)
     errorprone(libs.errorprone.core)
     errorprone(libs.guava.jre)
     errorproneJavac(libs.errorprone.javac)

@@ -25,7 +25,6 @@ dependencies {
     implementation(libs.javapoet)
     implementation(libs.dagger.library)
 
-    compileOnly(libs.androidx.annotation)
     compileOnly(libs.android.api)
 
     testImplementation(testLibs.compile.testing)
