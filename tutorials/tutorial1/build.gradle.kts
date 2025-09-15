@@ -13,25 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.application.errorprone")
 }
 
 android {
-    namespace "com.uber.rib.flipper"
+    namespace = "com.uber.rib.tutorial1"
+
+    defaultConfig {
+        applicationId = "com.uber.tutorial1"
+    }
 }
 
 dependencies {
-    api(project(":libraries:rib-android"))
-    api(project(":libraries:rib-android-core"))
-    api(project(":libraries:rib-base"))
-    api(libs.rxkotlin)
-    api(libs.rxrelay2)
-    api(libs.rxjava2)
-    implementation(libs.javax.inject)
-    implementation(libs.annotation)
-    implementation(libs.appcompat)
-    implementation(libs.guava.android)
-    implementation(libs.flipper)
+    kapt(project(":libraries:rib-compiler-test"))
+    kapt(libs.dagger.compiler)
+    implementation(project(":libraries:rib-android"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.dagger.library)
+    implementation(libs.rxbinding)
+    compileOnly(libs.jsr250)
+    testImplementation(project(":libraries:rib-test"))
 }

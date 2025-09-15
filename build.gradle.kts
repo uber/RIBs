@@ -13,29 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
-    id("ribs.kotlin.library")
-    alias(libs.plugins.maven.publish)
-}
-
-kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
-            }
-        }
-    }
-}
-
-dependencies {
-    api(project(":libraries:rib-base"))
-    implementation(libs.rxjava2)
-    implementation(libs.kotlin.stdlib)
-    api(testLibs.junit)
-    api(testLibs.truth)
-    api(testLibs.mockito)
-    api(testLibs.kotlinx.coroutines.test)
-    implementation(testLibs.mockito.kotlin)
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.android.library) apply false
+    alias(libs.plugins.kotlin.android) apply false
+    alias(libs.plugins.kotlin.kapt) apply false
+    alias(libs.plugins.maven.publish) apply false
+    alias(libs.plugins.errorprone) apply false
+    alias(libs.plugins.nullaway) apply false
+    alias(libs.plugins.intellij) apply false
+    alias(libs.plugins.spotless) apply false
 }

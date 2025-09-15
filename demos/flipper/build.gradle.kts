@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 plugins {
-    id("ribs.kotlin-android-application-conventions")
-    alias(libs.plugins.kotlinKapt)
+    id("ribs.android.application")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
-    namespace "com.uber.rib.tutorial4"
+    namespace = "com.uber.rib.flipper"
 
     defaultConfig {
-        applicationId "com.uber.tutorial3"
+        applicationId = "com.uber.rib.flipper"
     }
 }
 
@@ -30,13 +30,18 @@ dependencies {
     kapt(libs.dagger.compiler)
     kapt(project(":libraries:rib-compiler-test"))
     implementation(project(":libraries:rib-android"))
-    implementation(project(":libraries:rib-workflow"))
-    implementation(libs.annotation)
-    implementation(libs.appcompat)
+    implementation(libs.androidx.appcompat)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
     implementation(libs.percent)
-    implementation(libs.guava.android)
     compileOnly(libs.jsr250)
     testImplementation(project(":libraries:rib-test"))
+
+    // Flipper Debug tool integration
+    debugImplementation("com.facebook.flipper:flipper:0.93.0")
+    debugImplementation("com.facebook.soloader:soloader:0.10.1")
+    releaseImplementation("com.facebook.flipper:flipper-noop:0.93.0")
+
+    // Flipper RIBs plugin
+    implementation(project(":tooling:rib-flipper-plugin"))
 }

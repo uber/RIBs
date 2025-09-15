@@ -13,26 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.library")
+    alias(libs.plugins.maven.publish)
 }
 
 android {
-    namespace "com.uber.debug.broadcast.core"
+    namespace = "com.uber.rib.android.compose"
+
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
+    }
 }
 
 dependencies {
     api(project(":libraries:rib-android"))
-    api(project(":libraries:rib-android-core"))
-    api(project(":libraries:rib-base"))
-    api(libs.rxkotlin)
-    api(libs.rxrelay2)
-    api(libs.rxjava2)
-    implementation(libs.javax.inject)
-    implementation(libs.annotation)
-    implementation(libs.appcompat)
-    implementation(libs.guava.android)
-    implementation(libs.gson)
+    implementation(libs.compose.foundation)
+    implementation(libs.compose.ui)
+    testImplementation(testLibs.robolectric)
+    testImplementation(testLibs.mockito.kotlin)
+    testImplementation(project(":libraries:rib-test"))
 }

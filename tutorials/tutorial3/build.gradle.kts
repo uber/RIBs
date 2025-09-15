@@ -13,20 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.application")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
-    namespace "com.uber.rib.android.core"
+    namespace = "com.uber.rib.tutorial1"
+
+    defaultConfig {
+        applicationId = "com.uber.tutorial3"
+    }
 }
 
 dependencies {
-    implementation(libs.javax.inject)
-    implementation(libs.annotation)
-    implementation(libs.appcompat)
-    testImplementation(libs.appcompat)
-    testImplementation(testLibs.robolectric)
+    kapt(libs.dagger.compiler)
+    kapt(project(":libraries:rib-compiler-test"))
+    implementation(project(":libraries:rib-android"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.dagger.library)
+    implementation(libs.rxbinding)
+    implementation(libs.percent)
+    compileOnly(libs.jsr250)
+    testImplementation(project(":libraries:rib-test"))
 }

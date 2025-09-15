@@ -13,29 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
-    id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.kotlin.library")
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
-    implementation(project(":libraries:rib-base"))
-
-    implementation(libs.autocommon)
+    api(project(":libraries:rib-compiler-app"))
     implementation(libs.javapoet)
-    implementation(libs.dagger.library)
 
-    compileOnly(libs.annotation)
+    compileOnly(libs.androidx.annotation)
     compileOnly(libs.autoservice)
     compileOnly(libs.android.api)
+    kapt(libs.autoservice)
 
-    testImplementation(testLibs.compileTesting)
+    testImplementation(libs.androidx.annotation)
+    testImplementation(testLibs.compile.testing)
+    testImplementation(files("libs/tools.jar"))
 }
 
 // https://code.google.com/p/android/issues/detail?id=64887
-task copyTestResources(type: Copy) {
-    from "${projectDir}/src/test/resources"
-    into "${buildDir}/classes/test"
+tasks.register<Copy>("copyTestResources") {
+    from("$projectDir/src/test/resources")
+    into("$buildDir/classes/test")
 }
-processTestResources.dependsOn copyTestResources
+
+tasks.processTestResources {
+    dependsOn("copyTestResources")
+}

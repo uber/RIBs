@@ -13,41 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-    id("ribs.android.library")
+    id("ribs.kotlin.library")
     alias(libs.plugins.maven.publish)
 }
 
-android {
-    namespace = "com.uber.rib.android"
-}
-
-kotlin {
-    sourceSets {
-        configureEach {
-            languageSettings {
-                optIn("com.uber.rib.core.internal.CoreFriendModuleApi")
-            }
-        }
-    }
-}
-
 dependencies {
-    api(project(":libraries:rib-android-core"))
-    api(project(":libraries:rib-base"))
-    api(libs.rxkotlin)
-    api(libs.rxrelay2)
-    api(libs.rxjava2)
-    implementation(libs.javax.inject)
-    implementation(libs.androidx.annotation)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.guava.android)
+    implementation(libs.checkerqual)
     implementation(libs.autodispose.coroutines)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.rx2)
-    testImplementation(testLibs.robolectric)
-    testImplementation(libs.lifecycle.runtime)
-    testImplementation(libs.androidx.appcompat)
+    implementation(project(":libraries:rib-base"))
+    compileOnly(libs.androidx.annotation)
+    compileOnly(libs.android.api)
+
+    testImplementation(testLibs.junit)
     testImplementation(testLibs.mockito.kotlin)
-    testImplementation(project(":libraries:rib-test"))
+    testImplementation(testLibs.truth)
 }

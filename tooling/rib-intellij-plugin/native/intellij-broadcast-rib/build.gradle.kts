@@ -14,13 +14,25 @@
  * limitations under the License.
  */
 plugins {
-    alias(libs.plugins.androidApplication) apply false
-    alias(libs.plugins.androidLibrary) apply false
-    alias(libs.plugins.kotlinAndroid) apply false
-    alias(libs.plugins.kotlinKapt) apply false
-    alias(libs.plugins.mavenPublish) apply false
-    alias(libs.plugins.errorprone) apply false
-    alias(libs.plugins.nullaway) apply false
-    alias(libs.plugins.intellij) apply false
-    alias(libs.plugins.spotless) apply false
+    id("ribs.android.library")
+    alias(libs.plugins.maven.publish)
+}
+
+android {
+    namespace = "com.uber.debug.broadcast.rib"
+}
+
+dependencies {
+    api(project(":libraries:rib-android"))
+    api(project(":libraries:rib-android-core"))
+    api(project(":libraries:rib-base"))
+    api(project(":tooling:utils:intellij-broadcast-core"))
+    api(libs.rxkotlin)
+    api(libs.rxrelay2)
+    api(libs.rxjava2)
+    implementation(libs.javax.inject)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.guava.android)
+    implementation(libs.flipper)
 }

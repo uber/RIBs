@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.application")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
-    namespace "com.uber.rib.android.compose"
+    namespace = "com.uber.rib.tutorial4"
 
-    buildFeatures {
-        compose true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion libs.versions.compose.compiler.get()
+    defaultConfig {
+        applicationId = "com.uber.tutorial3"
     }
 }
 
 dependencies {
-    api(project(":libraries:rib-android"))
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.ui)
-    testImplementation(testLibs.robolectric)
-    testImplementation(testLibs.mockitoKotlin)
+    kapt(libs.dagger.compiler)
+    kapt(project(":libraries:rib-compiler-test"))
+    implementation(project(":libraries:rib-android"))
+    implementation(project(":libraries:rib-workflow"))
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
+    implementation(libs.dagger.library)
+    implementation(libs.rxbinding)
+    implementation(libs.percent)
+    implementation(libs.guava.android)
+    compileOnly(libs.jsr250)
     testImplementation(project(":libraries:rib-test"))
 }

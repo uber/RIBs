@@ -13,39 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+import net.ltgt.gradle.errorprone.errorprone
+
 plugins {
-    id("ribs.kotlin-android-application-errorprone-conventions")
-    alias(libs.plugins.kotlinKapt)
+    id("ribs.android.application.errorprone")
 }
 
 android {
-    namespace "com.uber.rib.memory_leak"
+    namespace = "com.uber.rib.tutorial1"
 
     defaultConfig {
-        applicationId "com.uber.tutorial3"
+        applicationId = "com.uber.tutorial2"
     }
 }
 
 dependencies {
-    implementation(project(":libraries:rib-android"))
-    kapt(project(":libraries:rib-compiler-app"))
-    kapt(project(":libraries:rib-compiler-test"))
-    kapt(libs.autodispose.errorprone)
     kapt(libs.dagger.compiler)
+    kapt(project(":libraries:rib-compiler-test"))
+    implementation(project(":libraries:rib-android"))
+    implementation(libs.androidx.appcompat)
+    implementation(libs.percent)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
-    implementation(libs.leakcanary)
-    implementation(libs.percent)
-    implementation(libs.appcompat)
+    compileOnly(libs.android.api)
     compileOnly(libs.jsr250)
-
     testImplementation(project(":libraries:rib-test"))
 }
 
-tasks.withType(JavaCompile).configureEach {
+tasks.withType<JavaCompile>().configureEach {
     // Disable error prone checks I don't want.
     options.errorprone {
-        disable("ReferenceEquality", "ShortCircuitBoolean", "MissingCasesInEnumSwitch",
-                "CheckReturnValue", "InvalidPatternSyntax", "OperatorPrecedence", "DefaultCharset")
+        disable("CheckReturnValue")
     }
 }

@@ -13,26 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.library")
+    alias(libs.plugins.maven.publish)
 }
 
 android {
-    namespace "com.uber.debug.broadcast.rib"
+    namespace = "com.uber.debug.broadcast.core"
 }
 
 dependencies {
     api(project(":libraries:rib-android"))
     api(project(":libraries:rib-android-core"))
     api(project(":libraries:rib-base"))
-    api(project(":tooling:utils:intellij-broadcast-core"))
     api(libs.rxkotlin)
     api(libs.rxrelay2)
     api(libs.rxjava2)
     implementation(libs.javax.inject)
-    implementation(libs.annotation)
-    implementation(libs.appcompat)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
     implementation(libs.guava.android)
-    implementation(libs.flipper)
+    implementation(libs.gson)
 }

@@ -19,8 +19,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("android")
-    id("com.android.application")
-    id("ribs.spotless-convention")
+    id("com.android.library")
+    id("ribs.spotless")
 }
 
 kotlin {
@@ -32,26 +32,20 @@ android {
 
     defaultConfig {
         minSdk = 21
-        targetSdk = 28
-        versionCode = 1
-        versionName = "1.0"
     }
 
+    // This can be removed on AGP 8.1.0-alpha09 onwards, since we are using JVM Toolchain
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    // No need for lint. Those are just tutorials.
-    lint {
-        abortOnError = false
-        quiet = true
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8.toString()
     }
 
-    buildTypes {
-        debug {
-            matchingFallbacks.add("release")
-        }
+    buildFeatures {
+        buildConfig = false
     }
 
     sourceSets {
@@ -59,11 +53,17 @@ android {
         getByName("test").java.srcDir("src/test/kotlin")
         getByName("androidTest").java.srcDir("src/androidTest/kotlin")
     }
+
+    testOptions {
+        unitTests {
+            isIncludeAndroidResources = true
+        }
+    }
 }
 
 androidComponents {
     beforeVariants { variantBuilder ->
-        if (variantBuilder.buildType == "release") {
+        if (variantBuilder.buildType == "debug") {
             variantBuilder.enable = false
         }
     }
@@ -72,6 +72,7 @@ androidComponents {
 tasks.withType<KotlinCompile>().configureEach {
     compilerOptions {
         freeCompilerArgs.addAll(
+            "-Xexplicit-api=warning",
             "-Xjvm-default=all",
             "-opt-in=kotlin.RequiresOptIn",
         )

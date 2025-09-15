@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 plugins {
-    id("ribs.kotlin-android-application-conventions")
-    alias(libs.plugins.kotlinKapt)
+    id("ribs.android.application")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
-    namespace "com.uber.rib.intellij"
+    namespace = "com.uber.rib.intellij"
 
     defaultConfig {
-        applicationId "com.uber.rib.intellij"
+        applicationId = "com.uber.rib.intellij"
     }
 }
 
@@ -30,7 +30,7 @@ dependencies {
     kapt(libs.dagger.compiler)
     kapt(project(":libraries:rib-compiler-test"))
     implementation(project(":libraries:rib-android"))
-    implementation(libs.appcompat)
+    implementation(libs.androidx.appcompat)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
     implementation(libs.percent)
