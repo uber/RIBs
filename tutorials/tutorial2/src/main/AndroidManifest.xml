@@ -13,9 +13,7 @@
         android:allowBackup="false"
         android:icon="@drawable/ub__ic_launcher"
         android:label="@string/app_name"
-        android:screenOrientation="portrait"
-        android:theme="@style/Theme.AppCompat.Light"
-        tools:replace="android:theme">
+        android:screenOrientation="portrait">
         <activity
             android:name="com.uber.rib.RootActivity"
             android:exported="true">
