@@ -17,6 +17,7 @@ import net.ltgt.gradle.errorprone.errorprone
 
 plugins {
     id("ribs.android.application.errorprone")
+    alias(libs.plugins.kotlin.kapt)
 }
 
 android {
@@ -28,7 +29,7 @@ android {
 }
 
 dependencies {
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
     kapt(project(":libraries:rib-compiler-test"))
     implementation(project(":libraries:rib-android"))
     implementation(libs.androidx.appcompat)

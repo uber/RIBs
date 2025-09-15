@@ -34,6 +34,7 @@ dependencies {
     implementation(plugin(libs.plugins.errorprone))
     implementation(plugin(libs.plugins.nullaway))
     implementation(plugin(libs.plugins.spotless))
+    implementation(plugin(libs.plugins.kotlin.ksp))
 }
 
 // Helper function that transforms a Gradle Plugin alias from a
