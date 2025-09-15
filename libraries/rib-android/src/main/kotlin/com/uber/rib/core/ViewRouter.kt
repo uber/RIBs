@@ -24,15 +24,18 @@ import android.view.View
  * @param <I> type of interactor owned by the router.
  */
 abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
+  private val _view: V
+
   /** @return the router's view. */
   open val view: V
+    get() = _view
 
   constructor(
     view: V,
     interactor: I,
     component: InteractorBaseComponent<*>,
   ) : super(interactor, component) {
-    this.view = view
+    _view = view
     if (XRay.isEnabled()) {
       XRay.apply(this, view)
     }
@@ -42,7 +45,7 @@ abstract class ViewRouter<V : View, I : Interactor<*, *>> : Router<I> {
     view: V,
     interactor: I,
   ) : super(null, interactor, RibRefWatcher.getInstance(), getMainThread()) {
-    this.view = view
+    _view = view
     if (XRay.isEnabled()) {
       XRay.apply(this, view)
     }

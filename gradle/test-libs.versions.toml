@@ -1,11 +1,11 @@
 [versions]
-compile-testing = "0.17"
-junit = "4.12"
-kotlinx-coroutines = "1.7.3"
-mockito = "4.6.1"
+compile-testing = "0.23.0"
+junit = "4.13.2"
+kotlinx-coroutines = "1.10.2"
+mockito = "3.12.4"
 mockito-kotlin = "4.0.0"
-robolectric = "4.4"
-truth = "0.43"
+robolectric = "4.16"
+truth = "1.1.3"
 
 [libraries]
 compile-testing = { group = "com.google.testing.compile", name = "compile-testing", version.ref = "compile-testing" }

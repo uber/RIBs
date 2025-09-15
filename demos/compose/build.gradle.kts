@@ -15,7 +15,8 @@
  */
 plugins {
     id("ribs.android.application")
-    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.kotlin.ksp)
+    alias(libs.plugins.compose.compiler)
 }
 
 android {
@@ -28,13 +29,10 @@ android {
         compose = true
         buildConfig = true
     }
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
-    }
 }
 
 dependencies {
-    kapt(libs.motif.compiler)
+    ksp(libs.motif.compiler)
     implementation(project(":libraries:rib-android"))
     implementation(project(":libraries:rib-android-compose"))
     implementation(project(":libraries:rib-coroutines"))
@@ -58,9 +56,9 @@ dependencies {
 
 
     // Flipper Debug tool integration
-    debugImplementation("com.facebook.flipper:flipper:0.93.0")
-    debugImplementation("com.facebook.soloader:soloader:0.10.1")
-    releaseImplementation("com.facebook.flipper:flipper-noop:0.93.0")
+    debugImplementation(libs.flipper)
+    debugImplementation(libs.soloader)
+    releaseImplementation(libs.flipper.noop)
 
     // Flipper RIBs plugin
     implementation(project(":tooling:rib-flipper-plugin"))

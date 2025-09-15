@@ -13,9 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@file:Suppress("UnstableApiUsage")
-
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
     kotlin("android")
@@ -25,6 +23,15 @@ plugins {
 
 kotlin {
     jvmToolchain(11)
+    explicitApiWarning()
+
+    compilerOptions {
+        jvmTarget = JvmTarget.JVM_1_8
+        optIn.add("kotlin.RequiresOptIn")
+        freeCompilerArgs.add("-Xjvm-default=all")
+        // TODO: For Kotlin 2.2, delete the line above and uncomment the line below.
+        // jvmDefault = JvmDefaultMode.NO_COMPATIBILITY
+    }
 }
 
 android {
@@ -34,24 +41,9 @@ android {
         minSdk = 21
     }
 
-    // This can be removed on AGP 8.1.0-alpha09 onwards, since we are using JVM Toolchain
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
-    buildFeatures {
-        buildConfig = false
-    }
-
-    sourceSets {
-        getByName("main").java.srcDir("src/main/kotlin")
-        getByName("test").java.srcDir("src/test/kotlin")
-        getByName("androidTest").java.srcDir("src/androidTest/kotlin")
     }
 
     testOptions {
@@ -66,15 +58,5 @@ androidComponents {
         if (variantBuilder.buildType == "debug") {
             variantBuilder.enable = false
         }
-    }
-}
-
-tasks.withType<KotlinCompile>().configureEach {
-    compilerOptions {
-        freeCompilerArgs.addAll(
-            "-Xexplicit-api=warning",
-            "-Xjvm-default=all",
-            "-opt-in=kotlin.RequiresOptIn",
-        )
     }
 }

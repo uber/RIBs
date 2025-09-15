@@ -22,6 +22,7 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CompletableJob
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.CoroutineStart
+import kotlinx.coroutines.InternalForInheritanceCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.awaitCancellation
@@ -76,6 +77,9 @@ public sealed interface BindWorkerHandle : Job {
   public fun unbind(): Job
 }
 
+// Job is not stable for inheritance, but we are delegating the implementation
+// to a job instance from kotlinx.coroutines itself.
+@OptIn(InternalForInheritanceCoroutinesApi::class)
 private class BindWorkerHandleImpl(
   bindJob: Job,
   private val unbindJob: Job,

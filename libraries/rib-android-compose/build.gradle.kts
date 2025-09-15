@@ -15,6 +15,7 @@
  */
 plugins {
     id("ribs.android.library")
+    alias(libs.plugins.compose.compiler)
     alias(libs.plugins.maven.publish)
 }
 
@@ -23,10 +24,6 @@ android {
 
     buildFeatures {
         compose = true
-    }
-
-    composeOptions {
-        kotlinCompilerExtensionVersion = libs.versions.compose.compiler.get()
     }
 }
 
