@@ -13,35 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
-    id("ribs.kotlin-android-application-errorprone-conventions")
-}
-
-android {
-    namespace "com.uber.rib.tutorial1"
-
-    defaultConfig {
-        applicationId "com.uber.tutorial2"
-    }
+    id("ribs.kotlin.library")
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
-    kapt(libs.dagger.compiler)
-    kapt(project(":libraries:rib-compiler-test"))
-    implementation(project(":libraries:rib-android"))
-    implementation(libs.appcompat)
-    implementation(libs.percent)
+    implementation(project(":libraries:rib-base"))
+
+    implementation(libs.autocommon)
+    implementation(libs.javapoet)
     implementation(libs.dagger.library)
-    implementation(libs.rxbinding)
+
+    compileOnly(libs.androidx.annotation)
+    compileOnly(libs.autoservice)
     compileOnly(libs.android.api)
-    compileOnly(libs.jsr250)
-    testImplementation(project(":libraries:rib-test"))
+
+    testImplementation(testLibs.compile.testing)
 }
 
-tasks.withType(JavaCompile) {
-    // Disable error prone checks I don't want.
-    options.errorprone {
-        disable("CheckReturnValue")
-    }
+// https://code.google.com/p/android/issues/detail?id=64887
+tasks.register<Copy>("copyTestResources") {
+    from("$projectDir/src/test/resources")
+    into("$buildDir/classes/test")
+}
+
+tasks.processTestResources {
+    dependsOn("copyTestResources")
 }

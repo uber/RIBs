@@ -15,16 +15,16 @@
  */
 
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.library")
+    alias(libs.plugins.maven.publish)
 }
 
 android {
-    namespace "com.uber.rib.workflow"
+    namespace = "com.uber.rib.workflow"
 }
 
 dependencies {
-    implementation(libs.annotation)
+    implementation(libs.androidx.annotation)
     implementation(libs.rxandroid2)
     implementation(libs.rxkotlin)
     api(libs.guava.android)

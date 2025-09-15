@@ -15,20 +15,25 @@
  */
 
 plugins {
-    id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.kotlin.library")
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
-    implementation(libs.checkerqual)
-    implementation(libs.autodispose.coroutines)
-    implementation(libs.coroutines.android)
-    implementation(libs.coroutines.rx2)
-    implementation(project(':libraries:rib-base'))
-    compileOnly(libs.annotation)
+
+    api(libs.autodispose.coroutines)
+    api(libs.kotlinx.coroutines.android)
+    api(libs.kotlinx.coroutines.rx2)
+
     compileOnly(libs.android.api)
 
+    testImplementation(project(":libraries:rib-base"))
+    testImplementation(project(":libraries:rib-test"))
     testImplementation(testLibs.junit)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
+    testImplementation(testLibs.kotlinx.coroutines.test)
+    testImplementation(libs.androidx.annotation)
+    testImplementation(libs.android.api)
 }

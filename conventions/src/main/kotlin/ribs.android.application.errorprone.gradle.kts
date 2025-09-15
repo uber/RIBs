@@ -13,29 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
+
 plugins {
-    kotlin("jvm")
-    id("ribs.spotless-convention")
+    id("ribs.android.application")
+    kotlin("kapt")
+    id("net.ltgt.errorprone")
+    id("net.ltgt.nullaway")
+    id("ribs.spotless")
 }
 
-kotlin {
-    jvmToolchain(11)
-    explicitApi()
+android {
+    errorprone()
 }
 
-java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
-}
-
-tasks.named("compileKotlin", org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask::class.java) {
-    compilerOptions {
-        freeCompilerArgs.add("-Xjvm-default=all")
-    }
-}
-
-tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
+dependencies {
+    kapt(libs.autodispose.errorprone)
+    kapt(libs.uber.nullaway)
+    errorprone(libs.errorprone.core)
+    errorprone(libs.guava.jre)
+    errorproneJavac(libs.errorprone.javac)
+    errorprone(libs.uber.nullaway)
 }

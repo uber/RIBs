@@ -13,22 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.library")
+    alias(libs.plugins.maven.publish)
 }
 
 android {
-    namespace "com.ubercab.core.screenstack.base"
+    namespace = "com.uber.rib.android.core"
 }
 
 dependencies {
-    api(libs.rxjava2)
-    api(libs.rxrelay2)
-    api(libs.rxbinding)
-    implementation(libs.annotation)
-    implementation(libs.autodispose.coroutines)
-    implementation(libs.coroutines.android)
-    implementation(libs.coroutines.rx2)
+    implementation(libs.javax.inject)
+    implementation(libs.androidx.annotation)
+    implementation(libs.androidx.appcompat)
+    testImplementation(libs.androidx.appcompat)
+    testImplementation(testLibs.robolectric)
 }

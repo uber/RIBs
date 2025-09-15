@@ -15,8 +15,8 @@
  */
 
 plugins {
-    id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.kotlin.library")
+    alias(libs.plugins.maven.publish)
 }
 
 kotlin {
@@ -31,7 +31,7 @@ kotlin {
 
 dependencies {
     api(project(":libraries:rib-coroutines"))
-    api(testLibs.coroutines.test)
+    api(testLibs.kotlinx.coroutines.test)
     api(testLibs.junit)
 
     compileOnly(libs.android.api)
@@ -40,10 +40,10 @@ dependencies {
     testImplementation(project(":libraries:rib-test"))
     testImplementation(testLibs.junit)
     testImplementation(testLibs.mockito)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
-    testImplementation(testLibs.coroutines.test)
-    testImplementation(libs.coroutines.android)
-    testImplementation(libs.annotation)
+    testImplementation(testLibs.kotlinx.coroutines.test)
+    testImplementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.androidx.annotation)
     testImplementation(libs.android.api)
 }

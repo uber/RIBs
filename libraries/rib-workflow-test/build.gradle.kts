@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 plugins {
-    id("ribs.kotlin-android-library-conventions")
-    alias(libs.plugins.mavenPublish)
+    id("ribs.android.library")
+    alias(libs.plugins.maven.publish)
 }
 
 android {
@@ -43,6 +43,6 @@ dependencies {
     api(project(":libraries:rib-workflow"))
     api(libs.guava.android)
     api(libs.rxjava2)
-    implementation(libs.annotation)
+    implementation(libs.androidx.annotation)
     implementation(testLibs.truth)
 }

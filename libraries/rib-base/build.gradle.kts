@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 plugins {
-    id("ribs.kotlin-library-conventions")
-    alias(libs.plugins.kotlinKapt)
-    alias(libs.plugins.mavenPublish)
+    id("ribs.kotlin.library")
+    alias(libs.plugins.kotlin.kapt)
+    alias(libs.plugins.maven.publish)
 }
 
 dependencies {
@@ -34,24 +34,24 @@ dependencies {
     implementation(libs.javax.inject)
 
     implementation(libs.autodispose.coroutines)
-    implementation(libs.coroutines.rx2)
+    implementation(libs.kotlinx.coroutines.rx2)
     api(libs.kotlin.stdlib)
-    api(libs.coroutines.core)
+    api(libs.kotlinx.coroutines.core)
     api(project(":libraries:rib-coroutines"))
 
     compileOnly(libs.dagger.compiler)
-    compileOnly(libs.annotation)
+    compileOnly(libs.androidx.annotation)
     compileOnly(libs.android.api)
     compileOnly(libs.checkerqual)
 
     testImplementation(project(":libraries:rib-coroutines-test"))
-    testImplementation(libs.annotation)
+    testImplementation(libs.androidx.annotation)
     testImplementation(libs.android.api)
     testImplementation(testLibs.junit)
     testImplementation(testLibs.mockito)
-    testImplementation(testLibs.mockitoKotlin)
+    testImplementation(testLibs.mockito.kotlin)
     testImplementation(testLibs.truth)
     testImplementation(project(":libraries:rib-test")) {
-        transitive = false
+        isTransitive = false
     }
 }
