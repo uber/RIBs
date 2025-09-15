@@ -20,20 +20,52 @@ import io.reactivex.Observable
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
 public object RibEvents {
+  private var extraBufferCapacity: Int = Channel.UNLIMITED
 
-  private val mutableRouterEvents =
-    MutableSharedFlow<RibRouterEvent>(0, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
-  private val mutableRibDurationEvents =
-    MutableSharedFlow<RibActionInfo>(0, Channel.UNLIMITED, BufferOverflow.DROP_OLDEST)
+  /**
+   * Sets the extra buffer capacity for [routerEventsFlow] and [ribActionEventsFlow].
+   *
+   * This function must be called on the main thread, and before any usage of:
+   * 1. [routerEventsFlow]
+   * 2. [routerEvents]
+   * 3. [ribActionEventsFlow]
+   * 4. [ribActionEvents]
+   */
+  @JvmStatic
+  public fun setExtraBufferCapacity(capacity: Int) {
+    extraBufferCapacity = capacity
+  }
+
+  private val mutableRouterEvents by lazy {
+    MutableSharedFlow<RibRouterEvent>(0, extraBufferCapacity, BufferOverflow.DROP_OLDEST)
+  }
+
+  private val mutableRibDurationEvents by lazy {
+    MutableSharedFlow<RibActionInfo>(0, extraBufferCapacity, BufferOverflow.DROP_OLDEST)
+  }
 
   @JvmStatic
-  public val routerEvents: Observable<RibRouterEvent> = mutableRouterEvents.asObservable()
+  public val routerEventsFlow: SharedFlow<RibRouterEvent> by lazy {
+    mutableRouterEvents.asSharedFlow()
+  }
 
   @JvmStatic
-  public val ribActionEvents: Observable<RibActionInfo> = mutableRibDurationEvents.asObservable()
+  public val routerEvents: Observable<RibRouterEvent> by lazy { mutableRouterEvents.asObservable() }
+
+  @JvmStatic
+  public val ribActionEventsFlow: SharedFlow<RibActionInfo> by lazy {
+    mutableRibDurationEvents.asSharedFlow()
+  }
+
+  @JvmStatic
+  public val ribActionEvents: Observable<RibActionInfo> by lazy {
+    mutableRibDurationEvents.asObservable()
+  }
 
   internal var useStateFlowInteractorEvent: Boolean = false
     private set
