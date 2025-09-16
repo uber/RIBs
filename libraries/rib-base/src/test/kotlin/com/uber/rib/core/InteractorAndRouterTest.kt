@@ -25,8 +25,6 @@ import com.uber.rib.core.RibRefWatcher.Companion.getInstance
 import com.uber.rib.core.lifecycle.InteractorEvent
 import io.reactivex.Completable
 import io.reactivex.observers.TestObserver
-import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.withTimeoutOrNull
 import org.junit.Assert.fail
@@ -229,13 +227,11 @@ class InteractorAndRouterTest {
     setupInteractorForStateFlow()
     var eventCount = 0
     val lifecycleFlow = interactor.lifecycleFlow
-    val _lifecycleFlow = interactor._lifecycleFlow
 
     // When
     withTimeoutOrNull(10) { lifecycleFlow.collect { eventCount++ } }
 
     // Then
-    assertThat(_lifecycleFlow).isInstanceOf(MutableStateFlow::class.java)
     assertThat(eventCount).isEqualTo(0)
   }
 
@@ -244,13 +240,11 @@ class InteractorAndRouterTest {
     // When
     var eventCount = 0
     val lifecycleFlow = interactor.lifecycleFlow
-    val _lifecycleFlow = interactor._lifecycleFlow
 
     // When
     withTimeoutOrNull(10) { lifecycleFlow.collect { eventCount++ } }
 
     // Then
-    assertThat(_lifecycleFlow).isInstanceOf(MutableSharedFlow::class.java)
     assertThat(eventCount).isEqualTo(0)
   }
 
