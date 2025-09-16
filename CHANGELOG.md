@@ -136,3 +136,13 @@
 * Increase buffer capacity for mutableRouterEvents flow within RibEvents by @RahulDMello in https://github.com/uber/RIBs/pull/635
 * Add test asserting Rx subscription is disposed after `RibCoroutineWor… by @psteiger in https://github.com/uber/RIBs/pull/628
 
+### Version 0.16.4
+* Remove intrinsics usage in `RibCoroutineWorker` by @psteiger in https://github.com/uber/RIBs/pull/627
+* Remove ios to prep for separate repos by @tyvsmith in https://github.com/uber/RIBs/pull/646
+* fix url typo for ribs-ios by @tyvsmith in https://github.com/uber/RIBs/pull/647
+* Replace the SharedFlow with a StateFlow in the Interactor class by @rysh88 in https://github.com/uber/RIBs/pull/651
+* Remove Java 8 usage from repository. by @psteiger in https://github.com/uber/RIBs/pull/652
+* Bump Kotlin, Compose, Coroutines, AGP. by @psteiger in https://github.com/uber/RIBs/pull/653
+* Add tests for RibEvents buffer size configuration by @psteiger in https://github.com/uber/RIBs/pull/642
+* `ScopeProvider.coroutineScope`: Fail silently when accessing outside of RIB scope. by @psteiger in https://github.com/uber/RIBs/pull/632
+
