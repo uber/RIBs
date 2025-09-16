@@ -27,11 +27,12 @@ import io.reactivex.Observable
 import javax.inject.Inject
 import kotlin.properties.ReadWriteProperty
 import kotlin.reflect.KProperty
+import kotlinx.coroutines.ExperimentalForInheritanceCoroutinesApi
 import kotlinx.coroutines.channels.BufferOverflow
-import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.filterNotNull
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.rx2.asObservable
 
 /**
@@ -48,8 +49,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   private val useStateFlow
     get() = RibEvents.useStateFlowInteractorEvent
 
-  @VisibleForTesting
-  internal val _lifecycleFlow: MutableSharedFlow<InteractorEvent?> =
+  private val _lifecycleFlow: MutableSharedFlow<InteractorEvent?> =
     if (useStateFlow) {
       MutableStateFlow(null)
     } else {
@@ -59,8 +59,7 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
         BufferOverflow.DROP_OLDEST,
       )
     }
-  public open val lifecycleFlow: Flow<InteractorEvent>
-    get() = _lifecycleFlow.filterNotNull()
+  public open val lifecycleFlow: SharedFlow<InteractorEvent> = NonNullSharedFlow(_lifecycleFlow)
 
   @Volatile private var _lifecycleObservable: Observable<InteractorEvent>? = null
 
@@ -86,16 +85,16 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
   final override fun correspondingEvents(): CorrespondingEventsFunction<InteractorEvent> =
     LIFECYCLE_MAP_FUNCTION
 
-  final override fun peekLifecycle(): InteractorEvent? = _lifecycleFlow.replayCache.lastOrNull()
+  final override fun peekLifecycle(): InteractorEvent? = lifecycleFlow.replayCache.lastOrNull()
 
   @OptIn(CoreFriendModuleApi::class)
   final override fun requestScope(): CompletableSource =
-    _lifecycleFlow.asScopeCompletable(lifecycleRange)
+    lifecycleFlow.asScopeCompletable(lifecycleRange)
 
   // ---- InteractorType overrides ---- //
 
   override fun isAttached(): Boolean =
-    _lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
+    lifecycleFlow.replayCache.lastOrNull() == InteractorEvent.ACTIVE
 
   override fun handleBackPress(): Boolean = false
 
@@ -231,5 +230,22 @@ public abstract class Interactor<P : Any, R : Router<*>>() : InteractorType, Rib
           else -> throw LifecycleEndedException()
         }
       }
+  }
+}
+
+// See https://github.com/Kotlin/kotlinx.coroutines/issues/2514
+@OptIn(ExperimentalForInheritanceCoroutinesApi::class)
+private class NonNullSharedFlow<R : Any>(
+  private val upstream: SharedFlow<R?>,
+) : SharedFlow<R> {
+  override val replayCache: List<R>
+    get() = upstream.replayCache.filterNotNull()
+
+  override suspend fun collect(collector: FlowCollector<R>): Nothing {
+    upstream.collect { value ->
+      if (value != null) {
+        collector.emit(value)
+      }
+    }
   }
 }
