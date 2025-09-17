@@ -146,3 +146,8 @@
 * Add tests for RibEvents buffer size configuration by @psteiger in https://github.com/uber/RIBs/pull/642
 * `ScopeProvider.coroutineScope`: Fail silently when accessing outside of RIB scope. by @psteiger in https://github.com/uber/RIBs/pull/632
 
+### Version 0.16.5
+* Remove unneeded deps
+* Restore source compatibility for Interactor
+* Add mavenCentral publishing by @psteiger in https://github.com/uber/RIBs/pull/655
+
