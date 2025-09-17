@@ -38,8 +38,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
-    implementation(libs.percent)
-    compileOnly(libs.jsr250)
+    implementation(appLibs.percent)
+    compileOnly(appLibs.jsr250)
     testImplementation(project(":libraries:rib-test"))
 
     // IntelliJ debugging integration

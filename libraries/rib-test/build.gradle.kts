@@ -25,7 +25,6 @@ kotlin.compilerOptions {
 dependencies {
     api(project(":libraries:rib-base"))
     implementation(libs.rxjava2)
-    implementation(libs.kotlin.stdlib)
     api(testLibs.junit)
     api(testLibs.truth)
     api(testLibs.mockito)

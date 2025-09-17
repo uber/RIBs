@@ -29,8 +29,7 @@ android {
 
 dependencies {
     api(project(":libraries:rib-android"))
-    implementation(libs.compose.foundation)
-    implementation(libs.compose.ui)
+    api(libs.compose.runtime)
     testImplementation(testLibs.robolectric)
     testImplementation(testLibs.mockito.kotlin)
     testImplementation(project(":libraries:rib-test"))

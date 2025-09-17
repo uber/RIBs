@@ -1,20 +1,15 @@
 [versions]
 android-api = "4.1.1.4"
 android-studio = "2023.3.1.20"
-androidx-activity = "1.8.2"
 androidx-annotation = "1.9.1"
 androidx-appcompat = "1.6.1"
-androidx-core = "1.15.0"
 androidx-lifecycle = "2.6.2"
 autocommon = "0.8"
 autodispose = "1.4.1"
 autoservice = "1.1.1"
 checkerqual = "2.5.1"
-compose-libraries = "1.6.8"
-compose-navigation = "2.9.4"
+compose-libraries = "1.6.8" # If changing this, change also in apps-libs.versions.toml.
 dagger = "2.53.1"
-errorprone = "2.23.0"
-errorprone-javac = "9+181-r4173-1"
 flipper = "0.182.0"
 google-java-format = "1.28.0"
 gradle-android-plugin = "8.13.0"
@@ -27,15 +22,11 @@ gson = "2.8.7"
 guava-android = "27.1-android"
 guava-jre = "27.1-jre"
 javapoet = "1.11.1"
-jsr250 = "1.0"
 kotlin = "2.1.10"
 kotlin-ksp = "2.1.10-1.0.31"
 kotlinx-coroutines = "1.10.2"
 ktfmt = "0.43"
 ktlint = "0.48.2"
-leakcanary = "2.14"
-motif = "0.4.0-alpha06"
-percent = "1.0.0"
 reactivestreams = "1.0.0"
 rxandroid2 = "2.1.1"
 rxbinding = "2.2.0"
@@ -43,33 +34,23 @@ rxjava2 = "2.2.8"
 rxkotlin = "2.2.0"
 rxrelay2 = "2.1.0"
 savedstate = "1.2.1"
-soloader = "0.12.1"
-uber-nullaway = "0.9.0"
 
 [libraries]
-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
 android-api = { group = "com.google.android", name = "android", version.ref = "android-api" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 autocommon = { group = "com.google.auto", name = "auto-common", version.ref = "autocommon" }
 autodispose-coroutines = { group = "com.uber.autodispose", name = "autodispose-coroutines-interop", version.ref = "autodispose" }
-autodispose-errorprone = { group = "com.uber.autodispose", name = "autodispose-error-prone", version.ref = "autodispose" }
 autodispose-library = { group = "com.uber.autodispose", name = "autodispose", version.ref = "autodispose" }
 autodispose-lifecycle = { group = "com.uber.autodispose", name = "autodispose-lifecycle", version.ref = "autodispose" }
 autoservice = { group = "com.google.auto.service", name = "auto-service", version.ref = "autoservice" }
 checkerqual = { group = "org.checkerframework", name = "checker-qual", version.ref = "checkerqual" }
-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "compose-libraries" }
 compose-foundation = { group = "androidx.compose.foundation", name = "foundation", version.ref = "compose-libraries" }
-compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose-libraries" }
-compose-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "compose-navigation" }
-compose-runtime-rx2 = { group = "androidx.compose.runtime", name = "runtime-rxjava2", version.ref = "compose-libraries" }
+compose-runtime = { group = "androidx.compose.runtime", name = "runtime", version.ref = "compose-libraries" }
 compose-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "compose-libraries" }
 compose-uitooling = { group = "androidx.compose.ui", name = "ui-tooling", version.ref = "compose-libraries" }
-compose-viewmodel = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-compose", version.ref = "compose-libraries" }
 dagger-compiler = { group = "com.google.dagger", name = "dagger-compiler", version.ref = "dagger" }
 dagger-library = { group = "com.google.dagger", name = "dagger", version.ref = "dagger" }
-errorprone-core = { group = "com.google.errorprone", name = "error_prone_core", version.ref = "errorprone" }
-errorprone-javac = { group = "com.google.errorprone", name = "javac", version.ref = "errorprone-javac" }
 flipper = { group = "com.facebook.flipper", name = "flipper", version.ref = "flipper" }
 flipper-noop = { group = "com.facebook.flipper", name = "flipper-noop", version.ref = "flipper" }
 gradle-android-plugin = { module = "com.android.tools.build:gradle", version.ref = "gradle-android-plugin" }
@@ -79,16 +60,10 @@ guava-android = { group = "com.google.guava", name = "guava", version.ref = "gua
 guava-jre = { group = "com.google.guava", name = "guava", version.ref = "guava-jre" }
 javapoet = { group = "com.squareup", name = "javapoet", version.ref = "javapoet" }
 javax-inject = { group = "javax.inject", name = "javax.inject", version = "1" }
-jsr250 = { group = "javax.annotation", name = "jsr250-api", version.ref = "jsr250" }
-kotlin-stdlib = { group = "org.jetbrains.kotlin", name = "kotlin-stdlib", version.ref = "kotlin" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-core = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
 kotlinx-coroutines-rx2 = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-rx2", version.ref = "kotlinx-coroutines" }
-leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
 lifecycle-runtime = { group = "androidx.lifecycle", name = "lifecycle-runtime", version.ref = "androidx-lifecycle" }
-motif-compiler = { group = "com.uber.motif", name = "motif-compiler", version.ref = "motif" }
-motif-library = { group = "com.uber.motif", name = "motif", version.ref = "motif" }
-percent = { group = "androidx.percentlayout", name = "percentlayout", version.ref = "percent" }
 reactivestreams = { group = "org.reactivestreams", name = "reactive-streams", version.ref = "reactivestreams" }
 rxandroid2 = { group = "io.reactivex.rxjava2", name = "rxandroid", version.ref = "rxandroid2" }
 rxbinding = { group = "com.jakewharton.rxbinding2", name = "rxbinding", version.ref = "rxbinding" }
@@ -96,8 +71,6 @@ rxjava2 = { group = "io.reactivex.rxjava2", name = "rxjava", version.ref = "rxja
 rxkotlin = { group = "io.reactivex.rxjava2", name = "rxkotlin", version.ref = "rxkotlin" }
 rxrelay2 = { group = "com.jakewharton.rxrelay2", name = "rxrelay", version.ref = "rxrelay2" }
 savedstate = { group = "androidx.savedstate", name = "savedstate-ktx", version.ref = "savedstate" }
-soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
-uber-nullaway = { group = "com.uber.nullaway", name = "nullaway", version.ref = "uber-nullaway" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "gradle-android-plugin" }

@@ -64,7 +64,6 @@ dependencies {
     testImplementation(project(":libraries:rib-test"))
     testImplementation(project(":libraries:rib-compiler-test"))
     testImplementation(libs.dagger.compiler)
-    testImplementation(libs.javax.inject)
     testImplementation(libs.dagger.library)
     testImplementation(testLibs.truth)
     testImplementation(testLibs.compile.testing)

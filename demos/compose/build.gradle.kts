@@ -32,32 +32,27 @@ android {
 }
 
 dependencies {
-    ksp(libs.motif.compiler)
+    ksp(appLibs.motif.compiler)
     implementation(project(":libraries:rib-android"))
     implementation(project(":libraries:rib-android-compose"))
     implementation(project(":libraries:rib-coroutines"))
-    implementation(libs.androidx.annotation)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.activity.compose)
-    implementation(libs.compose.animation)
+    implementation(appLibs.activity.compose)
     implementation(libs.compose.foundation)
-    implementation(libs.compose.material)
-    implementation(libs.compose.navigation)
-    implementation(libs.compose.runtime.rx2)
+    implementation(appLibs.compose.material)
+    implementation(libs.compose.runtime)
     implementation(libs.compose.ui)
-    implementation(libs.compose.viewmodel)
     implementation(libs.compose.uitooling)
     implementation(libs.savedstate)
     implementation(libs.rxandroid2)
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.kotlinx.coroutines.rx2)
     implementation(libs.autodispose.coroutines)
-    implementation(libs.motif.library)
+    implementation(appLibs.motif.library)
 
 
     // Flipper Debug tool integration
     debugImplementation(libs.flipper)
-    debugImplementation(libs.soloader)
+    debugImplementation(appLibs.soloader)
     releaseImplementation(libs.flipper.noop)
 
     // Flipper RIBs plugin

@@ -33,11 +33,11 @@ dependencies {
     kapt(project(":libraries:rib-compiler-test"))
     implementation(project(":libraries:rib-android"))
     implementation(libs.androidx.appcompat)
-    implementation(libs.percent)
+    implementation(appLibs.percent)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
     compileOnly(libs.android.api)
-    compileOnly(libs.jsr250)
+    compileOnly(appLibs.jsr250)
     testImplementation(project(":libraries:rib-test"))
 }
 

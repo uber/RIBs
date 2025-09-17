@@ -30,7 +30,6 @@ dependencies {
     api(libs.rxkotlin)
     api(libs.rxrelay2)
     api(libs.rxjava2)
-    implementation(libs.javax.inject)
     implementation(libs.androidx.annotation)
     implementation(libs.androidx.appcompat)
     implementation(libs.guava.android)

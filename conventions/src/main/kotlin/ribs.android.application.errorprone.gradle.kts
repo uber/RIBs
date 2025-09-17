@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
+val appLibs = the<VersionCatalogsExtension>().named("appLibs")
 
 plugins {
     id("ribs.android.application")
@@ -28,10 +29,10 @@ android {
 }
 
 dependencies {
-    ksp(libs.autodispose.errorprone)
-    ksp(libs.uber.nullaway)
-    errorprone(libs.errorprone.core)
+    ksp(appLibs.findLibrary("autodispose-errorprone").get())
+    ksp(appLibs.findLibrary("uber-nullaway").get())
+    errorprone(appLibs.findLibrary("errorprone-core").get())
     errorprone(libs.guava.jre)
-    errorproneJavac(libs.errorprone.javac)
-    errorprone(libs.uber.nullaway)
+    errorproneJavac(appLibs.findLibrary("errorprone-javac").get())
+    errorprone(appLibs.findLibrary("uber-nullaway").get())
 }

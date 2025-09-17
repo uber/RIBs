@@ -32,14 +32,14 @@ dependencies {
     implementation(project(":libraries:rib-android"))
     ksp(project(":libraries:rib-compiler-app"))
     kapt(project(":libraries:rib-compiler-test"))
-    ksp(libs.autodispose.errorprone)
+    ksp(appLibs.autodispose.errorprone)
     ksp(libs.dagger.compiler)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
-    implementation(libs.leakcanary)
-    implementation(libs.percent)
+    implementation(appLibs.leakcanary)
+    implementation(appLibs.percent)
     implementation(libs.androidx.appcompat)
-    compileOnly(libs.jsr250)
+    compileOnly(appLibs.jsr250)
 
     testImplementation(project(":libraries:rib-test"))
 }

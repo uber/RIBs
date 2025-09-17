@@ -23,9 +23,7 @@ android {
 }
 
 dependencies {
-    implementation(libs.javax.inject)
+    api(libs.androidx.appcompat)
     implementation(libs.androidx.annotation)
-    implementation(libs.androidx.appcompat)
-    testImplementation(libs.androidx.appcompat)
     testImplementation(testLibs.robolectric)
 }

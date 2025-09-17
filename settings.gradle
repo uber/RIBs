@@ -17,6 +17,9 @@ dependencyResolutionManagement {
         mavenCentral()
     }
     versionCatalogs {
+        appLibs {
+            from(files("gradle/app-libs.versions.toml"))
+        }
         testLibs {
             from(files("gradle/test-libs.versions.toml"))
         }
