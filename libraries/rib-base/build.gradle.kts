@@ -31,11 +31,9 @@ dependencies {
     implementation(libs.rxjava2)
     implementation(libs.autodispose.library)
     api(libs.autodispose.lifecycle)
-    implementation(libs.javax.inject)
 
     implementation(libs.autodispose.coroutines)
     implementation(libs.kotlinx.coroutines.rx2)
-    api(libs.kotlin.stdlib)
     api(libs.kotlinx.coroutines.core)
     api(project(":libraries:rib-coroutines"))
 

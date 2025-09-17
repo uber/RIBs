@@ -1,0 +1,26 @@
+[versions]
+androidx-activity = "1.8.2"
+autodispose = "1.4.1"
+compose-libraries = "1.6.8" # If changing this, change also in libs.versions.toml.
+errorprone = "2.41.0"
+errorprone-javac = "9+181-r4173-1"
+jsr250 = "1.0"
+leakcanary = "2.14"
+motif = "0.4.0-alpha06"
+percent = "1.0.0"
+soloader = "0.12.1"
+uber-nullaway = "0.12.9"
+
+[libraries]
+activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "androidx-activity" }
+autodispose-errorprone = { group = "com.uber.autodispose", name = "autodispose-error-prone", version.ref = "autodispose" }
+compose-material = { group = "androidx.compose.material", name = "material", version.ref = "compose-libraries" }
+errorprone-core = { group = "com.google.errorprone", name = "error_prone_core", version.ref = "errorprone" }
+errorprone-javac = { group = "com.google.errorprone", name = "javac", version.ref = "errorprone-javac" }
+jsr250 = { group = "javax.annotation", name = "jsr250-api", version.ref = "jsr250" }
+leakcanary = { group = "com.squareup.leakcanary", name = "leakcanary-android", version.ref = "leakcanary" }
+motif-compiler = { group = "com.uber.motif", name = "motif-compiler", version.ref = "motif" }
+motif-library = { group = "com.uber.motif", name = "motif", version.ref = "motif" }
+percent = { group = "androidx.percentlayout", name = "percentlayout", version.ref = "percent" }
+soloader = { group = "com.facebook.soloader", name = "soloader", version.ref = "soloader" }
+uber-nullaway = { group = "com.uber.nullaway", name = "nullaway", version.ref = "uber-nullaway" }

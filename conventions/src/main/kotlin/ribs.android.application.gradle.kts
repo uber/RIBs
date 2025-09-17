@@ -15,6 +15,8 @@
  */
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
+val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
+
 plugins {
     kotlin("android")
     id("com.android.application")
@@ -48,22 +50,20 @@ android {
         targetCompatibility = JavaVersion.VERSION_1_8
     }
 
-    // No need for lint. Those are just tutorials.
     lint {
+        // Those are just tutorials/demos. Don't fail the build because of them.
         abortOnError = false
         quiet = true
+        // FlowOperatorInvokedInComposition Lint detector crashes on lintAnalyzeDebug task
+        // due to version mismatch in kotlinx-metadata-jvm dependency. After bumping compose,
+        // verify if this can be removed and pass CI.
+        disable.add("FlowOperatorInvokedInComposition")
     }
 
     buildTypes {
         debug {
             matchingFallbacks.add("release")
         }
-    }
-
-    sourceSets {
-        getByName("main").java.srcDir("src/main/kotlin")
-        getByName("test").java.srcDir("src/test/kotlin")
-        getByName("androidTest").java.srcDir("src/androidTest/kotlin")
     }
 }
 

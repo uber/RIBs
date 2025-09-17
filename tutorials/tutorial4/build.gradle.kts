@@ -36,8 +36,8 @@ dependencies {
     implementation(libs.androidx.appcompat)
     implementation(libs.dagger.library)
     implementation(libs.rxbinding)
-    implementation(libs.percent)
+    implementation(appLibs.percent)
     implementation(libs.guava.android)
-    compileOnly(libs.jsr250)
+    compileOnly(appLibs.jsr250)
     testImplementation(project(":libraries:rib-test"))
 }

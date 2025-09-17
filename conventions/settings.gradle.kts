@@ -18,6 +18,9 @@ dependencyResolutionManagement {
     create("libs") {
       from(files("../gradle/libs.versions.toml"))
     }
+    create("appLibs") {
+      from(files("../gradle/app-libs.versions.toml"))
+    }
   }
 }
 
