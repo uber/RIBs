@@ -26,3 +26,12 @@ plugins {
     alias(libs.plugins.intellij.platform) apply false
     alias(libs.plugins.spotless) apply false
 }
+
+subprojects {
+    apply(plugin = "jacoco")
+    tasks.withType<JacocoReport>().configureEach {
+        reports {
+            xml.required.set(true)
+        }
+    }
+}

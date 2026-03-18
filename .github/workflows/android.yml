@@ -33,6 +33,15 @@ jobs:
         run: ./gradlew assemble --stacktrace
       - name : Testing
         run: ./gradlew test --stacktrace
+      - name: Generate Coverage Reports
+        if: always()
+        run: ./gradlew jacocoTestReport --stacktrace
+      - name: Upload coverage to Qlty
+        if: always()
+        uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: "**/build/reports/jacoco/test/jacocoTestReport.xml"
       - name: Final Checks
         run: ./gradlew check --stacktrace
       - name: Upload snapshot
