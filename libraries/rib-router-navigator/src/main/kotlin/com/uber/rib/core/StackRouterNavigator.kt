@@ -161,7 +161,7 @@ constructor(
         detachAll()
         newRouterAndState = buildNewState(newState, attachTransition, detachTransition)
         attachInternal(currentRouterAndState, newRouterAndState, true)
-        navigationStack.push(newRouterAndState)
+          navigationStack.push(newRouterAndState)
       }
       RouterNavigator.Flag.REPLACE_TOP -> {
         if (!navigationStack.isEmpty()) {
@@ -309,6 +309,8 @@ constructor(
           attachInternal(currentRouterAndState, routerAndState, true)
           break
         } else {
+          // FIX: Correctly detaching zombie routers before removal to fix memory leaks (F-03)
+          detachInternal(routerAndState, newState, true)
           navigationIterator.remove()
         }
       }
