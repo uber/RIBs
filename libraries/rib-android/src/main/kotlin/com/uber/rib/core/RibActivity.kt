@@ -92,12 +92,20 @@ public abstract class RibActivity :
     _lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
     val wrappedBundle: Bundle? =
       if (savedInstanceState != null) Bundle(savedInstanceState) else null
-    router = createRouter(rootViewGroup)
-    router?.let {
-      it.dispatchAttach(wrappedBundle)
-      rootViewGroup.addView(it.view)
-      RibEvents.emitRouterEvent(RibEventType.ATTACHED, it, null)
-    }
+    attachContent(rootViewGroup, wrappedBundle)
+  }
+
+  /**
+   * Attaches content to the activity after [RibActivity] has published its onCreate lifecycle
+   * event. The default implementation creates and attaches the root router; override to render an
+   * alternative root while still receiving [RibActivity]'s lifecycle publishing.
+   */
+  protected open fun attachContent(rootViewGroup: ViewGroup, savedInstanceState: Bundle?) {
+    val newRouter = createRouter(rootViewGroup)
+    router = newRouter
+    newRouter.dispatchAttach(savedInstanceState)
+    rootViewGroup.addView(newRouter.view)
+    RibEvents.emitRouterEvent(RibEventType.ATTACHED, newRouter, null)
   }
 
   @CallSuper
@@ -105,7 +113,6 @@ public abstract class RibActivity :
     super.onSaveInstanceState(outState)
     _callbacksFlow.tryEmit(createOnSaveInstanceStateEvent(outState))
     router?.saveInstanceStateInternal(Bundle(outState))
-      ?: throw NullPointerException("Router should not be null")
   }
 
   @CallSuper

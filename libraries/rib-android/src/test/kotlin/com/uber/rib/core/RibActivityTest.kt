@@ -217,6 +217,53 @@ class RibActivityTest {
     create(ActivityLifecycleEvent.Type.CREATE)
   }
 
+  @Test
+  fun onCreate_whenAttachContentOverriddenToSkip_shouldLeaveRouterNull() {
+    val activity = Robolectric.buildActivity(RootlessActivity::class.java).create(null).get()
+
+    assertThat(activity.attachContentInvocations).isEqualTo(1)
+    assertThat(activity.createRouterInvocations).isEqualTo(0)
+    // router is private; interactor throws IllegalStateException when router is null.
+    val error = runCatching { activity.interactor }.exceptionOrNull()
+    assertThat(error).isInstanceOf(IllegalStateException::class.java)
+  }
+
+  @Test
+  fun onCreate_whenAttachContentOverriddenToSkip_shouldStillPublishLifecycle() {
+    val activityController = Robolectric.buildActivity(RootlessActivity::class.java)
+    val testSub = TestObserver<ActivityLifecycleEvent>()
+    activityController
+      .get()
+      .lifecycle()
+      .filter { it.type === ActivityLifecycleEvent.Type.CREATE }
+      .subscribe(testSub)
+
+    activityController.create(null)
+
+    testSub.assertValueCount(1)
+    assertThat(testSub.values()[0].type).isEqualTo(ActivityLifecycleEvent.Type.CREATE)
+  }
+
+  @Test
+  fun onBackPressed_whenRouterIsNull_shouldFallThroughToSuper() {
+    val activity = Robolectric.buildActivity(RootlessActivity::class.java).create(null).get()
+
+    activity.onBackPressed()
+
+    // With router == null, the elvis-safe delegation returns null, which is != true,
+    // so the activity's fallback path runs (unhandled back + super.onBackPressed()).
+    assertThat(activity.unhandledBackPressedInvocations).isEqualTo(1)
+    assertThat(activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun onSaveInstanceState_whenRouterIsNull_shouldNotCrash() {
+    val activityController = Robolectric.buildActivity(RootlessActivity::class.java).create(null)
+
+    // Would previously throw NullPointerException("Router should not be null").
+    activityController.saveInstanceState(android.os.Bundle())
+  }
+
   private class EmptyActivity : RibActivity() {
     override fun onCreate(savedInstanceState: android.os.Bundle?) {
       setTheme(R.style.Theme_AppCompat)
@@ -238,6 +285,40 @@ class RibActivityTest {
 
     val testInteractor: TestInteractor
       get() = interactor as TestInteractor
+  }
+
+  /**
+   * Subclass that overrides [attachContent] to skip RIB attach entirely, exercising the
+   * non-RIB-root code path introduced by the refactor.
+   */
+  private class RootlessActivity : RibActivity() {
+    var createRouterInvocations: Int = 0
+      private set
+
+    var attachContentInvocations: Int = 0
+      private set
+
+    var unhandledBackPressedInvocations: Int = 0
+      private set
+
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+      setTheme(R.style.Theme_AppCompat)
+      super.onCreate(savedInstanceState)
+    }
+
+    override fun attachContent(rootViewGroup: ViewGroup, savedInstanceState: Bundle?) {
+      attachContentInvocations++
+      // Intentionally skip attach — the activity hosts nothing.
+    }
+
+    override fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *> {
+      createRouterInvocations++
+      throw AssertionError("createRouter should not be called when attachContent is overridden")
+    }
+
+    override fun onUnhandledBackPressed() {
+      unhandledBackPressedInvocations++
+    }
   }
 
   private class EmptyRouter(
