@@ -19,6 +19,7 @@ import android.content.Intent
 import android.content.res.Configuration
 import android.os.Build
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.annotation.CallSuper
 import com.uber.autodispose.lifecycle.CorrespondingEventsFunction
 import com.uber.autodispose.lifecycle.LifecycleEndedException
@@ -49,6 +50,39 @@ public abstract class RibActivity :
   LifecycleScopeProvider<ActivityLifecycleEvent>,
   RxActivityEvents {
   private var router: ViewRouter<*, *>? = null
+
+  private val ribBackPressCallback =
+    object : OnBackPressedCallback(true) {
+      override fun handleOnBackStarted(backEvent: androidx.activity.BackEventCompat) {
+        (router as? PredictiveBackHandler)?.onBackStarted(backEvent)
+      }
+
+      override fun handleOnBackProgressed(backEvent: androidx.activity.BackEventCompat) {
+        (router as? PredictiveBackHandler)?.onBackProgressed(backEvent)
+      }
+
+      override fun handleOnBackCancelled() {
+        (router as? PredictiveBackHandler)?.onBackCancelled()
+      }
+
+      override fun handleOnBackPressed() {
+        if (router?.handleBackPress() != true) {
+          onUnhandledBackPressed()
+          // https://issuetracker.google.com/issues/139738913
+          if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+              isTaskRoot &&
+              supportFragmentManager.backStackEntryCount == 0
+          ) {
+            finishAfterTransition()
+          } else {
+            isEnabled = false
+            onBackPressedDispatcher.onBackPressed()
+            isEnabled = true
+          }
+        }
+      }
+    }
 
   private val _lifecycleFlow =
     MutableSharedFlow<ActivityLifecycleEvent>(1, 0, BufferOverflow.DROP_OLDEST)
@@ -88,6 +122,7 @@ public abstract class RibActivity :
   @CallSuper
   override fun onCreate(savedInstanceState: android.os.Bundle?) {
     super.onCreate(savedInstanceState)
+    onBackPressedDispatcher.addCallback(this, ribBackPressCallback)
     val rootViewGroup = findViewById<ViewGroup>(android.R.id.content)
     _lifecycleFlow.tryEmit(createOnCreateEvent(savedInstanceState))
     val wrappedBundle: Bundle? =
@@ -182,23 +217,6 @@ public abstract class RibActivity :
     _callbacksFlow.tryEmit(
       createPictureInPictureMode(isInPictureInPictureMode),
     )
-  }
-
-  override fun onBackPressed() {
-    if (router?.handleBackPress() != true) {
-      onUnhandledBackPressed()
-
-      // https://issuetracker.google.com/issues/139738913
-      if (
-        Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
-          isTaskRoot &&
-          supportFragmentManager.backStackEntryCount == 0
-      ) {
-        super.finishAfterTransition()
-      } else {
-        super.onBackPressed()
-      }
-    }
   }
 
   override fun onUserLeaveHint() {

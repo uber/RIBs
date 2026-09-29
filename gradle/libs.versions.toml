@@ -1,6 +1,7 @@
 [versions]
 android-api = "4.1.1.4"
 android-studio = "2023.3.1.20"
+androidx-activity = "1.13.0"
 androidx-annotation = "1.9.1"
 androidx-appcompat = "1.6.1"
 androidx-lifecycle = "2.6.2"
@@ -37,6 +38,7 @@ savedstate = "1.2.1"
 
 [libraries]
 android-api = { group = "com.google.android", name = "android", version.ref = "android-api" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "androidx-activity" }
 androidx-annotation = { group = "androidx.annotation", name = "annotation", version.ref = "androidx-annotation" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "androidx-appcompat" }
 autocommon = { group = "com.google.auto", name = "auto-common", version.ref = "autocommon" }

@@ -245,13 +245,15 @@ class RibActivityTest {
   }
 
   @Test
-  fun onBackPressed_whenRouterIsNull_shouldFallThroughToSuper() {
-    val activity = Robolectric.buildActivity(RootlessActivity::class.java).create(null).get()
+  fun backPress_whenRouterIsNull_shouldFallThroughToSuper() {
+    val activity = Robolectric.buildActivity(RootlessActivity::class.java).setup().get()
 
-    activity.onBackPressed()
+    // Back is dispatched through OnBackPressedDispatcher rather than the deprecated
+    // onBackPressed(), which on androidx.activity 1.13 routes through NavigationEventInput.
+    activity.onBackPressedDispatcher.onBackPressed()
 
-    // With router == null, the elvis-safe delegation returns null, which is != true,
-    // so the activity's fallback path runs (unhandled back + super.onBackPressed()).
+    // With router == null, the callback's delegation returns null, which is != true, so the
+    // fallback path runs (unhandled back + dispatcher fall-through).
     assertThat(activity.unhandledBackPressedInvocations).isEqualTo(1)
     assertThat(activity.isFinishing).isTrue()
   }
@@ -321,6 +323,46 @@ class RibActivityTest {
     }
   }
 
+  /** Activity whose back-press handling and [onUnhandledBackPressed] calls are observable. */
+  private class BackPressActivity : RibActivity() {
+    var unhandledBackPressCount = 0
+      private set
+
+    private lateinit var backAwareInteractor: BackAwareInteractor
+
+    override fun onCreate(savedInstanceState: android.os.Bundle?) {
+      setTheme(R.style.Theme_AppCompat)
+      super.onCreate(savedInstanceState)
+    }
+
+    override fun createRouter(parentViewGroup: ViewGroup): ViewRouter<*, *> {
+      val view = FrameLayout(this)
+      val presenter = object : ViewPresenter<View>(view) {}
+      val component: InteractorComponent<ViewPresenter<*>, *> = mock {
+        on { presenter() } doReturn presenter
+      }
+      backAwareInteractor = BackAwareInteractor(presenter)
+      return object :
+        ViewRouter<FrameLayout, BackAwareInteractor>(view, backAwareInteractor, component) {}
+    }
+
+    override fun onUnhandledBackPressed() {
+      unhandledBackPressCount++
+    }
+
+    fun setHandlesBackPress(handles: Boolean) {
+      backAwareInteractor.handlesBackPress = handles
+    }
+  }
+
+  private class BackAwareInteractor(
+    presenter: ViewPresenter<*>,
+  ) : Interactor<ViewPresenter<*>, FakeRouter<*>>(presenter) {
+    var handlesBackPress = false
+
+    override fun handleBackPress(): Boolean = handlesBackPress
+  }
+
   private class EmptyRouter(
     view: FrameLayout,
     interactor: Interactor<ViewPresenter<*>, *>,
@@ -341,6 +383,50 @@ class RibActivityTest {
     override fun onSaveInstanceState(outState: Bundle) {
       super.onSaveInstanceState(outState)
     }
+  }
+
+  @Test
+  fun backPress_whenRouterHandles_activityRemainsRunning() {
+    val activity = Robolectric.buildActivity(BackPressActivity::class.java).setup().get()
+    activity.setHandlesBackPress(true)
+
+    activity.onBackPressedDispatcher.onBackPressed()
+
+    assertThat(activity.isFinishing).isFalse()
+    assertThat(activity.unhandledBackPressCount).isEqualTo(0)
+  }
+
+  @Test
+  fun backPress_whenRouterDoesNotHandle_callsOnUnhandledBackPressed() {
+    val activity = Robolectric.buildActivity(BackPressActivity::class.java).setup().get()
+    activity.setHandlesBackPress(false)
+
+    activity.onBackPressedDispatcher.onBackPressed()
+
+    assertThat(activity.unhandledBackPressCount).isEqualTo(1)
+  }
+
+  @Test
+  fun backPress_whenRouterDoesNotHandle_activityFinishes() {
+    val activity = Robolectric.buildActivity(BackPressActivity::class.java).setup().get()
+    activity.setHandlesBackPress(false)
+
+    activity.onBackPressedDispatcher.onBackPressed()
+
+    assertThat(activity.isFinishing).isTrue()
+  }
+
+  @Test
+  fun backPress_dispatchedViaOnBackPressedDispatcher_routerIsConsulted() {
+    // Regression guard: back press must be wired through OnBackPressedDispatcher so that
+    // Predictive Back works. If it were only handled via the deprecated onBackPressed()
+    // override, triggering the dispatcher would bypass the router entirely.
+    val activity = Robolectric.buildActivity(BackPressActivity::class.java).setup().get()
+    activity.setHandlesBackPress(false)
+
+    activity.onBackPressedDispatcher.onBackPressed()
+
+    assertThat(activity.unhandledBackPressCount).isEqualTo(1)
   }
 
   companion object {

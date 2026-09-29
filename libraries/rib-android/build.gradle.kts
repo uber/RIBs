@@ -29,6 +29,7 @@ kotlin.compilerOptions {
 dependencies {
     api(project(":libraries:rib-android-core"))
     api(project(":libraries:rib-base"))
+    api(libs.androidx.activity)
     api(libs.rxkotlin)
     api(libs.rxrelay2)
     api(libs.rxjava2)
