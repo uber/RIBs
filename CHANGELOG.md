@@ -1,9 +1,5 @@
 # Changelog
 
-### Unreleased
-
-* [Android] Support Android Predictive Back gesture. `RibActivity` now registers an `OnBackPressedCallback` instead of overriding the deprecated `onBackPressed()`. No changes required to existing interactors or routers.
-
 ### Version 0.1.0
 
 * Initial release
@@ -158,4 +154,8 @@
 ### Version 0.16.6
 * Add overridable `attachContent()` to `RibActivity` to allow non-RIB roots (e.g. a Compose host) while retaining lifecycle publishing and saved-state wrapping; `onSaveInstanceState` is now null-router safe by @dipanshu281 in https://github.com/uber/RIBs/pull/662
 * Add a simple stacknav demo by @gpolak in https://github.com/uber/RIBs/pull/658
+
+### Version 0.17.0
+* Support Android Predictive Back gesture. `RibActivity` now registers an `OnBackPressedCallback` instead of overriding the deprecated `onBackPressed()`. No changes required to existing interactors or routers.
+* minSdk has been bumped from 21 to 23.
 
