@@ -6,7 +6,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Maven Central](https://img.shields.io/maven-central/v/com.uber.rib/rib-android.svg)](https://search.maven.org/artifact/com.uber.rib/rib-android)
 
-> ⚠️ **Alert:** RIBs for IOS has been has been moved to a [separate repo](https://github.com/uber/ribs-ios)
+> ⚠️ **Alert:** RIBs for IOS has been moved to a [separate repo](https://github.com/uber/ribs-ios)
 
 RIBs is the cross-platform architecture framework behind many mobile apps at Uber. The name RIBs is short for Router, Interactor and Builder, which are core components of this architecture. This framework is designed for mobile apps with a large number of engineers and nested states.
 
