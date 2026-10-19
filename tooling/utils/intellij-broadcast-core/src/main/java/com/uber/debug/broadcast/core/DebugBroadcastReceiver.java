@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,7 +44,13 @@ public class DebugBroadcastReceiver extends BroadcastReceiver {
       handlers.add(handler);
     }
     DebugBroadcastReceiver receiver = new DebugBroadcastReceiver();
-    context.registerReceiver(receiver, intent);
+    
+    // FIX (F-01): Specifying RECEIVER_NOT_EXPORTED for Android 13+ (API 33+) to prevent SecurityException crashes and unauthorized RIB tree exposure.
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+        context.registerReceiver(receiver, intent, Context.RECEIVER_NOT_EXPORTED);
+    } else {
+        context.registerReceiver(receiver, intent);
+    }
   }
 
   @Override
@@ -93,4 +100,4 @@ public class DebugBroadcastReceiver extends BroadcastReceiver {
 
     void handle(DebugBroadcastRequest request);
   }
-}
+        }
