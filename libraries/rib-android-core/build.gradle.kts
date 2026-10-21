@@ -24,6 +24,7 @@ android {
 
 dependencies {
     api(libs.androidx.appcompat)
+    implementation(libs.androidx.activity)
     implementation(libs.androidx.annotation)
     testImplementation(testLibs.robolectric)
 }
