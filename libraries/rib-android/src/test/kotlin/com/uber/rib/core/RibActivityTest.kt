@@ -20,6 +20,7 @@ import android.content.Intent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.activity.findViewTreeOnBackPressedDispatcherOwner
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import androidx.lifecycle.findViewTreeViewModelStoreOwner
 import androidx.savedstate.findViewTreeSavedStateRegistryOwner
@@ -199,6 +200,7 @@ class RibActivityTest {
     assertThat(decorView.findViewTreeLifecycleOwner()).isNotNull()
     assertThat(decorView.findViewTreeSavedStateRegistryOwner()).isNotNull()
     assertThat(decorView.findViewTreeViewModelStoreOwner()).isNotNull()
+    assertThat(decorView.findViewTreeOnBackPressedDispatcherOwner()).isSameInstanceAs(activity)
   }
 
   @Test
@@ -210,6 +212,7 @@ class RibActivityTest {
     assertThat(rootView.findViewTreeLifecycleOwner()).isNotNull()
     assertThat(rootView.findViewTreeSavedStateRegistryOwner()).isNotNull()
     assertThat(rootView.findViewTreeViewModelStoreOwner()).isNotNull()
+    assertThat(rootView.findViewTreeOnBackPressedDispatcherOwner()).isSameInstanceAs(activity)
   }
 
   @Test(expected = IllegalArgumentException::class)
